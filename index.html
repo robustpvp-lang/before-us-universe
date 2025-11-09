@@ -1,1 +1,506 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Before Us Universe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(180deg, #9bbc0f 0%, #8bac0f 30%, #306230 70%, #0f380f 100%);
+            min-height: 100vh;
+            color: #0f380f;
+            padding: 16px;
+            position: relative;
+        }
+
+        /* Scan lines */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.1) 3px);
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Boot Screen */
+        #boot-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: linear-gradient(180deg, #9bbc0f 0%, #8bac0f 50%, #306230 100%);
+        }
+
+        .boot-container {
+            text-align: center;
+            animation: bootPulse 0.8s infinite;
+        }
+
+        .boot-box {
+            background: #0f380f;
+            border: 8px solid #9bbc0f;
+            border-radius: 8px;
+            padding: 32px;
+            box-shadow: 0 0 30px rgba(155, 188, 15, 0.5);
+        }
+
+        .boot-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #9bbc0f;
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 0 #0f380f, 4px 4px 0 rgba(155, 188, 15, 0.3);
+        }
+
+        .boot-subtitle {
+            font-size: 14px;
+            color: #8bac0f;
+            margin-top: 8px;
+            letter-spacing: 2px;
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 20px;
+            background: #0f380f;
+            border: 3px solid #8bac0f;
+            margin: 24px auto 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-fill {
+            height: 100%;
+            background: #9bbc0f;
+            width: 0%;
+            animation: loadFill 4s ease-in-out forwards;
+        }
+
+        .boot-copyright {
+            margin-top: 24px;
+            color: #9bbc0f;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        @keyframes loadFill {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes bootPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        /* Main Content */
+        #main-content {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        #main-content.loaded {
+            display: block;
+        }
+
+        /* Header */
+        .header {
+            background: #0f380f;
+            border: 6px solid #9bbc0f;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 4px 4px 0 rgba(15, 56, 15, 0.5);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #9bbc0f;
+            text-align: center;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 0 #306230;
+        }
+
+        .header p {
+            text-align: center;
+            color: #8bac0f;
+            font-size: 14px;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* Grid Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Message Board */
+        .message-board {
+            background: #0f380f;
+            border: 6px solid #8bac0f;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 4px 4px 0 rgba(15, 56, 15, 0.5);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #9bbc0f;
+            margin-bottom: 12px;
+            border-bottom: 3px solid #8bac0f;
+            padding-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .board-post {
+            background: #306230;
+            border: 3px solid #9bbc0f;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .post-title {
+            color: #9bbc0f;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .post-content {
+            color: #c0d860;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .post-meta {
+            color: #8bac0f;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        /* Chat Log */
+        .chat-container {
+            background: #0f380f;
+            border: 6px solid #8bac0f;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 4px 4px 0 rgba(15, 56, 15, 0.5);
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+
+        .chat-messages {
+            background: #306230;
+            border: 3px solid #9bbc0f;
+            padding: 8px;
+            border-radius: 4px;
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 8px;
+        }
+
+        .chat-message {
+            margin-bottom: 8px;
+        }
+
+        .chat-meta {
+            color: #9bbc0f;
+            font-size: 11px;
+        }
+
+        .chat-meta .username {
+            font-weight: bold;
+        }
+
+        .chat-text {
+            color: #c0d860;
+            font-size: 12px;
+            margin-left: 8px;
+            line-height: 1.4;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #306230;
+            border: 3px solid #8bac0f;
+            color: #c0d860;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .chat-button {
+            background: #9bbc0f;
+            border: 3px solid #0f380f;
+            color: #0f380f;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 rgba(15, 56, 15, 0.5);
+        }
+
+        .chat-button:hover {
+            background: #8bac0f;
+        }
+
+        /* Info Boxes */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
+        .info-box {
+            background: #0f380f;
+            border: 4px solid #8bac0f;
+            border-radius: 6px;
+            padding: 12px;
+            box-shadow: 3px 3px 0 rgba(15, 56, 15, 0.5);
+        }
+
+        .info-title {
+            color: #9bbc0f;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .info-content {
+            color: #c0d860;
+            font-size: 12px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 20px;
+            padding: 16px;
+            background: #0f380f;
+            border: 4px solid #9bbc0f;
+            border-radius: 8px;
+            text-align: center;
+            color: #8bac0f;
+            font-size: 12px;
+            box-shadow: 4px 4px 0 rgba(15, 56, 15, 0.5);
+        }
+
+        .footer-divider {
+            margin-bottom: 8px;
+        }
+
+        .footer-copyright {
+            color: #9bbc0f;
+            letter-spacing: 1px;
+        }
+
+        .footer-note {
+            margin-top: 4px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Boot Screen -->
+    <div id="boot-screen">
+        <div class="boot-container">
+            <div class="boot-box">
+                <div class="boot-title">WONDERBOY</div>
+                <div class="boot-subtitle">BOOT SEQUENCE...</div>
+                <div class="loading-bar">
+                    <div class="loading-fill"></div>
+                </div>
+            </div>
+            <p class="boot-copyright">© 1999 The Before Us Universe</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Header -->
+        <div class="header">
+            <h1>THE BEFORE US UNIVERSE</h1>
+            <p>.:. Digital Memory Archives .:.</p>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Message Board -->
+            <div class="message-board">
+                <h2 class="section-title">≡ MESSAGE BOARD ≡</h2>
+                
+                <div class="board-post">
+                    <div class="post-title">→ LORE DATABASE</div>
+                    <div class="post-content">
+                        Fragments of Lux history recovered from corrupted sectors. Access requires Level 3 clearance.
+                    </div>
+                    <div class="post-meta">Posted: 1999.08.15 | Replies: 42</div>
+                </div>
+
+                <div class="board-post">
+                    <div class="post-title">→ TRANSMISSION LOGS</div>
+                    <div class="post-content">
+                        Intercepted signals from the old network. Some voices refuse to fade...
+                    </div>
+                    <div class="post-meta">Posted: 1999.09.03 | Replies: 87</div>
+                </div>
+
+                <div class="board-post">
+                    <div class="post-title">→ GHOST IN THE MACHINE</div>
+                    <div class="post-content">
+                        Reports of anomalous data patterns. Visual artifacts detected in memory dumps.
+                    </div>
+                    <div class="post-meta">Posted: 1999.10.12 | Replies: 156</div>
+                </div>
+            </div>
+
+            <!-- Chat Log -->
+            <div class="chat-container">
+                <h2 class="section-title">≡ LIVE CHAT ≡</h2>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-message">
+                        <div class="chat-meta">[14:32] <span class="username">SysAdmin:</span></div>
+                        <div class="chat-text">Welcome to The Before Us Universe BBS</div>
+                    </div>
+                    <div class="chat-message">
+                        <div class="chat-meta">[14:35] <span class="username">WonderBoy:</span></div>
+                        <div class="chat-text">Anyone else experiencing glitches?</div>
+                    </div>
+                    <div class="chat-message">
+                        <div class="chat-meta">[14:37] <span class="username">LuxSeeker:</span></div>
+                        <div class="chat-text">The system is... remembering things</div>
+                    </div>
+                    <div class="chat-message">
+                        <div class="chat-meta">[14:40] <span class="username">PixelGhost:</span></div>
+                        <div class="chat-text">I saw her again in the data streams</div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Type message...">
+                    <button onclick="sendMessage()" class="chat-button">SEND</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Boxes -->
+        <div class="info-grid">
+            <div class="info-box">
+                <div class="info-title">☆ ONLINE USERS</div>
+                <div class="info-content">Currently: 47</div>
+            </div>
+            <div class="info-box">
+                <div class="info-title">♪ STATUS</div>
+                <div class="info-content">System: Stable*</div>
+            </div>
+            <div class="info-box">
+                <div class="info-title">◆ LAST UPDATE</div>
+                <div class="info-content">1999.11.08</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-divider">═══════════════════════════════════════</div>
+            <div class="footer-copyright">© 1999 Patrick McDonald — The Before Us Universe</div>
+            <div class="footer-note">Best viewed in 160x144 resolution</div>
+            <div class="footer-divider">═══════════════════════════════════════</div>
+        </div>
+    </div>
+
+    <script>
+        // Boot sequence
+        setTimeout(function() {
+            document.getElementById('boot-screen').style.display = 'none';
+            document.getElementById('main-content').classList.add('loaded');
+        }, 4000);
+
+        // Chat functionality
+        function sendMessage() {
+            var input = document.getElementById('chat-input');
+            var message = input.value.trim();
+            
+            if (message) {
+                var now = new Date();
+                var hours = String(now.getHours()).padStart(2, '0');
+                var minutes = String(now.getMinutes()).padStart(2, '0');
+                var time = hours + ':' + minutes;
+                
+                var chatMessages = document.getElementById('chat-messages');
+                var messageDiv = document.createElement('div');
+                messageDiv.className = 'chat-message';
+                messageDiv.innerHTML = 
+                    '<div class="chat-meta">[' + time + '] <span class="username">You:</span></div>' +
+                    '<div class="chat-text">' + escapeHtml(message) + '</div>';
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                input.value = '';
+            }
+        }
+
+        // Enter key to send
+        document.getElementById('chat-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            var map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+    </script>
+</body>
+</html>
