@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -118,6 +117,62 @@
             display: block;
         }
 
+        /* Username Modal */
+        #username-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 150;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #username-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #0f380f;
+            border: 6px solid #9bbc0f;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 0 30px rgba(155, 188, 15, 0.5);
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            color: #9bbc0f;
+            font-size: 24px;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+
+        .modal-content input {
+            background: #306230;
+            border: 3px solid #8bac0f;
+            color: #c0d860;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            width: 250px;
+            margin-bottom: 16px;
+        }
+
+        .modal-content button {
+            background: #9bbc0f;
+            border: 3px solid #0f380f;
+            color: #0f380f;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 rgba(15, 56, 15, 0.5);
+        }
+
         /* Header */
         .header {
             background: #0f380f;
@@ -178,6 +233,12 @@
             letter-spacing: 2px;
         }
 
+        #board-posts {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+        }
+
         .board-post {
             background: #306230;
             border: 3px solid #9bbc0f;
@@ -197,12 +258,35 @@
             color: #c0d860;
             font-size: 12px;
             line-height: 1.5;
+            word-wrap: break-word;
         }
 
         .post-meta {
             color: #8bac0f;
             font-size: 11px;
             margin-top: 4px;
+        }
+
+        .new-post-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .new-post-form input,
+        .new-post-form textarea {
+            background: #306230;
+            border: 3px solid #8bac0f;
+            color: #c0d860;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .new-post-form textarea {
+            resize: vertical;
+            min-height: 60px;
         }
 
         /* Chat Log */
@@ -245,6 +329,7 @@
             font-size: 12px;
             margin-left: 8px;
             line-height: 1.4;
+            word-wrap: break-word;
         }
 
         .chat-input-area {
@@ -263,7 +348,8 @@
             font-size: 12px;
         }
 
-        .chat-button {
+        .chat-button,
+        .post-button {
             background: #9bbc0f;
             border: 3px solid #0f380f;
             color: #0f380f;
@@ -276,8 +362,15 @@
             box-shadow: 2px 2px 0 rgba(15, 56, 15, 0.5);
         }
 
-        .chat-button:hover {
+        .chat-button:hover,
+        .post-button:hover {
             background: #8bac0f;
+        }
+
+        .chat-button:active,
+        .post-button:active {
+            transform: translateY(2px);
+            box-shadow: none;
         }
 
         /* Info Boxes */
@@ -357,6 +450,16 @@
         </div>
     </div>
 
+    <!-- Username Modal -->
+    <div id="username-modal">
+        <div class="modal-content">
+            <h2>ENTER USERNAME</h2>
+            <input type="text" id="username-input" placeholder="Your handle..." maxlength="20">
+            <br>
+            <button onclick="setUsername()">CONNECT</button>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <div id="main-content">
         <!-- Header -->
@@ -371,28 +474,12 @@
             <div class="message-board">
                 <h2 class="section-title">≡ MESSAGE BOARD ≡</h2>
                 
-                <div class="board-post">
-                    <div class="post-title">→ LORE DATABASE</div>
-                    <div class="post-content">
-                        Fragments of Lux history recovered from corrupted sectors. Access requires Level 3 clearance.
-                    </div>
-                    <div class="post-meta">Posted: 1999.08.15 | Replies: 42</div>
-                </div>
+                <div id="board-posts"></div>
 
-                <div class="board-post">
-                    <div class="post-title">→ TRANSMISSION LOGS</div>
-                    <div class="post-content">
-                        Intercepted signals from the old network. Some voices refuse to fade...
-                    </div>
-                    <div class="post-meta">Posted: 1999.09.03 | Replies: 87</div>
-                </div>
-
-                <div class="board-post">
-                    <div class="post-title">→ GHOST IN THE MACHINE</div>
-                    <div class="post-content">
-                        Reports of anomalous data patterns. Visual artifacts detected in memory dumps.
-                    </div>
-                    <div class="post-meta">Posted: 1999.10.12 | Replies: 156</div>
+                <div class="new-post-form">
+                    <input type="text" id="post-title" placeholder="Thread Title..." maxlength="50">
+                    <textarea id="post-content" placeholder="Your message..."></textarea>
+                    <button class="post-button" onclick="createPost()">POST</button>
                 </div>
             </div>
 
@@ -400,24 +487,7 @@
             <div class="chat-container">
                 <h2 class="section-title">≡ LIVE CHAT ≡</h2>
                 
-                <div class="chat-messages" id="chat-messages">
-                    <div class="chat-message">
-                        <div class="chat-meta">[14:32] <span class="username">SysAdmin:</span></div>
-                        <div class="chat-text">Welcome to The Before Us Universe BBS</div>
-                    </div>
-                    <div class="chat-message">
-                        <div class="chat-meta">[14:35] <span class="username">WonderBoy:</span></div>
-                        <div class="chat-text">Anyone else experiencing glitches?</div>
-                    </div>
-                    <div class="chat-message">
-                        <div class="chat-meta">[14:37] <span class="username">LuxSeeker:</span></div>
-                        <div class="chat-text">The system is... remembering things</div>
-                    </div>
-                    <div class="chat-message">
-                        <div class="chat-meta">[14:40] <span class="username">PixelGhost:</span></div>
-                        <div class="chat-text">I saw her again in the data streams</div>
-                    </div>
-                </div>
+                <div class="chat-messages" id="chat-messages"></div>
 
                 <div class="chat-input-area">
                     <input type="text" id="chat-input" class="chat-input" placeholder="Type message...">
@@ -430,11 +500,11 @@
         <div class="info-grid">
             <div class="info-box">
                 <div class="info-title">☆ ONLINE USERS</div>
-                <div class="info-content">Currently: 47</div>
+                <div class="info-content" id="online-count">Connecting...</div>
             </div>
             <div class="info-box">
                 <div class="info-title">♪ STATUS</div>
-                <div class="info-content">System: Stable*</div>
+                <div class="info-content">System: <span id="system-status">Stable*</span></div>
             </div>
             <div class="info-box">
                 <div class="info-title">◆ LAST UPDATE</div>
@@ -451,48 +521,183 @@
         </div>
     </div>
 
-    <script>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, push, onValue, set, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // Firebase configuration - YOU NEED TO REPLACE THIS WITH YOUR OWN
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        let currentUsername = localStorage.getItem('buu_username') || '';
+        let userOnlineRef = null;
+
         // Boot sequence
         setTimeout(function() {
             document.getElementById('boot-screen').style.display = 'none';
-            document.getElementById('main-content').classList.add('loaded');
+            if (!currentUsername) {
+                document.getElementById('username-modal').classList.add('show');
+            } else {
+                document.getElementById('main-content').classList.add('loaded');
+                initializeApp();
+            }
         }, 4000);
 
-        // Chat functionality
-        function sendMessage() {
-            var input = document.getElementById('chat-input');
-            var message = input.value.trim();
-            
-            if (message) {
-                var now = new Date();
-                var hours = String(now.getHours()).padStart(2, '0');
-                var minutes = String(now.getMinutes()).padStart(2, '0');
-                var time = hours + ':' + minutes;
-                
-                var chatMessages = document.getElementById('chat-messages');
-                var messageDiv = document.createElement('div');
-                messageDiv.className = 'chat-message';
-                messageDiv.innerHTML = 
-                    '<div class="chat-meta">[' + time + '] <span class="username">You:</span></div>' +
-                    '<div class="chat-text">' + escapeHtml(message) + '</div>';
-                
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                
-                input.value = '';
+        // Set username
+        window.setUsername = function() {
+            const input = document.getElementById('username-input');
+            const username = input.value.trim();
+            if (username) {
+                currentUsername = username;
+                localStorage.setItem('buu_username', username);
+                document.getElementById('username-modal').classList.remove('show');
+                document.getElementById('main-content').classList.add('loaded');
+                initializeApp();
             }
+        };
+
+        // Initialize app
+        function initializeApp() {
+            // Track online users
+            const onlineUsersRef = ref(database, 'online/' + Date.now());
+            set(onlineUsersRef, {
+                username: currentUsername,
+                timestamp: Date.now()
+            });
+            userOnlineRef = onlineUsersRef;
+            onDisconnect(onlineUsersRef).remove();
+
+            // Count online users
+            const allOnlineRef = ref(database, 'online');
+            onValue(allOnlineRef, (snapshot) => {
+                const count = snapshot.size || 0;
+                document.getElementById('online-count').textContent = 'Currently: ' + count;
+            });
+
+            // Load chat messages
+            const chatRef = ref(database, 'chat');
+            onValue(chatRef, (snapshot) => {
+                const chatMessages = document.getElementById('chat-messages');
+                chatMessages.innerHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const msg = childSnapshot.val();
+                    addChatMessage(msg.username, msg.text, msg.timestamp);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+
+            // Load board posts
+            const postsRef = ref(database, 'posts');
+            onValue(postsRef, (snapshot) => {
+                const boardPosts = document.getElementById('board-posts');
+                boardPosts.innerHTML = '';
+                snapshot.forEach((childSnapshot) => {
+                    const post = childSnapshot.val();
+                    addBoardPost(post.title, post.content, post.username, post.timestamp);
+                });
+            });
         }
 
-        // Enter key to send
+        // Send chat message
+        window.sendMessage = function() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                const chatRef = ref(database, 'chat');
+                push(chatRef, {
+                    username: currentUsername,
+                    text: message,
+                    timestamp: Date.now()
+                });
+                input.value = '';
+            }
+        };
+
+        // Create board post
+        window.createPost = function() {
+            const titleInput = document.getElementById('post-title');
+            const contentInput = document.getElementById('post-content');
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+            
+            if (title && content) {
+                const postsRef = ref(database, 'posts');
+                push(postsRef, {
+                    title: title,
+                    content: content,
+                    username: currentUsername,
+                    timestamp: Date.now()
+                });
+                titleInput.value = '';
+                contentInput.value = '';
+            }
+        };
+
+        // Add chat message to DOM
+        function addChatMessage(username, text, timestamp) {
+            const chatMessages = document.getElementById('chat-messages');
+            const time = new Date(timestamp).toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: false 
+            });
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            messageDiv.innerHTML = 
+                '<div class="chat-meta">[' + time + '] <span class="username">' + escapeHtml(username) + ':</span></div>' +
+                '<div class="chat-text">' + escapeHtml(text) + '</div>';
+            chatMessages.appendChild(messageDiv);
+        }
+
+        // Add board post to DOM
+        function addBoardPost(title, content, username, timestamp) {
+            const boardPosts = document.getElementById('board-posts');
+            const date = new Date(timestamp).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).replace(/\//g, '.');
+            
+            const postDiv = document.createElement('div');
+            postDiv.className = 'board-post';
+            postDiv.innerHTML = 
+                '<div class="post-title">→ ' + escapeHtml(title) + '</div>' +
+                '<div class="post-content">' + escapeHtml(content) + '</div>' +
+                '<div class="post-meta">Posted by ' + escapeHtml(username) + ' | ' + date + '</div>';
+            boardPosts.appendChild(postDiv);
+        }
+
+        // Enter key to send chat
         document.getElementById('chat-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 sendMessage();
             }
         });
 
-        // Escape HTML to prevent XSS
+        // Enter key to set username
+        document.getElementById('username-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                setUsername();
+            }
+        });
+
+        // Escape HTML
         function escapeHtml(text) {
-            var map = {
+            const map = {
                 '&': '&amp;',
                 '<': '&lt;',
                 '>': '&gt;',
