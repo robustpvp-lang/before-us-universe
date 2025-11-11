@@ -13,7 +13,9 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
 .glitch::before,.glitch::after { content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%; }
 .glitch::before { animation:glitch-1 .5s infinite; color:#ff00ff; clip-path:polygon(0 0,100% 0,100% 45%,0 45%); }
 .glitch::after { animation:glitch-2 .5s infinite; color:#00ffff; clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%); }
-.scanlines { position:absolute; inset:0; background:linear-gradient(transparent 50%,rgba(0,0,0,.05) 50%); background-size:100% 4px; animation:scan 6s linear infinite; }
+.progress-container { width:300px; height:18px; background:#000; border:2px solid #00ffcc; margin-top:1.2rem; border-radius:8px; overflow:hidden; box-shadow:0 0 12px #00ffcc; }
+.progress-bar { width:0%; height:100%; background:linear-gradient(90deg,#00ffcc,#00bcd4); transition:width 0.1s ease; }
+.scanlines { position:absolute; inset:0; background:linear-gradient(transparent 50%,rgba(0,0,0,.05) 50%); background-size:100% 4px; animation:scan 6s linear infinite; pointer-events:none; }
 .hidden { display:none; }
 #app { display:flex; flex-direction:column; height:100vh; }
 .header { background:#1c1c1e; padding:1rem; text-align:center; border-bottom:2px solid #00ffcc; }
@@ -43,7 +45,10 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
 <body>
 
 <div id="loader">
-  <div class="glitch" data-text="BOOT SEQUENCE...">BOOT SEQUENCE...</div>
+  <div class="glitch" data-text="INITIALIZING...">INITIALIZING...</div>
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
   <div class="scanlines"></div>
 </div>
 
@@ -61,7 +66,7 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
   <section id="chat" class="section">
     <div class="chat-header">
       <span>LIVE CHAT</span>
-      <span id="online-count">ONLINE: <span>1</span></span>
+      <span id="online-count">ONLINE: <span>0</span></span>
     </div>
     <div id="messages" class="messages"></div>
     <form id="chat-form" class="input-area">
@@ -88,104 +93,143 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
   </footer>
 </div>
 
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<audio id="boot-sound" preload="auto">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-retro-game-notification-212.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
+
 <script>
+// ===== PASTE YOUR FIREBASE CONFIG HERE =====
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "before-us-universe.firebaseapp.com",
+  databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
+  projectId: "before-us-universe",
+  storageBucket: "before-us-universe.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const auth = firebase.auth();
+
+// ===== BOT LOGIC =====
 const BOT_NAME = 'Yaga';
 const LORE = {
   'who is wonderboy?': 'Wonderboy is the last surviving archivist of the Before Us timeline.',
   'what is the before us universe?': 'A fractured multiverse where digital memories outlived humanity.',
   'cortana': 'I am Yaga – part Cortana, part Baba Yaga.',
 };
-
-// === USERNAME POPUP ===
-let username = localStorage.getItem('beforeus_username');
-if (!username) {
-  username = prompt('Choose your name:') || 'Guest';
-  localStorage.setItem('beforeus_username', username);
+function botReply(msg) {
+  const lower = msg.toLowerCase().trim();
+  for (const [q, a] of Object.entries(LORE)) if (lower.includes(q)) return a;
+  const bad = ['fuck', 'shit', 'damn', 'bitch', 'ass'];
+  if (bad.some(w => lower.includes(w))) return 'Mind your tongue in the Archives.';
+  return 'Ask me about *Wonderboy*.';
 }
 
-// === ELEMENTS ===
+// ===== USERNAME & AUTH =====
+let username = null;
+auth.signInAnonymously().catch(console.error);
+auth.onAuthStateChanged(user => {
+  if (user) {
+    username = localStorage.getItem('beforeus_username') || prompt('Choose your name:') || 'Guest';
+    localStorage.setItem('beforeus_username', username);
+    user.updateProfile({ displayName: username });
+  }
+});
+
+// ===== ELEMENTS =====
 const $ = s => document.querySelector(s);
 const loader = $('#loader'), app = $('#app');
 const messages = $('#messages'), chatInput = $('#chat-input'), chatForm = $('#chat-form');
 const boardPosts = $('#board-posts'), boardInput = $('#board-input'), boardForm = $('#board-form');
 const onlineSpan = $('#online-count span'), postCount = $('#post-count');
-const statusEl = $('#system-status'), lastUpdateEl = $('#last-update');
+const lastUpdateEl = $('#last-update');
 
-// === MESSAGES ===
-function addChat(name, txt, type='user'){
+// ===== MESSAGES =====
+function addChat(name, txt, type='user') {
   const div = document.createElement('div');
   div.className = `message ${type}`;
   div.textContent = `${name}: ${txt}`;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
 }
-function addBoard(txt, type='user'){
+function addBoard(txt, type='user') {
   const div = document.createElement('div');
   div.className = `post ${type}`;
   div.textContent = txt;
   boardPosts.appendChild(div);
   boardPosts.scrollTop = boardPosts.scrollHeight;
+  postCount.textContent = `${document.querySelectorAll('.post').length} post${document.querySelectorAll('.post').length !== 1 ? 's' : ''}`;
 }
-function systemMsg(txt){
+function systemMsg(txt) {
   addChat('System', txt, 'system');
 }
 
-// === BOT ===
-function botReply(msg){
-  const lower = msg.toLowerCase().trim();
-  for(const [q,a] of Object.entries(LORE)) if(lower.includes(q)) return a;
-  const bad = ['fuck','shit','damn'];
-  if(bad.some(w=>lower.includes(w))) return 'Mind your tongue in the Archives.';
-  return 'Ask me about *Wonderboy*.';
-}
+// ===== RATE LIMITING (1 msg/sec) =====
+let lastChatTime = 0;
+let lastBoardTime = 0;
 
-// === FREE SERVER (I made it for you) ===
-const socket = io('https://before-us-chat.onrender.com');
-
-socket.on('connect', () => {
-  systemMsg(`You are ${username}`);
-  socket.emit('user:join', username);
-});
-
-socket.on('user:count', count => {
-  onlineSpan.textContent = count;
-});
-
-socket.on('chat:message', data => {
+// ===== CHAT (REAL-TIME) =====
+const chatRef = db.ref('chat');
+chatRef.on('child_added', snap => {
+  const data = snap.val();
   addChat(data.name, data.msg, data.isBot ? 'bot' : 'user');
 });
-
-socket.on('board:init', posts => {
-  boardPosts.innerHTML = '';
-  posts.forEach(p => addBoard(p.text, p.type));
-  postCount.textContent = `${posts.length} posts`;
-});
-
-socket.on('board:post', post => {
-  addBoard(post.text, post.type);
-  postCount.textContent = `${document.querySelectorAll('.post').length} posts`;
-});
-
-// === CHAT ===
 chatForm.addEventListener('submit', e => {
   e.preventDefault();
+  const now = Date.now();
+  if (now - lastChatTime < 1000) return systemMsg('Slow down! 1 msg/sec.');
   const msg = chatInput.value.trim();
-  if (!msg) return;
-  socket.emit('chat:message', { msg, name: username });
+  if (!msg || !username) return;
+  lastChatTime = now;
+  chatRef.push({ name: username, msg, isBot: false, timestamp: firebase.database.ServerValue.TIMESTAMP });
   chatInput.value = '';
+  setTimeout(() => {
+    const reply = botReply(msg);
+    chatRef.push({ name: BOT_NAME, msg: reply, isBot: true, timestamp: firebase.database.ServerValue.TIMESTAMP });
+  }, 800);
 });
 
-// === BOARD ===
+// ===== BOARD (LAST 10) =====
+const boardRef = db.ref('board').limitToLast(10);
+boardRef.on('child_added', snap => {
+  const data = snap.val();
+  addBoard(`${data.name}: ${data.msg}`, data.isBot ? 'bot' : 'user');
+});
 boardForm.addEventListener('submit', e => {
   e.preventDefault();
+  const now = Date.now();
+  if (now - lastBoardTime < 1000) return systemMsg('Slow down! 1 post/sec.');
   const msg = boardInput.value.trim();
-  if (!msg) return;
-  socket.emit('board:post', msg);
+  if (!msg || !username) return;
+  lastBoardTime = now;
+  boardRef.push({ name: username, msg, isBot: false, timestamp: firebase.database.ServerValue.TIMESTAMP });
   boardInput.value = '';
+  setTimeout(() => {
+    const reply = botReply(msg);
+    if (reply.includes('tongue') || Object.keys(LORE).some(q => msg.toLowerCase().includes(q))) {
+      boardRef.push({ name: BOT_NAME, msg: reply, isBot: true, timestamp: firebase.database.ServerValue.TIMESTAMP });
+    }
+  }, 1200);
 });
 
-// === TABS ===
+// ===== ONLINE COUNTER =====
+const onlineRef = db.ref('online');
+const userRef = onlineRef.push(true);
+onlineRef.on('value', snap => {
+  onlineSpan.textContent = snap.numChildren();
+});
+window.addEventListener('beforeunload', () => userRef.remove());
+
+// ===== TABS =====
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -195,18 +239,30 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-// === BOOT ===
-function startApp(){
-  loader.style.opacity = '0';
-  setTimeout(() => {
-    loader.classList.add('hidden');
-    app.classList.remove('hidden');
-    systemMsg('Digital Memory Archives online.');
-    const now = new Date();
-    lastUpdateEl.textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
-  }, 800);
+// ===== BOOT SEQUENCE (GLITCH + BAR + BEEP) =====
+function startApp() {
+  const bar = $('#progress-bar');
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += 3;
+    bar.style.width = progress + '%';
+    if (progress >= 100) {
+      clearInterval(interval);
+      const sound = $('#boot-sound');
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
+      loader.style.opacity = '0';
+      setTimeout(() => {
+        loader.classList.add('hidden');
+        app.classList.remove('hidden');
+        systemMsg(`Welcome, ${username || 'Guest'}. Archives online.`);
+        const now = new Date();
+        lastUpdateEl.textContent = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+      }, 300);
+    }
+  }, 90);
 }
-setTimeout(startApp, 3000);
+setTimeout(startApp, 1000);
 </script>
 </body>
 </html>
