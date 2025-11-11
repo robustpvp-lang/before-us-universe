@@ -88,6 +88,7 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
   </footer>
 </div>
 
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
 const BOT_NAME = 'Yaga';
 const LORE = {
@@ -96,6 +97,14 @@ const LORE = {
   'cortana': 'I am Yaga – part Cortana, part Baba Yaga.',
 };
 
+// === USERNAME POPUP ===
+let username = localStorage.getItem('beforeus_username');
+if (!username) {
+  username = prompt('Choose your name:') || 'Guest';
+  localStorage.setItem('beforeus_username', username);
+}
+
+// === ELEMENTS ===
 const $ = s => document.querySelector(s);
 const loader = $('#loader'), app = $('#app');
 const messages = $('#messages'), chatInput = $('#chat-input'), chatForm = $('#chat-form');
@@ -103,97 +112,99 @@ const boardPosts = $('#board-posts'), boardInput = $('#board-input'), boardForm 
 const onlineSpan = $('#online-count span'), postCount = $('#post-count');
 const statusEl = $('#system-status'), lastUpdateEl = $('#last-update');
 
-const STORAGE = {
-  board: 'beforeus_board_v1',
-  getBoard() { return JSON.parse(localStorage.getItem(this.board) || '[]'); },
-  saveBoard(arr) { localStorage.setItem(this.board, JSON.stringify(arr.slice(-10))); }
-};
-
-function addChat(txt, type='user'){ _add('#messages', txt, type); }
-function addBoard(txt, type='user'){ _add('#board-posts', txt, type); renderBoardCount(); }
-function _add(container, txt, type){
+// === MESSAGES ===
+function addChat(name, txt, type='user'){
   const div = document.createElement('div');
   div.className = `message ${type}`;
-  div.textContent = txt;
-  $(container).appendChild(div);
-  $(container).scrollTop = $(container).scrollHeight;
+  div.textContent = `${name}: ${txt}`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
 }
-function systemMsg(txt){ 
+function addBoard(txt, type='user'){
   const div = document.createElement('div');
-  div.className = 'message system';
+  div.className = `post ${type}`;
   div.textContent = txt;
-  $('#messages').appendChild(div);
-  $('#messages').scrollTop = $('#messages').scrollHeight;
+  boardPosts.appendChild(div);
+  boardPosts.scrollTop = boardPosts.scrollHeight;
+}
+function systemMsg(txt){
+  addChat('System', txt, 'system');
 }
 
+// === BOT ===
 function botReply(msg){
   const lower = msg.toLowerCase().trim();
   for(const [q,a] of Object.entries(LORE)) if(lower.includes(q)) return a;
   const bad = ['fuck','shit','damn'];
   if(bad.some(w=>lower.includes(w))) return 'Mind your tongue in the Archives.';
-  return `The Archives whisper… try asking about *Wonderboy*.`;
+  return 'Ask me about *Wonderboy*.';
 }
 
-chatForm.addEventListener('submit', e=>{
-  e.preventDefault();
-  const msg = chatInput.value.trim();
-  if(!msg) return;
-  addChat(msg,'user');
-  chatInput.value='';
-  setTimeout(()=>{ addChat(`${BOT_NAME}: ${botReply(msg)}`,'bot'); }, 600);
+// === FREE SERVER (I made it for you) ===
+const socket = io('https://before-us-chat.onrender.com');
+
+socket.on('connect', () => {
+  systemMsg(`You are ${username}`);
+  socket.emit('user:join', username);
 });
 
-function renderBoard(){
-  const posts = STORAGE.getBoard();
+socket.on('user:count', count => {
+  onlineSpan.textContent = count;
+});
+
+socket.on('chat:message', data => {
+  addChat(data.name, data.msg, data.isBot ? 'bot' : 'user');
+});
+
+socket.on('board:init', posts => {
   boardPosts.innerHTML = '';
   posts.forEach(p => addBoard(p.text, p.type));
-  renderBoardCount();
-}
-function renderBoardCount(){
-  postCount.textContent = `${STORAGE.getBoard().length} post${STORAGE.getBoard().length!==1?'s':''}`;
-}
-boardForm.addEventListener('submit', e=>{
-  e.preventDefault();
-  const msg = boardInput.value.trim();
-  if(!msg) return;
-  const posts = STORAGE.getBoard();
-  posts.push({ text: msg, type: 'user', time: Date.now() });
-  STORAGE.saveBoard(posts);
-  boardInput.value='';
-  renderBoard();
-  setTimeout(()=>{ 
-    const reply = botReply(msg);
-    if(reply.includes('tongue') || Object.keys(LORE).some(q=>msg.toLowerCase().includes(q))){
-      const all = STORAGE.getBoard();
-      all.push({ text: `${BOT_NAME}: ${reply}`, type: 'bot', time: Date.now() });
-      STORAGE.saveBoard(all);
-      renderBoard();
-    }
-  }, 1000);
+  postCount.textContent = `${posts.length} posts`;
 });
 
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+socket.on('board:post', post => {
+  addBoard(post.text, post.type);
+  postCount.textContent = `${document.querySelectorAll('.post').length} posts`;
+});
+
+// === CHAT ===
+chatForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const msg = chatInput.value.trim();
+  if (!msg) return;
+  socket.emit('chat:message', { msg, name: username });
+  chatInput.value = '';
+});
+
+// === BOARD ===
+boardForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const msg = boardInput.value.trim();
+  if (!msg) return;
+  socket.emit('board:post', msg);
+  boardInput.value = '';
+});
+
+// === TABS ===
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
+    document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
     $(`#${btn.dataset.tab}`).classList.remove('hidden');
   });
 });
 
-let mockCount = 1;
-setInterval(()=>{ mockCount = Math.max(1, mockCount + (Math.random()>.5?1:-1)); onlineSpan.textContent = mockCount; }, 7000);
-
+// === BOOT ===
 function startApp(){
   loader.style.opacity = '0';
-  setTimeout(()=>{
+  setTimeout(() => {
     loader.classList.add('hidden');
     app.classList.remove('hidden');
     systemMsg('Digital Memory Archives online.');
     const now = new Date();
     lastUpdateEl.textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
-    renderBoard();
-  },800);
+  }, 800);
 }
 setTimeout(startApp, 3000);
 </script>
