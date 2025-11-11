@@ -1,359 +1,201 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>BuuHoo — Before Us Universe</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Before Us Universe</title>
 <style>
-  /* Subtle 90s chatroom + sci-fi combination:
-     muted AOL/Yahoo palette, small pixel touches, starfield */
-  :root {
-    --bg1: #08101a; /* deep space */
-    --bg2: #121827;
-    --panel: rgba(255,255,255,0.03);
-    --accent: #9bbf4f; /* hint of Gameboy color, subdued */
-    --retro: #d7b3ff;  /* tiny nod to 90s purple, used sparingly */
-    --muted: #aab6c2;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family: "Lucida Grande", Tahoma, Arial, sans-serif;background: linear-gradient(180deg,var(--bg1),var(--bg2));color:#e6eef8}
-  a{color:var(--accent)}
-  /* subtle starfield */
-  body::after{
-    content:"";position:fixed;inset:0;pointer-events:none;opacity:0.12;background-image:
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8) 0 1px, transparent 2px),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.6) 0 1px, transparent 2px);
-    mix-blend-mode:screen;z-index:0;
-  }
+  /* --- Global --- */
+  body { margin:0; font-family:'Courier New', monospace; background:#0b0b0b; color:#eee; }
+  .container { max-width:900px; margin:auto; padding:2rem; }
+  h1 { text-align:center; font-size:2.5rem; margin-bottom:1rem; }
+  .status { text-align:center; font-size:1.2rem; margin-bottom:2rem; }
 
-  /* Boot screen (keeps presence of the old design but refined) */
-  #boot-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#0b1b1f,#071018);z-index:9999}
-  .boot-card{width:420px;padding:22px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:3px solid rgba(255,255,255,0.04);text-align:center;box-shadow:0 18px 50px rgba(0,0,0,0.6)}
-  .boot-title{font-weight:900;font-size:28px;color:var(--accent);letter-spacing:2px}
-  .boot-sub{color:var(--muted);margin-top:8px;font-size:13px}
-  .loadbar{margin-top:16px;height:14px;background:#031014;border-radius:6px;border:2px solid rgba(255,255,255,0.02);overflow:hidden}
-  .loadbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#ffd88a);width:0%;animation:fill 4s linear forwards}
-  @keyframes fill{to{width:100%}}
+  /* --- Boot/Loading Screen --- */
+  #bootScreen { position:fixed; inset:0; background:#000; color:#0ff; display:flex; flex-direction:column; justify-content:center; align-items:center; font-size:1.5rem; z-index:10; }
+  #bootScreen.hidden { display:none; }
 
-  /* layout */
-  .wrap{position:relative;z-index:2;max-width:1100px;margin:32px auto;display:grid;grid-template-columns:1fr 420px;gap:18px;padding:0 16px}
-  @media (max-width:960px){.wrap{grid-template-columns:1fr;padding:12px}}
-  header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-  .brand{font-weight:900;font-size:22px;color:var(--accent);letter-spacing:1px}
-  .sub{color:var(--muted);font-size:13px}
+  /* --- Handle Prompt --- */
+  #handlePrompt { display:flex; flex-direction:column; align-items:center; margin-top:2rem; }
+  #handlePrompt input { padding:0.5rem; width:200px; margin-top:0.5rem; }
 
-  /* cards */
-  .card{background:var(--panel);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
-  .small{font-size:13px;color:var(--muted)}
+  /* --- Stream Toggle --- */
+  .stream-toggle { display:flex; justify-content:center; margin-bottom:1rem; }
+  .stream-toggle button { background:#111; color:#eee; border:1px solid #555; margin:0 0.5rem; padding:0.5rem 1rem; cursor:pointer; }
+  .stream-toggle button.active { background:#222; border-color:#0ff; color:#0ff; }
 
-  /* message board (threads) */
-  .board-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  #threads{height:320px;overflow:auto;margin-top:12px;border-radius:6px;padding:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
-  .thread{padding:10px;border-radius:6px;margin-bottom:10px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));cursor:pointer}
-  .thread h4{margin:0;color:var(--accent)}
-  .thread .meta{font-size:12px;color:var(--muted);margin-top:6px}
+  /* --- Streams --- */
+  .stream { display:none; background:#111; padding:1rem; border:1px solid #333; border-radius:5px; min-height:300px; overflow-y:auto; margin-bottom:1rem; }
+  .stream.active { display:block; }
+  .exuro { color:#aaf; }
+  .sam { color:#fa8; }
 
-  #thread-detail{height:360px;overflow:auto;margin-top:12px;border-radius:6px;padding:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
-  .reply{padding:8px;border-radius:6px;margin-bottom:8px;background:rgba(255,255,255,0.02)}
+  /* --- Glitch effect for Exuro --- */
+  .glitch { position: relative; display:inline-block; }
+  .glitch::before, .glitch::after { content: attr(data-text); position:absolute; left:0; top:0; opacity:0.7; color:#0ff; }
+  .glitch::before { left:2px; text-shadow:-1px 0 #0ff; animation: glitch-anim 2s infinite; }
+  .glitch::after { left:-2px; text-shadow:1px 0 #0ff; animation: glitch-anim2 3s infinite; }
+  @keyframes glitch-anim { 0%,20%,40%,60%,80%,100%{transform:translate(0);} 10%,30%,50%,70%,90%{transform:translate(-2px,1px);} }
+  @keyframes glitch-anim2 { 0%,20%,40%,60%,80%,100%{transform:translate(0);} 10%,30%,50%,70%,90%{transform:translate(2px,-1px);} }
 
-  /* chat */
-  #chat-messages{height:520px;overflow:auto;background:linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.02));padding:10px;border-radius:6px;border:1px solid rgba(255,255,255,0.02)}
-  .chat-line{margin-bottom:10px}
-  .meta{font-size:12px;color:var(--muted)}
+  /* --- Input Area --- */
+  .input-area { display:flex; margin-top:1rem; }
+  .input-area input { flex:1; padding:0.5rem; background:#111; border:1px solid #555; color:#eee; font-family:monospace; }
+  .input-area button { padding:0.5rem 1rem; background:#0ff; border:none; cursor:pointer; font-weight:bold; color:#000; }
 
-  input, textarea {background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:6px;color:inherit;font-family:inherit}
-  button{background:var(--accent);border:none;color:#091017;padding:8px 10px;border-radius:6px;cursor:pointer;font-weight:700}
-  .muted-note{color:var(--muted);font-size:12px;margin-top:8px}
-
-  /* faint glitching for sci-fi flavor (very subtle) */
-  @keyframes subtleGlitch {
-    0% { transform: translateX(0) }
-    25% { transform: translateX(-1px) skewX(.2deg) }
-    50% { transform: translateX(0) }
-    75% { transform: translateX(1px) skewX(-.2deg) }
-    100% { transform: translateX(0) }
-  }
-  .glitch-subtle { animation: subtleGlitch 7s infinite linear; }
-
-  /* ghost face layer (very faint) */
-  #ghost { position:fixed;inset:0;pointer-events:none;z-index:1;mix-blend-mode:screen;opacity:0;transition:opacity 240ms; background-position:center;background-size:cover }
+  /* --- Active Users List --- */
+  #activeUsers { margin-bottom:1rem; background:#111; border:1px solid #333; padding:0.5rem; border-radius:5px; }
+  #activeUsers p { margin:0.2rem 0; }
 </style>
 </head>
 <body>
-  <!-- Boot screen (keeps presence) -->
-  <div id="boot-screen" role="status" aria-live="polite">
-    <div class="boot-card">
-      <div class="boot-title">WONDERBOY</div>
-      <div class="boot-sub">Initializing archive — please wait</div>
-      <div class="loadbar"><i></i></div>
-      <div class="muted-note">A subtle archival experience — loading preview assets</div>
-    </div>
-  </div>
 
-  <!-- ghost face (subtle, toggled when needed) -->
-  <div id="ghost" aria-hidden="true"></div>
+<!-- Boot Screen -->
+<div id="bootScreen">SYSTEM BOOTING...<br><small>Loading...</small></div>
 
-  <!-- top -->
-  <div class="wrap" role="main" style="display:none" id="app">
-    <header style="grid-column: 1 / -1;">
-      <div class="brand">BuuHoo</div>
-      <div class="sub">A subtle 90s-worn interface for the Before Us Universe</div>
-      <div style="margin-left:auto" class="small">Logged in: <span id="user-handle">—</span></div>
-    </header>
+<div class="container" id="mainContent" style="display:none;">
 
-    <!-- Threads / Board -->
-    <section class="card">
-      <div class="board-top">
-        <div>
-          <h3 style="margin:0;color:var(--accent)">Message Board</h3>
-          <div class="small">Threads • Live replies • Legacy-aware</div>
-        </div>
-        <div class="small" id="online-count">Users: 0</div>
-      </div>
+<h1>Before Us Universe</h1>
+<div class="status">CURRENT STATUS: <span id="status">007</span></div>
 
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input id="thread-title" placeholder="Start a new thread (title)..." />
-        <button id="create-thread">Create</button>
-      </div>
+<!-- Active Users -->
+<div id="activeUsers"><strong>Active Users:</strong></div>
 
-      <div id="threads" aria-live="polite"></div>
+<!-- Stream Toggle -->
+<div class="stream-toggle">
+  <button id="btnExuro" class="active">EXURO</button>
+  <button id="btnSam">SAM</button>
+</div>
 
-      <div id="thread-detail"></div>
+<!-- Streams -->
+<div id="exuroStream" class="stream active exuro"></div>
+<div id="samStream" class="stream sam"></div>
 
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <textarea id="reply-text" rows="3" placeholder="Reply to thread..."></textarea>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button id="reply-btn">Reply</button>
-          <button id="close-thread" style="background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)">Close</button>
-        </div>
-      </div>
-    </section>
+<!-- Input -->
+<div class="input-area">
+  <input type="text" id="userInput" placeholder="Type message...">
+  <button id="sendBtn">POST</button>
+</div>
 
-    <!-- Chat -->
-    <aside class="card">
-      <h3 style="margin-top:0;color:var(--accent)">Live Chat</h3>
-      <div id="chat-messages"></div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input id="chat-input" placeholder="Speak into the archives..." />
-        <button id="send-chat">Send</button>
-      </div>
-      <div class="muted-note">This interface references legacy aesthetics quietly to support the book’s theme.</div>
-    </aside>
-  </div>
+</div>
 
-  <footer style="text-align:center;margin-top:22px;color:var(--muted);font-size:13px">© Patrick McDonald — Before Us Universe</footer>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <!-- Firebase + logic -->
-  <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getDatabase, ref, push, onValue, set, onDisconnect, child, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
-  // ---------- FIREBASE CONFIG: use the same project keys ----------
+<script>
+  // --- Replace with your Firebase config ---
   const firebaseConfig = {
-    apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
-    authDomain: "before-us-universe.firebaseapp.com",
-    databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
-    projectId: "before-us-universe",
-    storageBucket: "before-us-universe.appspot.com",
-    messagingSenderId: "477103463228",
-    appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
   };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+  // --- Boot sequence ---
+  setTimeout(() => {
+    document.getElementById('bootScreen').classList.add('hidden');
+    document.getElementById('mainContent').style.display = 'block';
+    askHandle();
+  }, 3000);
 
-  // ---------- minimal utilities ----------
-  const $ = (id)=>document.getElementById(id);
-  const escapeHtml = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#039;"}[c]));
-  const linkify = txt => {
-    const raw = escapeHtml(txt);
-    const urlRegex = /((https?:\/\/|www\.)[^\s]+)/g;
-    return raw.replace(urlRegex, m=>{
-      let href = m;
-      if(!/^https?:\/\//i.test(href)) href = 'https://'+href;
-      return '<a href="'+href+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(m)+'</a>';
-    });
-  };
-
-  // ---------- UI state ----------
-  let HANDLE = localStorage.getItem('buu_handle') || '';
-  if(!HANDLE){
-    HANDLE = prompt('Pick a handle for BuuHoo — keep it short:') || ('anon'+Math.floor(Math.random()*9000));
-    localStorage.setItem('buu_handle', HANDLE);
+  let userHandle = '';
+  function askHandle() {
+    userHandle = prompt("Enter your handle:");
+    if(!userHandle) userHandle = "Anonymous_" + Math.floor(Math.random()*1000);
+    setUserActive(userHandle);
   }
-  $('user-handle').textContent = HANDLE;
 
-  // show app after boot completes (and wait small extra so Firebase ready)
-  setTimeout(()=>{ $('boot-screen').style.display='none'; $('app').style.display='grid'; }, 4200);
+  // --- Active Users Tracking ---
+  const activeUsersRef = db.ref('activeUsers');
+  function setUserActive(handle) {
+    const userRef = activeUsersRef.child(handle);
+    userRef.set(true);
+    userRef.onDisconnect().remove();
+  }
 
-  // ---------- presence ----------
-  const UID = localStorage.getItem('buu_uid') || Date.now().toString();
-  localStorage.setItem('buu_uid', UID);
-  const onlineRef = ref(db, 'online/' + UID);
-  set(onlineRef, { username: HANDLE, since: Date.now() });
-  onDisconnect(onlineRef).remove();
-
-  onValue(ref(db,'online'), snap=>{
-    const cnt = snap ? snap.numChildren() : 0;
-    $('online-count').textContent = 'Users: ' + cnt;
+  activeUsersRef.on('value', snapshot => {
+    const usersDiv = document.getElementById('activeUsers');
+    usersDiv.innerHTML = "<strong>Active Users:</strong>";
+    snapshot.forEach(child => {
+      const p = document.createElement('p');
+      p.textContent = child.key;
+      usersDiv.appendChild(p);
+    });
   });
 
-  // ---------- chat & threads safe refs ----------
-  const CHAT = ref(db, 'chat');
-  const THREADS = ref(db, 'threads');
-  const THREAD_REPLIES_PATH = 'threadReplies'; // threadReplies/<threadId>/
+  // --- Stream Toggle ---
+  const btnExuro = document.getElementById('btnExuro');
+  const btnSam = document.getElementById('btnSam');
+  const exuroStream = document.getElementById('exuroStream');
+  const samStream = document.getElementById('samStream');
 
-  // ---------- try to detect legacy stored board nodes and expose them (non-destructive)
-  // We will attempt to render from whichever legacy path exists: threads -> posts -> board
-  async function detectLegacyThreads(){
-    // check common keys
-    const root = ref(db);
-    const candidates = ['threads','posts','board','messageBoard','messages'];
-    for(const key of candidates){
-      const snap = await get(child(root, key));
-      if(snap && snap.exists()){
-        // if it's threads structure use it; if it's posts, map to threads view
-        if(key === 'threads') return { mode:'threads', path:key };
-        if(key === 'posts' || key === 'board' || key === 'messages') return { mode:'legacy', path:key };
-      }
+  btnExuro.addEventListener('click', () => {
+    exuroStream.classList.add('active');
+    samStream.classList.remove('active');
+    btnExuro.classList.add('active');
+    btnSam.classList.remove('active');
+  });
+  btnSam.addEventListener('click', () => {
+    samStream.classList.add('active');
+    exuroStream.classList.remove('active');
+    btnSam.classList.add('active');
+    btnExuro.classList.remove('active');
+  });
+
+  // --- Status Counter ---
+  const statusEl = document.getElementById('status');
+  setInterval(() => { statusEl.textContent = String(Math.floor(Math.random()*999+1)).padStart(3,'0'); }, 10000);
+
+  // --- Chat Messaging ---
+  const input = document.getElementById('userInput');
+  const sendBtn = document.getElementById('sendBtn');
+
+  const messagesRef = db.ref('messages');
+
+  sendBtn.addEventListener('click', postMessage);
+  input.addEventListener('keypress', (e)=>{ if(e.key==='Enter') postMessage(); });
+
+  function postMessage(){
+    const text = input.value.trim();
+    if(!text) return;
+    const activeStream = exuroStream.classList.contains('active') ? 'exuro' : 'sam';
+    messagesRef.push({
+      handle: userHandle,
+      text: text,
+      stream: activeStream,
+      timestamp: Date.now()
+    });
+    input.value = '';
+  }
+
+  // --- Listen for new messages ---
+  messagesRef.on('child_added', snapshot=>{
+    const data = snapshot.val();
+    const p = document.createElement('p');
+    if(data.stream==='exuro'){
+      p.className='exuro glitch';
+      p.setAttribute('data-text', `[EXURO][${data.handle}]: ${data.text}`);
+      p.textContent = `[EXURO][${data.handle}]: ${data.text}`;
+      exuroStream.appendChild(p);
+      exuroStream.scrollTop = exuroStream.scrollHeight;
+    } else {
+      p.className='sam';
+      p.textContent = `[SAM][${data.handle}]: ${data.text}`;
+      samStream.appendChild(p);
+      samStream.scrollTop = samStream.scrollHeight;
     }
-    return { mode:'threads', path:'threads' }; // default
-  }
-
-  // ---------- render helpers ----------
-  function renderChat(snapshot){
-    const el = $('chat-messages');
-    el.innerHTML = '';
-    snapshot.forEach(child=>{
-      const m = child.val();
-      const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
-      const d = document.createElement('div'); d.className='chat-line';
-      d.innerHTML = `<div class="meta">[${time}] <b>${escapeHtml(m.username)}</b></div><div>${linkify(m.text)}</div>`;
-      el.appendChild(d);
-    });
-    el.scrollTop = el.scrollHeight;
-  }
-
-  function renderThreads(snapshot){
-    const el = $('threads'); el.innerHTML = '';
-    snapshot.forEach(child=>{
-      const t = child.val(); const id = child.key;
-      const item = document.createElement('div'); item.className='thread';
-      item.innerHTML = `<h4>${escapeHtml(t.title||'(untitled)')}</h4><div class="meta">Started by ${escapeHtml(t.username||'unknown')} • ${new Date(t.timestamp||0).toLocaleDateString()}</div>`;
-      item.addEventListener('click', ()=> openThread(id));
-      el.appendChild(item);
-    });
-  }
-
-  async function renderThreadDetail(threadId){
-    const container = $('thread-detail'); container.innerHTML = '';
-    if(!threadId){ container.innerHTML = '<div class="small">Open a thread to view replies.</div>'; return; }
-    // fetch meta
-    const metaSnap = await get(child(ref(db), 'threads/'+threadId));
-    if(!metaSnap.exists()){ container.innerHTML = '<div class="small">Thread not found (it may be legacy).</div>'; return; }
-    const meta = metaSnap.val();
-    const head = document.createElement('div'); head.innerHTML = `<div style="font-weight:700;color:var(--accent)">${escapeHtml(meta.title)}</div><div class="small">Started by ${escapeHtml(meta.username)}</div><hr/>`;
-    container.appendChild(head);
-    // fetch replies under threadReplies/<threadId>
-    const repliesSnap = await get(child(ref(db), THREAD_REPLIES_PATH + '/' + threadId));
-    if(!repliesSnap.exists()){ container.appendChild(document.createElement('div')); return; }
-    repliesSnap.forEach(r=>{
-      const rv = r.val();
-      const el = document.createElement('div'); el.className='reply';
-      el.innerHTML = `<div class="meta"><b>${escapeHtml(rv.username)}</b> • ${new Date(rv.timestamp).toLocaleString()}</div><div style="margin-top:6px">${linkify(rv.text)}</div>`;
-      container.appendChild(el);
-    });
-    container.scrollTop = container.scrollHeight;
-  }
-
-  // ---------- open thread state ----------
-  let SELECTED_THREAD = null;
-  window.openThread = async function(id){
-    SELECTED_THREAD = id;
-    await renderThreadDetail(id);
-  };
-
-  // ---------- event listeners / actions ----------
-  $('create-thread').addEventListener('click', async ()=>{
-    const title = $('thread-title').value.trim();
-    if(!title) return alert('Enter a title.');
-    const pushRef = await push(THREADS, { title, username: HANDLE, timestamp: Date.now() });
-    $('thread-title').value = '';
-    openThread(pushRef.key);
   });
 
-  $('reply-btn').addEventListener('click', async ()=>{
-    const txt = $('reply-text').value.trim();
-    if(!txt) return alert('Reply empty.');
-    if(!SELECTED_THREAD) return alert('Open thread first.');
-    await push(ref(db, THREAD_REPLIES_PATH + '/' + SELECTED_THREAD), { username: HANDLE, text: txt, timestamp: Date.now() });
-    $('reply-text').value = '';
-    await renderThreadDetail(SELECTED_THREAD);
-  });
+</script>
 
-  $('close-thread').addEventListener('click', ()=>{ SELECTED_THREAD = null; renderThreadDetail(null); });
-
-  $('send-chat').addEventListener('click', async ()=>{
-    const t = $('chat-input').value.trim();
-    if(!t) return;
-    await push(CHAT, { username: HANDLE, text: t, timestamp: Date.now() });
-    $('chat-input').value = '';
-  });
-
-  // allow Enter to send chat
-  $('chat-input').addEventListener('keypress', (e)=>{ if(e.key==='Enter') $('send-chat').click(); });
-
-  // ---------- subscriptions ----------
-  // chat subscribe
-  onValue(CHAT, snap => renderChat(snap));
-
-  // threads subscribe
-  // Use threads if present; else fallback to legacy paths
-  (async ()=>{
-    const detected = await detectLegacyThreads();
-    if(detected.mode === 'threads'){
-      onValue(THREADS, snap => renderThreads(snap));
-    } else if(detected.mode === 'legacy'){
-      // map legacy structure to threads listing for viewing only (non-destructive)
-      const legacySnap = await get(child(ref(db), detected.path));
-      const list = $('threads'); list.innerHTML = '';
-      legacySnap.forEach(child=>{
-        const key = child.key; const v = child.val();
-        const item = document.createElement('div'); item.className='thread';
-        // try to map common fields
-        const title = v.title || v.subject || (v.username? 'Post by '+v.username :'Legacy item');
-        item.innerHTML = `<h4>${escapeHtml(title)}</h4><div class="meta">Legacy • ${new Date(v.timestamp||0).toLocaleDateString()}</div>`;
-        // open shows full content mapped as a single "thread"
-        item.addEventListener('click', async ()=>{
-          SELECTED_THREAD = null;
-          const container = $('thread-detail'); container.innerHTML = '';
-          const header = document.createElement('div'); header.innerHTML = `<div style="font-weight:700;color:var(--accent)">${escapeHtml(title)}</div><div class="small">Legacy item</div><hr/>`;
-          container.appendChild(header);
-          // show full body
-          const bodyDiv = document.createElement('div'); bodyDiv.innerHTML = `<div>${linkify(v.content || v.text || '')}</div><div class="small">Posted by ${escapeHtml(v.username||'unknown')}</div>`;
-          container.appendChild(bodyDiv);
-        });
-        list.appendChild(item);
-      });
-      // also keep listeners for future threads creation path
-      onValue(THREADS, snap => renderThreads(snap));
-    }
-  })();
-
-  // ensure nodes exist (no-op)
-  set(ref(db,'_meta/initialized'), true);
-
-  // ghost subtle flicker when someone posts a BuuHoo-system message (not intrusive)
-  onValue(CHAT, snap=>{
-    // look for recent NTD or system markers (this is a soft visual cue)
-    let show=false;
-    snap.forEach(child=>{
-      const m = child.val();
-      if(m && typeof m.text === 'string' && m.text.includes('🜂')) show=true;
-    });
-    const ghost = $('ghost');
-    if(show){ ghost.style.opacity = '0.06'; setTimeout(()=>ghost.style.opacity='0',1400); }
-  });
+</body>
+</html>
 
   </script>
 </body>
