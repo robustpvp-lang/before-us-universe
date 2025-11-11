@@ -114,8 +114,13 @@ const firebaseConfig = {
   appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+// Initialize Firebase (with error handling)
+try {
+  firebase.initializeApp(firebaseConfig);
+  console.log('Firebase initialized');
+} catch (e) {
+  console.error('Firebase init failed:', e);
+}
 const db = firebase.database();
 const auth = firebase.auth();
 
@@ -135,16 +140,18 @@ function botReply(msg) {
 }
 
 // ==== USERNAME & ANONYMOUS AUTH ====
-let username = null;
-auth.signInAnonymously().catch(e => console.error('Auth failed:', e));
+let username = localStorage.getItem('beforeus_username') || null;
+auth.signInAnonymously().then(() => console.log('Auth success')).catch(e => console.error('Auth failed:', e));
 auth.onAuthStateChanged(user => {
   if (user) {
-    username = localStorage.getItem('beforeus_username') || prompt('Choose your name:') || 'Guest';
-    localStorage.setItem('beforeus_username', username);
+    if (!username) {
+      username = prompt('Choose your name:') || 'Guest';
+      localStorage.setItem('beforeus_username', username);
+    }
     user.updateProfile({ displayName: username });
-    console.log('Auth success, username:', username);  // Debug log
+    console.log('Auth success, username:', username);
   } else {
-    console.error('No user - retrying auth...');
+    console.error('No user - retrying...');
     auth.signInAnonymously();
   }
 });
@@ -175,10 +182,10 @@ function addBoard(txt, type='user') {
 }
 function systemMsg(txt) { addChat('System', txt, 'system'); }
 
-// ==== RATE LIMIT (1 msg/sec) ====
+// ==== RATE LIMIT ====
 let lastChatTime = 0, lastBoardTime = 0;
 
-// ==== CHAT (REAL-TIME) ====
+// ==== CHAT ====
 const chatRef = db.ref('chat');
 chatRef.on('child_added', snap => {
   const d = snap.val();
@@ -187,29 +194,19 @@ chatRef.on('child_added', snap => {
 chatForm.addEventListener('submit', e => {
   e.preventDefault();
   const now = Date.now();
-  if (now - lastChatTime < 1000) { systemMsg('Slow down! 1 msg/sec.'); return; }
+  if (now - lastChatTime < 1000) { systemMsg('Slow down!'); return; }
   const msg = chatInput.value.trim();
-  if (!msg || !username) { systemMsg('Login first!'); return; }
+  if (!msg || !username) { systemMsg('Name required!'); return; }
   lastChatTime = now;
-  chatRef.push({
-    name: username,
-    msg,
-    isBot: false,
-    timestamp: firebase.database.ServerValue.TIMESTAMP
-  }).catch(e => console.error('Chat push failed:', e));
+  chatRef.push({ name: username, msg, isBot: false, timestamp: firebase.database.ServerValue.TIMESTAMP });
   chatInput.value = '';
   setTimeout(() => {
     const reply = botReply(msg);
-    chatRef.push({
-      name: BOT_NAME,
-      msg: reply,
-      isBot: true,
-      timestamp: firebase.database.ServerValue.TIMESTAMP
-    }).catch(e => console.error('Bot reply failed:', e));
+    chatRef.push({ name: BOT_NAME, msg: reply, isBot: true, timestamp: firebase.database.ServerValue.TIMESTAMP });
   }, 800);
 });
 
-// ==== BOARD (LAST 10) ====
+// ==== BOARD ====
 const boardRef = db.ref('board').limitToLast(10);
 boardRef.on('child_added', snap => {
   const d = snap.val();
@@ -218,31 +215,21 @@ boardRef.on('child_added', snap => {
 boardForm.addEventListener('submit', e => {
   e.preventDefault();
   const now = Date.now();
-  if (now - lastBoardTime < 1000) { systemMsg('Slow down! 1 post/sec.'); return; }
+  if (now - lastBoardTime < 1000) { systemMsg('Slow down!'); return; }
   const msg = boardInput.value.trim();
-  if (!msg || !username) { systemMsg('Login first!'); return; }
+  if (!msg || !username) { systemMsg('Name required!'); return; }
   lastBoardTime = now;
-  boardRef.push({
-    name: username,
-    msg,
-    isBot: false,
-    timestamp: firebase.database.ServerValue.TIMESTAMP
-  }).catch(e => console.error('Board push failed:', e));
+  boardRef.push({ name: username, msg, isBot: false, timestamp: firebase.database.ServerValue.TIMESTAMP });
   boardInput.value = '';
   setTimeout(() => {
     const reply = botReply(msg);
     if (reply.includes('tongue') || Object.keys(LORE).some(q => msg.toLowerCase().includes(q))) {
-      boardRef.push({
-        name: BOT_NAME,
-        msg: reply,
-        isBot: true,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-      }).catch(e => console.error('Bot board reply failed:', e));
+      boardRef.push({ name: BOT_NAME, msg: reply, isBot: true, timestamp: firebase.database.ServerValue.TIMESTAMP });
     }
   }, 1200);
 });
 
-// ==== ONLINE COUNTER ====
+// ==== ONLINE ====
 const onlineRef = db.ref('online');
 const userRef = onlineRef.push(true);
 onlineRef.on('value', snap => onlineSpan.textContent = snap.numChildren() || 0);
@@ -258,8 +245,9 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-// ==== BOOT SEQUENCE ====
+// ==== BOOT (FORCE FADE AFTER 4s IF STUCK) ====
 function startApp() {
+  console.log('Boot started');
   const bar = $('#progress-bar');
   let progress = 0;
   const interval = setInterval(() => {
@@ -274,6 +262,7 @@ function startApp() {
       setTimeout(() => {
         loader.classList.add('hidden');
         app.classList.remove('hidden');
+        console.log('App loaded');
         if (username) systemMsg(`Welcome, ${username}. Archives online.`);
         else systemMsg('Archives online. Choose a name to chat.');
         const now = new Date();
@@ -281,8 +270,17 @@ function startApp() {
       }, 300);
     }
   }, 90);
+  // Fallback: Force load after 4s if stuck
+  setTimeout(() => {
+    if (loader.style.display !== 'none') {
+      console.log('Force boot');
+      loader.classList.add('hidden');
+      app.classList.remove('hidden');
+      systemMsg('Force boot - Archives online.');
+    }
+  }, 4000);
 }
-setTimeout(startApp, 1000);
+startApp();  // Run immediately
 </script>
 </body>
 </html>
