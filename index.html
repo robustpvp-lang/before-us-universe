@@ -1,103 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Before Us Universe — BUU</title>
-
 <style>
-/* -------------------- Basic & 90s aesthetic -------------------- */
 :root{
-  --bg:#070709;
-  --panel:#0f1112;
-  --muted:#cfdff0;
-  --accent:#00e6ff;
-  --exuro:#aaf;
-  --sam:#ffb470;
-  --nora:#ff77ff;
-  --nero:#77ffff;
-  --loktal:#88ff44;
-  --pilgrim:#ff8844;
-  --comp-bg:#0b0b0b;
+  --bg:#070709;--panel:#0f1112;--muted:#cfdff0;--accent:#00e6ff;
+  --exuro:#aaf;--sam:#ffb470;--comp-bg:#0b0b0b;
 }
-html,body{height:100%;margin:0;background:linear-gradient(180deg,#050507 0%, #0b0b0b 100%);color:var(--muted);font-family: "Courier New", monospace;}
-a{color:var(--accent);}
-
-/* container */
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#050507 0%,#0b0b0b 100%);color:var(--muted);font-family:"Courier New",monospace;}
+a{color:var(--accent);text-decoration:none;}
 .container{max-width:1200px;margin:18px auto;padding:18px;display:flex;flex-direction:column;gap:12px;}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px}
 header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .topbar{display:flex;gap:8px;align-items:center}
 .links{display:flex;gap:8px}
-.links a{display:inline-block;padding:6px 10px;border:1px solid rgba(0,230,255,0.12);border-radius:4px;text-decoration:none;color:var(--accent);background:transparent;font-size:0.9rem}
+.links a{display:inline-block;padding:6px 10px;border:1px solid rgba(0,230,255,0.12);border-radius:4px;color:var(--accent);background:transparent;font-size:0.9rem}
 .status{font-size:0.9rem;color:#9fb8c9}
-
-/* layout */
 .maingrid{display:flex;gap:12px;align-items:stretch}
 .leftcol{flex:2;display:flex;flex-direction:column;gap:12px;min-width:340px;}
 .rightcol{flex:1;min-width:260px;display:flex;flex-direction:column;gap:12px}
-
-/* streams / toggles */
-.stream-toggle{display:flex;gap:8px;justify-content:center;margin-bottom:6px;flex-wrap:wrap;}
+.stream-toggle{display:flex;gap:8px;justify-content:center;margin-bottom:6px}
 .btn{background:transparent;border:1px solid #222;color:var(--muted);padding:6px 10px;border-radius:4px;cursor:pointer}
 .btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,230,255,0.03)}
-.panel{background:var(--panel);border:1px solid #1e1f21;border-radius:6px;padding:12px;box-shadow: 0 0 0 1px rgba(255,255,255,0.01) inset}
-
-/* stream panes */
+.panel{background:var(--panel);border:1px solid #1e1f21;border-radius:6px;padding:12px;box-shadow:0 0 0 1px rgba(255,255,255,0.01) inset}
 .stream{min-height:260px;overflow:auto;padding:8px;white-space:pre-wrap;font-size:0.95rem}
 .stream p{margin:6px 0;padding:6px;border-radius:4px}
 .stream .meta{font-size:0.8rem;color:#b9d3e0}
-
-/* channel colors */
 .exuro p{color:var(--exuro)}
 .sam p{color:var(--sam)}
-.nora p{color:var(--nora)}
-.nero p{color:var(--nero)}
-.loktal p{color:var(--loktal)}
-.pilgrim p{color:var(--pilgrim)}
-
-/* glitch visuals */
 .glitch{position:relative;display:inline-block}
 .glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;opacity:0.7;color:var(--accent)}
 .glitch::before{left:2px;text-shadow:-1px 0 var(--accent);animation:glitch1 2s infinite}
 .glitch::after{left:-2px;text-shadow:1px 0 var(--accent);animation:glitch2 3s infinite}
 @keyframes glitch1{0%,20%,40%,60%,80%,100%{transform:translate(0);}10%,30%,50%,70%,90%{transform:translate(-2px,1px)}}
 @keyframes glitch2{0%,20%,40%,60%,80%,100%{transform:translate(0);}10%,30%,50%,70%,90%{transform:translate(2px,-1px)}}
-
-/* companion */
 .companion{background:#0b0e11;border:1px solid #1f2326;border-radius:6px;padding:10px;min-height:280px;overflow:auto}
 .companion p{margin:6px 0;font-size:0.92rem;color:var(--accent)}
-
-/* active users */
 #activeUsers{background:#0b0e11;border:1px solid #1f2326;border-radius:6px;padding:8px;max-height:140px;overflow:auto}
 #activeUsers p{margin:6px 0;color:#bfe8ff}
-
-/* input area */
 .input-area{display:flex;gap:8px;align-items:center;margin-top:6px}
-.input-area input[type="text"], .input-area textarea, #handleField, #boardMsg{background:#0b0e11;border:1px solid #222;padding:8px;border-radius:4px;color:var(--muted);width:100%;font-family:monospace}
+.input-area input[type="text"],#handleField,#boardMsg{background:#0b0e11;border:1px solid #222;padding:8px;border-radius:4px;color:var(--muted);width:100%;font-family:monospace}
 .sendBtn{padding:8px 12px;border-radius:4px;background:var(--accent);color:#000;border:none;cursor:pointer;font-weight:700}
-
-/* board embed */
 #boardFrame{width:100%;height:500px;border:1px solid #222;border-radius:6px;background:#060708}
-
-/* boot full screen */
 #bootScreen{position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--accent);font-family:monospace}
 .boot-line{white-space:pre;font-size:1rem;margin:2px 0;opacity:0.95}
 .boot-progress{margin-top:10px;border:1px solid rgba(255,255,255,0.03);padding:6px;width:60%;border-radius:4px;color:#bfe8ff}
-
-/* small text */
 .small{font-size:0.85rem;color:#9fb8c9}
-
-/* responsive */
-@media (max-width:980px){
-  .maingrid{flex-direction:column}
-  #boardFrame{height:320px}
-}
+@media(max-width:980px){.maingrid{flex-direction:column}#boardFrame{height:320px}}
 </style>
 </head>
 <body>
-
-<!-- BOOT SCREEN -->
 <div id="bootScreen" aria-hidden="false">
   <div class="boot-line" id="bootLineA"></div>
   <div class="boot-line" id="bootLineB"></div>
@@ -106,115 +60,98 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 </div>
 
 <div class="container" id="app" style="display:none;">
-  <header>
-    <div style="display:flex;align-items:center;gap:12px">
-      <h1>Before Us Universe</h1>
-      <div class="small">— companion site to the book</div>
+<header>
+  <div style="display:flex;align-items:center;gap:12px">
+    <h1>Before Us Universe</h1>
+    <div class="small">— companion site to the book</div>
+  </div>
+  <div class="topbar">
+    <div class="status">CHANNEL ACTIVITY: <span id="channelActivity">007</span></div>
+    <div class="links" aria-hidden="false">
+      <a href="https://www.youtube.com/@Patrickauthor" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener">Reedsy</a>
+      <a href="https://web.archive.org/" target="_blank" rel="noopener">Web Archive</a>
     </div>
+  </div>
+</header>
 
-    <div class="topbar">
-      <div class="status">CHANNEL ACTIVITY: <span id="channelActivity">007</span></div>
-      <div class="links" aria-hidden="false">
-        <a href="https://www.youtube.com/@Patrickauthor" target="_blank" rel="noopener">YouTube</a>
-        <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener">Reedsy</a>
-        <a href="https://web.archive.org/" target="_blank" rel="noopener">Web Archive</a>
-      </div>
+<div class="maingrid">
+<div class="leftcol">
+<div class="panel">
+  <div id="loginPanel">
+    <div class="small">Enter a handle to join the BUU chatroom. This creates a temporary session (no password required).</div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input id="handleField" placeholder="Choose a handle (e.g. CommanderSam)">
+      <button id="enterBtn" class="sendBtn">JOIN</button>
     </div>
-  </header>
-
-  <div class="maingrid">
-    <div class="leftcol">
-      <div class="panel">
-        <!-- Login / handle entry (temporary handle mode) -->
-        <div id="loginPanel">
-          <div class="small">Enter a handle to join the BUU chatroom. This creates a temporary session (no password required).</div>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <input id="handleField" placeholder="Choose a handle (e.g. CommanderSam)" />
-            <button id="enterBtn" class="sendBtn">JOIN</button>
-          </div>
-          <div id="handleHint" class="small" style="margin-top:6px;color:#9fb8c9">Your handle will appear in the room & active list until you close the tab.</div>
-        </div>
-      </div>
-
-      <!-- Streams -->
-      <div class="panel" style="margin-top:8px">
-        <div class="stream-toggle">
-          <button class="btn active" data-channel="exuro">EXURO</button>
-          <button class="btn" data-channel="sam">SAM</button>
-          <button class="btn" data-channel="nora">NORA</button>
-          <button class="btn" data-channel="nero">NERO</button>
-          <button class="btn" data-channel="loktal">LOKTAL</button>
-          <button class="btn" data-channel="pilgrim">PILGRIM</button>
-          <div style="flex:1"></div>
-          <button id="openBoardBtn" class="btn">Open Message Board</button>
-        </div>
-
-        <!-- Stream panels per channel -->
-        <div id="exuroStream" class="stream exuro panel" style="display:block"></div>
-        <div id="samStream" class="stream sam panel" style="display:none"></div>
-        <div id="noraStream" class="stream nora panel" style="display:none"></div>
-        <div id="neroStream" class="stream nero panel" style="display:none"></div>
-        <div id="loktalStream" class="stream loktal panel" style="display:none"></div>
-        <div id="pilgrimStream" class="stream pilgrim panel" style="display:none"></div>
-
-        <div class="input-area" style="margin-top:10px">
-          <input type="text" id="chatInput" placeholder="Write to current stream..." />
-          <button id="sendChat" class="sendBtn">POST</button>
-        </div>
-        <div class="small" style="margin-top:8px">Messages self-expire after 24 hours (auto-pruned).</div>
-      </div>
-
-      <!-- Message board embed -->
-      <div class="panel" style="margin-top:8px">
-        <div class="small" style="margin-bottom:6px">Community message board (ProBoards) — full site moderation and threads there.</div>
-        <iframe 
-          src="https://tokillamockinggoblin.boards.net/page/external-widget" 
-          width="100%" 
-          height="500px" 
-          frameborder="0" 
-          scrolling="auto">
-        </iframe>
-        <div style="margin-top:8px">
-          <div class="small">Quick local post (also pushes a plain message to the BUU 'board' node):</div>
-          <div style="display:flex;gap:8px;margin-top:6px">
-            <input id="boardTitle" placeholder="Title" style="width:28%" />
-            <input id="boardMsg" placeholder="Short post (echoes to DB)" style="width:60%" />
-            <button id="postBoard" class="sendBtn">POST</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="rightcol">
-      <!-- Companion / lore -->
-      <div class="panel companion">
-        <strong style="color:#bfe8ff">Companion Log</strong>
-        <div id="companionLog" style="margin-top:8px"></div>
-      </div>
-
-      <!-- Active users -->
-      <div class="panel">
-        <strong>Active Users</strong>
-        <div id="activeUsers"></div>
-      </div>
-
-      <!-- Compact recent logs -->
-      <div class="panel">
-        <strong>Recent activity</strong>
-        <div id="recentActivity" style="margin-top:8px"></div>
-      </div>
-    </div>
+    <div id="handleHint" class="small" style="margin-top:6px;color:#9fb8c9">Your handle will appear in the room & active list until you close the tab.</div>
   </div>
 </div>
 
-<!-- Firebase v9 compat CDN -->
+<div class="panel" style="margin-top:8px">
+  <div class="stream-toggle">
+    <button class="btn active" data-channel="exuro">EXURO</button>
+    <button class="btn" data-channel="sam">SAM</button>
+    <button class="btn" data-channel="nora">NORA</button>
+    <button class="btn" data-channel="nero">NERO</button>
+    <button class="btn" data-channel="loktal">LOKTAL</button>
+    <button class="btn" data-channel="pilgrim">Pilgrim</button>
+    <div style="flex:1"></div>
+    <button id="openBoardBtn" class="btn">Open Message Board</button>
+  </div>
+  <div id="streamsContainer">
+    <div id="exuro" class="stream exuro panel" style="display:block"></div>
+    <div id="sam" class="stream sam panel" style="display:none"></div>
+    <div id="nora" class="stream panel" style="display:none"></div>
+    <div id="nero" class="stream panel" style="display:none"></div>
+    <div id="loktal" class="stream panel" style="display:none"></div>
+    <div id="pilgrim" class="stream panel" style="display:none"></div>
+  </div>
+  <div class="input-area" style="margin-top:10px">
+    <input type="text" id="chatInput" placeholder="Write to current stream...">
+    <button id="sendChat" class="sendBtn">POST</button>
+  </div>
+  <div class="small" style="margin-top:8px">Messages self-expire after 24 hours (auto-pruned).</div>
+</div>
+
+<div class="panel" style="margin-top:8px">
+  <div class="small" style="margin-bottom:6px">Community message board (ProBoards)</div>
+  <iframe id="boardFrame" src="https://tokillamockinggoblin.boards.net/page/external-widget" title="ProBoards message board"></iframe>
+  <div style="margin-top:8px">
+    <div class="small">Quick local post:</div>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <input id="boardTitle" placeholder="Title" style="width:28%">
+      <input id="boardMsg" placeholder="Short post (echoes to DB)" style="width:60%">
+      <button id="postBoard" class="sendBtn">POST</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="rightcol">
+<div class="panel companion">
+  <strong style="color:#bfe8ff">Companion Log</strong>
+  <div id="companionLog" style="margin-top:8px"></div>
+</div>
+
+<div class="panel">
+  <strong>Active Users</strong>
+  <div id="activeUsers"></div>
+</div>
+
+<div class="panel">
+  <strong>Recent activity</strong>
+  <div id="recentActivity" style="margin-top:8px"></div>
+</div>
+</div>
+</div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// =========================
-// Firebase configuration
-// =========================
+// ---------- Firebase config ----------
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
   authDomain: "before-us-universe.firebaseapp.com",
@@ -227,7 +164,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// -------------------- UI References --------------------
+// ---------- UI references ----------
 const bootScreen = document.getElementById('bootScreen');
 const appContainer = document.getElementById('app');
 const bootLineA = document.getElementById('bootLineA');
@@ -244,31 +181,15 @@ const recentActivity = document.getElementById('recentActivity');
 const channelActivity = document.getElementById('channelActivity');
 const chatInput = document.getElementById('chatInput');
 const sendChat = document.getElementById('sendChat');
-const openBoardBtn = document.getElementById('openBoardBtn');
+const streamsContainer = document.getElementById('streamsContainer');
+const btns = document.querySelectorAll('.stream-toggle .btn');
 
 const boardTitle = document.getElementById('boardTitle');
 const boardMsg = document.getElementById('boardMsg');
 const postBoard = document.getElementById('postBoard');
+const openBoardBtn = document.getElementById('openBoardBtn');
 
-const channelButtons = document.querySelectorAll('.stream-toggle .btn');
-const channels = ["exuro","sam","nora","nero","loktal","pilgrim"];
-let currentChannel = "exuro";
-
-// stream panel refs
-const streamPanels = {
-  exuro: document.getElementById('exuroStream'),
-  sam: document.getElementById('samStream'),
-  nora: document.getElementById('noraStream'),
-  nero: document.getElementById('neroStream'),
-  loktal: document.getElementById('loktalStream'),
-  pilgrim: document.getElementById('pilgrimStream')
-};
-
-// presence
-let handle = null;
-let presenceRef = null;
-
-// -------------------- Boot Animation --------------------
+// ---------- Boot animation ----------
 const bootLines = [
   "SYSTEM BOOT: Before Us Universe kernel v0.9",
   "Initializing Lux Fleet telemetry modules...",
@@ -281,156 +202,105 @@ const bootLines = [
 ];
 
 function animateBoot(i=0){
-  if(i >= bootLines.length){
-    let pct=0;
-    const timer=setInterval(()=>{
-      pct+=6+Math.floor(Math.random()*6);
-      if(pct>=100){pct=100; clearInterval(timer); finishBoot();}
-      bootProgress.textContent=`[${"=".repeat(Math.floor(pct/2))}${".".repeat(50-Math.floor(pct/2))}] ${pct}%`;
-    },120);
+  if(i>=bootLines.length){
+    let pct=0; const timer = setInterval(()=>{pct+=6+Math.floor(Math.random()*6); if(pct>=100){pct=100; clearInterval(timer); finishBoot();} bootProgress.textContent=`[${"=".repeat(Math.floor(pct/2))}${".".repeat(50-Math.floor(pct/2))}] ${pct}%`;},120);
     return;
   }
-  const target=(i%3===0)?bootLineA:(i%3===1?bootLineB:bootLineC);
+  const target = (i%3===0)?bootLineA:(i%3===1)?bootLineB:bootLineC;
   target.textContent="";
-  const chars=bootLines[i].split('');
+  const chars = bootLines[i].split('');
   let j=0;
-  const it=setInterval(()=>{
-    target.textContent+=chars[j++];
-    if(j>=chars.length){ clearInterval(it); setTimeout(()=>animateBoot(i+1),200+Math.random()*300);}
-  },24+Math.random()*18);
+  const it = setInterval(()=>{target.textContent+=chars[j++]; if(j>=chars.length){clearInterval(it); setTimeout(()=>animateBoot(i+1),200+Math.random()*300);}},24+Math.random()*18);
 }
-function finishBoot(){ bootScreen.style.display="none"; appContainer.style.display="block";}
+function finishBoot(){bootScreen.style.display='none'; appContainer.style.display='block';}
 animateBoot();
 
-// -------------------- Handle Login --------------------
+// ---------- Handle login ----------
+let handle=null; let presenceRef=null; let currentChannel='exuro';
 enterBtn.addEventListener('click',joinWithHandle);
-handleField.addEventListener('keypress',(e)=>{if(e.key==='Enter') joinWithHandle();});
+handleField.addEventListener('keypress', e=>{if(e.key==='Enter') joinWithHandle();});
 
-function sanitizeName(n){ return String(n).replace(/[^a-zA-Z0-9_\- ]/g,'').slice(0,32).trim() || ("Anon"+Math.floor(Math.random()*9999)); }
+function sanitizeName(n){return String(n).replace(/[^a-zA-Z0-9_\- ]/g,'').slice(0,32).trim()||("Anon"+Math.floor(Math.random()*9999));}
 function joinWithHandle(){
-  handle = sanitizeName(handleField.value);
+  handle = sanitizeName(handleField.value||'');
   loginPanel.style.display='none';
   addSystemActivity(`Handle set: ${handle}`);
   presenceRef = db.ref('online/' + handle);
-  presenceRef.set(true);
-  presenceRef.onDisconnect().remove();
-  setupListeners();
-  startCompanionLore();
+  presenceRef.set(true); presenceRef.onDisconnect().remove();
+  setupListeners(); startCompanionLore();
   pushActivity(`[${handle}] joined the room`);
 }
 
-// -------------------- Channel toggle --------------------
-channelButtons.forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    channelButtons.forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const ch = btn.dataset.channel;
-    channels.forEach(c=>streamPanels[c].style.display=(c===ch?'block':'none'));
-    currentChannel = ch;
-  });
-});
+// ---------- Streams toggle ----------
+btns.forEach(b=>b.addEventListener('click',()=>{btns.forEach(x=>x.classList.remove('active'));b.classList.add('active'); switchChannel(b.dataset.channel);} ));
+function switchChannel(ch){
+  currentChannel = ch;
+  streamsContainer.querySelectorAll('.stream').forEach(d=>{d.style.display=(d.id===ch)?'block':'none';});
+}
 
-// -------------------- Chat / Board --------------------
+// ---------- DB refs ----------
 const chatRef = db.ref('chat');
 const boardRef = db.ref('board');
 const onlineRef = db.ref('online');
 
-sendChat.addEventListener('click',sendCurrentChat);
-chatInput.addEventListener('keypress',e=>{if(e.key==='Enter') sendCurrentChat();});
+// ---------- Chat functions ----------
+function pushChat(msg,ch){const payload={name:handle||'Anon',msg:String(msg).slice(0,500),ts:Date.now(),channel:ch||currentChannel}; chatRef.push(payload);}
+function pushBoard(title,msg){const payload={name:handle||'Anon',title:String(title).slice(0,140),msg:String(msg).slice(0,1000),ts:Date.now()}; boardRef.push(payload);}
+sendChat.addEventListener('click',doPostChat);
+chatInput.addEventListener('keypress',e=>{if(e.key==='Enter') doPostChat();});
+function doPostChat(){const txt=chatInput.value.trim();if(!txt) return; pushChat(txt,currentChannel); chatInput.value='';}
 
-function sendCurrentChat(){
-  const msg = chatInput.value.trim();
-  if(!msg) return;
-  const data={name:handle,msg:msg,ts:Date.now()};
-  chatRef.child(currentChannel).push(data);
-  chatInput.value='';
-}
+// ---------- Board quick post ----------
+postBoard.addEventListener('click',()=>{
+  const t=boardTitle.value.trim()||'Untitled'; const m=boardMsg.value.trim(); if(!m) return;
+  pushBoard(t,m); boardTitle.value=''; boardMsg.value=''; addSystemActivity(`Posted local board echo: "${t}"`);
+});
 
-// realtime listeners
+// ---------- Listeners ----------
 function setupListeners(){
-  channels.forEach(ch=>{
-    chatRef.child(ch).on('child_added',snap=>{
-      const d = snap.val();
-      const p = document.createElement('p');
-      p.innerHTML=`<span class="meta">[${new Date(d.ts).toLocaleTimeString()}] ${d.name}:</span> ${d.msg}`;
-      streamPanels[ch].appendChild(p);
-      streamPanels[ch].scrollTop=streamPanels[ch].scrollHeight;
-    });
-  });
-
-  // online users
+  chatRef.limitToLast(200).on('child_added', snap=>{const obj=snap.val(); if(obj) renderChatMessage(obj);});
+  boardRef.limitToLast(50).on('child_added', snap=>{const obj=snap.val(); if(obj) renderBoardEcho(obj);});
   onlineRef.on('value',snap=>{
-    activeUsersEl.innerHTML='';
-    let count=0;
-    snap.forEach(u=>{
-      count++; const p=document.createElement('p'); p.textContent=u.key; activeUsersEl.appendChild(p);
-    });
-    channelActivity.textContent=count;
+    activeUsersEl.innerHTML=''; let cnt=0;
+    snap.forEach(ch=>{const p=document.createElement('p'); p.textContent=ch.key; activeUsersEl.appendChild(p); cnt++;});
+    channelActivity.textContent = String(cnt).padStart(3,'0');
   });
-
-  // recent activity
-  chatRef.on('child_added',snap=>{
-    snap.forEach(msgSnap=>{
-      const d = msgSnap.val();
-      const p = document.createElement('p'); p.textContent=`[${new Date(d.ts).toLocaleTimeString()}] ${d.name} (${snap.key}): ${d.msg}`;
-      recentActivity.appendChild(p);
-      if(recentActivity.childNodes.length>20) recentActivity.removeChild(recentActivity.firstChild);
-    });
-  });
-
-  // board posts
-  postBoard.addEventListener('click',()=>{
-    const title = boardTitle.value.trim() || "Untitled";
-    const msg = boardMsg.value.trim();
-    if(!msg) return;
-    boardRef.push({name:handle,title:title,msg:msg,ts:Date.now()});
-    boardTitle.value=''; boardMsg.value='';
-  });
-
-  // auto-cleanup after 24h
-  channels.forEach(ch=>{
-    chatRef.child(ch).once('value',snap=>{
-      snap.forEach(child=>{
-        const age = Date.now() - child.val().ts;
-        if(age>24*3600*1000) child.ref.remove();
-      });
-    });
-  });
-  boardRef.once('value',snap=>{
-    snap.forEach(child=>{
-      if(Date.now()-child.val().ts>24*3600*1000) child.ref.remove();
-    });
-  });
+  pruneOldMessages();
 }
 
-// -------------------- Companion lore --------------------
-const companionText=[
-  "Exuro: The Lux spirit guides Sam, flickering like static in the ether...",
-  "Nero: 'Commander… you must trust the path of the stars.'",
-  "Nora: 'Old logic persists; we have seen the cycles repeat.'",
-  "Loktal: 'Strength is your weapon, but control is the key.'",
-  "Tiamat: whispers in the void… chaos unfurling across the cosmos"
+// ---------- Rendering ----------
+function renderChatMessage(obj){
+  if(!obj||!obj.msg) return;
+  const wrapper=document.createElement('p'); wrapper.className=''; wrapper.innerHTML=`<span class="meta">[${obj.name}]</span> ${obj.msg}`;
+  const target=document.getElementById(obj.channel)||document.getElementById('exuro');
+  if(target){target.appendChild(wrapper); target.scrollTop=target.scrollHeight;}
+}
+
+function renderBoardEcho(obj){const wrap=document.createElement('p'); wrap.innerHTML=`<span class="meta">[${obj.name}] ${obj.title}</span>: ${obj.msg}`; recentActivity.appendChild(wrap); recentActivity.scrollTop=recentActivity.scrollHeight;}
+
+// ---------- Companion lore ----------
+const loreLines=[
+  "Exuro: Energy readings spike across Vestus",
+  "Sam: Commander log indicates high temporal instability",
+  "Nora: Sensors show interference from Lux fleet",
+  "Nero: Tactical arrays recalibrating",
+  "Loktal: Vessels detected on outer rim"
 ];
-function startCompanionLore(){
-  let idx=0;
-  setInterval(()=>{
-    const p=document.createElement('p');
-    p.classList.add('glitch');
-    p.setAttribute('data-text',companionText[idx]);
-    p.textContent=companionText[idx];
-    companionLog.appendChild(p);
-    companionLog.scrollTop=companionLog.scrollHeight;
-    idx=(idx+1)%companionText.length;
-  },5500);
+function startCompanionLore(){let i=0; setInterval(()=>{if(i>=loreLines.length) i=0; const p=document.createElement('p'); p.textContent=loreLines[i++]; companionLog.appendChild(p); companionLog.scrollTop=companionLog.scrollHeight;},5000);}
+
+// ---------- System / activity log ----------
+function addSystemActivity(msg){const p=document.createElement('p'); p.textContent=msg; recentActivity.appendChild(p); recentActivity.scrollTop=recentActivity.scrollHeight;}
+
+// ---------- Prune messages after 24h ----------
+function pruneOldMessages(){
+  const cutoff = Date.now() - 24*60*60*1000;
+  chatRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
+  boardRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
+  setTimeout(pruneOldMessages,60*60*1000);
 }
 
-// -------------------- Quick activity logger --------------------
-function addSystemActivity(txt){
-  const p = document.createElement('p'); p.textContent=txt;
-  recentActivity.appendChild(p);
-  if(recentActivity.childNodes.length>20) recentActivity.removeChild(recentActivity.firstChild);
-}
-
+// ---------- Board open button ----------
+openBoardBtn.addEventListener('click',()=>{window.open('https://tokillamockinggoblin.boards.net','_blank');});
 </script>
 </body>
 </html>
