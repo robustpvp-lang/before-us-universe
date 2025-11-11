@@ -14,6 +14,10 @@
   --accent:#00e6ff;
   --exuro:#aaf;
   --sam:#ffb470;
+  --nora:#ff77ff;
+  --nero:#77ffff;
+  --loktal:#88ff44;
+  --pilgrim:#ff8844;
   --comp-bg:#0b0b0b;
 }
 html,body{height:100%;margin:0;background:linear-gradient(180deg,#050507 0%, #0b0b0b 100%);color:var(--muted);font-family: "Courier New", monospace;}
@@ -34,7 +38,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .rightcol{flex:1;min-width:260px;display:flex;flex-direction:column;gap:12px}
 
 /* streams / toggles */
-.stream-toggle{display:flex;gap:8px;justify-content:center;margin-bottom:6px}
+.stream-toggle{display:flex;gap:8px;justify-content:center;margin-bottom:6px;flex-wrap:wrap;}
 .btn{background:transparent;border:1px solid #222;color:var(--muted);padding:6px 10px;border-radius:4px;cursor:pointer}
 .btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,230,255,0.03)}
 .panel{background:var(--panel);border:1px solid #1e1f21;border-radius:6px;padding:12px;box-shadow: 0 0 0 1px rgba(255,255,255,0.01) inset}
@@ -44,9 +48,13 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .stream p{margin:6px 0;padding:6px;border-radius:4px}
 .stream .meta{font-size:0.8rem;color:#b9d3e0}
 
-/* exuro/sam styles */
+/* channel colors */
 .exuro p{color:var(--exuro)}
 .sam p{color:var(--sam)}
+.nora p{color:var(--nora)}
+.nero p{color:var(--nero)}
+.loktal p{color:var(--loktal)}
+.pilgrim p{color:var(--pilgrim)}
 
 /* glitch visuals */
 .glitch{position:relative;display:inline-block}
@@ -70,7 +78,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .sendBtn{padding:8px 12px;border-radius:4px;background:var(--accent);color:#000;border:none;cursor:pointer;font-weight:700}
 
 /* board embed */
-#boardFrame{width:100%;height:420px;border:1px solid #222;border-radius:6px;background:#060708}
+#boardFrame{width:100%;height:500px;border:1px solid #222;border-radius:6px;background:#060708}
 
 /* boot full screen */
 #bootScreen{position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--accent);font-family:monospace}
@@ -108,7 +116,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
       <div class="status">CHANNEL ACTIVITY: <span id="channelActivity">007</span></div>
       <div class="links" aria-hidden="false">
         <a href="https://www.youtube.com/@Patrickauthor" target="_blank" rel="noopener">YouTube</a>
-        <a href="https://reedsy.com/discovery/author/submissions" target="_blank" rel="noopener">Reedsy</a>
+        <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener">Reedsy</a>
         <a href="https://web.archive.org/" target="_blank" rel="noopener">Web Archive</a>
       </div>
     </div>
@@ -131,14 +139,23 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
       <!-- Streams -->
       <div class="panel" style="margin-top:8px">
         <div class="stream-toggle">
-          <button id="btnExuro" class="btn active">EXURO</button>
-          <button id="btnSam" class="btn">SAM</button>
+          <button class="btn active" data-channel="exuro">EXURO</button>
+          <button class="btn" data-channel="sam">SAM</button>
+          <button class="btn" data-channel="nora">NORA</button>
+          <button class="btn" data-channel="nero">NERO</button>
+          <button class="btn" data-channel="loktal">LOKTAL</button>
+          <button class="btn" data-channel="pilgrim">PILGRIM</button>
           <div style="flex:1"></div>
           <button id="openBoardBtn" class="btn">Open Message Board</button>
         </div>
 
+        <!-- Stream panels per channel -->
         <div id="exuroStream" class="stream exuro panel" style="display:block"></div>
         <div id="samStream" class="stream sam panel" style="display:none"></div>
+        <div id="noraStream" class="stream nora panel" style="display:none"></div>
+        <div id="neroStream" class="stream nero panel" style="display:none"></div>
+        <div id="loktalStream" class="stream loktal panel" style="display:none"></div>
+        <div id="pilgrimStream" class="stream pilgrim panel" style="display:none"></div>
 
         <div class="input-area" style="margin-top:10px">
           <input type="text" id="chatInput" placeholder="Write to current stream..." />
@@ -150,7 +167,13 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
       <!-- Message board embed -->
       <div class="panel" style="margin-top:8px">
         <div class="small" style="margin-bottom:6px">Community message board (ProBoards) — full site moderation and threads there.</div>
-        <iframe id="boardFrame" src="https://tokillamockinggoblin.boards.net/" title="ProBoards message board"></iframe>
+        <iframe 
+          src="https://tokillamockinggoblin.boards.net/page/external-widget" 
+          width="100%" 
+          height="500px" 
+          frameborder="0" 
+          scrolling="auto">
+        </iframe>
         <div style="margin-top:8px">
           <div class="small">Quick local post (also pushes a plain message to the BUU 'board' node):</div>
           <div style="display:flex;gap:8px;margin-top:6px">
@@ -189,10 +212,9 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-/* ============================
-   Firebase config - fill in
-   (You provided these values earlier)
-   ============================ */
+// =========================
+// Firebase configuration
+// =========================
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
   authDomain: "before-us-universe.firebaseapp.com",
@@ -202,13 +224,10 @@ const firebaseConfig = {
   messagingSenderId: "477103463228",
   appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/* ---------------------------
-   UI references
-   --------------------------- */
+// -------------------- UI References --------------------
 const bootScreen = document.getElementById('bootScreen');
 const appContainer = document.getElementById('app');
 const bootLineA = document.getElementById('bootLineA');
@@ -220,371 +239,197 @@ const enterBtn = document.getElementById('enterBtn');
 const handleField = document.getElementById('handleField');
 const loginPanel = document.getElementById('loginPanel');
 const activeUsersEl = document.getElementById('activeUsers');
-const exuroStream = document.getElementById('exuroStream');
-const samStream = document.getElementById('samStream');
-const btnExuro = document.getElementById('btnExuro');
-const btnSam = document.getElementById('btnSam');
-const chatInput = document.getElementById('chatInput');
-const sendChat = document.getElementById('sendChat');
 const companionLog = document.getElementById('companionLog');
 const recentActivity = document.getElementById('recentActivity');
 const channelActivity = document.getElementById('channelActivity');
+const chatInput = document.getElementById('chatInput');
+const sendChat = document.getElementById('sendChat');
+const openBoardBtn = document.getElementById('openBoardBtn');
 
 const boardTitle = document.getElementById('boardTitle');
 const boardMsg = document.getElementById('boardMsg');
 const postBoard = document.getElementById('postBoard');
-const openBoardBtn = document.getElementById('openBoardBtn');
 
-/* ---------------------------
-   Boot / ASCII animation
-   --------------------------- */
+const channelButtons = document.querySelectorAll('.stream-toggle .btn');
+const channels = ["exuro","sam","nora","nero","loktal","pilgrim"];
+let currentChannel = "exuro";
+
+// stream panel refs
+const streamPanels = {
+  exuro: document.getElementById('exuroStream'),
+  sam: document.getElementById('samStream'),
+  nora: document.getElementById('noraStream'),
+  nero: document.getElementById('neroStream'),
+  loktal: document.getElementById('loktalStream'),
+  pilgrim: document.getElementById('pilgrimStream')
+};
+
+// presence
+let handle = null;
+let presenceRef = null;
+
+// -------------------- Boot Animation --------------------
 const bootLines = [
   "SYSTEM BOOT: Before Us Universe kernel v0.9",
   "Initializing Lux Fleet telemetry modules...",
   "Scanning Vestus sector... calibrating arrays",
   "Calibrating Tiamat sensors... warning traces found",
-  "Decrypting Fleet broadcast keys... OK",
+  "Decrypting Anu broadcast keys... OK",
   "Mounting Companion log archive...",
-  "Synchronizing SAM local caches...",
+  "Synchronizing Sam local caches...",
   "Finalizing boot sequence. Standby for connection..."
 ];
 
 function animateBoot(i=0){
   if(i >= bootLines.length){
-    // show progress bar finish then reveal site
-    let pct = 0;
-    const timer = setInterval(()=>{
-      pct += 6 + Math.floor(Math.random()*6);
-      if(pct >= 100){ pct = 100; clearInterval(timer); finishBoot(); }
-      bootProgress.textContent = `[${"=".repeat(Math.floor(pct/2))}${"."
-        .repeat(50-Math.floor(pct/2))}] ` + pct + "%";
+    let pct=0;
+    const timer=setInterval(()=>{
+      pct+=6+Math.floor(Math.random()*6);
+      if(pct>=100){pct=100; clearInterval(timer); finishBoot();}
+      bootProgress.textContent=`[${"=".repeat(Math.floor(pct/2))}${".".repeat(50-Math.floor(pct/2))}] ${pct}%`;
     },120);
     return;
   }
-  const target = (i % 3 === 0) ? bootLineA : (i % 3 === 1 ? bootLineB : bootLineC);
-  target.textContent = "";
-  const chars = bootLines[i].split('');
+  const target=(i%3===0)?bootLineA:(i%3===1?bootLineB:bootLineC);
+  target.textContent="";
+  const chars=bootLines[i].split('');
   let j=0;
-  const it = setInterval(()=>{
-    target.textContent += chars[j++];
-    if(j >= chars.length){ clearInterval(it); setTimeout(()=>animateBoot(i+1), 200 + Math.random()*300); }
-  }, 24 + Math.random()*18);
+  const it=setInterval(()=>{
+    target.textContent+=chars[j++];
+    if(j>=chars.length){ clearInterval(it); setTimeout(()=>animateBoot(i+1),200+Math.random()*300);}
+  },24+Math.random()*18);
 }
-function finishBoot(){
-  bootScreen.style.display = "none";
-  appContainer.style.display = "block";
-  // small delay to let layout settle
-  setTimeout(()=>{ document.getElementById('app').style.display = 'block';}, 120);
-}
+function finishBoot(){ bootScreen.style.display="none"; appContainer.style.display="block";}
 animateBoot();
 
-/* ---------------------------
-   Local session / handle (temporary)
-   --------------------------- */
-let handle = null;
-let presenceRef = null;
+// -------------------- Handle Login --------------------
+enterBtn.addEventListener('click',joinWithHandle);
+handleField.addEventListener('keypress',(e)=>{if(e.key==='Enter') joinWithHandle();});
 
-enterBtn.addEventListener('click', joinWithHandle);
-handleField.addEventListener('keypress', (e)=>{ if(e.key === 'Enter') joinWithHandle(); });
-
-function sanitizeName(n){
-  return String(n).replace(/[^a-zA-Z0-9_\- ]/g,'').slice(0,32).trim() || ("Anon"+Math.floor(Math.random()*9999));
-}
-
+function sanitizeName(n){ return String(n).replace(/[^a-zA-Z0-9_\- ]/g,'').slice(0,32).trim() || ("Anon"+Math.floor(Math.random()*9999)); }
 function joinWithHandle(){
-  const raw = handleField.value || "";
-  handle = sanitizeName(raw);
-  // UI
-  loginPanel.style.display = "none";
-  document.querySelector('.workspace').style.display = 'flex';
+  handle = sanitizeName(handleField.value);
+  loginPanel.style.display='none';
   addSystemActivity(`Handle set: ${handle}`);
-  // set presence and attach onDisconnect removal
   presenceRef = db.ref('online/' + handle);
   presenceRef.set(true);
   presenceRef.onDisconnect().remove();
-  // start syncing
   setupListeners();
   startCompanionLore();
-  // small welcome
   pushActivity(`[${handle}] joined the room`);
 }
 
-/* ---------------------------
-   Streams toggle
-   --------------------------- */
-btnExuro.addEventListener('click', ()=>{ btnExuro.classList.add('active'); btnSam.classList.remove('active'); exuroStream.style.display='block'; samStream.style.display='none'; });
-btnSam.addEventListener('click', ()=>{ btnSam.classList.add('active'); btnExuro.classList.remove('active'); samStream.style.display='block'; exuroStream.style.display='none'; });
+// -------------------- Channel toggle --------------------
+channelButtons.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    channelButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const ch = btn.dataset.channel;
+    channels.forEach(c=>streamPanels[c].style.display=(c===ch?'block':'none'));
+    currentChannel = ch;
+  });
+});
 
-/* ---------------------------
-   Database helpers
-   --------------------------- */
+// -------------------- Chat / Board --------------------
 const chatRef = db.ref('chat');
 const boardRef = db.ref('board');
 const onlineRef = db.ref('online');
 
-function pushChat(msg, stream){
-  // create minimal payload
-  const payload = { name: handle || 'Anon', msg: String(msg).slice(0,500), ts: Date.now(), stream: stream || 'exuro' };
-  chatRef.push(payload);
-}
-function pushBoard(title, msg){
-  const payload = { name: handle || 'Anon', title: String(title).slice(0,140), msg: String(msg).slice(0,1000), ts: Date.now() };
-  boardRef.push(payload);
-}
+sendChat.addEventListener('click',sendCurrentChat);
+chatInput.addEventListener('keypress',e=>{if(e.key==='Enter') sendCurrentChat();});
 
-/* ---------------------------
-   UI: posting chat / board
-   --------------------------- */
-sendChat.addEventListener('click', doPostChat);
-chatInput.addEventListener('keypress', (e)=>{ if(e.key === 'Enter') doPostChat(); });
-
-function doPostChat(){
-  const txt = chatInput.value.trim();
-  if(!txt) return;
-  const activeStream = (exuroStream.style.display !== 'none') ? 'exuro' : 'sam';
-  pushChat(txt, activeStream);
-  chatInput.value = '';
+function sendCurrentChat(){
+  const msg = chatInput.value.trim();
+  if(!msg) return;
+  const data={name:handle,msg:msg,ts:Date.now()};
+  chatRef.child(currentChannel).push(data);
+  chatInput.value='';
 }
 
-postBoard.addEventListener('click', ()=>{
-  const t = boardTitle.value.trim() || 'Untitled';
-  const m = boardMsg.value.trim();
-  if(!m) return;
-  pushBoard(t, m);
-  boardTitle.value = ''; boardMsg.value = '';
-  addSystemActivity(`Posted local board echo: "${t}"`);
-});
-
-/* ---------------------------
-   Listeners: chat, board, online
-   --------------------------- */
+// realtime listeners
 function setupListeners(){
-  // chat child added
-  chatRef.limitToLast(200).on('child_added', snap=>{
-    const obj = snap.val();
-    renderChatMessage(obj);
-  });
-
-  // board child added (compact recent)
-  boardRef.limitToLast(50).on('child_added', snap=>{
-    const obj = snap.val();
-    renderBoardEcho(obj);
-  });
-
-  // online presence
-  onlineRef.on('value', snap=>{
-    activeUsersEl.innerHTML = '';
-    snap.forEach(ch=>{
+  channels.forEach(ch=>{
+    chatRef.child(ch).on('child_added',snap=>{
+      const d = snap.val();
       const p = document.createElement('p');
-      p.textContent = ch.key;
-      activeUsersEl.appendChild(p);
+      p.innerHTML=`<span class="meta">[${new Date(d.ts).toLocaleTimeString()}] ${d.name}:</span> ${d.msg}`;
+      streamPanels[ch].appendChild(p);
+      streamPanels[ch].scrollTop=streamPanels[ch].scrollHeight;
     });
   });
 
-  // initial prune pass: remove older than 24 hours
-  pruneOldMessages();
-}
+  // online users
+  onlineRef.on('value',snap=>{
+    activeUsersEl.innerHTML='';
+    let count=0;
+    snap.forEach(u=>{
+      count++; const p=document.createElement('p'); p.textContent=u.key; activeUsersEl.appendChild(p);
+    });
+    channelActivity.textContent=count;
+  });
 
-/* ---------------------------
-   Render helpers
-   --------------------------- */
-function renderChatMessage(obj){
-  if(!obj || !obj.msg) return;
-  const wrapper = document.createElement('p');
-  wrapper.className = obj.stream === 'exuro' ? 'exuro' : 'sam';
-  const time = new Date(obj.ts || Date.now());
-  const t = time.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  // show glitch style for Exuro
-  if(obj.stream === 'exuro'){
-    wrapper.innerHTML = `<span class="meta">[${t}]</span> <span class="glitch" data-text="[EXURO][${escapeHtml(obj.name)}]">${"[EXURO]["+escapeHtml(obj.name)+"]"}</span>: ${escapeHtml(obj.msg)}`;
-  } else {
-    wrapper.innerHTML = `<span class="meta">[${t}]</span> <strong>[SAM][${escapeHtml(obj.name)}]</strong>: ${escapeHtml(obj.msg)}`;
-  }
-  // append to proper stream panel
-  if(obj.stream === 'exuro') exuroStream.appendChild(wrapper);
-  else samStream.appendChild(wrapper);
+  // recent activity
+  chatRef.on('child_added',snap=>{
+    snap.forEach(msgSnap=>{
+      const d = msgSnap.val();
+      const p = document.createElement('p'); p.textContent=`[${new Date(d.ts).toLocaleTimeString()}] ${d.name} (${snap.key}): ${d.msg}`;
+      recentActivity.appendChild(p);
+      if(recentActivity.childNodes.length>20) recentActivity.removeChild(recentActivity.firstChild);
+    });
+  });
 
-  // also append a short companion fragment for presence
-  const frag = document.createElement('p');
-  frag.textContent = `[${obj.stream.toUpperCase()}][${obj.name}] ${obj.msg.slice(0,40)}...`;
-  companionLog.appendChild(frag);
-  companionLog.scrollTop = companionLog.scrollHeight;
-  recentActivity.prepend(createActivityLine(`[${obj.name}] ${obj.msg.slice(0,80)}`));
+  // board posts
+  postBoard.addEventListener('click',()=>{
+    const title = boardTitle.value.trim() || "Untitled";
+    const msg = boardMsg.value.trim();
+    if(!msg) return;
+    boardRef.push({name:handle,title:title,msg:msg,ts:Date.now()});
+    boardTitle.value=''; boardMsg.value='';
+  });
 
-  // maintain max children
-  limitChildren(exuroStream, 400);
-  limitChildren(samStream, 400);
-}
-
-/* small helper to show recent activity lines */
-function createActivityLine(text){
-  const p = document.createElement('div'); p.className='small'; p.style.padding='6px 0'; p.textContent = text; return p;
-}
-function addSystemActivity(text){ recentActivity.prepend(createActivityLine("(system) "+text)); }
-
-/* render board echoes */
-function renderBoardEcho(obj){
-  if(!obj) return;
-  const p = document.createElement('p');
-  const time = new Date(obj.ts || Date.now());
-  p.innerHTML = `<span class="meta">[${time.toLocaleDateString()}]</span> <strong>${escapeHtml(obj.title || 'Untitled')}</strong> — <em>${escapeHtml(obj.name)}</em><div style="margin-top:4px;color:#bfe8ff">${escapeHtml(obj.msg)}</div>`;
-  companionLog.appendChild(p);
-  companionLog.scrollTop = companionLog.scrollHeight;
-}
-
-/* ---------------------------
-   Utility functions
-   --------------------------- */
-function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
-function limitChildren(el, max){
-  while(el.children.length > max) el.removeChild(el.firstElementChild);
-}
-
-/* ---------------------------
-   Auto-prune older than 24h (client-run)
-   --------------------------- */
-function pruneOldMessages(){
-  const cutoff = Date.now() - (24*60*60*1000);
-  // prune chat
-  chatRef.once('value', snap=>{
+  // auto-cleanup after 24h
+  channels.forEach(ch=>{
+    chatRef.child(ch).once('value',snap=>{
+      snap.forEach(child=>{
+        const age = Date.now() - child.val().ts;
+        if(age>24*3600*1000) child.ref.remove();
+      });
+    });
+  });
+  boardRef.once('value',snap=>{
     snap.forEach(child=>{
-      const val = child.val();
-      if(!val || !val.ts || val.ts < cutoff){
-        chatRef.child(child.key).remove().catch(()=>{ /* ignore perms */ });
-      }
-    });
-  });
-  // prune board
-  boardRef.once('value', snap=>{
-    snap.forEach(child=>{
-      const val = child.val();
-      if(!val || !val.ts || val.ts < cutoff){
-        boardRef.child(child.key).remove().catch(()=>{});
-      }
+      if(Date.now()-child.val().ts>24*3600*1000) child.ref.remove();
     });
   });
 }
-// run prune on load and every hour
-setTimeout(pruneOldMessages, 2000);
-setInterval(pruneOldMessages, 60*60*1000);
 
-/* ---------------------------
-   Companion lore fragments (non-chat)
-   --------------------------- */
-const exuroLore = [
-  "Fleet sensors report a low-frequency sigil near Vestus.",
-  "Auxiliary arrays report intermittent null reads.",
-  "Anu broadcast fragment: '—stand by—'",
-  "Lux patrols recording drift anomalies off the rim.",
-  "Unresolved telemetry: waveform shows non-classical pattern."
+// -------------------- Companion lore --------------------
+const companionText=[
+  "Exuro: The Lux spirit guides Sam, flickering like static in the ether...",
+  "Nero: 'Commander… you must trust the path of the stars.'",
+  "Nora: 'Old logic persists; we have seen the cycles repeat.'",
+  "Loktal: 'Strength is your weapon, but control is the key.'",
+  "Tiamat: whispers in the void… chaos unfurling across the cosmos"
 ];
-const samLore = [
-  "Found Gram's old postcard with a burned corner.",
-  "Dreamt tonight: a map of constellations I'd never seen.",
-  "The radio hissed. I swear it said a name.",
-  "Took a walk. The stars felt wrong—like someone breathing.",
-  "A rusted emblem in the attic. It hummed."
-];
-
-function spawnLoreFragment(){
-  const isEx = Math.random() < 0.5;
-  const txt = isEx ? exuroLore[Math.floor(Math.random()*exuroLore.length)] : samLore[Math.floor(Math.random()*samLore.length)];
-  const p = document.createElement('p');
-  p.textContent = isEx ? `[EXURO LOG]: ${txt}` : `[SAM NOTE]: ${txt}`;
-  p.style.opacity = 0;
-  companionLog.appendChild(p);
-  companionLog.scrollTop = companionLog.scrollHeight;
-  // fade in
-  let o = 0; const fade = setInterval(()=>{ o+=0.06; p.style.opacity = o; if(o>=1){ clearInterval(fade);} }, 30);
-  // schedule next 18-36s
-  setTimeout(spawnLoreFragment, Math.floor(Math.random()*18000)+18000);
+function startCompanionLore(){
+  let idx=0;
+  setInterval(()=>{
+    const p=document.createElement('p');
+    p.classList.add('glitch');
+    p.setAttribute('data-text',companionText[idx]);
+    p.textContent=companionText[idx];
+    companionLog.appendChild(p);
+    companionLog.scrollTop=companionLog.scrollHeight;
+    idx=(idx+1)%companionText.length;
+  },5500);
 }
 
-/* start after join */
-function startCompanionLore(){ setTimeout(spawnLoreFragment, 1000 + Math.random()*4000); }
-
-/* ---------------------------
-   Exuro glitch / interference effect
-   --------------------------- */
-function randomlyFlicker(){
-  const ex = exuroStream.querySelectorAll('p');
-  if(ex.length === 0) return;
-  const idx = Math.floor(Math.random()*ex.length);
-  const el = ex[idx];
-  if(!el) return;
-  el.style.filter = "contrast(1.15) saturate(1.2)";
-  el.style.transform = `translate(${Math.random()*4-2}px,${Math.random()*4-2}px)`;
-  el.style.opacity = 0.85;
-  setTimeout(()=>{ el.style.filter=''; el.style.transform=''; el.style.opacity='1'; },120 + Math.random()*260);
+// -------------------- Quick activity logger --------------------
+function addSystemActivity(txt){
+  const p = document.createElement('p'); p.textContent=txt;
+  recentActivity.appendChild(p);
+  if(recentActivity.childNodes.length>20) recentActivity.removeChild(recentActivity.firstChild);
 }
-setInterval(()=>{ if(Math.random() < 0.45) randomlyFlicker(); }, 2200);
-
-/* garble small fragments (brief) */
-function tamperRandom(){
-  const ex = exuroStream.querySelectorAll('p');
-  if(ex.length === 0) return;
-  const el = ex[Math.floor(Math.random()*ex.length)];
-  const text = el.textContent;
-  // garble about 6-16% of characters
-  const garbled = text.split('').map(ch => (Math.random() < 0.08 ? String.fromCharCode(33 + Math.floor(Math.random()*94)) : ch)).join('');
-  el.dataset._backup = text;
-  el.textContent = garbled;
-  setTimeout(()=>{ if(el.dataset && el.dataset._backup) el.textContent = el.dataset._backup; }, 400 + Math.random()*900);
-}
-setInterval(()=>{ if(Math.random() < 0.22) tamperRandom(); }, 5000);
-
-/* ---------------------------
-   small UI helpers / activity queue
-   --------------------------- */
-function pushActivity(txt){
-  recentActivity.prepend(createActivityLine(txt));
-  setTimeout(()=>{ if(recentActivity.children.length > 40) recentActivity.removeChild(recentActivity.lastChild); }, 100);
-}
-
-/* ---------------------------
-   open embedded board button
-   --------------------------- */
-openBoardBtn.addEventListener('click', ()=>{ document.getElementById('boardFrame').scrollIntoView({behavior:'smooth'}); });
-
-/* ---------------------------
-   periodic channel activity number (cosmetic)
-   --------------------------- */
-setInterval(()=>{ channelActivity.textContent = String(Math.floor(Math.random()*999)+1).padStart(3,'0'); }, 9000);
-
-/* ---------------------------
-   helper: small initial seeded messages (cosmetic)
-   --------------------------- */
-function seedIfEmpty(){
-  chatRef.limitToLast(1).once('value', s=>{
-    if(!s.exists()){
-      chatRef.push({name:'EXURO', msg:'SYSTEM: monitoring channels', ts: Date.now(), stream:'exuro'});
-      chatRef.push({name:'SAM', msg:"local: gram's kettle is quiet today", ts: Date.now(), stream:'sam'});
-    }
-  });
-  boardRef.limitToLast(1).once('value', s=>{
-    if(!s.exists()){
-      boardRef.push({name:'Archivist', title:'Welcome', msg:'This board mirrors the ProBoards community. Use ProBoards for threads.', ts: Date.now()});
-    }
-  });
-}
-seedIfEmpty();
-
-/* ---------------------------
-   small polyfill: remove connecting overlay once DB reachable
-   --------------------------- */
-db.ref('.info/connected').on('value', snap=>{
-  const con = !!snap.val();
-  if(con){
-    addSystemActivity('Realtime DB: connected');
-  } else {
-    addSystemActivity('Realtime DB: disconnected');
-  }
-});
-
-/* ---------------------------
-   Failsafe: focus chat field on join
-   --------------------------- */
-document.addEventListener('click', ()=>{ try{ if(handle) chatInput.focus(); }catch(e){} });
 
 </script>
 </body>
