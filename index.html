@@ -2,35 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Before Us Universe – LIVE CHAT & BOARD</title>
+<title>Before Us Universe</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono&display=swap" rel="stylesheet">
 <style>
-/* ==== GLOBAL ==== */
-* { margin:0; padding:0; box-sizing:border-border; }
+* { margin:0; padding:0; box-sizing:border-box; }
 body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; overflow:hidden; height:100vh; }
-
-/* ==== LOADER ==== */
 #loader { position:fixed; inset:0; background:#111; display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:9999; }
 .glitch { font-family:'Press Start 2P',cursive; font-size:2rem; color:#00ffcc; position:relative; animation:glitch 2s infinite; }
 .glitch::before,.glitch::after { content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%; }
 .glitch::before { animation:glitch-1 .5s infinite; color:#ff00ff; clip-path:polygon(0 0,100% 0,100% 45%,0 45%); }
 .glitch::after { animation:glitch-2 .5s infinite; color:#00ffff; clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%); }
 .scanlines { position:absolute; inset:0; background:linear-gradient(transparent 50%,rgba(0,0,0,.05) 50%); background-size:100% 4px; animation:scan 6s linear infinite; }
-
-/* ==== APP ==== */
 .hidden { display:none; }
 #app { display:flex; flex-direction:column; height:100vh; }
 .header { background:#1c1c1e; padding:1rem; text-align:center; border-bottom:2px solid #00ffcc; }
 .title { font-family:'Press Start 2P',cursive; font-size:1.4rem; color:#00ffcc; }
 .subtitle { font-size:.9rem; color:#aaa; margin-top:.3rem; }
-
-/* ==== TABS ==== */
 .tabs { display:flex; background:#1c1c1e; }
 .tab-btn { flex:1; padding:.6rem; background:#222; color:#aaa; border:none; cursor:pointer; font-weight:bold; }
 .tab-btn.active { background:#00ffcc; color:#111; }
-
-/* ==== CHAT & BOARD ==== */
 .section { flex:1; display:flex; flex-direction:column; background:#18181b; margin:.5rem; border-radius:8px; overflow:hidden; box-shadow:0 0 15px rgba(0,255,204,.2); }
 .chat-header, .board-header { background:#00ffcc; color:#111; padding:.6rem 1rem; font-weight:bold; display:flex; justify-content:space-between; font-size:.9rem; }
 .messages, .board-posts { flex:1; padding:1rem; overflow-y:auto; display:flex; flex-direction:column; gap:.6rem; }
@@ -42,11 +33,7 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
 .input-area input { flex:1; padding:.8rem; background:#111; color:#fff; border:none; outline:none; }
 .input-area button { background:#00ffcc; color:#111; border:none; padding:0 1.2rem; cursor:pointer; font-weight:bold; }
 .input-area button:hover { background:#00bcd4; }
-
-/* ==== FOOTER ==== */
 .footer { background:#1c1c1e; padding:.5rem; text-align:center; font-size:.8rem; color:#777; }
-
-/* ==== ANIMATIONS ==== */
 @keyframes glitch { 0%,100%{text-shadow:.05em 0 0 #00ffcc,-.05em 0 0 #ff00ff} 15%{text-shadow:-.05em 0 0 #00ffcc,.05em 0 0 #ff00ff} 50%{text-shadow:.05em 0 0 #00ffcc,-.05em 0 0 #ff00ff} }
 @keyframes glitch-1 { 0%{clip-path:polygon(0 0,100% 0,100% 45%,0 45%)} 100%{clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%)} }
 @keyframes glitch-2 { 0%{clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%)} 100%{clip-path:polygon(0 0,100% 0,100% 45%,0 45%)} }
@@ -55,26 +42,22 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
 </head>
 <body>
 
-<!-- ===== GLITCHY LOADER ===== -->
 <div id="loader">
   <div class="glitch" data-text="BOOT SEQUENCE...">BOOT SEQUENCE...</div>
   <div class="scanlines"></div>
 </div>
 
-<!-- ===== MAIN UI ===== -->
 <div id="app" class="hidden">
   <header class="header">
     <h1 class="title">THE BEFORE US UNIVERSE</h1>
     <p class="subtitle">.:. Digital Memory Archives .:.</p>
   </header>
 
-  <!-- TABS -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="chat">LIVE CHAT</button>
     <button class="tab-btn" data-tab="board">MESSAGE BOARD</button>
   </div>
 
-  <!-- CHAT SECTION -->
   <section id="chat" class="section">
     <div class="chat-header">
       <span>LIVE CHAT</span>
@@ -87,7 +70,6 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
     </form>
   </section>
 
-  <!-- BOARD SECTION -->
   <section id="board" class="section hidden">
     <div class="board-header">
       <span>MESSAGE BOARD (last 10)</span>
@@ -107,16 +89,13 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
 </div>
 
 <script>
-// ==== CONFIG ====
 const BOT_NAME = 'Yaga';
 const LORE = {
   'who is wonderboy?': 'Wonderboy is the last surviving archivist of the Before Us timeline.',
   'what is the before us universe?': 'A fractured multiverse where digital memories outlived humanity.',
-  'cortana': 'I am Yaga – part Cortana, part Baba Yaga. The Archives are under my watch.',
-  'baba yaga': 'I walk the line between code and myth. Ask wisely.',
+  'cortana': 'I am Yaga – part Cortana, part Baba Yaga.',
 };
 
-// ==== ELEMENTS ====
 const $ = s => document.querySelector(s);
 const loader = $('#loader'), app = $('#app');
 const messages = $('#messages'), chatInput = $('#chat-input'), chatForm = $('#chat-form');
@@ -124,14 +103,12 @@ const boardPosts = $('#board-posts'), boardInput = $('#board-input'), boardForm 
 const onlineSpan = $('#online-count span'), postCount = $('#post-count');
 const statusEl = $('#system-status'), lastUpdateEl = $('#last-update');
 
-// ==== STORAGE ====
 const STORAGE = {
   board: 'beforeus_board_v1',
   getBoard() { return JSON.parse(localStorage.getItem(this.board) || '[]'); },
   saveBoard(arr) { localStorage.setItem(this.board, JSON.stringify(arr.slice(-10))); }
 };
 
-// ==== MESSAGES ====
 function addChat(txt, type='user'){ _add('#messages', txt, type); }
 function addBoard(txt, type='user'){ _add('#board-posts', txt, type); renderBoardCount(); }
 function _add(container, txt, type){
@@ -141,41 +118,35 @@ function _add(container, txt, type){
   $(container).appendChild(div);
   $(container).scrollTop = $(container).scrollHeight;
 }
-function systemMsg(txt, target='chat'){ 
-  const el = target === 'board' ? '#board-posts' : '#messages';
+function systemMsg(txt){ 
   const div = document.createElement('div');
   div.className = 'message system';
   div.textContent = txt;
-  $(el).appendChild(div);
-  $(el).scrollTop = $(el).scrollHeight;
+  $('#messages').appendChild(div);
+  $('#messages').scrollTop = $('#messages').scrollHeight;
 }
 
-// ==== BOT ====
 function botReply(msg){
   const lower = msg.toLowerCase().trim();
   for(const [q,a] of Object.entries(LORE)) if(lower.includes(q)) return a;
-  const bad = ['fuck','shit','damn','asshole','bitch'];
+  const bad = ['fuck','shit','damn'];
   if(bad.some(w=>lower.includes(w))) return 'Mind your tongue in the Archives.';
-  return `The Archives whisper… try asking about *Wonderboy* or *Before Us*.`;
+  return `The Archives whisper… try asking about *Wonderboy*.`;
 }
 
-// ==== CHAT ====
 chatForm.addEventListener('submit', e=>{
   e.preventDefault();
   const msg = chatInput.value.trim();
   if(!msg) return;
   addChat(msg,'user');
   chatInput.value='';
-  setTimeout(()=>{ addChat(`${BOT_NAME}: ${botReply(msg)}`,'bot'); }, 600+Math.random()*400);
+  setTimeout(()=>{ addChat(`${BOT_NAME}: ${botReply(msg)}`,'bot'); }, 600);
 });
 
-// ==== BOARD ====
 function renderBoard(){
   const posts = STORAGE.getBoard();
   boardPosts.innerHTML = '';
-  posts.forEach(p => {
-    addBoard(p.text, p.type);
-  });
+  posts.forEach(p => addBoard(p.text, p.type));
   renderBoardCount();
 }
 function renderBoardCount(){
@@ -190,20 +161,17 @@ boardForm.addEventListener('submit', e=>{
   STORAGE.saveBoard(posts);
   boardInput.value='';
   renderBoard();
-  // Yaga monitors
   setTimeout(()=>{ 
     const reply = botReply(msg);
-    if(reply.includes('tongue') || LORE[msg.toLowerCase()]) {
-      const botPost = { text: `${BOT_NAME}: ${reply}`, type: 'bot', time: Date.now() };
+    if(reply.includes('tongue') || Object.keys(LORE).some(q=>msg.toLowerCase().includes(q))){
       const all = STORAGE.getBoard();
-      all.push(botPost);
+      all.push({ text: `${BOT_NAME}: ${reply}`, type: 'bot', time: Date.now() });
       STORAGE.saveBoard(all);
       renderBoard();
     }
   }, 1000);
 });
 
-// ==== TABS ====
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -213,14 +181,9 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   });
 });
 
-// ==== MOCK ONLINE ====
 let mockCount = 1;
-setInterval(()=>{
-  mockCount = Math.max(1, mockCount + (Math.random()>.5?1:-1));
-  onlineSpan.textContent = mockCount;
-}, 7000);
+setInterval(()=>{ mockCount = Math.max(1, mockCount + (Math.random()>.5?1:-1)); onlineSpan.textContent = mockCount; }, 7000);
 
-// ==== BOOT ====
 function startApp(){
   loader.style.opacity = '0';
   setTimeout(()=>{
