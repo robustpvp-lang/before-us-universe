@@ -282,5 +282,152 @@ function startApp() {
 }
 startApp();  // Run immediately
 </script>
+  <script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getDatabase, ref, push, onValue, set, onDisconnect, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
+  authDomain: "before-us-universe.firebaseapp.com",
+  databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
+  projectId: "before-us-universe",
+  storageBucket: "before-us-universe.appspot.com",
+  messagingSenderId: "477103463228",
+  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let username = localStorage.getItem("buu_username") || "";
+let onlineRef = null;
+
+// Boot screen sequence
+setTimeout(() => {
+  document.getElementById("boot-screen").style.display = "none";
+  if (!username) {
+    document.getElementById("username-modal").classList.add("show");
+  } else {
+    document.getElementById("main-content").classList.add("loaded");
+    initApp();
+  }
+}, 4000);
+
+// Username setup
+window.setUsername = function() {
+  const val = document.getElementById("username-input").value.trim();
+  if (val) {
+    username = val;
+    localStorage.setItem("buu_username", username);
+    document.getElementById("username-modal").classList.remove("show");
+    document.getElementById("main-content").classList.add("loaded");
+    initApp();
+  }
+};
+
+function initApp() {
+  // Online tracking with static user ref
+  const uid = localStorage.getItem("buu_uid") || Date.now().toString();
+  localStorage.setItem("buu_uid", uid);
+  onlineRef = ref(db, "online/" + uid);
+  set(onlineRef, { username, timestamp: Date.now() });
+  onDisconnect(onlineRef).remove();
+
+  // Live online count
+  const allOnlineRef = ref(db, "online");
+  onValue(allOnlineRef, (snap) => {
+    const count = snap.numChildren();
+    document.getElementById("online-count").textContent = `Currently: ${count}`;
+  });
+
+  // Live chat
+  const chatRef = ref(db, "chat");
+  onValue(chatRef, (snap) => {
+    const chatDiv = document.getElementById("chat-messages");
+    chatDiv.innerHTML = "";
+    snap.forEach((msg) => {
+      const m = msg.val();
+      addChatMessage(m.username, m.text, m.timestamp);
+    });
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+  });
+
+  // Live posts
+  const postsRef = ref(db, "posts");
+  onValue(postsRef, (snap) => {
+    const board = document.getElementById("board-posts");
+    board.innerHTML = "";
+    snap.forEach((p) => {
+      const post = p.val();
+      addBoardPost(post.title, post.content, post.username, post.timestamp);
+    });
+  });
+}
+
+// Chat sending
+window.sendMessage = function() {
+  const input = document.getElementById("chat-input");
+  const text = input.value.trim();
+  if (!text) return;
+
+  push(ref(db, "chat"), {
+    username,
+    text,
+    timestamp: Date.now(),
+  });
+  input.value = "";
+};
+
+// Create post
+window.createPost = function() {
+  const title = document.getElementById("post-title").value.trim();
+  const content = document.getElementById("post-content").value.trim();
+  if (!title || !content) return;
+
+  push(ref(db, "posts"), {
+    title,
+    content,
+    username,
+    timestamp: Date.now(),
+  });
+
+  document.getElementById("post-title").value = "";
+  document.getElementById("post-content").value = "";
+};
+
+// Add chat message
+function addChatMessage(user, text, time) {
+  const msgDiv = document.createElement("div");
+  msgDiv.className = "chat-message";
+  const t = new Date(time).toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
+  msgDiv.innerHTML = `
+    <div class="chat-meta">[${t}] <span class="username">${escapeHtml(user)}:</span></div>
+    <div class="chat-text">${escapeHtml(text)}</div>`;
+  document.getElementById("chat-messages").appendChild(msgDiv);
+}
+
+// Add board post
+function addBoardPost(title, content, user, time) {
+  const postDiv = document.createElement("div");
+  postDiv.className = "board-post";
+  const d = new Date(time).toLocaleDateString("en-US").replace(/\//g, ".");
+  postDiv.innerHTML = `
+    <div class="post-title">→ ${escapeHtml(title)}</div>
+    <div class="post-content">${escapeHtml(content)}</div>
+    <div class="post-meta">Posted by ${escapeHtml(user)} | ${d}</div>`;
+  document.getElementById("board-posts").appendChild(postDiv);
+}
+
+// Escape HTML
+function escapeHtml(txt) {
+  const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" };
+  return txt.replace(/[&<>"']/g, (m) => map[m]);
+}
+
+// Enter key shortcuts
+document.getElementById("chat-input").addEventListener("keypress", (e) => e.key === "Enter" && sendMessage());
+document.getElementById("username-input").addEventListener("keypress", (e) => e.key === "Enter" && setUsername());
+</script>
+
 </body>
 </html>
