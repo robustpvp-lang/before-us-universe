@@ -1,290 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>Before Us Universe</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; overflow:hidden; height:100vh; }
-#loader { position:fixed; inset:0; background:#111; display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:9999; }
-.glitch { font-family:'Press Start 2P',cursive; font-size:2rem; color:#00ffcc; position:relative; animation:glitch 2s infinite; }
-.glitch::before,.glitch::after { content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%; }
-.glitch::before { animation:glitch-1 .5s infinite; color:#ff00ff; clip-path:polygon(0 0,100% 0,100% 45%,0 45%); }
-.glitch::after { animation:glitch-2 .5s infinite; color:#00ffff; clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%); }
-.progress-container { width:300px; height:18px; background:#000; border:2px solid #00ffcc; margin-top:1.2rem; border-radius:8px; overflow:hidden; box-shadow:0 0 12px #00ffcc; }
-.progress-bar { width:0%; height:100%; background:linear-gradient(90deg,#00ffcc,#00bcd4); transition:width 0.1s ease; }
-.scanlines { position:absolute; inset:0; background:linear-gradient(transparent 50%,rgba(0,0,0,.05) 50%); background-size:100% 4px; animation:scan 6s linear infinite; pointer-events:none; }
-.hidden { display:none; }
-#app { display:flex; flex-direction:column; height:100vh; }
-.header { background:#1c1c1e; padding:1rem; text-align:center; border-bottom:2px solid #00ffcc; }
-.title { font-family:'Press Start 2P',cursive; font-size:1.4rem; color:#00ffcc; }
-.subtitle { font-size:.9rem; color:#aaa; margin-top:.3rem; }
-.tabs { display:flex; background:#1c1c1e; }
-.tab-btn { flex:1; padding:.6rem; background:#222; color:#aaa; border:none; cursor:pointer; font-weight:bold; }
-.tab-btn.active { background:#00ffcc; color:#111; }
-.section { flex:1; display:flex; flex-direction:column; background:#18181b; margin:.5rem; border-radius:8px; overflow:hidden; box-shadow:0 0 15px rgba(0,255,204,.2); }
-.chat-header, .board-header { background:#00ffcc; color:#111; padding:.6rem 1rem; font-weight:bold; display:flex; justify-content:space-between; font-size:.9rem; }
-.messages, .board-posts { flex:1; padding:1rem; overflow-y:auto; display:flex; flex-direction:column; gap:.6rem; }
-.message, .post { max-width:85%; padding:.5rem .8rem; border-radius:8px; line-height:1.4; word-wrap:break-word; }
-.message.user, .post.user { align-self:flex-end; background:#00bcd4; color:#fff; }
-.message.bot, .post.bot { align-self:flex-start; background:#333; color:#0f0; border:1px solid #0f0; }
-.message.system, .post.system { align-self:center; font-style:italic; color:#ff9800; font-size:.8rem; }
-.input-area { display:flex; border-top:1px solid #333; }
-.input-area input { flex:1; padding:.8rem; background:#111; color:#fff; border:none; outline:none; }
-.input-area button { background:#00ffcc; color:#111; border:none; padding:0 1.2rem; cursor:pointer; font-weight:bold; }
-.input-area button:hover { background:#00bcd4; }
-.footer { background:#1c1c1e; padding:.5rem; text-align:center; font-size:.8rem; color:#777; }
-@keyframes glitch { 0%,100%{text-shadow:.05em 0 0 #00ffcc,-.05em 0 0 #ff00ff} 15%{text-shadow:-.05em 0 0 #00ffcc,.05em 0 0 #ff00ff} 50%{text-shadow:.05em 0 0 #00ffcc,-.05em 0 0 #ff00ff} }
-@keyframes glitch-1 { 0%{clip-path:polygon(0 0,100% 0,100% 45%,0 45%)} 100%{clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%)} }
-@keyframes glitch-2 { 0%{clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%)} 100%{clip-path:polygon(0 0,100% 0,100% 45%,0 45%)} }
-@keyframes scan { 0%{background-position:0 0} 100%{background-position:0 100%} }
+/* === GLOBAL THEME === */
+body {
+  margin: 0;
+  background: black;
+  color: #00ffee;
+  font-family: monospace;
+  overflow: hidden;
+}
+.hidden { display: none; }
+
+/* === BOOT SEQUENCE === */
+#boot-screen {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #00ffee;
+  font-size: 2rem;
+  animation: fadeOut 5s forwards 5s;
+}
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* === NTD FACE BACKGROUND === */
+#ghost-layer {
+  position: fixed;
+  inset: 0;
+  background: url("https://raw.githubusercontent.com/robustpvp-lang/before-us-universe/main/scripts/ntd-face.jpeg") center/cover no-repeat;
+  mix-blend-mode: screen;
+  opacity: 0;
+  z-index: 0;
+  animation: ghostFlash 8s infinite;
+}
+@keyframes ghostFlash {
+  0%,100% { opacity: 0; }
+  45%,55% { opacity: 0.18; }
+}
+
+/* === MAIN CONTENT === */
+#main-content {
+  position: relative;
+  z-index: 1;
+  padding: 20px;
+}
+
+/* === CHAT === */
+#chat { border-top: 1px solid #00ffee44; padding-top: 10px; }
+#chat-messages {
+  height: 150px;
+  overflow-y: auto;
+  background: #001010;
+  border: 1px solid #00ffee44;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+.chat-message { margin: 2px 0; }
+
+/* === BOARD === */
+#board-posts {
+  border: 1px solid #00ffee44;
+  background: #001010;
+  padding: 10px;
+  margin-top: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
 </style>
 </head>
 <body>
 
-<div id="loader">
-  <div class="glitch" data-text="INITIALIZING...">INITIALIZING...</div>
-  <div class="progress-container">
-    <div class="progress-bar" id="progress-bar"></div>
-  </div>
-  <div class="scanlines"></div>
+<!-- Boot Screen -->
+<div id="boot-screen">
+  <div>█ SYSTEM BOOTING... █</div>
 </div>
 
-<div id="app" class="hidden">
-  <header class="header">
-    <h1 class="title">THE BEFORE US UNIVERSE</h1>
-    <p class="subtitle">.:. Digital Memory Archives .:.</p>
-  </header>
+<!-- Main App -->
+<div id="main-content" class="hidden">
+  <div id="ghost-layer"></div>
 
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="chat">LIVE CHAT</button>
-    <button class="tab-btn" data-tab="board">MESSAGE BOARD</button>
+  <h2>Before Us Universe</h2>
+  <div id="online-count">Currently: 0</div>
+
+  <div id="chat">
+    <h3>Live Chat</h3>
+    <div id="chat-messages"></div>
+    <input id="chat-input" placeholder="Type message..." />
+    <button onclick="sendMessage()">Send</button>
   </div>
 
-  <section id="chat" class="section">
-    <div class="chat-header">
-      <span>LIVE CHAT</span>
-      <span id="online-count">ONLINE: <span>0</span></span>
-    </div>
-    <div id="messages" class="messages"></div>
-    <form id="chat-form" class="input-area">
-      <input type="text" id="chat-input" placeholder="Type a message…" autocomplete="off" required />
-      <button type="submit">SEND</button>
-    </form>
-  </section>
-
-  <section id="board" class="section hidden">
-    <div class="board-header">
-      <span>MESSAGE BOARD (last 10)</span>
-      <span id="post-count">0 posts</span>
-    </div>
-    <div id="board-posts" class="board-posts"></div>
-    <form id="board-form" class="input-area">
-      <input type="text" id="board-input" placeholder="Leave a message…" autocomplete="off" required />
-      <button type="submit">POST</button>
-    </form>
-  </section>
-
-  <footer class="footer">
-    <p>LAST UPDATE <span id="last-update">1999.11.08</span></p>
-    <p>System: <span id="system-status">Stable*</span></p>
-  </footer>
+  <div id="board">
+    <h3>Message Board</h3>
+    <div id="board-posts"></div>
+    <input id="post-title" placeholder="Title" />
+    <textarea id="post-content" placeholder="Post..."></textarea>
+    <button onclick="createPost()">Post</button>
+  </div>
 </div>
 
-<audio id="boot-sound" preload="auto">
-  <source src="https://assets.mixkit.co/sfx/preview/mixkit-retro-game-notification-212.mp3" type="audio/mpeg">
-</audio>
-
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
-
-<script>
-// ==== YOUR FIREBASE CONFIG ====
-const firebaseConfig = {
-  apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
-  authDomain: "before-us-universe.firebaseapp.com",
-  databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
-  projectId: "before-us-universe",
-  storageBucket: "before-us-universe.firebasestorage.app",
-  messagingSenderId: "477103463228",
-  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
-};
-
-// Initialize Firebase (with error handling)
-try {
-  firebase.initializeApp(firebaseConfig);
-  console.log('Firebase initialized');
-} catch (e) {
-  console.error('Firebase init failed:', e);
-}
-const db = firebase.database();
-const auth = firebase.auth();
-
-// ==== BOT LOGIC ====
-const BOT_NAME = 'Yaga';
-const LORE = {
-  'who is wonderboy?': 'Wonderboy is the last surviving archivist of the Before Us timeline.',
-  'what is the before us universe?': 'A fractured multiverse where digital memories outlived humanity.',
-  'cortana': 'I am Yaga – part Cortana, part Baba Yaga.',
-};
-function botReply(msg) {
-  const lower = msg.toLowerCase().trim();
-  for (const [q, a] of Object.entries(LORE)) if (lower.includes(q)) return a;
-  const bad = ['fuck', 'shit', 'damn', 'bitch', 'ass'];
-  if (bad.some(w => lower.includes(w))) return 'Mind your tongue in the Archives.';
-  return 'Ask me about *Wonderboy*.';
-}
-
-// ==== USERNAME & ANONYMOUS AUTH ====
-let username = localStorage.getItem('beforeus_username') || null;
-auth.signInAnonymously().then(() => console.log('Auth success')).catch(e => console.error('Auth failed:', e));
-auth.onAuthStateChanged(user => {
-  if (user) {
-    if (!username) {
-      username = prompt('Choose your name:') || 'Guest';
-      localStorage.setItem('beforeus_username', username);
-    }
-    user.updateProfile({ displayName: username });
-    console.log('Auth success, username:', username);
-  } else {
-    console.error('No user - retrying...');
-    auth.signInAnonymously();
-  }
-});
-
-// ==== ELEMENTS ====
-const $ = s => document.querySelector(s);
-const loader = $('#loader'), app = $('#app');
-const messages = $('#messages'), chatInput = $('#chat-input'), chatForm = $('#chat-form');
-const boardPosts = $('#board-posts'), boardInput = $('#board-input'), boardForm = $('#board-form');
-const onlineSpan = $('#online-count span'), postCount = $('#post-count');
-const lastUpdateEl = $('#last-update');
-
-// ==== MESSAGE HELPERS ====
-function addChat(name, txt, type='user') {
-  const div = document.createElement('div');
-  div.className = `message ${type}`;
-  div.textContent = `${name}: ${txt}`;
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
-}
-function addBoard(txt, type='user') {
-  const div = document.createElement('div');
-  div.className = `post ${type}`;
-  div.textContent = txt;
-  boardPosts.appendChild(div);
-  boardPosts.scrollTop = boardPosts.scrollHeight;
-  postCount.textContent = `${document.querySelectorAll('.post').length} post${document.querySelectorAll('.post').length !== 1 ? 's' : ''}`;
-}
-function systemMsg(txt) { addChat('System', txt, 'system'); }
-
-// ==== RATE LIMIT ====
-let lastChatTime = 0, lastBoardTime = 0;
-
-// ==== CHAT ====
-const chatRef = db.ref('chat');
-chatRef.on('child_added', snap => {
-  const d = snap.val();
-  if (d) addChat(d.name, d.msg, d.isBot ? 'bot' : 'user');
-});
-chatForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const now = Date.now();
-  if (now - lastChatTime < 1000) { systemMsg('Slow down!'); return; }
-  const msg = chatInput.value.trim();
-  if (!msg || !username) { systemMsg('Name required!'); return; }
-  lastChatTime = now;
-  chatRef.push({ name: username, msg, isBot: false, timestamp: firebase.database.ServerValue.TIMESTAMP });
-  chatInput.value = '';
-  setTimeout(() => {
-    const reply = botReply(msg);
-    chatRef.push({ name: BOT_NAME, msg: reply, isBot: true, timestamp: firebase.database.ServerValue.TIMESTAMP });
-  }, 800);
-});
-
-// ==== BOARD ====
-const boardRef = db.ref('board').limitToLast(10);
-boardRef.on('child_added', snap => {
-  const d = snap.val();
-  if (d) addBoard(`${d.name}: ${d.msg}`, d.isBot ? 'bot' : 'user');
-});
-boardForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const now = Date.now();
-  if (now - lastBoardTime < 1000) { systemMsg('Slow down!'); return; }
-  const msg = boardInput.value.trim();
-  if (!msg || !username) { systemMsg('Name required!'); return; }
-  lastBoardTime = now;
-  boardRef.push({ name: username, msg, isBot: false, timestamp: firebase.database.ServerValue.TIMESTAMP });
-  boardInput.value = '';
-  setTimeout(() => {
-    const reply = botReply(msg);
-    if (reply.includes('tongue') || Object.keys(LORE).some(q => msg.toLowerCase().includes(q))) {
-      boardRef.push({ name: BOT_NAME, msg: reply, isBot: true, timestamp: firebase.database.ServerValue.TIMESTAMP });
-    }
-  }, 1200);
-});
-
-// ==== ONLINE ====
-const onlineRef = db.ref('online');
-const userRef = onlineRef.push(true);
-onlineRef.on('value', snap => onlineSpan.textContent = snap.numChildren() || 0);
-window.addEventListener('beforeunload', () => userRef.remove());
-
-// ==== TABS ====
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-    $(`#${btn.dataset.tab}`).classList.remove('hidden');
-  });
-});
-
-// ==== BOOT (FORCE FADE AFTER 4s IF STUCK) ====
-function startApp() {
-  console.log('Boot started');
-  const bar = $('#progress-bar');
-  let progress = 0;
-  const interval = setInterval(() => {
-    progress += 3;
-    bar.style.width = progress + '%';
-    if (progress >= 100) {
-      clearInterval(interval);
-      const sound = $('#boot-sound');
-      sound.currentTime = 0;
-      sound.play().catch(() => {});
-      loader.style.opacity = '0';
-      setTimeout(() => {
-        loader.classList.add('hidden');
-        app.classList.remove('hidden');
-        console.log('App loaded');
-        if (username) systemMsg(`Welcome, ${username}. Archives online.`);
-        else systemMsg('Archives online. Choose a name to chat.');
-        const now = new Date();
-        lastUpdateEl.textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
-      }, 300);
-    }
-  }, 90);
-  // Fallback: Force load after 4s if stuck
-  setTimeout(() => {
-    if (loader.style.display !== 'none') {
-      console.log('Force boot');
-      loader.classList.add('hidden');
-      app.classList.remove('hidden');
-      systemMsg('Force boot - Archives online.');
-    }
-  }, 4000);
-}
-startApp();  // Run immediately
-</script>
-  <script type="module">
+<!-- === MAIN JS SECTION === -->
+<script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getDatabase, ref, push, onValue, set, onDisconnect, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { getDatabase, ref, push, onValue, set, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
@@ -299,135 +123,75 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let username = localStorage.getItem("buu_username") || "";
-let onlineRef = null;
-
-// Boot screen sequence
-setTimeout(() => {
-  document.getElementById("boot-screen").style.display = "none";
-  if (!username) {
-    document.getElementById("username-modal").classList.add("show");
-  } else {
-    document.getElementById("main-content").classList.add("loaded");
+// Boot-up sequence (5 sec)
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.getElementById("boot-screen").classList.add("hidden");
+    document.getElementById("main-content").classList.remove("hidden");
     initApp();
-  }
-}, 4000);
+  }, 5000);
+});
 
-// Username setup
-window.setUsername = function() {
-  const val = document.getElementById("username-input").value.trim();
-  if (val) {
-    username = val;
-    localStorage.setItem("buu_username", username);
-    document.getElementById("username-modal").classList.remove("show");
-    document.getElementById("main-content").classList.add("loaded");
-    initApp();
-  }
-};
+let username = localStorage.getItem("buu_username") || prompt("Enter username:");
+localStorage.setItem("buu_username", username);
 
 function initApp() {
-  // Online tracking with static user ref
   const uid = localStorage.getItem("buu_uid") || Date.now().toString();
   localStorage.setItem("buu_uid", uid);
-  onlineRef = ref(db, "online/" + uid);
+
+  const onlineRef = ref(db, "online/" + uid);
   set(onlineRef, { username, timestamp: Date.now() });
   onDisconnect(onlineRef).remove();
 
-  // Live online count
-  const allOnlineRef = ref(db, "online");
-  onValue(allOnlineRef, (snap) => {
-    const count = snap.numChildren();
-    document.getElementById("online-count").textContent = `Currently: ${count}`;
+  const chatRef = ref(db, "chat");
+  const postsRef = ref(db, "posts");
+
+  onValue(ref(db, "online"), (snap) => {
+    document.getElementById("online-count").textContent = `Currently: ${snap.numChildren()}`;
   });
 
-  // Live chat
-  const chatRef = ref(db, "chat");
   onValue(chatRef, (snap) => {
     const chatDiv = document.getElementById("chat-messages");
     chatDiv.innerHTML = "";
     snap.forEach((msg) => {
       const m = msg.val();
-      addChatMessage(m.username, m.text, m.timestamp);
+      const div = document.createElement("div");
+      div.className = "chat-message";
+      div.textContent = `${m.username}: ${m.text}`;
+      chatDiv.appendChild(div);
     });
     chatDiv.scrollTop = chatDiv.scrollHeight;
   });
 
-  // Live posts
-  const postsRef = ref(db, "posts");
   onValue(postsRef, (snap) => {
     const board = document.getElementById("board-posts");
     board.innerHTML = "";
     snap.forEach((p) => {
       const post = p.val();
-      addBoardPost(post.title, post.content, post.username, post.timestamp);
+      const div = document.createElement("div");
+      div.innerHTML = `<b>${post.title}</b><p>${post.content}</p><i>— ${post.username}</i>`;
+      board.appendChild(div);
     });
   });
 }
 
-// Chat sending
 window.sendMessage = function() {
   const input = document.getElementById("chat-input");
   const text = input.value.trim();
   if (!text) return;
-
-  push(ref(db, "chat"), {
-    username,
-    text,
-    timestamp: Date.now(),
-  });
+  push(ref(db, "chat"), { username, text, timestamp: Date.now() });
   input.value = "";
 };
 
-// Create post
 window.createPost = function() {
   const title = document.getElementById("post-title").value.trim();
   const content = document.getElementById("post-content").value.trim();
   if (!title || !content) return;
-
-  push(ref(db, "posts"), {
-    title,
-    content,
-    username,
-    timestamp: Date.now(),
-  });
-
+  push(ref(db, "posts"), { title, content, username, timestamp: Date.now() });
   document.getElementById("post-title").value = "";
   document.getElementById("post-content").value = "";
 };
-
-// Add chat message
-function addChatMessage(user, text, time) {
-  const msgDiv = document.createElement("div");
-  msgDiv.className = "chat-message";
-  const t = new Date(time).toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
-  msgDiv.innerHTML = `
-    <div class="chat-meta">[${t}] <span class="username">${escapeHtml(user)}:</span></div>
-    <div class="chat-text">${escapeHtml(text)}</div>`;
-  document.getElementById("chat-messages").appendChild(msgDiv);
-}
-
-// Add board post
-function addBoardPost(title, content, user, time) {
-  const postDiv = document.createElement("div");
-  postDiv.className = "board-post";
-  const d = new Date(time).toLocaleDateString("en-US").replace(/\//g, ".");
-  postDiv.innerHTML = `
-    <div class="post-title">→ ${escapeHtml(title)}</div>
-    <div class="post-content">${escapeHtml(content)}</div>
-    <div class="post-meta">Posted by ${escapeHtml(user)} | ${d}</div>`;
-  document.getElementById("board-posts").appendChild(postDiv);
-}
-
-// Escape HTML
-function escapeHtml(txt) {
-  const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" };
-  return txt.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-// Enter key shortcuts
-document.getElementById("chat-input").addEventListener("keypress", (e) => e.key === "Enter" && sendMessage());
-document.getElementById("username-input").addEventListener("keypress", (e) => e.key === "Enter" && setUsername());
 </script>
-<script type="module" src="./scripts/ntd-agent.js"></script>
+
 </body>
 </html>
