@@ -97,21 +97,21 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
   <source src="https://assets.mixkit.co/sfx/preview/mixkit-retro-game-notification-212.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Firebase SDKs -->
+<!-- Firebase SDKs (compat mode for older browsers) -->
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
 
 <script>
-// ===== PASTE YOUR FIREBASE CONFIG HERE =====
+// ==== YOUR FIREBASE CONFIG (copied from your snippet) ====
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
   authDomain: "before-us-universe.firebaseapp.com",
   databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
   projectId: "before-us-universe",
-  storageBucket: "before-us-universe.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  storageBucket: "before-us-universe.firebasestorage.app",
+  messagingSenderId: "477103463228",
+  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
 };
 
 // Initialize Firebase
@@ -119,7 +119,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const auth = firebase.auth();
 
-// ===== BOT LOGIC =====
+// ==== BOT LOGIC ====
 const BOT_NAME = 'Yaga';
 const LORE = {
   'who is wonderboy?': 'Wonderboy is the last surviving archivist of the Before Us timeline.',
@@ -134,7 +134,7 @@ function botReply(msg) {
   return 'Ask me about *Wonderboy*.';
 }
 
-// ===== USERNAME & AUTH =====
+// ==== USERNAME & ANONYMOUS AUTH ====
 let username = null;
 auth.signInAnonymously().catch(console.error);
 auth.onAuthStateChanged(user => {
@@ -145,7 +145,7 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-// ===== ELEMENTS =====
+// ==== ELEMENTS ====
 const $ = s => document.querySelector(s);
 const loader = $('#loader'), app = $('#app');
 const messages = $('#messages'), chatInput = $('#chat-input'), chatForm = $('#chat-form');
@@ -153,7 +153,7 @@ const boardPosts = $('#board-posts'), boardInput = $('#board-input'), boardForm 
 const onlineSpan = $('#online-count span'), postCount = $('#post-count');
 const lastUpdateEl = $('#last-update');
 
-// ===== MESSAGES =====
+// ==== MESSAGE HELPERS ====
 function addChat(name, txt, type='user') {
   const div = document.createElement('div');
   div.className = `message ${type}`;
@@ -169,67 +169,82 @@ function addBoard(txt, type='user') {
   boardPosts.scrollTop = boardPosts.scrollHeight;
   postCount.textContent = `${document.querySelectorAll('.post').length} post${document.querySelectorAll('.post').length !== 1 ? 's' : ''}`;
 }
-function systemMsg(txt) {
-  addChat('System', txt, 'system');
-}
+function systemMsg(txt) { addChat('System', txt, 'system'); }
 
-// ===== RATE LIMITING (1 msg/sec) =====
-let lastChatTime = 0;
-let lastBoardTime = 0;
+// ==== RATE LIMIT (1 msg/sec) ====
+let lastChatTime = 0, lastBoardTime = 0;
 
-// ===== CHAT (REAL-TIME) =====
+// ==== CHAT (REAL-TIME) ====
 const chatRef = db.ref('chat');
 chatRef.on('child_added', snap => {
-  const data = snap.val();
-  addChat(data.name, data.msg, data.isBot ? 'bot' : 'user');
+  const d = snap.val();
+  addChat(d.name, d.msg, d.isBot ? 'bot' : 'user');
 });
 chatForm.addEventListener('submit', e => {
   e.preventDefault();
   const now = Date.now();
-  if (now - lastChatTime < 1000) return systemMsg('Slow down! 1 msg/sec.');
+  if (now - lastChatTime < 1000) { systemMsg('Slow down! 1 msg/sec.'); return; }
   const msg = chatInput.value.trim();
   if (!msg || !username) return;
   lastChatTime = now;
-  chatRef.push({ name: username, msg, isBot: false, timestamp: firebase.database.ServerValue.TIMESTAMP });
+  chatRef.push({
+    name: username,
+    msg,
+    isBot: false,
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  });
   chatInput.value = '';
   setTimeout(() => {
     const reply = botReply(msg);
-    chatRef.push({ name: BOT_NAME, msg: reply, isBot: true, timestamp: firebase.database.ServerValue.TIMESTAMP });
+    chatRef.push({
+      name: BOT_NAME,
+      msg: reply,
+      isBot: true,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
   }, 800);
 });
 
-// ===== BOARD (LAST 10) =====
+// ==== BOARD (LAST 10) ====
 const boardRef = db.ref('board').limitToLast(10);
 boardRef.on('child_added', snap => {
-  const data = snap.val();
-  addBoard(`${data.name}: ${data.msg}`, data.isBot ? 'bot' : 'user');
+  const d = snap.val();
+  addBoard(`${d.name}: ${d.msg}`, d.isBot ? 'bot' : 'user');
 });
 boardForm.addEventListener('submit', e => {
   e.preventDefault();
   const now = Date.now();
-  if (now - lastBoardTime < 1000) return systemMsg('Slow down! 1 post/sec.');
+  if (now - lastBoardTime < 1000) { systemMsg('Slow down! 1 post/sec.'); return; }
   const msg = boardInput.value.trim();
   if (!msg || !username) return;
   lastBoardTime = now;
-  boardRef.push({ name: username, msg, isBot: false, timestamp: firebase.database.ServerValue.TIMESTAMP });
+  boardRef.push({
+    name: username,
+    msg,
+    isBot: false,
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  });
   boardInput.value = '';
   setTimeout(() => {
     const reply = botReply(msg);
     if (reply.includes('tongue') || Object.keys(LORE).some(q => msg.toLowerCase().includes(q))) {
-      boardRef.push({ name: BOT_NAME, msg: reply, isBot: true, timestamp: firebase.database.ServerValue.TIMESTAMP });
+      boardRef.push({
+        name: BOT_NAME,
+        msg: reply,
+        isBot: true,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      });
     }
   }, 1200);
 });
 
-// ===== ONLINE COUNTER =====
+// ==== ONLINE COUNTER ====
 const onlineRef = db.ref('online');
 const userRef = onlineRef.push(true);
-onlineRef.on('value', snap => {
-  onlineSpan.textContent = snap.numChildren();
-});
+onlineRef.on('value', snap => onlineSpan.textContent = snap.numChildren());
 window.addEventListener('beforeunload', () => userRef.remove());
 
-// ===== TABS =====
+// ==== TABS ====
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -239,7 +254,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-// ===== BOOT SEQUENCE (GLITCH + BAR + BEEP) =====
+// ==== BOOT SEQUENCE (GLITCH + BAR + BEEP) ====
 function startApp() {
   const bar = $('#progress-bar');
   let progress = 0;
@@ -257,7 +272,7 @@ function startApp() {
         app.classList.remove('hidden');
         systemMsg(`Welcome, ${username || 'Guest'}. Archives online.`);
         const now = new Date();
-        lastUpdateEl.textContent = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+        lastUpdateEl.textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
       }, 300);
     }
   }, 90);
