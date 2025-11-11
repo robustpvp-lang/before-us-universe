@@ -1,197 +1,250 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Before Us Universe</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Before Us Universe</title>
 <style>
-/* === GLOBAL THEME === */
-body {
-  margin: 0;
-  background: black;
-  color: #00ffee;
-  font-family: monospace;
-  overflow: hidden;
-}
-.hidden { display: none; }
-
-/* === BOOT SEQUENCE === */
-#boot-screen {
-  position: fixed;
-  inset: 0;
-  background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #00ffee;
-  font-size: 2rem;
-  animation: fadeOut 5s forwards 5s;
-}
-@keyframes fadeOut {
-  to { opacity: 0; visibility: hidden; }
-}
-
-/* === NTD FACE BACKGROUND === */
-#ghost-layer {
-  position: fixed;
-  inset: 0;
-  background: url("https://raw.githubusercontent.com/robustpvp-lang/before-us-universe/main/scripts/ntd-face.jpeg") center/cover no-repeat;
-  mix-blend-mode: screen;
-  opacity: 0;
-  z-index: 0;
-  animation: ghostFlash 8s infinite;
-}
-@keyframes ghostFlash {
-  0%,100% { opacity: 0; }
-  45%,55% { opacity: 0.18; }
-}
-
-/* === MAIN CONTENT === */
-#main-content {
-  position: relative;
-  z-index: 1;
-  padding: 20px;
-}
-
-/* === CHAT === */
-#chat { border-top: 1px solid #00ffee44; padding-top: 10px; }
-#chat-messages {
-  height: 150px;
-  overflow-y: auto;
-  background: #001010;
-  border: 1px solid #00ffee44;
-  padding: 10px;
-  margin-bottom: 8px;
-}
-.chat-message { margin: 2px 0; }
-
-/* === BOARD === */
-#board-posts {
-  border: 1px solid #00ffee44;
-  background: #001010;
-  padding: 10px;
-  margin-top: 10px;
-  max-height: 200px;
-  overflow-y: auto;
-}
+  /* Minimal theme kept from your design — green CRT look */
+  :root { --accent:#9bbc0f; --muted:#8bac0f; --bg:#071a06; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Courier, monospace;background:linear-gradient(180deg,#9bbc0f 0,#306230 60%,#071a06 100%);color:#0f380f;min-height:100vh;padding:18px;}
+  /* Boot */
+  #boot-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;background:linear-gradient(180deg,#9bbc0f,#306230);}
+  .boot-box{background:#071a06;border:6px solid var(--accent);padding:28px;border-radius:8px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+  .loading-fill {height:16px;background:var(--accent);width:0;animation:loadFill 4s forwards}
+  @keyframes loadFill{0%{width:0}100%{width:100%}}
+  /* Main */
+  #main {max-width:1100px;margin:0 auto;display:none;position:relative;z-index:10}
+  header{background:#071a06;border:6px solid var(--accent);padding:14px;border-radius:10px;margin-bottom:14px}
+  h1{color:var(--accent);letter-spacing:2px}
+  .grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:780px){.grid{grid-template-columns:1fr 420px}}
+  .card{background:rgba(0,0,0,0.15);border-radius:8px;padding:12px;border:2px solid rgba(0,0,0,0.2)}
+  /* chat/board */
+  #chat-messages, #board-posts{background:#071a06;border:2px solid rgba(255,255,255,0.03);padding:10px;height:260px;overflow:auto}
+  input,textarea,button{font-family:inherit}
+  input,textarea{width:100%;padding:8px;border-radius:6px;border:2px solid rgba(255,255,255,0.03);background:transparent;color:inherit}
+  button{background:var(--accent);border-radius:8px;border:2px solid #071a06;padding:8px 10px;cursor:pointer}
+  .muted{color:#9aa; font-size:13px}
+  /* ghost face (full screen) */
+  #ghost { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0; mix-blend-mode:screen; transition:opacity 200ms linear; background-position:center; background-size:cover; }
+  /* NTD avatar */
+  #ntd-avatar{position:fixed;right:18px;bottom:18px;width:84px;height:84px;border-radius:50%;z-index:9999;pointer-events:none;display:flex;align-items:center;justify-content:center}
+  .ntd-ring{width:64px;height:64px;border-radius:50%;box-shadow:0 0 18px #0ff, inset 0 0 20px #0ff;animation:ntdPulse 3s infinite alternate}
+  @keyframes ntdPulse{from{transform:scale(.96);opacity:.4}to{transform:scale(1.03);opacity:1}}
 </style>
 </head>
 <body>
-
-<!-- Boot Screen -->
-<div id="boot-screen">
-  <div>█ SYSTEM BOOTING... █</div>
-</div>
-
-<!-- Main App -->
-<div id="main-content" class="hidden">
-  <div id="ghost-layer"></div>
-
-  <h2>Before Us Universe</h2>
-  <div id="online-count">Currently: 0</div>
-
-  <div id="chat">
-    <h3>Live Chat</h3>
-    <div id="chat-messages"></div>
-    <input id="chat-input" placeholder="Type message..." />
-    <button onclick="sendMessage()">Send</button>
+  <!-- boot -->
+  <div id="boot-screen" aria-hidden="false">
+    <div class="boot-box" role="status" aria-live="polite">
+      <div style="font-weight:900;font-size:28px;color:var(--accent);letter-spacing:3px">WONDERBOY</div>
+      <div style="margin-top:8px;color:#cfe6a1">BOOT SEQUENCE...</div>
+      <div style="width:320px;margin:14px auto;background:#071a06;border:3px solid rgba(255,255,255,0.03);padding:4px;border-radius:6px">
+        <div class="loading-fill" aria-hidden="true"></div>
+      </div>
+      <div class="muted">© The Before Us Universe</div>
+    </div>
   </div>
 
-  <div id="board">
-    <h3>Message Board</h3>
-    <div id="board-posts"></div>
-    <input id="post-title" placeholder="Title" />
-    <textarea id="post-content" placeholder="Post..."></textarea>
-    <button onclick="createPost()">Post</button>
-  </div>
-</div>
+  <!-- spectral face (will be toggled) -->
+  <div id="ghost" aria-hidden="true"></div>
 
-<!-- === MAIN JS SECTION === -->
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getDatabase, ref, push, onValue, set, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+  <!-- main -->
+  <main id="main" role="main">
+    <header>
+      <h1>THE BEFORE US UNIVERSE</h1>
+      <div class="muted">.:. Digital Memory Archives .:.</div>
+    </header>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
-  authDomain: "before-us-universe.firebaseapp.com",
-  databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
-  projectId: "before-us-universe",
-  storageBucket: "before-us-universe.appspot.com",
-  messagingSenderId: "477103463228",
-  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
-};
+    <div class="grid">
+      <section class="card" aria-labelledby="board">
+        <h2 id="board" style="color:var(--accent)">≡ MESSAGE BOARD ≡</h2>
+        <div id="board-posts" aria-live="polite"></div>
+        <div style="margin-top:10px">
+          <input id="post-title" placeholder="Thread Title..." maxlength="80" />
+          <textarea id="post-content" placeholder="Your message..." rows="4" style="margin-top:8px"></textarea>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button id="postBtn">POST</button>
+            <button id="refreshBtn" style="background:transparent;border:2px solid var(--accent);color:var(--accent)">Refresh</button>
+          </div>
+        </div>
+      </section>
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+      <aside class="card" aria-labelledby="chat">
+        <h2 id="chat" style="color:var(--accent)">≡ LIVE CHAT ≡</h2>
+        <div id="chat-messages" aria-live="polite"></div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="chat-input" placeholder="Type message..." />
+          <button id="sendBtn">SEND</button>
+        </div>
+        <div style="margin-top:12px" class="muted">Users: <span id="online-count">0</span></div>
+      </aside>
+    </div>
 
-// Boot-up sequence (5 sec)
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    document.getElementById("boot-screen").classList.add("hidden");
-    document.getElementById("main-content").classList.remove("hidden");
-    initApp();
-  }, 5000);
-});
+    <footer style="margin-top:16px" class="muted">© Patrick McDonald — Best viewed small</footer>
+  </main>
 
-let username = localStorage.getItem("buu_username") || prompt("Enter username:");
-localStorage.setItem("buu_username", username);
+  <!-- Firebase & App logic -->
+  <script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getDatabase, ref, push, onValue, set, onDisconnect, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-function initApp() {
-  const uid = localStorage.getItem("buu_uid") || Date.now().toString();
-  localStorage.setItem("buu_uid", uid);
+  // YOUR FIREBASE CONFIG (already yours)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
+    authDomain: "before-us-universe.firebaseapp.com",
+    databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
+    projectId: "before-us-universe",
+    storageBucket: "before-us-universe.appspot.com",
+    messagingSenderId: "477103463228",
+    appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
+  };
 
-  const onlineRef = ref(db, "online/" + uid);
-  set(onlineRef, { username, timestamp: Date.now() });
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // utility: sanitize simple text (escape)
+  function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+
+  // linkify for chat/board (turn URLs into anchors)
+  function linkifyAndSanitize(text){
+    const raw = escapeHtml(text);
+    const urlRegex = /((https?:\/\/|www\.)[^\s]+)/g;
+    return raw.replace(urlRegex, (m)=>{
+      let href = m;
+      if(!/^https?:\/\//i.test(href)) href = 'https://' + href;
+      return '<a href="'+href+'" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">'+escapeHtml(m)+'</a>';
+    });
+  }
+
+  // boot -> main flow
+  const boot = document.getElementById('boot-screen');
+  const main = document.getElementById('main');
+  setTimeout(()=>{ boot.style.display='none'; main.style.display='block'; }, 4200);
+
+  // username
+  let username = localStorage.getItem('buu_username') || '';
+  if(!username){
+    username = prompt('Pick a handle:') || ('anon'+Math.floor(Math.random()*9000));
+    localStorage.setItem('buu_username', username);
+  }
+
+  // online presence
+  const uid = localStorage.getItem('buu_uid') || (Date.now().toString());
+  localStorage.setItem('buu_uid', uid);
+  const onlineRef = ref(db, 'online/' + uid);
+  set(onlineRef, { username, ts: Date.now() });
   onDisconnect(onlineRef).remove();
 
-  const chatRef = ref(db, "chat");
-  const postsRef = ref(db, "posts");
+  const chatRef = ref(db, 'chat');
+  const postsRef = ref(db, 'posts');
 
-  onValue(ref(db, "online"), (snap) => {
-    document.getElementById("online-count").textContent = `Currently: ${snap.numChildren()}`;
-  });
-
-  onValue(chatRef, (snap) => {
-    const chatDiv = document.getElementById("chat-messages");
-    chatDiv.innerHTML = "";
-    snap.forEach((msg) => {
-      const m = msg.val();
-      const div = document.createElement("div");
-      div.className = "chat-message";
-      div.textContent = `${m.username}: ${m.text}`;
-      chatDiv.appendChild(div);
+  // render helpers
+  function renderChat(snapshot){
+    const el = document.getElementById('chat-messages');
+    el.innerHTML = '';
+    snapshot.forEach(child => {
+      const m = child.val();
+      const d = document.createElement('div');
+      const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+      d.innerHTML = `<div style="font-size:12px;color:#9aa">[${time}] <b>${escapeHtml(m.username)}</b></div><div style="margin-left:6px">${linkifyAndSanitize(m.text)}</div>`;
+      el.appendChild(d);
     });
-    chatDiv.scrollTop = chatDiv.scrollHeight;
-  });
+    el.scrollTop = el.scrollHeight;
+  }
 
-  onValue(postsRef, (snap) => {
-    const board = document.getElementById("board-posts");
-    board.innerHTML = "";
-    snap.forEach((p) => {
-      const post = p.val();
-      const div = document.createElement("div");
-      div.innerHTML = `<b>${post.title}</b><p>${post.content}</p><i>— ${post.username}</i>`;
-      board.appendChild(div);
+  function renderPosts(snapshot){
+    const el = document.getElementById('board-posts');
+    el.innerHTML = '';
+    snapshot.forEach(child => {
+      const p = child.val();
+      const d = document.createElement('div');
+      d.style.marginBottom='10px';
+      const date = p.timestamp? new Date(p.timestamp).toLocaleDateString() : '';
+      d.innerHTML = `<div style="color:var(--accent);font-weight:700">${escapeHtml(p.title)}</div><div style="color:#cfe6a1">${linkifyAndSanitize(p.content)}</div><div style="font-size:11px;color:#9aa">Posted by ${escapeHtml(p.username)} • ${escapeHtml(date)}</div>`;
+      el.appendChild(d);
+    });
+  }
+
+  // subscribe realtime
+  onValue(ref(db,'online'), snap => {
+    const count = snap ? snap.numChildren() : 0;
+    document.getElementById('online-count').textContent = count;
+  });
+  onValue(chatRef, snap => renderChat(snap));
+  onValue(postsRef, snap => renderPosts(snap));
+
+  // send actions
+  document.getElementById('sendBtn').addEventListener('click', sendMessage);
+  document.getElementById('postBtn').addEventListener('click', createPost);
+  document.getElementById('refreshBtn').addEventListener('click', ()=>{ onValue(chatRef, snap=>renderChat(snap)); onValue(postsRef, snap=>renderPosts(snap)); });
+
+  function sendMessage(){
+    const v = document.getElementById('chat-input').value.trim();
+    if(!v) return;
+    push(chatRef, { username, text:v, timestamp: Date.now() });
+    document.getElementById('chat-input').value='';
+  }
+
+  function createPost(){
+    const title = document.getElementById('post-title').value.trim();
+    const content = document.getElementById('post-content').value.trim();
+    if(!title || !content) return alert('title + content required');
+    push(postsRef, { title, content, username, timestamp: Date.now() });
+    document.getElementById('post-title').value=''; document.getElementById('post-content').value='';
+  }
+
+  // Basic moderation and NTD ghost + voice
+  const ghost = document.getElementById('ghost');
+  const GHOST_URL = 'https://raw.githubusercontent.com/robustpvp-lang/before-us-universe/main/scripts/ntd-face.jpeg';
+  ghost.style.backgroundImage = `url("${GHOST_URL}")`;
+
+  const banned = ['fuck','shit','bitch','nigger','cunt','suicide','kill'];
+  onValue(chatRef, snap=>{
+    snap.forEach(child=>{
+      const m = child.val();
+      if(!m || !m.text) return;
+      const t = (m.text+'').toLowerCase();
+      for(const b of banned){
+        if(t.includes(b)){
+          // remove offensive message (find and remove by key)
+          remove(ref(db, 'chat/' + child.key));
+          // post NTD warning
+          push(chatRef, { username:'NTD', text:'⚠️ Hush now… the lines are listening.', timestamp: Date.now() });
+          // visual + voice
+          ghost.style.opacity = '0.65';
+          setTimeout(()=>ghost.style.opacity='0',1400);
+          // speak (older voice)
+          if('speechSynthesis' in window){
+            const u = new SpeechSynthesisUtterance('Hush now… the lines are listening.');
+            u.pitch = 0.6; u.rate = 0.85; u.volume = 0.9;
+            const v = speechSynthesis.getVoices().find(x=>/female|english/i.test(x.name)||/en/i.test(x.lang));
+            if(v) u.voice = v;
+            speechSynthesis.speak(u);
+          }
+          return;
+        }
+      }
     });
   });
-}
 
-window.sendMessage = function() {
-  const input = document.getElementById("chat-input");
-  const text = input.value.trim();
-  if (!text) return;
-  push(ref(db, "chat"), { username, text, timestamp: Date.now() });
-  input.value = "";
-};
+  // occasional whisper
+  setInterval(()=>{
+    if(Math.random()>0.66){
+      const whispers = [
+        "Not all voices belong to the living, child.",
+        "Don't trust what echoes twice.",
+        "It is leaking again. Hold still, love."
+      ];
+      const phrase = whispers[Math.floor(Math.random()*whispers.length)];
+      push(chatRef, { username:'NTD', text:'🜂 '+phrase, timestamp: Date.now() });
+      ghost.style.opacity = '0.45';
+      setTimeout(()=>ghost.style.opacity='0',1200);
+    }
+  },1000*60*3 + Math.random()*1000*60*2);
 
-window.createPost = function() {
-  const title = document.getElementById("post-title").value.trim();
-  const content = document.getElementById("post-content").value.trim();
-  if (!title || !content) return;
-  push(ref(db, "posts"), { title, content, username, timestamp: Date.now() });
-  document.getElementById("post-title").value = "";
-  document.getElementById("post-content").value = "";
-};
-</script>
-
+  </script>
 </body>
 </html>
