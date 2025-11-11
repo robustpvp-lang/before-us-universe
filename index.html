@@ -3,107 +3,152 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>BuuHoo — Before Us Universe Chat</title>
+<title>BuuHoo — Before Us Universe</title>
 <style>
-  /* 90s Yahoo-esque / GeoCities parody vibe */
-  :root{
-    --bg1:#2f005f; --bg2:#ff66cc; --accent:#ffd84d; --muted:#c9a8ff; --card:#2a003f;
-    color-scheme: dark;
+  /* Subtle 90s chatroom + sci-fi combination:
+     muted AOL/Yahoo palette, small pixel touches, starfield */
+  :root {
+    --bg1: #08101a; /* deep space */
+    --bg2: #121827;
+    --panel: rgba(255,255,255,0.03);
+    --accent: #9bbf4f; /* hint of Gameboy color, subdued */
+    --retro: #d7b3ff;  /* tiny nod to 90s purple, used sparingly */
+    --muted: #aab6c2;
   }
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family: "Lucida Grande", Tahoma, Arial, sans-serif;background:linear-gradient(120deg,var(--bg1),#43106a 40%, #1b0b3a 100%);color:#fff}
+  html,body{height:100%;margin:0;font-family: "Lucida Grande", Tahoma, Arial, sans-serif;background: linear-gradient(180deg,var(--bg1),var(--bg2));color:#e6eef8}
   a{color:var(--accent)}
-  /* Header */
-  header{padding:18px;border-bottom:4px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:16px}
-  .logo{font-weight:900;color:var(--accent);font-size:26px;letter-spacing:1px}
-  .tag{color:var(--muted);font-size:13px}
-  /* Layout */
-  .wrap{max-width:1100px;margin:18px auto;display:grid;grid-template-columns:1fr 420px;gap:18px;padding:0 12px}
-  @media(max-width:920px){.wrap{grid-template-columns:1fr;}}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));border-radius:10px;padding:12px;border:2px solid rgba(255,255,255,0.03)}
-  /* Threaded board */
-  .board-top{display:flex;gap:8px;align-items:center;justify-content:space-between}
-  #threads{height:320px;overflow:auto;border:2px dashed rgba(255,255,255,0.03);padding:8px;background:rgba(255,255,255,0.01);border-radius:6px}
-  .thread-item{padding:8px;border-radius:6px;margin-bottom:8px;background:linear-gradient(90deg, rgba(255,255,255,0.01), transparent);cursor:pointer}
-  .thread-item h4{margin:0;font-size:15px;color:var(--accent)}
-  .thread-meta{font-size:12px;color:var(--muted);margin-top:6px}
-  /* thread detail */
-  #thread-detail{height:380px;overflow:auto;border:2px solid rgba(255,255,255,0.02);padding:10px;border-radius:6px;background:rgba(0,0,0,0.06)}
-  .reply{padding:8px;border-radius:6px;margin-bottom:8px;background:rgba(255,255,255,0.015)}
-  /* Chat */
-  #chat-messages{height:320px;overflow:auto;background:linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.02));padding:8px;border-radius:6px;border:2px solid rgba(255,255,255,0.02)}
-  .chat-line{margin-bottom:8px;font-size:13px}
-  .meta{color:var(--muted);font-size:12px}
-  .input, textarea{background:#0f0420;border:2px solid rgba(255,255,255,0.03);color:#fff;padding:8px;border-radius:6px;width:100%;font-family:inherit}
-  button{background:var(--accent);border:2px solid #b48b2a;color:#1b0b0b;padding:8px 10px;border-radius:6px;cursor:pointer;font-weight:700}
-  .small{font-size:12px;color:var(--muted)}
-  /* modal username */
-  #modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));z-index:9999}
-  .modal-box{background:#130022;border:4px solid var(--accent);padding:20px;border-radius:8px;text-align:center;min-width:280px}
-  .modal-box h2{margin:0 0 10px;color:var(--accent)}
-  /* footer */
-  footer{max-width:1100px;margin:18px auto;color:var(--muted);font-size:12px;text-align:center}
+  /* subtle starfield */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:0.12;background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8) 0 1px, transparent 2px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.6) 0 1px, transparent 2px);
+    mix-blend-mode:screen;z-index:0;
+  }
+
+  /* Boot screen (keeps presence of the old design but refined) */
+  #boot-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#0b1b1f,#071018);z-index:9999}
+  .boot-card{width:420px;padding:22px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:3px solid rgba(255,255,255,0.04);text-align:center;box-shadow:0 18px 50px rgba(0,0,0,0.6)}
+  .boot-title{font-weight:900;font-size:28px;color:var(--accent);letter-spacing:2px}
+  .boot-sub{color:var(--muted);margin-top:8px;font-size:13px}
+  .loadbar{margin-top:16px;height:14px;background:#031014;border-radius:6px;border:2px solid rgba(255,255,255,0.02);overflow:hidden}
+  .loadbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#ffd88a);width:0%;animation:fill 4s linear forwards}
+  @keyframes fill{to{width:100%}}
+
+  /* layout */
+  .wrap{position:relative;z-index:2;max-width:1100px;margin:32px auto;display:grid;grid-template-columns:1fr 420px;gap:18px;padding:0 16px}
+  @media (max-width:960px){.wrap{grid-template-columns:1fr;padding:12px}}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .brand{font-weight:900;font-size:22px;color:var(--accent);letter-spacing:1px}
+  .sub{color:var(--muted);font-size:13px}
+
+  /* cards */
+  .card{background:var(--panel);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* message board (threads) */
+  .board-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  #threads{height:320px;overflow:auto;margin-top:12px;border-radius:6px;padding:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+  .thread{padding:10px;border-radius:6px;margin-bottom:10px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));cursor:pointer}
+  .thread h4{margin:0;color:var(--accent)}
+  .thread .meta{font-size:12px;color:var(--muted);margin-top:6px}
+
+  #thread-detail{height:360px;overflow:auto;margin-top:12px;border-radius:6px;padding:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+  .reply{padding:8px;border-radius:6px;margin-bottom:8px;background:rgba(255,255,255,0.02)}
+
+  /* chat */
+  #chat-messages{height:520px;overflow:auto;background:linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.02));padding:10px;border-radius:6px;border:1px solid rgba(255,255,255,0.02)}
+  .chat-line{margin-bottom:10px}
+  .meta{font-size:12px;color:var(--muted)}
+
+  input, textarea {background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:6px;color:inherit;font-family:inherit}
+  button{background:var(--accent);border:none;color:#091017;padding:8px 10px;border-radius:6px;cursor:pointer;font-weight:700}
+  .muted-note{color:var(--muted);font-size:12px;margin-top:8px}
+
+  /* faint glitching for sci-fi flavor (very subtle) */
+  @keyframes subtleGlitch {
+    0% { transform: translateX(0) }
+    25% { transform: translateX(-1px) skewX(.2deg) }
+    50% { transform: translateX(0) }
+    75% { transform: translateX(1px) skewX(-.2deg) }
+    100% { transform: translateX(0) }
+  }
+  .glitch-subtle { animation: subtleGlitch 7s infinite linear; }
+
+  /* ghost face layer (very faint) */
+  #ghost { position:fixed;inset:0;pointer-events:none;z-index:1;mix-blend-mode:screen;opacity:0;transition:opacity 240ms; background-position:center;background-size:cover }
 </style>
 </head>
 <body>
-  <header>
-    <div class="logo">BuuHoo</div>
-    <div class="tag">• Vintage Chatroom Parody • The Before Us Universe</div>
-    <div style="margin-left:auto" class="small">Logged in as: <span id="current-user" style="font-weight:700">—</span></div>
-  </header>
+  <!-- Boot screen (keeps presence) -->
+  <div id="boot-screen" role="status" aria-live="polite">
+    <div class="boot-card">
+      <div class="boot-title">WONDERBOY</div>
+      <div class="boot-sub">Initializing archive — please wait</div>
+      <div class="loadbar"><i></i></div>
+      <div class="muted-note">A subtle archival experience — loading preview assets</div>
+    </div>
+  </div>
 
-  <div class="wrap" role="main">
-    <!-- Left: message board -->
-    <section class="card" aria-labelledby="board-title">
+  <!-- ghost face (subtle, toggled when needed) -->
+  <div id="ghost" aria-hidden="true"></div>
+
+  <!-- top -->
+  <div class="wrap" role="main" style="display:none" id="app">
+    <header style="grid-column: 1 / -1;">
+      <div class="brand">BuuHoo</div>
+      <div class="sub">A subtle 90s-worn interface for the Before Us Universe</div>
+      <div style="margin-left:auto" class="small">Logged in: <span id="user-handle">—</span></div>
+    </header>
+
+    <!-- Threads / Board -->
+    <section class="card">
       <div class="board-top">
         <div>
-          <h3 id="board-title" style="margin:0;color:var(--accent)">Message Board (Threads)</h3>
-          <div class="small">Create threads, open and reply — live updates</div>
+          <h3 style="margin:0;color:var(--accent)">Message Board</h3>
+          <div class="small">Threads • Live replies • Legacy-aware</div>
         </div>
-        <div id="online-count" class="small">Users: 0</div>
+        <div class="small" id="online-count">Users: 0</div>
       </div>
 
-      <div style="display:flex;gap:12px;margin-top:12px">
-        <input id="thread-title" class="input" placeholder="New thread title..." />
-        <button id="create-thread-btn">New Thread</button>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input id="thread-title" placeholder="Start a new thread (title)..." />
+        <button id="create-thread">Create</button>
       </div>
 
-      <div id="threads" aria-live="polite" style="margin-top:12px"></div>
+      <div id="threads" aria-live="polite"></div>
 
-      <div style="margin-top:12px">
-        <div id="thread-detail" aria-live="polite"><div class="small">Open a thread to view replies.</div></div>
-        <div style="margin-top:8px;display:flex;gap:8px">
-          <textarea id="reply-text" rows="3" placeholder="Reply to thread..." style="flex:1"></textarea>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button id="post-reply-btn">Reply</button>
-            <button id="close-thread-btn" style="background:transparent;border:2px solid var(--accent);color:var(--accent)">Close</button>
-          </div>
+      <div id="thread-detail"></div>
+
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <textarea id="reply-text" rows="3" placeholder="Reply to thread..."></textarea>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button id="reply-btn">Reply</button>
+          <button id="close-thread" style="background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)">Close</button>
         </div>
       </div>
     </section>
 
-    <!-- Right: live chat -->
-    <aside class="card" aria-labelledby="chat-title">
-      <h3 id="chat-title" style="margin-top:0;color:var(--accent)">Live Chat</h3>
-      <div id="chat-messages" aria-live="polite"></div>
-
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input id="chat-input" class="input" placeholder="Say something..." />
-        <button id="send-chat-btn">Send</button>
+    <!-- Chat -->
+    <aside class="card">
+      <h3 style="margin-top:0;color:var(--accent)">Live Chat</h3>
+      <div id="chat-messages"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input id="chat-input" placeholder="Speak into the archives..." />
+        <button id="send-chat">Send</button>
       </div>
-
-      <div style="margin-top:10px" class="small muted">This is a parody UI modeled on 90s chat rooms. Keep it friendly.</div>
+      <div class="muted-note">This interface references legacy aesthetics quietly to support the book’s theme.</div>
     </aside>
   </div>
 
-  <footer>© Patrick McDonald · BuuHoo — A playful archive experience</footer>
+  <footer style="text-align:center;margin-top:22px;color:var(--muted);font-size:13px">© Patrick McDonald — Before Us Universe</footer>
 
-  <!-- Firebase + App (single-file) -->
+  <!-- Firebase + logic -->
   <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getDatabase, ref, push, onValue, set, onDisconnect, child, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-  // === CONFIG: your project (unchanged) ===
+  // ---------- FIREBASE CONFIG: use the same project keys ----------
   const firebaseConfig = {
     apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
     authDomain: "before-us-universe.firebaseapp.com",
@@ -111,130 +156,106 @@
     projectId: "before-us-universe",
     storageBucket: "before-us-universe.appspot.com",
     messagingSenderId: "477103463228",
-    appId: "1:47710346339"
+    appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // === LOCAL STATE ===
-  let CURRENT_USER = localStorage.getItem('buuhoo_user') || '';
-  let CURRENT_UID = localStorage.getItem('buuhoo_uid') || '';
-  if(!CURRENT_UID){ CURRENT_UID = Date.now().toString(); localStorage.setItem('buuhoo_uid', CURRENT_UID); }
-  document.getElementById('current-user').textContent = CURRENT_USER || '—';
-
-  // prompt for username modal behavior (simple)
-  async function askForHandle(){
-    if(CURRENT_USER && CURRENT_USER.length>0) return;
-    let name = prompt("Welcome to BuuHoo — pick a handle (no profanity):");
-    if(!name) name = 'anon'+Math.floor(Math.random()*9000);
-    CURRENT_USER = name.trim().slice(0,30);
-    localStorage.setItem('buuhoo_user', CURRENT_USER);
-    document.getElementById('current-user').textContent = CURRENT_USER;
-  }
-
-  // initialize on page load
-  window.addEventListener('load', async ()=>{
-    await askForHandle();
-    initPresence();
-    bindUI();
-    subscribeRealtime();
-  });
-
-  // === Presence (user count) ===
-  function initPresence(){
-    const onlineRef = ref(db, 'online/' + CURRENT_UID);
-    set(onlineRef, { username: CURRENT_USER, since: Date.now() });
-    onDisconnect(onlineRef).remove();
-    // live count listener
-    onValue(ref(db,'online'), snap=>{
-      const count = snap ? snap.numChildren() : 0;
-      document.getElementById('online-count').textContent = 'Users: ' + count;
-    });
-  }
-
-  // === UI bindings ===
-  function bindUI(){
-    document.getElementById('create-thread-btn').addEventListener('click', createThread);
-    document.getElementById('send-chat-btn').addEventListener('click', sendChat);
-    document.getElementById('post-reply-btn').addEventListener('click', postReply);
-    document.getElementById('close-thread-btn').addEventListener('click', ()=>{ SELECTED_THREAD = null; renderThreadDetail(); });
-    // allow enter to send chat
-    document.getElementById('chat-input').addEventListener('keypress', (e)=>{ if(e.key==='Enter'){ sendChat(); }});
-  }
-
-  // === Sanitization & linkify ===
-  function escapeHtml(str=''){ return String(str).replace(/[&<>"']/g, s=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#039;"}[s])); }
-  function linkify(text=''){
-    const raw = escapeHtml(text);
+  // ---------- minimal utilities ----------
+  const $ = (id)=>document.getElementById(id);
+  const escapeHtml = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#039;"}[c]));
+  const linkify = txt => {
+    const raw = escapeHtml(txt);
     const urlRegex = /((https?:\/\/|www\.)[^\s]+)/g;
-    return raw.replace(urlRegex, (m)=>{
+    return raw.replace(urlRegex, m=>{
       let href = m;
-      if(!/^https?:\/\//i.test(href)) href = 'https://' + href;
+      if(!/^https?:\/\//i.test(href)) href = 'https://'+href;
       return '<a href="'+href+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(m)+'</a>';
     });
+  };
+
+  // ---------- UI state ----------
+  let HANDLE = localStorage.getItem('buu_handle') || '';
+  if(!HANDLE){
+    HANDLE = prompt('Pick a handle for BuuHoo — keep it short:') || ('anon'+Math.floor(Math.random()*9000));
+    localStorage.setItem('buu_handle', HANDLE);
+  }
+  $('user-handle').textContent = HANDLE;
+
+  // show app after boot completes (and wait small extra so Firebase ready)
+  setTimeout(()=>{ $('boot-screen').style.display='none'; $('app').style.display='grid'; }, 4200);
+
+  // ---------- presence ----------
+  const UID = localStorage.getItem('buu_uid') || Date.now().toString();
+  localStorage.setItem('buu_uid', UID);
+  const onlineRef = ref(db, 'online/' + UID);
+  set(onlineRef, { username: HANDLE, since: Date.now() });
+  onDisconnect(onlineRef).remove();
+
+  onValue(ref(db,'online'), snap=>{
+    const cnt = snap ? snap.numChildren() : 0;
+    $('online-count').textContent = 'Users: ' + cnt;
+  });
+
+  // ---------- chat & threads safe refs ----------
+  const CHAT = ref(db, 'chat');
+  const THREADS = ref(db, 'threads');
+  const THREAD_REPLIES_PATH = 'threadReplies'; // threadReplies/<threadId>/
+
+  // ---------- try to detect legacy stored board nodes and expose them (non-destructive)
+  // We will attempt to render from whichever legacy path exists: threads -> posts -> board
+  async function detectLegacyThreads(){
+    // check common keys
+    const root = ref(db);
+    const candidates = ['threads','posts','board','messageBoard','messages'];
+    for(const key of candidates){
+      const snap = await get(child(root, key));
+      if(snap && snap.exists()){
+        // if it's threads structure use it; if it's posts, map to threads view
+        if(key === 'threads') return { mode:'threads', path:key };
+        if(key === 'posts' || key === 'board' || key === 'messages') return { mode:'legacy', path:key };
+      }
+    }
+    return { mode:'threads', path:'threads' }; // default
   }
 
-  // === Realtime subscriptions ===
-  const chatRef = ref(db,'chat');
-  const threadsRef = ref(db,'threads');
-
-  function subscribeRealtime(){
-    // chat messages
-    onValue(chatRef, snapshot=>{
-      const el = document.getElementById('chat-messages');
-      el.innerHTML = '';
-      snapshot.forEach(child=>{
-        const m = child.val();
-        const d = document.createElement('div'); d.className='chat-line';
-        const t = m.timestamp? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):'';
-        d.innerHTML = `<div class="meta">[${t}] <b>${escapeHtml(m.username)}</b></div><div>${linkify(m.text)}</div>`;
-        el.appendChild(d);
-      });
-      el.scrollTop = el.scrollHeight;
+  // ---------- render helpers ----------
+  function renderChat(snapshot){
+    const el = $('chat-messages');
+    el.innerHTML = '';
+    snapshot.forEach(child=>{
+      const m = child.val();
+      const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+      const d = document.createElement('div'); d.className='chat-line';
+      d.innerHTML = `<div class="meta">[${time}] <b>${escapeHtml(m.username)}</b></div><div>${linkify(m.text)}</div>`;
+      el.appendChild(d);
     });
+    el.scrollTop = el.scrollHeight;
+  }
 
-    // threads listing
-    onValue(threadsRef, snapshot=>{
-      const list = document.getElementById('threads');
-      list.innerHTML = '';
-      snapshot.forEach(child=>{
-        const t = child.val(); const id = child.key;
-        const item = document.createElement('div'); item.className='thread-item';
-        item.innerHTML = `<h4>${escapeHtml(t.title)}</h4><div class="thread-meta small">Started by ${escapeHtml(t.username)} • ${new Date(t.timestamp).toLocaleDateString()}</div>`;
-        item.addEventListener('click', ()=>{ openThread(id); });
-        list.appendChild(item);
-      });
+  function renderThreads(snapshot){
+    const el = $('threads'); el.innerHTML = '';
+    snapshot.forEach(child=>{
+      const t = child.val(); const id = child.key;
+      const item = document.createElement('div'); item.className='thread';
+      item.innerHTML = `<h4>${escapeHtml(t.title||'(untitled)')}</h4><div class="meta">Started by ${escapeHtml(t.username||'unknown')} • ${new Date(t.timestamp||0).toLocaleDateString()}</div>`;
+      item.addEventListener('click', ()=> openThread(id));
+      el.appendChild(item);
     });
   }
 
-  // === Thread operations ===
-  let SELECTED_THREAD = null;
-
-  async function createThread(){
-    const title = document.getElementById('thread-title').value.trim();
-    if(!title) return alert('Please enter a thread title');
-    const payload = { title, username: CURRENT_USER, timestamp: Date.now() };
-    const p = await push(threadsRef, payload);
-    // automatically open the new thread
-    openThread(p.key);
-    document.getElementById('thread-title').value = '';
-  }
-
-  // render thread detail (replies)
-  async function renderThreadDetail(){
-    const container = document.getElementById('thread-detail');
-    container.innerHTML = '';
-    if(!SELECTED_THREAD){ container.innerHTML = '<div class="small">Open a thread to view and reply.</div>'; return; }
-    // fetch thread meta
-    const threadSnap = await get(child(ref(db), 'threads/' + SELECTED_THREAD));
-    if(!threadSnap.exists()){ container.innerHTML = '<div class="small">Thread not found.</div>'; return; }
-    const meta = threadSnap.val();
-    const header = document.createElement('div'); header.innerHTML = `<div style="font-size:16px;color:var(--accent);font-weight:700">${escapeHtml(meta.title)}</div><div class="small">Started by ${escapeHtml(meta.username)}</div><hr/>`;
-    container.appendChild(header);
-
-    // list replies
-    const repliesSnap = await get(child(ref(db), 'threadReplies/' + SELECTED_THREAD));
+  async function renderThreadDetail(threadId){
+    const container = $('thread-detail'); container.innerHTML = '';
+    if(!threadId){ container.innerHTML = '<div class="small">Open a thread to view replies.</div>'; return; }
+    // fetch meta
+    const metaSnap = await get(child(ref(db), 'threads/'+threadId));
+    if(!metaSnap.exists()){ container.innerHTML = '<div class="small">Thread not found (it may be legacy).</div>'; return; }
+    const meta = metaSnap.val();
+    const head = document.createElement('div'); head.innerHTML = `<div style="font-weight:700;color:var(--accent)">${escapeHtml(meta.title)}</div><div class="small">Started by ${escapeHtml(meta.username)}</div><hr/>`;
+    container.appendChild(head);
+    // fetch replies under threadReplies/<threadId>
+    const repliesSnap = await get(child(ref(db), THREAD_REPLIES_PATH + '/' + threadId));
     if(!repliesSnap.exists()){ container.appendChild(document.createElement('div')); return; }
     repliesSnap.forEach(r=>{
       const rv = r.val();
@@ -245,37 +266,95 @@
     container.scrollTop = container.scrollHeight;
   }
 
-  async function openThread(id){
+  // ---------- open thread state ----------
+  let SELECTED_THREAD = null;
+  window.openThread = async function(id){
     SELECTED_THREAD = id;
-    await renderThreadDetail();
-  }
+    await renderThreadDetail(id);
+  };
 
-  // post reply to current thread
-  async function postReply(){
-    if(!SELECTED_THREAD) return alert('Open a thread first.');
-    const txt = document.getElementById('reply-text').value.trim();
-    if(!txt) return;
-    const repliesRef = ref(db, 'threadReplies/' + SELECTED_THREAD);
-    await push(repliesRef, { username: CURRENT_USER, text: txt, timestamp: Date.now() });
-    document.getElementById('reply-text').value = '';
-    await renderThreadDetail();
-  }
+  // ---------- event listeners / actions ----------
+  $('create-thread').addEventListener('click', async ()=>{
+    const title = $('thread-title').value.trim();
+    if(!title) return alert('Enter a title.');
+    const pushRef = await push(THREADS, { title, username: HANDLE, timestamp: Date.now() });
+    $('thread-title').value = '';
+    openThread(pushRef.key);
+  });
 
-  // === Chat send ===
-  async function sendChat(){
-    const txt = document.getElementById('chat-input').value.trim();
-    if(!txt) return;
-    await push(chatRef, { username: CURRENT_USER, text: txt, timestamp: Date.now() });
-    document.getElementById('chat-input').value = '';
-  }
-  // attach functions to global for button handlers
-  window.sendChat = sendChat;
-  window.createThread = createThread;
-  window.postReply = postReply;
-  window.openThread = openThread;
+  $('reply-btn').addEventListener('click', async ()=>{
+    const txt = $('reply-text').value.trim();
+    if(!txt) return alert('Reply empty.');
+    if(!SELECTED_THREAD) return alert('Open thread first.');
+    await push(ref(db, THREAD_REPLIES_PATH + '/' + SELECTED_THREAD), { username: HANDLE, text: txt, timestamp: Date.now() });
+    $('reply-text').value = '';
+    await renderThreadDetail(SELECTED_THREAD);
+  });
 
-  // safe initial load: ensure top-level nodes exist (no-op if exist)
+  $('close-thread').addEventListener('click', ()=>{ SELECTED_THREAD = null; renderThreadDetail(null); });
+
+  $('send-chat').addEventListener('click', async ()=>{
+    const t = $('chat-input').value.trim();
+    if(!t) return;
+    await push(CHAT, { username: HANDLE, text: t, timestamp: Date.now() });
+    $('chat-input').value = '';
+  });
+
+  // allow Enter to send chat
+  $('chat-input').addEventListener('keypress', (e)=>{ if(e.key==='Enter') $('send-chat').click(); });
+
+  // ---------- subscriptions ----------
+  // chat subscribe
+  onValue(CHAT, snap => renderChat(snap));
+
+  // threads subscribe
+  // Use threads if present; else fallback to legacy paths
+  (async ()=>{
+    const detected = await detectLegacyThreads();
+    if(detected.mode === 'threads'){
+      onValue(THREADS, snap => renderThreads(snap));
+    } else if(detected.mode === 'legacy'){
+      // map legacy structure to threads listing for viewing only (non-destructive)
+      const legacySnap = await get(child(ref(db), detected.path));
+      const list = $('threads'); list.innerHTML = '';
+      legacySnap.forEach(child=>{
+        const key = child.key; const v = child.val();
+        const item = document.createElement('div'); item.className='thread';
+        // try to map common fields
+        const title = v.title || v.subject || (v.username? 'Post by '+v.username :'Legacy item');
+        item.innerHTML = `<h4>${escapeHtml(title)}</h4><div class="meta">Legacy • ${new Date(v.timestamp||0).toLocaleDateString()}</div>`;
+        // open shows full content mapped as a single "thread"
+        item.addEventListener('click', async ()=>{
+          SELECTED_THREAD = null;
+          const container = $('thread-detail'); container.innerHTML = '';
+          const header = document.createElement('div'); header.innerHTML = `<div style="font-weight:700;color:var(--accent)">${escapeHtml(title)}</div><div class="small">Legacy item</div><hr/>`;
+          container.appendChild(header);
+          // show full body
+          const bodyDiv = document.createElement('div'); bodyDiv.innerHTML = `<div>${linkify(v.content || v.text || '')}</div><div class="small">Posted by ${escapeHtml(v.username||'unknown')}</div>`;
+          container.appendChild(bodyDiv);
+        });
+        list.appendChild(item);
+      });
+      // also keep listeners for future threads creation path
+      onValue(THREADS, snap => renderThreads(snap));
+    }
+  })();
+
+  // ensure nodes exist (no-op)
   set(ref(db,'_meta/initialized'), true);
+
+  // ghost subtle flicker when someone posts a BuuHoo-system message (not intrusive)
+  onValue(CHAT, snap=>{
+    // look for recent NTD or system markers (this is a soft visual cue)
+    let show=false;
+    snap.forEach(child=>{
+      const m = child.val();
+      if(m && typeof m.text === 'string' && m.text.includes('🜂')) show=true;
+    });
+    const ghost = $('ghost');
+    if(show){ ghost.style.opacity = '0.06'; setTimeout(()=>ghost.style.opacity='0',1400); }
+  });
+
   </script>
 </body>
 </html>
