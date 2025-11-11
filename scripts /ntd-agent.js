@@ -3,15 +3,18 @@
    Functional Firebase moderation + voice manifestation
 */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-// Using version 10.7.1 for consistency with index.html, but 11.0.1 is fine too.
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onChildAdded, remove, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// 🧠 NTD CONFIG
+// 🧠 NTD CONFIG: FULL CONFIGURATION REQUIRED
 const firebaseConfig = {
-    // You must include the full config here for the module to initialize correctly
+    apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
+    authDomain: "before-us-universe.firebaseapp.com",
     databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
-    // Add apiKey, authDomain, etc., if needed, though databaseURL is usually sufficient for Realtime DB access
+    projectId: "before-us-universe",
+    storageBucket: "before-us-universe.firebasestorage.app",
+    messagingSenderId: "477103463228",
+    appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -98,7 +101,6 @@ onChildAdded(incomingChatRef, (snapshot) => {
 window.addEventListener("DOMContentLoaded", () => {
     const avatar = document.createElement("div");
     avatar.id = "ntd-avatar";
-    // Using your ntd-face image path if you have it set up in your CSS
     avatar.innerHTML = `<span class="ntd-ring"></span>`;
     document.body.appendChild(avatar);
 });
