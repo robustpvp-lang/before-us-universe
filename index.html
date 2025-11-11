@@ -3,95 +3,107 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>The Before Us Universe</title>
+<title>BuuHoo — Before Us Universe Chat</title>
 <style>
-  /* Minimal theme kept from your design — green CRT look */
-  :root { --accent:#9bbc0f; --muted:#8bac0f; --bg:#071a06; }
+  /* 90s Yahoo-esque / GeoCities parody vibe */
+  :root{
+    --bg1:#2f005f; --bg2:#ff66cc; --accent:#ffd84d; --muted:#c9a8ff; --card:#2a003f;
+    color-scheme: dark;
+  }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Courier, monospace;background:linear-gradient(180deg,#9bbc0f 0,#306230 60%,#071a06 100%);color:#0f380f;min-height:100vh;padding:18px;}
-  /* Boot */
-  #boot-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;background:linear-gradient(180deg,#9bbc0f,#306230);}
-  .boot-box{background:#071a06;border:6px solid var(--accent);padding:28px;border-radius:8px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
-  .loading-fill {height:16px;background:var(--accent);width:0;animation:loadFill 4s forwards}
-  @keyframes loadFill{0%{width:0}100%{width:100%}}
-  /* Main */
-  #main {max-width:1100px;margin:0 auto;display:none;position:relative;z-index:10}
-  header{background:#071a06;border:6px solid var(--accent);padding:14px;border-radius:10px;margin-bottom:14px}
-  h1{color:var(--accent);letter-spacing:2px}
-  .grid{display:grid;grid-template-columns:1fr;gap:14px}
-  @media(min-width:780px){.grid{grid-template-columns:1fr 420px}}
-  .card{background:rgba(0,0,0,0.15);border-radius:8px;padding:12px;border:2px solid rgba(0,0,0,0.2)}
-  /* chat/board */
-  #chat-messages, #board-posts{background:#071a06;border:2px solid rgba(255,255,255,0.03);padding:10px;height:260px;overflow:auto}
-  input,textarea,button{font-family:inherit}
-  input,textarea{width:100%;padding:8px;border-radius:6px;border:2px solid rgba(255,255,255,0.03);background:transparent;color:inherit}
-  button{background:var(--accent);border-radius:8px;border:2px solid #071a06;padding:8px 10px;cursor:pointer}
-  .muted{color:#9aa; font-size:13px}
-  /* ghost face (full screen) */
-  #ghost { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0; mix-blend-mode:screen; transition:opacity 200ms linear; background-position:center; background-size:cover; }
-  /* NTD avatar */
-  #ntd-avatar{position:fixed;right:18px;bottom:18px;width:84px;height:84px;border-radius:50%;z-index:9999;pointer-events:none;display:flex;align-items:center;justify-content:center}
-  .ntd-ring{width:64px;height:64px;border-radius:50%;box-shadow:0 0 18px #0ff, inset 0 0 20px #0ff;animation:ntdPulse 3s infinite alternate}
-  @keyframes ntdPulse{from{transform:scale(.96);opacity:.4}to{transform:scale(1.03);opacity:1}}
+  html,body{height:100%;margin:0;font-family: "Lucida Grande", Tahoma, Arial, sans-serif;background:linear-gradient(120deg,var(--bg1),#43106a 40%, #1b0b3a 100%);color:#fff}
+  a{color:var(--accent)}
+  /* Header */
+  header{padding:18px;border-bottom:4px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:16px}
+  .logo{font-weight:900;color:var(--accent);font-size:26px;letter-spacing:1px}
+  .tag{color:var(--muted);font-size:13px}
+  /* Layout */
+  .wrap{max-width:1100px;margin:18px auto;display:grid;grid-template-columns:1fr 420px;gap:18px;padding:0 12px}
+  @media(max-width:920px){.wrap{grid-template-columns:1fr;}}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));border-radius:10px;padding:12px;border:2px solid rgba(255,255,255,0.03)}
+  /* Threaded board */
+  .board-top{display:flex;gap:8px;align-items:center;justify-content:space-between}
+  #threads{height:320px;overflow:auto;border:2px dashed rgba(255,255,255,0.03);padding:8px;background:rgba(255,255,255,0.01);border-radius:6px}
+  .thread-item{padding:8px;border-radius:6px;margin-bottom:8px;background:linear-gradient(90deg, rgba(255,255,255,0.01), transparent);cursor:pointer}
+  .thread-item h4{margin:0;font-size:15px;color:var(--accent)}
+  .thread-meta{font-size:12px;color:var(--muted);margin-top:6px}
+  /* thread detail */
+  #thread-detail{height:380px;overflow:auto;border:2px solid rgba(255,255,255,0.02);padding:10px;border-radius:6px;background:rgba(0,0,0,0.06)}
+  .reply{padding:8px;border-radius:6px;margin-bottom:8px;background:rgba(255,255,255,0.015)}
+  /* Chat */
+  #chat-messages{height:320px;overflow:auto;background:linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.02));padding:8px;border-radius:6px;border:2px solid rgba(255,255,255,0.02)}
+  .chat-line{margin-bottom:8px;font-size:13px}
+  .meta{color:var(--muted);font-size:12px}
+  .input, textarea{background:#0f0420;border:2px solid rgba(255,255,255,0.03);color:#fff;padding:8px;border-radius:6px;width:100%;font-family:inherit}
+  button{background:var(--accent);border:2px solid #b48b2a;color:#1b0b0b;padding:8px 10px;border-radius:6px;cursor:pointer;font-weight:700}
+  .small{font-size:12px;color:var(--muted)}
+  /* modal username */
+  #modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));z-index:9999}
+  .modal-box{background:#130022;border:4px solid var(--accent);padding:20px;border-radius:8px;text-align:center;min-width:280px}
+  .modal-box h2{margin:0 0 10px;color:var(--accent)}
+  /* footer */
+  footer{max-width:1100px;margin:18px auto;color:var(--muted);font-size:12px;text-align:center}
 </style>
 </head>
 <body>
-  <!-- boot -->
-  <div id="boot-screen" aria-hidden="false">
-    <div class="boot-box" role="status" aria-live="polite">
-      <div style="font-weight:900;font-size:28px;color:var(--accent);letter-spacing:3px">WONDERBOY</div>
-      <div style="margin-top:8px;color:#cfe6a1">BOOT SEQUENCE...</div>
-      <div style="width:320px;margin:14px auto;background:#071a06;border:3px solid rgba(255,255,255,0.03);padding:4px;border-radius:6px">
-        <div class="loading-fill" aria-hidden="true"></div>
+  <header>
+    <div class="logo">BuuHoo</div>
+    <div class="tag">• Vintage Chatroom Parody • The Before Us Universe</div>
+    <div style="margin-left:auto" class="small">Logged in as: <span id="current-user" style="font-weight:700">—</span></div>
+  </header>
+
+  <div class="wrap" role="main">
+    <!-- Left: message board -->
+    <section class="card" aria-labelledby="board-title">
+      <div class="board-top">
+        <div>
+          <h3 id="board-title" style="margin:0;color:var(--accent)">Message Board (Threads)</h3>
+          <div class="small">Create threads, open and reply — live updates</div>
+        </div>
+        <div id="online-count" class="small">Users: 0</div>
       </div>
-      <div class="muted">© The Before Us Universe</div>
-    </div>
-  </div>
 
-  <!-- spectral face (will be toggled) -->
-  <div id="ghost" aria-hidden="true"></div>
+      <div style="display:flex;gap:12px;margin-top:12px">
+        <input id="thread-title" class="input" placeholder="New thread title..." />
+        <button id="create-thread-btn">New Thread</button>
+      </div>
 
-  <!-- main -->
-  <main id="main" role="main">
-    <header>
-      <h1>THE BEFORE US UNIVERSE</h1>
-      <div class="muted">.:. Digital Memory Archives .:.</div>
-    </header>
+      <div id="threads" aria-live="polite" style="margin-top:12px"></div>
 
-    <div class="grid">
-      <section class="card" aria-labelledby="board">
-        <h2 id="board" style="color:var(--accent)">≡ MESSAGE BOARD ≡</h2>
-        <div id="board-posts" aria-live="polite"></div>
-        <div style="margin-top:10px">
-          <input id="post-title" placeholder="Thread Title..." maxlength="80" />
-          <textarea id="post-content" placeholder="Your message..." rows="4" style="margin-top:8px"></textarea>
-          <div style="margin-top:8px;display:flex;gap:8px">
-            <button id="postBtn">POST</button>
-            <button id="refreshBtn" style="background:transparent;border:2px solid var(--accent);color:var(--accent)">Refresh</button>
+      <div style="margin-top:12px">
+        <div id="thread-detail" aria-live="polite"><div class="small">Open a thread to view replies.</div></div>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <textarea id="reply-text" rows="3" placeholder="Reply to thread..." style="flex:1"></textarea>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button id="post-reply-btn">Reply</button>
+            <button id="close-thread-btn" style="background:transparent;border:2px solid var(--accent);color:var(--accent)">Close</button>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <aside class="card" aria-labelledby="chat">
-        <h2 id="chat" style="color:var(--accent)">≡ LIVE CHAT ≡</h2>
-        <div id="chat-messages" aria-live="polite"></div>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <input id="chat-input" placeholder="Type message..." />
-          <button id="sendBtn">SEND</button>
-        </div>
-        <div style="margin-top:12px" class="muted">Users: <span id="online-count">0</span></div>
-      </aside>
-    </div>
+    <!-- Right: live chat -->
+    <aside class="card" aria-labelledby="chat-title">
+      <h3 id="chat-title" style="margin-top:0;color:var(--accent)">Live Chat</h3>
+      <div id="chat-messages" aria-live="polite"></div>
 
-    <footer style="margin-top:16px" class="muted">© Patrick McDonald — Best viewed small</footer>
-  </main>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input id="chat-input" class="input" placeholder="Say something..." />
+        <button id="send-chat-btn">Send</button>
+      </div>
 
-  <!-- Firebase & App logic -->
+      <div style="margin-top:10px" class="small muted">This is a parody UI modeled on 90s chat rooms. Keep it friendly.</div>
+    </aside>
+  </div>
+
+  <footer>© Patrick McDonald · BuuHoo — A playful archive experience</footer>
+
+  <!-- Firebase + App (single-file) -->
   <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getDatabase, ref, push, onValue, set, onDisconnect, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+  import { getDatabase, ref, push, onValue, set, onDisconnect, child, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-  // YOUR FIREBASE CONFIG (already yours)
+  // === CONFIG: your project (unchanged) ===
   const firebaseConfig = {
     apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
     authDomain: "before-us-universe.firebaseapp.com",
@@ -99,152 +111,171 @@
     projectId: "before-us-universe",
     storageBucket: "before-us-universe.appspot.com",
     messagingSenderId: "477103463228",
-    appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
+    appId: "1:47710346339"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // utility: sanitize simple text (escape)
-  function escapeHtml(s=''){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+  // === LOCAL STATE ===
+  let CURRENT_USER = localStorage.getItem('buuhoo_user') || '';
+  let CURRENT_UID = localStorage.getItem('buuhoo_uid') || '';
+  if(!CURRENT_UID){ CURRENT_UID = Date.now().toString(); localStorage.setItem('buuhoo_uid', CURRENT_UID); }
+  document.getElementById('current-user').textContent = CURRENT_USER || '—';
 
-  // linkify for chat/board (turn URLs into anchors)
-  function linkifyAndSanitize(text){
+  // prompt for username modal behavior (simple)
+  async function askForHandle(){
+    if(CURRENT_USER && CURRENT_USER.length>0) return;
+    let name = prompt("Welcome to BuuHoo — pick a handle (no profanity):");
+    if(!name) name = 'anon'+Math.floor(Math.random()*9000);
+    CURRENT_USER = name.trim().slice(0,30);
+    localStorage.setItem('buuhoo_user', CURRENT_USER);
+    document.getElementById('current-user').textContent = CURRENT_USER;
+  }
+
+  // initialize on page load
+  window.addEventListener('load', async ()=>{
+    await askForHandle();
+    initPresence();
+    bindUI();
+    subscribeRealtime();
+  });
+
+  // === Presence (user count) ===
+  function initPresence(){
+    const onlineRef = ref(db, 'online/' + CURRENT_UID);
+    set(onlineRef, { username: CURRENT_USER, since: Date.now() });
+    onDisconnect(onlineRef).remove();
+    // live count listener
+    onValue(ref(db,'online'), snap=>{
+      const count = snap ? snap.numChildren() : 0;
+      document.getElementById('online-count').textContent = 'Users: ' + count;
+    });
+  }
+
+  // === UI bindings ===
+  function bindUI(){
+    document.getElementById('create-thread-btn').addEventListener('click', createThread);
+    document.getElementById('send-chat-btn').addEventListener('click', sendChat);
+    document.getElementById('post-reply-btn').addEventListener('click', postReply);
+    document.getElementById('close-thread-btn').addEventListener('click', ()=>{ SELECTED_THREAD = null; renderThreadDetail(); });
+    // allow enter to send chat
+    document.getElementById('chat-input').addEventListener('keypress', (e)=>{ if(e.key==='Enter'){ sendChat(); }});
+  }
+
+  // === Sanitization & linkify ===
+  function escapeHtml(str=''){ return String(str).replace(/[&<>"']/g, s=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#039;"}[s])); }
+  function linkify(text=''){
     const raw = escapeHtml(text);
     const urlRegex = /((https?:\/\/|www\.)[^\s]+)/g;
     return raw.replace(urlRegex, (m)=>{
       let href = m;
       if(!/^https?:\/\//i.test(href)) href = 'https://' + href;
-      return '<a href="'+href+'" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">'+escapeHtml(m)+'</a>';
+      return '<a href="'+href+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(m)+'</a>';
     });
   }
 
-  // boot -> main flow
-  const boot = document.getElementById('boot-screen');
-  const main = document.getElementById('main');
-  setTimeout(()=>{ boot.style.display='none'; main.style.display='block'; }, 4200);
+  // === Realtime subscriptions ===
+  const chatRef = ref(db,'chat');
+  const threadsRef = ref(db,'threads');
 
-  // username
-  let username = localStorage.getItem('buu_username') || '';
-  if(!username){
-    username = prompt('Pick a handle:') || ('anon'+Math.floor(Math.random()*9000));
-    localStorage.setItem('buu_username', username);
-  }
-
-  // online presence
-  const uid = localStorage.getItem('buu_uid') || (Date.now().toString());
-  localStorage.setItem('buu_uid', uid);
-  const onlineRef = ref(db, 'online/' + uid);
-  set(onlineRef, { username, ts: Date.now() });
-  onDisconnect(onlineRef).remove();
-
-  const chatRef = ref(db, 'chat');
-  const postsRef = ref(db, 'posts');
-
-  // render helpers
-  function renderChat(snapshot){
-    const el = document.getElementById('chat-messages');
-    el.innerHTML = '';
-    snapshot.forEach(child => {
-      const m = child.val();
-      const d = document.createElement('div');
-      const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
-      d.innerHTML = `<div style="font-size:12px;color:#9aa">[${time}] <b>${escapeHtml(m.username)}</b></div><div style="margin-left:6px">${linkifyAndSanitize(m.text)}</div>`;
-      el.appendChild(d);
+  function subscribeRealtime(){
+    // chat messages
+    onValue(chatRef, snapshot=>{
+      const el = document.getElementById('chat-messages');
+      el.innerHTML = '';
+      snapshot.forEach(child=>{
+        const m = child.val();
+        const d = document.createElement('div'); d.className='chat-line';
+        const t = m.timestamp? new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):'';
+        d.innerHTML = `<div class="meta">[${t}] <b>${escapeHtml(m.username)}</b></div><div>${linkify(m.text)}</div>`;
+        el.appendChild(d);
+      });
+      el.scrollTop = el.scrollHeight;
     });
-    el.scrollTop = el.scrollHeight;
-  }
 
-  function renderPosts(snapshot){
-    const el = document.getElementById('board-posts');
-    el.innerHTML = '';
-    snapshot.forEach(child => {
-      const p = child.val();
-      const d = document.createElement('div');
-      d.style.marginBottom='10px';
-      const date = p.timestamp? new Date(p.timestamp).toLocaleDateString() : '';
-      d.innerHTML = `<div style="color:var(--accent);font-weight:700">${escapeHtml(p.title)}</div><div style="color:#cfe6a1">${linkifyAndSanitize(p.content)}</div><div style="font-size:11px;color:#9aa">Posted by ${escapeHtml(p.username)} • ${escapeHtml(date)}</div>`;
-      el.appendChild(d);
+    // threads listing
+    onValue(threadsRef, snapshot=>{
+      const list = document.getElementById('threads');
+      list.innerHTML = '';
+      snapshot.forEach(child=>{
+        const t = child.val(); const id = child.key;
+        const item = document.createElement('div'); item.className='thread-item';
+        item.innerHTML = `<h4>${escapeHtml(t.title)}</h4><div class="thread-meta small">Started by ${escapeHtml(t.username)} • ${new Date(t.timestamp).toLocaleDateString()}</div>`;
+        item.addEventListener('click', ()=>{ openThread(id); });
+        list.appendChild(item);
+      });
     });
   }
 
-  // subscribe realtime
-  onValue(ref(db,'online'), snap => {
-    const count = snap ? snap.numChildren() : 0;
-    document.getElementById('online-count').textContent = count;
-  });
-  onValue(chatRef, snap => renderChat(snap));
-  onValue(postsRef, snap => renderPosts(snap));
+  // === Thread operations ===
+  let SELECTED_THREAD = null;
 
-  // send actions
-  document.getElementById('sendBtn').addEventListener('click', sendMessage);
-  document.getElementById('postBtn').addEventListener('click', createPost);
-  document.getElementById('refreshBtn').addEventListener('click', ()=>{ onValue(chatRef, snap=>renderChat(snap)); onValue(postsRef, snap=>renderPosts(snap)); });
-
-  function sendMessage(){
-    const v = document.getElementById('chat-input').value.trim();
-    if(!v) return;
-    push(chatRef, { username, text:v, timestamp: Date.now() });
-    document.getElementById('chat-input').value='';
+  async function createThread(){
+    const title = document.getElementById('thread-title').value.trim();
+    if(!title) return alert('Please enter a thread title');
+    const payload = { title, username: CURRENT_USER, timestamp: Date.now() };
+    const p = await push(threadsRef, payload);
+    // automatically open the new thread
+    openThread(p.key);
+    document.getElementById('thread-title').value = '';
   }
 
-  function createPost(){
-    const title = document.getElementById('post-title').value.trim();
-    const content = document.getElementById('post-content').value.trim();
-    if(!title || !content) return alert('title + content required');
-    push(postsRef, { title, content, username, timestamp: Date.now() });
-    document.getElementById('post-title').value=''; document.getElementById('post-content').value='';
-  }
+  // render thread detail (replies)
+  async function renderThreadDetail(){
+    const container = document.getElementById('thread-detail');
+    container.innerHTML = '';
+    if(!SELECTED_THREAD){ container.innerHTML = '<div class="small">Open a thread to view and reply.</div>'; return; }
+    // fetch thread meta
+    const threadSnap = await get(child(ref(db), 'threads/' + SELECTED_THREAD));
+    if(!threadSnap.exists()){ container.innerHTML = '<div class="small">Thread not found.</div>'; return; }
+    const meta = threadSnap.val();
+    const header = document.createElement('div'); header.innerHTML = `<div style="font-size:16px;color:var(--accent);font-weight:700">${escapeHtml(meta.title)}</div><div class="small">Started by ${escapeHtml(meta.username)}</div><hr/>`;
+    container.appendChild(header);
 
-  // Basic moderation and NTD ghost + voice
-  const ghost = document.getElementById('ghost');
-  const GHOST_URL = 'https://raw.githubusercontent.com/robustpvp-lang/before-us-universe/main/scripts/ntd-face.jpeg';
-  ghost.style.backgroundImage = `url("${GHOST_URL}")`;
-
-  const banned = ['fuck','shit','bitch','nigger','cunt','suicide','kill'];
-  onValue(chatRef, snap=>{
-    snap.forEach(child=>{
-      const m = child.val();
-      if(!m || !m.text) return;
-      const t = (m.text+'').toLowerCase();
-      for(const b of banned){
-        if(t.includes(b)){
-          // remove offensive message (find and remove by key)
-          remove(ref(db, 'chat/' + child.key));
-          // post NTD warning
-          push(chatRef, { username:'NTD', text:'⚠️ Hush now… the lines are listening.', timestamp: Date.now() });
-          // visual + voice
-          ghost.style.opacity = '0.65';
-          setTimeout(()=>ghost.style.opacity='0',1400);
-          // speak (older voice)
-          if('speechSynthesis' in window){
-            const u = new SpeechSynthesisUtterance('Hush now… the lines are listening.');
-            u.pitch = 0.6; u.rate = 0.85; u.volume = 0.9;
-            const v = speechSynthesis.getVoices().find(x=>/female|english/i.test(x.name)||/en/i.test(x.lang));
-            if(v) u.voice = v;
-            speechSynthesis.speak(u);
-          }
-          return;
-        }
-      }
+    // list replies
+    const repliesSnap = await get(child(ref(db), 'threadReplies/' + SELECTED_THREAD));
+    if(!repliesSnap.exists()){ container.appendChild(document.createElement('div')); return; }
+    repliesSnap.forEach(r=>{
+      const rv = r.val();
+      const el = document.createElement('div'); el.className='reply';
+      el.innerHTML = `<div class="meta"><b>${escapeHtml(rv.username)}</b> • ${new Date(rv.timestamp).toLocaleString()}</div><div style="margin-top:6px">${linkify(rv.text)}</div>`;
+      container.appendChild(el);
     });
-  });
+    container.scrollTop = container.scrollHeight;
+  }
 
-  // occasional whisper
-  setInterval(()=>{
-    if(Math.random()>0.66){
-      const whispers = [
-        "Not all voices belong to the living, child.",
-        "Don't trust what echoes twice.",
-        "It is leaking again. Hold still, love."
-      ];
-      const phrase = whispers[Math.floor(Math.random()*whispers.length)];
-      push(chatRef, { username:'NTD', text:'🜂 '+phrase, timestamp: Date.now() });
-      ghost.style.opacity = '0.45';
-      setTimeout(()=>ghost.style.opacity='0',1200);
-    }
-  },1000*60*3 + Math.random()*1000*60*2);
+  async function openThread(id){
+    SELECTED_THREAD = id;
+    await renderThreadDetail();
+  }
 
+  // post reply to current thread
+  async function postReply(){
+    if(!SELECTED_THREAD) return alert('Open a thread first.');
+    const txt = document.getElementById('reply-text').value.trim();
+    if(!txt) return;
+    const repliesRef = ref(db, 'threadReplies/' + SELECTED_THREAD);
+    await push(repliesRef, { username: CURRENT_USER, text: txt, timestamp: Date.now() });
+    document.getElementById('reply-text').value = '';
+    await renderThreadDetail();
+  }
+
+  // === Chat send ===
+  async function sendChat(){
+    const txt = document.getElementById('chat-input').value.trim();
+    if(!txt) return;
+    await push(chatRef, { username: CURRENT_USER, text: txt, timestamp: Date.now() });
+    document.getElementById('chat-input').value = '';
+  }
+  // attach functions to global for button handlers
+  window.sendChat = sendChat;
+  window.createThread = createThread;
+  window.postReply = postReply;
+  window.openThread = openThread;
+
+  // safe initial load: ensure top-level nodes exist (no-op if exist)
+  set(ref(db,'_meta/initialized'), true);
   </script>
 </body>
 </html>
