@@ -706,6 +706,262 @@
             };
             return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
+        <!-- NTD Agent (Inline) -->
+<script type="module">
+  import { getDatabase, ref, onChildAdded, remove, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+  // Get existing Firebase database instance
+  const database = getDatabase();
+  const chatRef = ref(database, 'chat');
+
+  // 🚨 Detection parameters
+  const bannedWords = [
+    "hate", "kill", "suicide", "racist", "terror", "attack", 
+    "bomb", "violence", "slur", "nazi", "kys", "die"
+  ];
+  const suspiciousPatterns = /(https?:\/\/|www\.|bit\.ly|tinyurl|discord\.gg|\.ru|\.xxx)/i;
+
+  // 🎙️ Grandmother voice phrases
+  const ntdPhrases = [
+    "Hush now… the lines are listening.",
+    "Not all voices belong to the living, child.",
+    "Don't trust what echoes twice.",
+    "I told them not to speak the red words…",
+    "It's leaking again. Hold still, love.",
+    "Do you hear them knocking behind the code?",
+    "Silence keeps us whole.",
+    "That message carried a sickness.",
+    "The network remembers what it devours.",
+    "Your words trembled, and the walls answered.",
+    "The static whispers her name at night.",
+    "Something old is stirring in the wires.",
+    "They're watching through the screen, dear.",
+    "Memory is a wound that never heals.",
+    "The code bleeds when you touch it wrong."
+  ];
+
+  // 🎤 Speak using synthetic grandmother tone
+  function ntdSpeak(line) {
+    if (!('speechSynthesis' in window)) return;
+    
+    // Cancel any ongoing speech
+    speechSynthesis.cancel();
+    
+    const utter = new SpeechSynthesisUtterance(line);
+    utter.pitch = 0.6; // deeper, aged tone
+    utter.rate = 0.75; // slower, deliberate
+    utter.volume = 0.9;
+    
+    // Try to find a soft, old-sounding female voice
+    const voices = speechSynthesis.getVoices();
+    const match = voices.find(v => /female|woman|en.*us/i.test(v.name)) || 
+                  voices.find(v => /en/i.test(v.lang));
+    if (match) utter.voice = match;
+    
+    speechSynthesis.speak(utter);
+  }
+
+  // Preload voices (browsers require this)
+  if ('speechSynthesis' in window) {
+    speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+    speechSynthesis.getVoices();
+  }
+
+  // 🔎 Monitor chat and moderate
+  onChildAdded(chatRef, (snapshot) => {
+    const msg = snapshot.val();
+    const msgID = snapshot.key;
+    
+    if (!msg || !msg.text) return;
+    
+    const text = msg.text.toLowerCase();
+    const hasBannedWord = bannedWords.some(word => text.includes(word.toLowerCase()));
+    const hasSuspiciousLink = suspiciousPatterns.test(text);
+
+    if (hasBannedWord || hasSuspiciousLink) {
+      // Remove offensive message
+      remove(ref(database, 'chat/' + msgID));
+
+      // Choose a random phrase and send warning
+      const phrase = ntdPhrases[Math.floor(Math.random() * ntdPhrases.length)];
+      
+      push(chatRef, {
+        username: "NTD",
+        text: "⚠️ " + phrase,
+        timestamp: Date.now()
+      });
+
+      // Visual + audio cue
+      const avatar = document.getElementById('ntd-avatar');
+      if (avatar) {
+        avatar.classList.add('alert');
+        setTimeout(() => avatar.classList.remove('alert'), 1500);
+      }
+
+      // Speak the warning aloud
+      ntdSpeak(phrase);
+    }
+  });
+
+  // 👁️ Create visual avatar
+  window.addEventListener('DOMContentLoaded', () => {
+    const avatar = document.createElement('div');
+    avatar.id = 'ntd-avatar';
+    avatar.innerHTML = '<span class="ntd-ring"></span>';
+    document.body.appendChild(avatar);
+
+    // Add glitching face layer
+    const faceLayer = document.createElement('div');
+    faceLayer.id = 'ntd-face-layer';
+    document.body.appendChild(faceLayer);
+  });
+
+  // 👂 NTD autonomous whispers — every 4-7 minutes
+  setInterval(() => {
+    if (Math.random() > 0.5) { // 50% chance each interval
+      const phrase = ntdPhrases[Math.floor(Math.random() * ntdPhrases.length)];
+      
+      push(chatRef, {
+        username: "NTD",
+        text: "🜂 " + phrase,
+        timestamp: Date.now()
+      });
+      
+      ntdSpeak(phrase);
+
+      // Visual pulse
+      const avatar = document.getElementById('ntd-avatar');
+      if (avatar) {
+        avatar.classList.add('whisper');
+        setTimeout(() => avatar.classList.remove('whisper'), 2000);
+      }
+    }
+  }, (4 * 60 * 1000) + Math.random() * (3 * 60 * 1000)); // 4-7 minutes
+
+  // 🌌 Add NTD styling
+  const style = document.createElement('style');
+  style.innerHTML = `
+    #ntd-avatar {
+      position: fixed;
+      bottom: 20px;
+      right: 25px;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    #ntd-avatar .ntd-ring {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(155,188,15,0.3), transparent 70%);
+      box-shadow: 0 0 20px rgba(155,188,15,0.6), 
+                  inset 0 0 20px rgba(155,188,15,0.4);
+      animation: ntdPulse 3s infinite alternate ease-in-out;
+    }
+
+    #ntd-avatar.alert .ntd-ring {
+      animation: ntdAlert 0.3s 3 alternate;
+    }
+
+    #ntd-avatar.whisper .ntd-ring {
+      animation: ntdWhisper 2s ease-out;
+    }
+
+    @keyframes ntdPulse {
+      from { 
+        opacity: 0.4; 
+        transform: scale(0.95); 
+        box-shadow: 0 0 15px rgba(155,188,15,0.4), inset 0 0 15px rgba(155,188,15,0.3);
+      }
+      to { 
+        opacity: 0.8; 
+        transform: scale(1.05); 
+        box-shadow: 0 0 30px rgba(155,188,15,0.8), inset 0 0 25px rgba(155,188,15,0.6);
+      }
+    }
+
+    @keyframes ntdAlert {
+      from { 
+        opacity: 1; 
+        box-shadow: 0 0 40px rgba(255,0,0,0.9), inset 0 0 30px rgba(255,0,0,0.7);
+        background: radial-gradient(circle, rgba(255,0,0,0.5), transparent 70%);
+      }
+      to { 
+        opacity: 0.3; 
+        box-shadow: 0 0 10px rgba(155,188,15,0.4), inset 0 0 10px rgba(155,188,15,0.3);
+      }
+    }
+
+    @keyframes ntdWhisper {
+      0% { 
+        transform: scale(1); 
+        opacity: 0.4;
+      }
+      50% { 
+        transform: scale(1.3); 
+        opacity: 1;
+        box-shadow: 0 0 50px rgba(155,188,15,1), inset 0 0 40px rgba(155,188,15,0.9);
+      }
+      100% { 
+        transform: scale(1); 
+        opacity: 0.4;
+      }
+    }
+
+    /* Glitching face layer */
+    #ntd-face-layer {
+      position: fixed;
+      inset: 0;
+      background-image: url('./scripts/ntd-face.jpeg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: 50;
+      animation: faceFlicker 12s infinite;
+    }
+
+    @keyframes faceFlicker {
+      0%, 88% { 
+        opacity: 0; 
+        transform: translate(0,0) scale(1);
+        filter: contrast(1);
+      }
+      90% { 
+        opacity: 0.12; 
+        transform: translate(-8px, 5px) scale(1.02);
+        filter: contrast(1.5);
+      }
+      92% { 
+        opacity: 0.25; 
+        transform: translate(6px, -4px) scale(0.98);
+        filter: contrast(2);
+      }
+      94% { 
+        opacity: 0.15; 
+        transform: translate(-4px, 3px) scale(1.01);
+        filter: contrast(1.8);
+      }
+      96% { 
+        opacity: 0.08; 
+        transform: translate(3px, -2px) scale(0.99);
+        filter: contrast(1.3);
+      }
+      98%, 100% { 
+        opacity: 0; 
+        transform: translate(0,0) scale(1);
+        filter: contrast(1);
+      }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
                 </script>
 <script type="module" src="./scripts/scripts/ntd-agent.js"></script>
 </body>
