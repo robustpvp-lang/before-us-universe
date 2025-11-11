@@ -97,13 +97,13 @@ body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; o
   <source src="https://assets.mixkit.co/sfx/preview/mixkit-retro-game-notification-212.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Firebase SDKs (compat mode for older browsers) -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
 
 <script>
-// ==== YOUR FIREBASE CONFIG (copied from your snippet) ====
+// ==== YOUR FIREBASE CONFIG ====
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
   authDomain: "before-us-universe.firebaseapp.com",
@@ -136,12 +136,16 @@ function botReply(msg) {
 
 // ==== USERNAME & ANONYMOUS AUTH ====
 let username = null;
-auth.signInAnonymously().catch(console.error);
+auth.signInAnonymously().catch(e => console.error('Auth failed:', e));
 auth.onAuthStateChanged(user => {
   if (user) {
     username = localStorage.getItem('beforeus_username') || prompt('Choose your name:') || 'Guest';
     localStorage.setItem('beforeus_username', username);
     user.updateProfile({ displayName: username });
+    console.log('Auth success, username:', username);  // Debug log
+  } else {
+    console.error('No user - retrying auth...');
+    auth.signInAnonymously();
   }
 });
 
@@ -178,21 +182,21 @@ let lastChatTime = 0, lastBoardTime = 0;
 const chatRef = db.ref('chat');
 chatRef.on('child_added', snap => {
   const d = snap.val();
-  addChat(d.name, d.msg, d.isBot ? 'bot' : 'user');
+  if (d) addChat(d.name, d.msg, d.isBot ? 'bot' : 'user');
 });
 chatForm.addEventListener('submit', e => {
   e.preventDefault();
   const now = Date.now();
   if (now - lastChatTime < 1000) { systemMsg('Slow down! 1 msg/sec.'); return; }
   const msg = chatInput.value.trim();
-  if (!msg || !username) return;
+  if (!msg || !username) { systemMsg('Login first!'); return; }
   lastChatTime = now;
   chatRef.push({
     name: username,
     msg,
     isBot: false,
     timestamp: firebase.database.ServerValue.TIMESTAMP
-  });
+  }).catch(e => console.error('Chat push failed:', e));
   chatInput.value = '';
   setTimeout(() => {
     const reply = botReply(msg);
@@ -201,7 +205,7 @@ chatForm.addEventListener('submit', e => {
       msg: reply,
       isBot: true,
       timestamp: firebase.database.ServerValue.TIMESTAMP
-    });
+    }).catch(e => console.error('Bot reply failed:', e));
   }, 800);
 });
 
@@ -209,21 +213,21 @@ chatForm.addEventListener('submit', e => {
 const boardRef = db.ref('board').limitToLast(10);
 boardRef.on('child_added', snap => {
   const d = snap.val();
-  addBoard(`${d.name}: ${d.msg}`, d.isBot ? 'bot' : 'user');
+  if (d) addBoard(`${d.name}: ${d.msg}`, d.isBot ? 'bot' : 'user');
 });
 boardForm.addEventListener('submit', e => {
   e.preventDefault();
   const now = Date.now();
   if (now - lastBoardTime < 1000) { systemMsg('Slow down! 1 post/sec.'); return; }
   const msg = boardInput.value.trim();
-  if (!msg || !username) return;
+  if (!msg || !username) { systemMsg('Login first!'); return; }
   lastBoardTime = now;
   boardRef.push({
     name: username,
     msg,
     isBot: false,
     timestamp: firebase.database.ServerValue.TIMESTAMP
-  });
+  }).catch(e => console.error('Board push failed:', e));
   boardInput.value = '';
   setTimeout(() => {
     const reply = botReply(msg);
@@ -233,7 +237,7 @@ boardForm.addEventListener('submit', e => {
         msg: reply,
         isBot: true,
         timestamp: firebase.database.ServerValue.TIMESTAMP
-      });
+      }).catch(e => console.error('Bot board reply failed:', e));
     }
   }, 1200);
 });
@@ -241,7 +245,7 @@ boardForm.addEventListener('submit', e => {
 // ==== ONLINE COUNTER ====
 const onlineRef = db.ref('online');
 const userRef = onlineRef.push(true);
-onlineRef.on('value', snap => onlineSpan.textContent = snap.numChildren());
+onlineRef.on('value', snap => onlineSpan.textContent = snap.numChildren() || 0);
 window.addEventListener('beforeunload', () => userRef.remove());
 
 // ==== TABS ====
@@ -254,7 +258,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-// ==== BOOT SEQUENCE (GLITCH + BAR + BEEP) ====
+// ==== BOOT SEQUENCE ====
 function startApp() {
   const bar = $('#progress-bar');
   let progress = 0;
@@ -270,7 +274,8 @@ function startApp() {
       setTimeout(() => {
         loader.classList.add('hidden');
         app.classList.remove('hidden');
-        systemMsg(`Welcome, ${username || 'Guest'}. Archives online.`);
+        if (username) systemMsg(`Welcome, ${username}. Archives online.`);
+        else systemMsg('Archives online. Choose a name to chat.');
         const now = new Date();
         lastUpdateEl.textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
       }, 300);
