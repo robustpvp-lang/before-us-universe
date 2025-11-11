@@ -5,66 +5,74 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Before Us Universe</title>
 <style>
-  body { margin:0; font-family:'Courier New', monospace; background:#0b0b0b; color:#eee; }
-  .container { max-width:950px; margin:auto; padding:2rem; display:flex; flex-direction:column; }
-  h1 { text-align:center; font-size:2.5rem; margin-bottom:0.5rem; }
-  .status { text-align:center; font-size:1.2rem; margin-bottom:1rem; }
+/* --- Global Styles --- */
+body { margin:0; font-family:'Courier New', monospace; background:#0b0b0b; color:#eee; }
+.container { max-width:1200px; margin:auto; padding:2rem; display:flex; flex-direction:column; }
+h1 { text-align:center; font-size:2.5rem; margin-bottom:0.5rem; }
+.status { text-align:center; font-size:1.2rem; margin-bottom:1rem; }
+.links { display:flex; justify-content:center; gap:1rem; margin-bottom:1rem; }
+.links a { color:#0ff; text-decoration:none; border:1px solid #0ff; padding:0.3rem 0.6rem; border-radius:3px; transition:0.2s; }
+.links a:hover { background:#0ff; color:#000; }
 
-  /* Boot Screen */
-  #bootScreen { position:fixed; inset:0; background:#000; color:#0ff; display:flex; flex-direction:column; justify-content:center; align-items:center; font-size:1.5rem; z-index:10; }
-  #bootScreen.hidden { display:none; }
-  .boot-line { font-family: monospace; white-space: pre; }
+/* --- Boot Screen --- */
+#bootScreen { position:fixed; inset:0; background:#000; color:#0ff; display:flex; flex-direction:column; justify-content:center; align-items:center; font-size:1.5rem; z-index:10; }
+.boot-line { font-family: monospace; white-space: pre; }
 
-  /* Main Content */
-  #mainContent { display:none; flex-direction:column; }
+/* --- Main Content --- */
+#mainContent { display:none; flex-direction:column; }
 
-  /* Handle Prompt */
-  #handlePrompt { display:flex; flex-direction:column; align-items:center; margin:1rem 0; }
-  #handlePrompt input { padding:0.5rem; width:200px; margin-top:0.5rem; }
+/* --- Login Form --- */
+#loginForm { display:flex; flex-direction:column; align-items:center; margin:1rem 0; }
+#loginForm input { padding:0.5rem; width:250px; margin:0.3rem 0; }
 
-  /* Layout */
-  .workspace { display:flex; gap:1rem; }
-  .streams { flex:2; display:flex; flex-direction:column; gap:1rem; }
-  .companion { flex:1; background:#111; padding:1rem; border:1px solid #333; border-radius:5px; max-height:500px; overflow-y:auto; font-size:0.9rem; }
+/* --- Layout --- */
+.workspace { display:flex; gap:1rem; flex-wrap:wrap; }
+.streams { flex:2; display:flex; flex-direction:column; gap:1rem; min-width:300px; }
+.companion { flex:1; background:#111; padding:1rem; border:1px solid #333; border-radius:5px; max-height:500px; overflow-y:auto; font-size:0.9rem; min-width:200px; }
 
-  /* Stream Toggle */
-  .stream-toggle { display:flex; justify-content:center; margin-bottom:1rem; }
-  .stream-toggle button { background:#111; color:#eee; border:1px solid #555; margin:0 0.5rem; padding:0.5rem 1rem; cursor:pointer; }
-  .stream-toggle button.active { background:#222; border-color:#0ff; color:#0ff; }
+/* --- Stream Toggle --- */
+.stream-toggle { display:flex; justify-content:center; margin-bottom:1rem; }
+.stream-toggle button { background:#111; color:#eee; border:1px solid #555; margin:0 0.5rem; padding:0.5rem 1rem; cursor:pointer; }
+.stream-toggle button.active { background:#222; border-color:#0ff; color:#0ff; }
 
-  /* Streams */
-  .stream { display:none; background:#111; padding:1rem; border:1px solid #333; border-radius:5px; min-height:300px; overflow-y:auto; font-size:0.95rem; }
-  .stream.active { display:block; }
-  .exuro { color:#aaf; }
-  .sam { color:#fa8; }
+/* --- Streams --- */
+.stream { display:none; background:#111; padding:1rem; border:1px solid #333; border-radius:5px; min-height:300px; overflow-y:auto; font-size:0.95rem; }
+.stream.active { display:block; }
+.exuro { color:#aaf; }
+.sam { color:#fa8; }
 
-  /* Glitch effect for Exuro */
-  .glitch { position: relative; display:inline-block; }
-  .glitch::before, .glitch::after { content: attr(data-text); position:absolute; left:0; top:0; opacity:0.7; color:#0ff; }
-  .glitch::before { left:2px; text-shadow:-1px 0 #0ff; animation: glitch-anim 2s infinite; }
-  .glitch::after { left:-2px; text-shadow:1px 0 #0ff; animation: glitch-anim2 3s infinite; }
-  @keyframes glitch-anim { 0%,20%,40%,60%,80%,100%{transform:translate(0);} 10%,30%,50%,70%,90%{transform:translate(-2px,1px);} }
-  @keyframes glitch-anim2 { 0%,20%,40%,60%,80%,100%{transform:translate(0);} 10%,30%,50%,70%,90%{transform:translate(2px,-1px);} }
+/* --- Glitch effect for Exuro --- */
+.glitch { position: relative; display:inline-block; }
+.glitch::before, .glitch::after { content: attr(data-text); position:absolute; left:0; top:0; opacity:0.7; color:#0ff; }
+.glitch::before { left:2px; text-shadow:-1px 0 #0ff; animation: glitch-anim 2s infinite; }
+.glitch::after { left:-2px; text-shadow:1px 0 #0ff; animation: glitch-anim2 3s infinite; }
+@keyframes glitch-anim { 0%,20%,40%,60%,80%,100%{transform:translate(0);} 10%,30%,50%,70%,90%{transform:translate(-2px,1px);} }
+@keyframes glitch-anim2 { 0%,20%,40%,60%,80%,100%{transform:translate(0);} 10%,30%,50%,70%,90%{transform:translate(2px,-1px);} }
 
-  /* Input Area */
-  .input-area { display:flex; margin-top:1rem; }
-  .input-area input { flex:1; padding:0.5rem; background:#111; border:1px solid #555; color:#eee; font-family:monospace; }
-  .input-area button { padding:0.5rem 1rem; background:#0ff; border:none; cursor:pointer; font-weight:bold; color:#000; }
+/* --- Input Area --- */
+.input-area { display:flex; margin-top:1rem; }
+.input-area input { flex:1; padding:0.5rem; background:#111; border:1px solid #555; color:#eee; font-family:monospace; }
+.input-area button { padding:0.5rem 1rem; background:#0ff; border:none; cursor:pointer; font-weight:bold; color:#000; }
 
-  /* Active Users List */
-  #activeUsers { background:#111; border:1px solid #333; padding:0.5rem; border-radius:5px; max-height:100px; overflow-y:auto; margin-bottom:1rem; }
-  #activeUsers p { margin:0.2rem 0; font-size:0.9rem; }
+/* --- Active Users List --- */
+#activeUsers { background:#111; border:1px solid #333; padding:0.5rem; border-radius:5px; max-height:100px; overflow-y:auto; margin-bottom:1rem; }
+#activeUsers p { margin:0.2rem 0; font-size:0.9rem; }
 
-  /* Companion log */
-  #companionLog { font-family: monospace; color:#0ff; }
+/* --- Companion log --- */
+#companionLog { font-family: monospace; color:#0ff; }
+
+/* --- ProBoards Embed --- */
+#messageBoard { flex-basis:100%; min-height:400px; border:1px solid #333; margin-top:1rem; }
 
 </style>
 </head>
 <body>
 
-<!-- Boot Screen -->
+<!-- Enhanced Boot Screen -->
 <div id="bootScreen">
-  <div class="boot-line">SYSTEM BOOTING...</div>
+  <div class="boot-line" id="bootLine1"></div>
+  <div class="boot-line" id="bootLine2"></div>
+  <div class="boot-line" id="bootLine3"></div>
   <div class="boot-line" id="bootProgress"></div>
 </div>
 
@@ -74,16 +82,26 @@
 <h1>Before Us Universe</h1>
 <div class="status">CHANNEL ACTIVITY: <span id="status">007</span></div>
 
+<!-- External Links -->
+<div class="links">
+  <a href="https://www.youtube.com/@Patrickauthor" target="_blank">YouTube</a>
+  <a href="https://reedsy.com/discovery/author/submissions" target="_blank">Reedsy</a>
+  <a href="https://web.archive.org/" target="_blank">Web Archive</a>
+</div>
+
 <!-- Active Users -->
 <div id="activeUsers"><strong>Active Users:</strong></div>
 
-<!-- Handle Prompt -->
-<div id="handlePrompt" style="display:none;">
-  Enter your handle: <input type="text" id="handleInput">
+<!-- Login Form -->
+<div id="loginForm">
+  <input type="text" id="handleInput" placeholder="Enter Handle">
+  <input type="password" id="passwordInput" placeholder="Enter Password">
+  <button id="loginBtn">Login / Register</button>
+  <p id="loginError" style="color:red;"></p>
 </div>
 
 <!-- Workspace -->
-<div class="workspace">
+<div class="workspace" style="display:none;">
   <!-- Streams -->
   <div class="streams">
     <div class="stream-toggle">
@@ -104,178 +122,259 @@
   <div class="companion">
     <div id="companionLog"><strong>Companion Log</strong></div>
   </div>
+
+  <!-- ProBoards Message Board -->
+  <iframe id="messageBoard" src="https://tokillamockinggoblin.boards.net/" width="100%" height="400"></iframe>
 </div>
 
 </div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-  // --- Firebase config ---
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "SENDER_ID",
-    appId: "APP_ID"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+// --- Firebase config ---
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
 
-  // --- Boot Sequence ---
-  const bootProgress = document.getElementById('bootProgress');
-  let progress=0;
-  const interval = setInterval(()=>{
-    progress+=Math.floor(Math.random()*10+5);
-    if(progress>=100){ progress=100; clearInterval(interval); finishBoot(); }
-    bootProgress.textContent='['+ '='.repeat(progress/2) + ' '.repeat(50-progress/2) + '] ' + progress + '%';
-  },100);
+// --- Boot Sequence ---
+const bootProgress = document.getElementById('bootProgress');
+const bootLinesEls = [document.getElementById('bootLine1'), document.getElementById('bootLine2'), document.getElementById('bootLine3')];
+const bootLines = [
+  "Initializing Lux Fleet...",
+  "Scanning Vestus Sector...",
+  "Calibrating Tiamat Sensors...",
+  "Decrypting Anu Command Codes...",
+  "Warning: Tiamat Interference Detected...",
+  "Establishing Connection to Collective...",
+  "Loading Companion AI Modules...",
+  "Synchronizing Sam Logs...",
+  "Finalizing Boot Sequence..."
+];
+function animateBootLines(index=0){
+  if(index>=bootLines.length){ setTimeout(finishBoot,500); return; }
+  const el = bootLinesEls[index%bootLinesEls.length];
+  el.textContent="";
+  const chars = bootLines[index].split('');
+  let i=0;
+  const interval=setInterval(()=>{
+    el.textContent += chars[i];
+    i++;
+    if(i>=chars.length){ clearInterval(interval); setTimeout(()=>animateBootLines(index+1),200); }
+  },50+Math.random()*30);
+}
+animateBootLines();
 
-  function finishBoot(){
-    document.getElementById('bootScreen').classList.add('hidden');
-    document.getElementById('mainContent').style.display='flex';
-    document.getElementById('handlePrompt').style.display='flex';
-    askHandle();
-    startScriptedMessages();
-  }
+function finishBoot(){
+  document.getElementById('bootScreen').style.display='none';
+  document.getElementById('mainContent').style.display='flex';
+}
 
-  // --- Handle Prompt ---
-  let userHandle='';
-  function askHandle(){
-    const handleInput = document.getElementById('handleInput');
-    handleInput.focus();
-    handleInput.addEventListener('keypress',(e)=>{
-      if(e.key==='Enter'){
-        userHandle=handleInput.value.trim();
-        if(!userHandle) userHandle="Anon_"+Math.floor(Math.random()*1000);
-        document.getElementById('handlePrompt').style.display='none';
-        setUserActive(userHandle);
+// --- Login ---
+const loginBtn = document.getElementById('loginBtn');
+loginBtn.addEventListener('click', ()=> {
+  const handle = document.getElementById('handleInput').value.trim();
+  const pass = document.getElementById('passwordInput').value;
+  if(!handle || !pass){ document.getElementById('loginError').textContent="Enter handle and password"; return; }
+  
+  auth.signInWithEmailAndPassword(handle+"@buu.com",pass)
+    .then(()=>loginSuccess(handle))
+    .catch(err=>{
+      if(err.code==='auth/user-not-found'){
+        auth.createUserWithEmailAndPassword(handle+"@buu.com",pass)
+          .then(()=>loginSuccess(handle))
+          .catch(e=>document.getElementById('loginError').textContent=e.message);
+      } else {
+        document.getElementById('loginError').textContent=err.message;
       }
     });
-  }
+});
 
-  // --- Active Users ---
-  const activeUsersRef = db.ref('activeUsers');
-  function setUserActive(handle){
-    const userRef = activeUsersRef.child(handle);
-    userRef.set(true);
-    userRef.onDisconnect().remove();
-  }
-  activeUsersRef.on('value', snapshot=>{
-    const div = document.getElementById('activeUsers');
-    div.innerHTML="<strong>Active Users:</strong>";
-    snapshot.forEach(child=>{
-      const p=document.createElement('p'); p.textContent=child.key; div.appendChild(p);
-    });
+function loginSuccess(handle){
+  document.getElementById('loginForm').style.display='none';
+  document.querySelector('.workspace').style.display='flex';
+  userHandle = handle;
+  setUserActive(userHandle);
+  listenMessages();
+  startCompanionLore();
+}
+
+// --- Active Users ---
+const activeUsersRef = db.ref('activeUsers');
+let userHandle="";
+function setUserActive(handle){
+  const userRef = activeUsersRef.child(handle);
+  userRef.set(true);
+  userRef.onDisconnect().remove();
+}
+activeUsersRef.on('value', snapshot=>{
+  const div = document.getElementById('activeUsers');
+  div.innerHTML="<strong>Active Users:</strong>";
+  snapshot.forEach(child=>{
+    const p=document.createElement('p'); p.textContent=child.key; div.appendChild(p);
   });
+});
 
-  // --- Streams ---
-  const btnExuro = document.getElementById('btnExuro');
-  const btnSam = document.getElementById('btnSam');
-  const exuroStream = document.getElementById('exuroStream');
-  const samStream = document.getElementById('samStream');
+// --- Streams Toggle ---
+const btnExuro = document.getElementById('btnExuro');
+const btnSam = document.getElementById('btnSam');
+const exuroStream = document.getElementById('exuroStream');
+const samStream = document.getElementById('samStream');
 
-  btnExuro.addEventListener('click',()=>{
-    exuroStream.classList.add('active'); samStream.classList.remove('active');
-    btnExuro.classList.add('active'); btnSam.classList.remove('active');
-  });
-  btnSam.addEventListener('click',()=>{
-    samStream.classList.add('active'); exuroStream.classList.remove('active');
-    btnSam.classList.add('active'); btnExuro.classList.remove('active');
-  });
+btnExuro.addEventListener('click',()=>{
+  exuroStream.classList.add('active'); samStream.classList.remove('active');
+  btnExuro.classList.add('active'); btnSam.classList.remove('active');
+});
+btnSam.addEventListener('click',()=>{
+  samStream.classList.add('active'); exuroStream.classList.remove('active');
+  btnSam.classList.add('active'); btnExuro.classList.remove('active');
+});
 
-  // --- Status / Channel Activity ---
-  const statusEl = document.getElementById('status');
-  setInterval(()=>{ statusEl.textContent=String(Math.floor(Math.random()*999+1)).padStart(3,'0'); },10000);
+// --- Channel Activity ---
+const statusEl = document.getElementById('status');
+setInterval(()=>{ statusEl.textContent=String(Math.floor(Math.random()*999+1)).padStart(3,'0'); },10000);
 
-  // --- Message Posting ---
-  const input = document.getElementById('userInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const messagesRef = db.ref('messages');
+// --- Chat ---
+const input = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const messagesRef = db.ref('messages');
 
-  sendBtn.addEventListener('click',postMessage);
-  input.addEventListener('keypress',(e)=>{ if(e.key==='Enter') postMessage(); });
+sendBtn.addEventListener('click', postMessage);
+input.addEventListener('keypress',(e)=>{ if(e.key==='Enter') postMessage(); });
 
-  function postMessage(){
-    const text=input.value.trim();
-    if(!text) return;
-    const activeStream = exuroStream.classList.contains('active')?'exuro':'sam';
-    messagesRef.push({handle:userHandle,text:text,stream:activeStream,timestamp:Date.now()});
-    input.value='';
-  }
+function postMessage(){
+  const text = input.value.trim();
+  if(!text) return;
+  const activeStream = exuroStream.classList.contains('active')?'exuro':'sam';
+  const timestamp = Date.now();
+  messagesRef.push({handle:userHandle,text:text,stream:activeStream,timestamp});
+  input.value='';
+}
 
+// --- Listen for Messages ---
+function listenMessages(){
   messagesRef.on('child_added', snapshot=>{
-    const data=snapshot.val();
+    const data = snapshot.val();
     appendMessage(data.handle,data.text,data.stream);
   });
+}
 
-  function appendMessage(handle,text,stream){
-    const companion=document.getElementById('companionLog');
-    const p=document.createElement('p');
-    if(stream==='exuro'){
-      p.className='exuro glitch';
-      p.setAttribute('data-text', `[EXURO][${handle}]: ${text}`);
-      p.textContent=`[EXURO][${handle}]: ${text}`;
-      exuroStream.appendChild(p);
-      exuroStream.scrollTop=exuroStream.scrollHeight;
-
-      const frag=document.createElement('p');
-      frag.textContent=`[EXURO LOG]: ${text.slice(0,20)}...`;
-      companion.appendChild(frag);
-      companion.scrollTop=companion.scrollHeight;
-    } else {
-      p.className='sam';
-      p.textContent=`[SAM][${handle}]: ${text}`;
-      samStream.appendChild(p);
-      samStream.scrollTop=samStream.scrollHeight;
-
-      const frag=document.createElement('p');
-      frag.textContent=`[SAM NOTE]: ${text.slice(0,20)}...`;
-      companion.appendChild(frag);
-      companion.scrollTop=companion.scrollHeight;
-    }
+// --- Append Messages ---
+function appendMessage(handle,text,stream){
+  const companion = document.getElementById('companionLog');
+  const p = document.createElement('p');
+  if(stream==='exuro'){
+    p.className='exuro glitch';
+    p.setAttribute('data-text', `[EXURO][${handle}]: ${text}`);
+    p.textContent=`[EXURO][${handle}]: ${text}`;
+    exuroStream.appendChild(p);
+    exuroStream.scrollTop = exuroStream.scrollHeight;
+  } else {
+    p.className='sam';
+    p.textContent=`[SAM][${handle}]: ${text}`;
+    samStream.appendChild(p);
+    samStream.scrollTop = samStream.scrollHeight;
   }
+  const frag = document.createElement('p');
+  frag.textContent=`[LOG]: ${text.slice(0,30)}...`;
+  companion.appendChild(frag);
+  companion.scrollTop = companion.scrollHeight;
+}
 
-  // --- Scripted Messages ---
-  const exuroMessages=[
-    "Sensors detecting anomaly in sector 7.",
-    "Fleet report: 12 active / 3 unresponsive.",
-    "Tiamat interference confirmed.",
-    "Auxiliary systems offline temporarily.",
-    "Receiving fragmented transmission from Vestus."
-  ];
-  const samMessages=[
-    "Woke up late, dreamt of something massive.",
-    "Gram's coffee was cold again.",
-    "Feeling uneasy, sky seemed strange last night.",
-    "Found old diary, pages missing.",
-    "Thought about Exuro's logs in dreams."
-  ];
+// --- Auto-delete messages older than 24 hours ---
+setInterval(()=>{
+  const now = Date.now();
+  messagesRef.once('value', snapshot=>{
+    snapshot.forEach(child=>{
+      if(now - child.val().timestamp > 24*60*60*1000){
+        messagesRef.child(child.key).remove();
+      }
+    });
+  });
+},60*60*1000);
 
-  function startScriptedMessages(){
-    function exuroLoop(){
-      const text=exuroMessages[Math.floor(Math.random()*exuroMessages.length)];
-      messagesRef.push({handle:'EXURO',text:text,stream:'exuro',timestamp:Date.now()});
-      setTimeout(exuroLoop, Math.floor(Math.random()*15000)+5000);
-    }
-    function samLoop(){
-      const text=samMessages[Math.floor(Math.random()*samMessages.length)];
-      messagesRef.push({handle:'SAM',text:text,stream:'sam',timestamp:Date.now()});
-      setTimeout(samLoop, Math.floor(Math.random()*15000)+5000);
-    }
-    exuroLoop();
-    samLoop();
+// --- Companion Lore Fragments ---
+const exuroLore = [
+  "Fleet sensors report strange energy spikes near Vestus.",
+  "Auxiliary systems offline; manual override required.",
+  "Tiamat interference detected in multiple sectors.",
+  "Lux patrols report missing signals from outer rim.",
+  "Fragmented transmission intercepted: 'Prepare… for…'."
+];
+
+const samLore = [
+  "Woke to a sky I didn’t recognize.",
+  "Gram left me an old diary, pages torn.",
+  "Dreamt of Exuro’s logs, they whispered secrets.",
+  "Felt the fleet watching through the night sky.",
+  "Found a strange emblem under my bed."
+];
+
+function spawnLoreFragment(){
+  const companion = document.getElementById('companionLog');
+  const isExuro = Math.random() < 0.5;
+  const fragment = isExuro ? exuroLore[Math.floor(Math.random()*exuroLore.length)]
+                            : samLore[Math.floor(Math.random()*samLore.length)];
+  const p = document.createElement('p');
+  p.textContent = isExuro ? `[EXURO LOG]: ${fragment}` : `[SAM NOTE]: ${fragment}`;
+  p.style.opacity = 0;
+  companion.appendChild(p);
+  companion.scrollTop = companion.scrollHeight;
+
+  let opacity = 0;
+  const fade = setInterval(()=>{
+    opacity += 0.05;
+    if(opacity>=1){ opacity=1; clearInterval(fade); }
+    p.style.opacity = opacity;
+  },30);
+
+  setTimeout(spawnLoreFragment, Math.floor(Math.random()*25000)+15000);
+}
+
+function startCompanionLore(){
+  spawnLoreFragment();
+}
+
+// --- Enhanced Glitch/Flicker for Exuro ---
+function flickerElement(el){
+  const intensity = Math.random()*2;
+  el.style.transform=`translate(${Math.random()*intensity-1}px,${Math.random()*intensity-1}px)`;
+  el.style.opacity=0.8 + Math.random()*0.2;
+  setTimeout(()=>{ el.style.transform=''; el.style.opacity=1; },50);
+}
+setInterval(()=>{
+  const exLines = document.querySelectorAll('#exuroStream p');
+  if(exLines.length>0){
+    const el = exLines[Math.floor(Math.random()*exLines.length)];
+    flickerElement(el);
   }
+},3000);
 
+// --- Tiamat Interference Overlay ---
+function tamperExuroStream(){
+  const exLines = document.querySelectorAll('#exuroStream p');
+  if(exLines.length>0){
+    const el = exLines[Math.floor(Math.random()*exLines.length)];
+    const text = el.textContent;
+    let garbled = text.split('').map(c=>Math.random()<0.1?String.fromCharCode(33+Math.floor(Math.random()*94)):c).join('');
+    el.textContent = garbled;
+    setTimeout(()=>{ el.textContent = text; },500);
+  }
+}
+setInterval(()=>{ if(Math.random()<0.3) tamperExuroStream(); },5000);
 </script>
-
 </body>
 </html>
 
-  </script>
-</body>
-</html>
