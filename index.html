@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Before Us Universe — BUU</title>
 <style>
 :root{
@@ -52,7 +52,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 </style>
 </head>
 <body>
-<div id="bootScreen" aria-hidden="false">
+<div id="bootScreen">
   <div class="boot-line" id="bootLineA"></div>
   <div class="boot-line" id="bootLineB"></div>
   <div class="boot-line" id="bootLineC"></div>
@@ -66,11 +66,11 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
     <div class="small">— companion site to the book</div>
   </div>
   <div class="topbar">
-    <div class="status">CHANNEL ACTIVITY: <span id="channelActivity">007</span></div>
-    <div class="links" aria-hidden="false">
-      <a href="https://www.youtube.com/@Patrickauthor" target="_blank" rel="noopener">YouTube</a>
-      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener">Reedsy</a>
-      <a href="https://web.archive.org/" target="_blank" rel="noopener">Web Archive</a>
+    <div class="status">CHANNEL ACTIVITY: <span id="channelActivity">000</span></div>
+    <div class="links">
+      <a href="https://www.youtube.com/@Patrickauthor" target="_blank">YouTube</a>
+      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank">Reedsy</a>
+      <a href="https://web.archive.org/" target="_blank">Web Archive</a>
     </div>
   </div>
 </header>
@@ -79,12 +79,11 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 <div class="leftcol">
 <div class="panel">
   <div id="loginPanel">
-    <div class="small">Enter a handle to join the BUU chatroom. This creates a temporary session (no password required).</div>
+    <div class="small">Enter a handle to join the BUU chatroom.</div>
     <div style="display:flex;gap:8px;margin-top:8px">
       <input id="handleField" placeholder="Choose a handle (e.g. CommanderSam)">
       <button id="enterBtn" class="sendBtn">JOIN</button>
     </div>
-    <div id="handleHint" class="small" style="margin-top:6px;color:#9fb8c9">Your handle will appear in the room & active list until you close the tab.</div>
   </div>
 </div>
 
@@ -111,20 +110,12 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
     <input type="text" id="chatInput" placeholder="Write to current stream...">
     <button id="sendChat" class="sendBtn">POST</button>
   </div>
-  <div class="small" style="margin-top:8px">Messages self-expire after 24 hours (auto-pruned).</div>
+  <div class="small" style="margin-top:8px">Messages auto-delete after 24 hours.</div>
 </div>
 
 <div class="panel" style="margin-top:8px">
-  <div class="small" style="margin-bottom:6px">Community message board (ProBoards)</div>
+  <div class="small">Community message board (ProBoards)</div>
   <iframe id="boardFrame" src="https://tokillamockinggoblin.boards.net/page/external-widget" title="ProBoards message board"></iframe>
-  <div style="margin-top:8px">
-    <div class="small">Quick local post:</div>
-    <div style="display:flex;gap:8px;margin-top:6px">
-      <input id="boardTitle" placeholder="Title" style="width:28%">
-      <input id="boardMsg" placeholder="Short post (echoes to DB)" style="width:60%">
-      <button id="postBoard" class="sendBtn">POST</button>
-    </div>
-  </div>
 </div>
 </div>
 
@@ -140,7 +131,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 </div>
 
 <div class="panel">
-  <strong>Recent activity</strong>
+  <strong>Recent Activity</strong>
   <div id="recentActivity" style="margin-top:8px"></div>
 </div>
 </div>
@@ -149,9 +140,8 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
 <script>
-// ---------- Firebase config ----------
+// ---------- Firebase ----------
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
   authDomain: "before-us-universe.firebaseapp.com",
@@ -164,143 +154,67 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ---------- UI references ----------
-const bootScreen = document.getElementById('bootScreen');
-const appContainer = document.getElementById('app');
-const bootLineA = document.getElementById('bootLineA');
-const bootLineB = document.getElementById('bootLineB');
-const bootLineC = document.getElementById('bootLineC');
-const bootProgress = document.getElementById('bootProgress');
-
-const enterBtn = document.getElementById('enterBtn');
-const handleField = document.getElementById('handleField');
-const loginPanel = document.getElementById('loginPanel');
-const activeUsersEl = document.getElementById('activeUsers');
-const companionLog = document.getElementById('companionLog');
-const recentActivity = document.getElementById('recentActivity');
-const channelActivity = document.getElementById('channelActivity');
-const chatInput = document.getElementById('chatInput');
-const sendChat = document.getElementById('sendChat');
-const streamsContainer = document.getElementById('streamsContainer');
-const btns = document.querySelectorAll('.stream-toggle .btn');
-
-const boardTitle = document.getElementById('boardTitle');
-const boardMsg = document.getElementById('boardMsg');
-const postBoard = document.getElementById('postBoard');
-const openBoardBtn = document.getElementById('openBoardBtn');
-
-// ---------- Boot animation ----------
-const bootLines = [
-  "SYSTEM BOOT: Before Us Universe kernel v0.9",
-  "Initializing Lux Fleet telemetry modules...",
-  "Scanning Vestus sector... calibrating arrays",
-  "Calibrating Tiamat sensors... warning traces found",
-  "Decrypting Anu broadcast keys... OK",
-  "Mounting Companion log archive...",
-  "Synchronizing Sam local caches...",
-  "Finalizing boot sequence. Standby for connection..."
-];
-
-function animateBoot(i=0){
-  if(i>=bootLines.length){
-    let pct=0; const timer = setInterval(()=>{pct+=6+Math.floor(Math.random()*6); if(pct>=100){pct=100; clearInterval(timer); finishBoot();} bootProgress.textContent=`[${"=".repeat(Math.floor(pct/2))}${".".repeat(50-Math.floor(pct/2))}] ${pct}%`;},120);
-    return;
-  }
-  const target = (i%3===0)?bootLineA:(i%3===1)?bootLineB:bootLineC;
-  target.textContent="";
-  const chars = bootLines[i].split('');
-  let j=0;
-  const it = setInterval(()=>{target.textContent+=chars[j++]; if(j>=chars.length){clearInterval(it); setTimeout(()=>animateBoot(i+1),200+Math.random()*300);}},24+Math.random()*18);
+// ---------- Boot ----------
+const bootScreen=document.getElementById('bootScreen');
+const bootLines=["SYSTEM BOOT","Loading Lux telemetry","Calibrating Vestus sensors","Decrypting Anu keys","Mounting Companion log","Finalizing boot"];
+let i=0;
+function bootStep(){
+  if(i>=bootLines.length){bootScreen.style.display='none';document.getElementById('app').style.display='block';return;}
+  const line=document.createElement('div'); line.className='boot-line'; line.textContent=bootLines[i++]; bootScreen.appendChild(line);
+  setTimeout(bootStep,400+Math.random()*400);
 }
-function finishBoot(){bootScreen.style.display='none'; appContainer.style.display='block';}
-animateBoot();
+bootStep();
 
-// ---------- Handle login ----------
-let handle=null; let presenceRef=null; let currentChannel='exuro';
-enterBtn.addEventListener('click',joinWithHandle);
-handleField.addEventListener('keypress', e=>{if(e.key==='Enter') joinWithHandle();});
-
-function sanitizeName(n){return String(n).replace(/[^a-zA-Z0-9_\- ]/g,'').slice(0,32).trim()||("Anon"+Math.floor(Math.random()*9999));}
-function joinWithHandle(){
-  handle = sanitizeName(handleField.value||'');
-  loginPanel.style.display='none';
-  addSystemActivity(`Handle set: ${handle}`);
-  presenceRef = db.ref('online/' + handle);
-  presenceRef.set(true); presenceRef.onDisconnect().remove();
-  setupListeners(); startCompanionLore();
-  pushActivity(`[${handle}] joined the room`);
-}
-
-// ---------- Streams toggle ----------
-btns.forEach(b=>b.addEventListener('click',()=>{btns.forEach(x=>x.classList.remove('active'));b.classList.add('active'); switchChannel(b.dataset.channel);} ));
-function switchChannel(ch){
-  currentChannel = ch;
-  streamsContainer.querySelectorAll('.stream').forEach(d=>{d.style.display=(d.id===ch)?'block':'none';});
-}
-
-// ---------- DB refs ----------
-const chatRef = db.ref('chat');
-const boardRef = db.ref('board');
-const onlineRef = db.ref('online');
-
-// ---------- Chat functions ----------
-function pushChat(msg,ch){const payload={name:handle||'Anon',msg:String(msg).slice(0,500),ts:Date.now(),channel:ch||currentChannel}; chatRef.push(payload);}
-function pushBoard(title,msg){const payload={name:handle||'Anon',title:String(title).slice(0,140),msg:String(msg).slice(0,1000),ts:Date.now()}; boardRef.push(payload);}
-sendChat.addEventListener('click',doPostChat);
-chatInput.addEventListener('keypress',e=>{if(e.key==='Enter') doPostChat();});
-function doPostChat(){const txt=chatInput.value.trim();if(!txt) return; pushChat(txt,currentChannel); chatInput.value='';}
-
-// ---------- Board quick post ----------
-postBoard.addEventListener('click',()=>{
-  const t=boardTitle.value.trim()||'Untitled'; const m=boardMsg.value.trim(); if(!m) return;
-  pushBoard(t,m); boardTitle.value=''; boardMsg.value=''; addSystemActivity(`Posted local board echo: "${t}"`);
+// ---------- Login ----------
+let handle=null, currentChannel='exuro', presenceRef=null;
+document.getElementById('enterBtn').addEventListener('click',()=>{
+  handle = (document.getElementById('handleField').value||'Anon'+Math.floor(Math.random()*9999)).replace(/[^a-zA-Z0-9]/g,'');
+  document.getElementById('loginPanel').style.display='none';
+  presenceRef=db.ref('online/'+handle); presenceRef.set(true); presenceRef.onDisconnect().remove();
+  addSystemActivity(`${handle} joined`);
+  listenChat(); listenOnline(); listenBoard(); startCompanionLore();
 });
 
-// ---------- Listeners ----------
-function setupListeners(){
-  chatRef.limitToLast(200).on('child_added', snap=>{const obj=snap.val(); if(obj) renderChatMessage(obj);});
-  boardRef.limitToLast(50).on('child_added', snap=>{const obj=snap.val(); if(obj) renderBoardEcho(obj);});
-  onlineRef.on('value',snap=>{
-    activeUsersEl.innerHTML=''; let cnt=0;
-    snap.forEach(ch=>{const p=document.createElement('p'); p.textContent=ch.key; activeUsersEl.appendChild(p); cnt++;});
-    channelActivity.textContent = String(cnt).padStart(3,'0');
+// ---------- Channels ----------
+document.querySelectorAll('.stream-toggle .btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.stream-toggle .btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); switchChannel(b.dataset.channel);
   });
-  pruneOldMessages();
-}
+});
+function switchChannel(ch){currentChannel=ch; document.querySelectorAll('.stream').forEach(d=>d.style.display=(d.id===ch)?'block':'none');}
 
-// ---------- Rendering ----------
-function renderChatMessage(obj){
-  if(!obj||!obj.msg) return;
-  const wrapper=document.createElement('p'); wrapper.className=''; wrapper.innerHTML=`<span class="meta">[${obj.name}]</span> ${obj.msg}`;
-  const target=document.getElementById(obj.channel)||document.getElementById('exuro');
-  if(target){target.appendChild(wrapper); target.scrollTop=target.scrollHeight;}
-}
+// ---------- Chat ----------
+const chatRef=db.ref('chat');
+document.getElementById('sendChat').addEventListener('click',()=>{postChat(document.getElementById('chatInput').value);});
+document.getElementById('chatInput').addEventListener('keypress',e=>{if(e.key==='Enter') postChat(document.getElementById('chatInput').value);});
+function postChat(msg){if(!msg||!handle) return; chatRef.push({name:handle,msg:msg.slice(0,500),ts:Date.now(),channel:currentChannel}); document.getElementById('chatInput').value='';}
 
-function renderBoardEcho(obj){const wrap=document.createElement('p'); wrap.innerHTML=`<span class="meta">[${obj.name}] ${obj.title}</span>: ${obj.msg}`; recentActivity.appendChild(wrap); recentActivity.scrollTop=recentActivity.scrollHeight;}
+// ---------- Board ----------
+const boardRef=db.ref('board');
+function listenBoard(){boardRef.limitToLast(50).on('child_added',snap=>{const obj=snap.val(); if(!obj) return; const p=document.createElement('p'); p.textContent=`[${obj.name}] ${obj.title||''}: ${obj.msg}`; document.getElementById('recentActivity').appendChild(p);});}
+document.getElementById('openBoardBtn').addEventListener('click',()=>{window.open('https://tokillamockinggoblin.boards.net','_blank');});
 
-// ---------- Companion lore ----------
-const loreLines=[
-  "Exuro: Energy readings spike across Vestus",
-  "Sam: Commander log indicates high temporal instability",
-  "Nora: Sensors show interference from Lux fleet",
-  "Nero: Tactical arrays recalibrating",
-  "Loktal: Vessels detected on outer rim"
-];
-function startCompanionLore(){let i=0; setInterval(()=>{if(i>=loreLines.length) i=0; const p=document.createElement('p'); p.textContent=loreLines[i++]; companionLog.appendChild(p); companionLog.scrollTop=companionLog.scrollHeight;},5000);}
+// ---------- Active Users ----------
+function listenOnline(){db.ref('online').on('value',snap=>{const ul=document.getElementById('activeUsers'); ul.innerHTML=''; let cnt=0; snap.forEach(ch=>{const p=document.createElement('p'); p.textContent=ch.key; ul.appendChild(p); cnt++;}); document.getElementById('channelActivity').textContent=String(cnt).padStart(3,'0');});}
 
-// ---------- System / activity log ----------
-function addSystemActivity(msg){const p=document.createElement('p'); p.textContent=msg; recentActivity.appendChild(p); recentActivity.scrollTop=recentActivity.scrollHeight;}
+// ---------- Chat listener ----------
+function listenChat(){chatRef.limitToLast(200).on('child_added',snap=>{const obj=snap.val(); if(!obj||!obj.msg) return; const target=document.getElementById(obj.channel)||document.getElementById('exuro'); const p=document.createElement('p'); p.innerHTML=`<span class="meta">[${obj.name}]</span> ${obj.msg}`; target.appendChild(p); target.scrollTop=target.scrollHeight;});}
 
-// ---------- Prune messages after 24h ----------
-function pruneOldMessages(){
-  const cutoff = Date.now() - 24*60*60*1000;
-  chatRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
-  boardRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
-  setTimeout(pruneOldMessages,60*60*1000);
-}
+// ---------- Companion Log ----------
+const loreLines=["Exuro: Energy readings spike across Vestus","Sam: Temporal instability detected","Nora: Sensors show interference","Nero: Tactical arrays recalibrating","Loktal: Vessels on rim detected"];
+function startCompanionLore(){let i=0; setInterval(()=>{const p=document.createElement('p'); p.textContent=loreLines[i++ % loreLines.length]; document.getElementById('companionLog').appendChild(p);},5000);}
 
-// ---------- Board open button ----------
-openBoardBtn.addEventListener('click',()=>{window.open('https://tokillamockinggoblin.boards.net','_blank');});
+// ---------- System activity ----------
+function addSystemActivity(msg){const p=document.createElement('p'); p.textContent=msg; document.getElementById('recentActivity').appendChild(p);}
+
+// ---------- Prune old messages ----------
+function pruneOld(){const cutoff=Date.now()-24*60*60*1000; chatRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff)s.ref.remove();});}); boardRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff)s.ref.remove();});}); setTimeout(pruneOld,60*60*1000);} pruneOld();
+
+// ---------- Secret Pilgrim channel unlock ----------
+document.getElementById('handleField').addEventListener('keypress',e=>{
+  if(e.key==='Enter' && e.target.value.toLowerCase()==='pilgrim123'){document.querySelector('[data-channel="pilgrim"]').style.display='block'; addSystemActivity('Pilgrim channel unlocked');}
+});
 </script>
 </body>
 </html>
