@@ -1,711 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Before Us Universe</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<title>Before Us Universe – LIVE CHAT & BOARD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono&display=swap" rel="stylesheet">
+<style>
+/* ==== GLOBAL ==== */
+* { margin:0; padding:0; box-sizing:border-border; }
+body { background:#0e0e10; color:#e0f7fa; font-family:'Roboto Mono',monospace; overflow:hidden; height:100vh; }
 
-        body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(180deg, #9bbc0f 0%, #8bac0f 30%, #306230 70%, #0f380f 100%);
-            min-height: 100vh;
-            color: #0f380f;
-            padding: 16px;
-            position: relative;
-        }
+/* ==== LOADER ==== */
+#loader { position:fixed; inset:0; background:#111; display:flex; align-items:center; justify-content:center; flex-direction:column; z-index:9999; }
+.glitch { font-family:'Press Start 2P',cursive; font-size:2rem; color:#00ffcc; position:relative; animation:glitch 2s infinite; }
+.glitch::before,.glitch::after { content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%; }
+.glitch::before { animation:glitch-1 .5s infinite; color:#ff00ff; clip-path:polygon(0 0,100% 0,100% 45%,0 45%); }
+.glitch::after { animation:glitch-2 .5s infinite; color:#00ffff; clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%); }
+.scanlines { position:absolute; inset:0; background:linear-gradient(transparent 50%,rgba(0,0,0,.05) 50%); background-size:100% 4px; animation:scan 6s linear infinite; }
 
-        /* Scan lines */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, transparent 1px, transparent 2px, rgba(0,0,0,0.1) 3px);
-            pointer-events: none;
-            z-index: 100;
-        }
+/* ==== APP ==== */
+.hidden { display:none; }
+#app { display:flex; flex-direction:column; height:100vh; }
+.header { background:#1c1c1e; padding:1rem; text-align:center; border-bottom:2px solid #00ffcc; }
+.title { font-family:'Press Start 2P',cursive; font-size:1.4rem; color:#00ffcc; }
+.subtitle { font-size:.9rem; color:#aaa; margin-top:.3rem; }
 
-        /* Boot Screen */
-        #boot-screen {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            position: fixed;
-            inset: 0;
-            z-index: 200;
-            background: linear-gradient(180deg, #9bbc0f 0%, #8bac0f 50%, #306230 100%);
-        }
+/* ==== TABS ==== */
+.tabs { display:flex; background:#1c1c1e; }
+.tab-btn { flex:1; padding:.6rem; background:#222; color:#aaa; border:none; cursor:pointer; font-weight:bold; }
+.tab-btn.active { background:#00ffcc; color:#111; }
 
-        .boot-container {
-            text-align: center;
-            animation: bootPulse 0.8s infinite;
-        }
+/* ==== CHAT & BOARD ==== */
+.section { flex:1; display:flex; flex-direction:column; background:#18181b; margin:.5rem; border-radius:8px; overflow:hidden; box-shadow:0 0 15px rgba(0,255,204,.2); }
+.chat-header, .board-header { background:#00ffcc; color:#111; padding:.6rem 1rem; font-weight:bold; display:flex; justify-content:space-between; font-size:.9rem; }
+.messages, .board-posts { flex:1; padding:1rem; overflow-y:auto; display:flex; flex-direction:column; gap:.6rem; }
+.message, .post { max-width:85%; padding:.5rem .8rem; border-radius:8px; line-height:1.4; word-wrap:break-word; }
+.message.user, .post.user { align-self:flex-end; background:#00bcd4; color:#fff; }
+.message.bot, .post.bot { align-self:flex-start; background:#333; color:#0f0; border:1px solid #0f0; }
+.message.system, .post.system { align-self:center; font-style:italic; color:#ff9800; font-size:.8rem; }
+.input-area { display:flex; border-top:1px solid #333; }
+.input-area input { flex:1; padding:.8rem; background:#111; color:#fff; border:none; outline:none; }
+.input-area button { background:#00ffcc; color:#111; border:none; padding:0 1.2rem; cursor:pointer; font-weight:bold; }
+.input-area button:hover { background:#00bcd4; }
 
-        .boot-box {
-            background: #0f380f;
-            border: 8px solid #9bbc0f;
-            border-radius: 8px;
-            padding: 32px;
-            box-shadow: 0 0 30px rgba(155, 188, 15, 0.5);
-        }
+/* ==== FOOTER ==== */
+.footer { background:#1c1c1e; padding:.5rem; text-align:center; font-size:.8rem; color:#777; }
 
-        .boot-title {
-            font-size: 48px;
-            font-weight: bold;
-            color: #9bbc0f;
-            letter-spacing: 4px;
-            text-shadow: 2px 2px 0 #0f380f, 4px 4px 0 rgba(155, 188, 15, 0.3);
-        }
-
-        .boot-subtitle {
-            font-size: 14px;
-            color: #8bac0f;
-            margin-top: 8px;
-            letter-spacing: 2px;
-        }
-
-        .loading-bar {
-            width: 200px;
-            height: 20px;
-            background: #0f380f;
-            border: 3px solid #8bac0f;
-            margin: 24px auto 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .loading-fill {
-            height: 100%;
-            background: #9bbc0f;
-            width: 0%;
-            animation: loadFill 4s ease-in-out forwards;
-        }
-
-        .boot-copyright {
-            margin-top: 24px;
-            color: #9bbc0f;
-            font-size: 12px;
-            letter-spacing: 1px;
-        }
-
-        @keyframes loadFill {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-
-        @keyframes bootPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.85; }
-        }
-
-        /* Main Content */
-        #main-content {
-            display: none;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        #main-content.loaded {
-            display: block;
-        }
-
-        /* Username Modal */
-        #username-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 150;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #username-modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: #0f380f;
-            border: 6px solid #9bbc0f;
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 0 30px rgba(155, 188, 15, 0.5);
-            text-align: center;
-        }
-
-        .modal-content h2 {
-            color: #9bbc0f;
-            font-size: 24px;
-            margin-bottom: 16px;
-            letter-spacing: 2px;
-        }
-
-        .modal-content input {
-            background: #306230;
-            border: 3px solid #8bac0f;
-            color: #c0d860;
-            padding: 12px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            width: 250px;
-            margin-bottom: 16px;
-        }
-
-        .modal-content button {
-            background: #9bbc0f;
-            border: 3px solid #0f380f;
-            color: #0f380f;
-            padding: 12px 24px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 2px 2px 0 rgba(15, 56, 15, 0.5);
-        }
-
-        /* Header */
-        .header {
-            background: #0f380f;
-            border: 6px solid #9bbc0f;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 4px 4px 0 rgba(15, 56, 15, 0.5);
-        }
-
-        .header h1 {
-            font-size: 32px;
-            font-weight: bold;
-            color: #9bbc0f;
-            text-align: center;
-            letter-spacing: 3px;
-            text-shadow: 2px 2px 0 #306230;
-        }
-
-        .header p {
-            text-align: center;
-            color: #8bac0f;
-            font-size: 14px;
-            margin-top: 8px;
-            letter-spacing: 1px;
-        }
-
-        /* Grid Layout */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        @media (min-width: 768px) {
-            .main-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        /* Message Board */
-        .message-board {
-            background: #0f380f;
-            border: 6px solid #8bac0f;
-            border-radius: 8px;
-            padding: 12px;
-            box-shadow: 4px 4px 0 rgba(15, 56, 15, 0.5);
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #9bbc0f;
-            margin-bottom: 12px;
-            border-bottom: 3px solid #8bac0f;
-            padding-bottom: 8px;
-            letter-spacing: 2px;
-        }
-
-        #board-posts {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 12px;
-        }
-
-        .board-post {
-            background: #306230;
-            border: 3px solid #9bbc0f;
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-        }
-
-        .post-title {
-            color: #9bbc0f;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .post-content {
-            color: #c0d860;
-            font-size: 12px;
-            line-height: 1.5;
-            word-wrap: break-word;
-        }
-
-        .post-meta {
-            color: #8bac0f;
-            font-size: 11px;
-            margin-top: 4px;
-        }
-
-        .new-post-form {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .new-post-form input,
-        .new-post-form textarea {
-            background: #306230;
-            border: 3px solid #8bac0f;
-            color: #c0d860;
-            padding: 8px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-        }
-
-        .new-post-form textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
-
-        /* Chat Log */
-        .chat-container {
-            background: #0f380f;
-            border: 6px solid #8bac0f;
-            border-radius: 8px;
-            padding: 12px;
-            box-shadow: 4px 4px 0 rgba(15, 56, 15, 0.5);
-            display: flex;
-            flex-direction: column;
-            height: 500px;
-        }
-
-        .chat-messages {
-            background: #306230;
-            border: 3px solid #9bbc0f;
-            padding: 8px;
-            border-radius: 4px;
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 8px;
-        }
-
-        .chat-message {
-            margin-bottom: 8px;
-        }
-
-        .chat-meta {
-            color: #9bbc0f;
-            font-size: 11px;
-        }
-
-        .chat-meta .username {
-            font-weight: bold;
-        }
-
-        .chat-text {
-            color: #c0d860;
-            font-size: 12px;
-            margin-left: 8px;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .chat-input-area {
-            display: flex;
-            gap: 8px;
-        }
-
-        .chat-input {
-            flex: 1;
-            background: #306230;
-            border: 3px solid #8bac0f;
-            color: #c0d860;
-            padding: 8px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-        }
-
-        .chat-button,
-        .post-button {
-            background: #9bbc0f;
-            border: 3px solid #0f380f;
-            color: #0f380f;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 2px 2px 0 rgba(15, 56, 15, 0.5);
-        }
-
-        .chat-button:hover,
-        .post-button:hover {
-            background: #8bac0f;
-        }
-
-        .chat-button:active,
-        .post-button:active {
-            transform: translateY(2px);
-            box-shadow: none;
-        }
-
-        /* Info Boxes */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        @media (min-width: 768px) {
-            .info-grid {
-                grid-template-columns: 1fr 1fr 1fr;
-            }
-        }
-
-        .info-box {
-            background: #0f380f;
-            border: 4px solid #8bac0f;
-            border-radius: 6px;
-            padding: 12px;
-            box-shadow: 3px 3px 0 rgba(15, 56, 15, 0.5);
-        }
-
-        .info-title {
-            color: #9bbc0f;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-
-        .info-content {
-            color: #c0d860;
-            font-size: 12px;
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 20px;
-            padding: 16px;
-            background: #0f380f;
-            border: 4px solid #9bbc0f;
-            border-radius: 8px;
-            text-align: center;
-            color: #8bac0f;
-            font-size: 12px;
-            box-shadow: 4px 4px 0 rgba(15, 56, 15, 0.5);
-        }
-
-        .footer-divider {
-            margin-bottom: 8px;
-        }
-
-        .footer-copyright {
-            color: #9bbc0f;
-            letter-spacing: 1px;
-        }
-
-        .footer-note {
-            margin-top: 4px;
-            font-size: 11px;
-        }
-    </style>
+/* ==== ANIMATIONS ==== */
+@keyframes glitch { 0%,100%{text-shadow:.05em 0 0 #00ffcc,-.05em 0 0 #ff00ff} 15%{text-shadow:-.05em 0 0 #00ffcc,.05em 0 0 #ff00ff} 50%{text-shadow:.05em 0 0 #00ffcc,-.05em 0 0 #ff00ff} }
+@keyframes glitch-1 { 0%{clip-path:polygon(0 0,100% 0,100% 45%,0 45%)} 100%{clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%)} }
+@keyframes glitch-2 { 0%{clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%)} 100%{clip-path:polygon(0 0,100% 0,100% 45%,0 45%)} }
+@keyframes scan { 0%{background-position:0 0} 100%{background-position:0 100%} }
+</style>
 </head>
 <body>
-    <div id="boot-screen">
-        <div class="boot-container">
-            <div class="boot-box">
-                <div class="boot-title">WONDERBOY</div>
-                <div class="boot-subtitle">BOOT SEQUENCE...</div>
-                <div class="loading-bar">
-                    <div class="loading-fill"></div>
-                </div>
-            </div>
-            <p class="boot-copyright">© 1999 The Before Us Universe</p>
-        </div>
+
+<!-- ===== GLITCHY LOADER ===== -->
+<div id="loader">
+  <div class="glitch" data-text="BOOT SEQUENCE...">BOOT SEQUENCE...</div>
+  <div class="scanlines"></div>
+</div>
+
+<!-- ===== MAIN UI ===== -->
+<div id="app" class="hidden">
+  <header class="header">
+    <h1 class="title">THE BEFORE US UNIVERSE</h1>
+    <p class="subtitle">.:. Digital Memory Archives .:.</p>
+  </header>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="chat">LIVE CHAT</button>
+    <button class="tab-btn" data-tab="board">MESSAGE BOARD</button>
+  </div>
+
+  <!-- CHAT SECTION -->
+  <section id="chat" class="section">
+    <div class="chat-header">
+      <span>LIVE CHAT</span>
+      <span id="online-count">ONLINE: <span>1</span></span>
     </div>
+    <div id="messages" class="messages"></div>
+    <form id="chat-form" class="input-area">
+      <input type="text" id="chat-input" placeholder="Type a message…" autocomplete="off" required />
+      <button type="submit">SEND</button>
+    </form>
+  </section>
 
-    <div id="username-modal">
-        <div class="modal-content">
-            <h2>ENTER USERNAME</h2>
-            <input type="text" id="username-input" placeholder="Your handle..." maxlength="20">
-            <br>
-            <button onclick="setUsername()">CONNECT</button>
-        </div>
+  <!-- BOARD SECTION -->
+  <section id="board" class="section hidden">
+    <div class="board-header">
+      <span>MESSAGE BOARD (last 10)</span>
+      <span id="post-count">0 posts</span>
     </div>
+    <div id="board-posts" class="board-posts"></div>
+    <form id="board-form" class="input-area">
+      <input type="text" id="board-input" placeholder="Leave a message…" autocomplete="off" required />
+      <button type="submit">POST</button>
+    </form>
+  </section>
 
-    <div id="main-content">
-        <div class="header">
-            <h1>THE BEFORE US UNIVERSE</h1>
-            <p>.:. Digital Memory Archives .:.</p>
-        </div>
+  <footer class="footer">
+    <p>LAST UPDATE <span id="last-update">1999.11.08</span></p>
+    <p>System: <span id="system-status">Stable*</span></p>
+  </footer>
+</div>
 
-        <div class="main-grid">
-            <div class="message-board">
-                <h2 class="section-title">≡ MESSAGE BOARD ≡</h2>
-                
-                <div id="board-posts"></div>
+<script>
+// ==== CONFIG ====
+const BOT_NAME = 'Yaga';
+const LORE = {
+  'who is wonderboy?': 'Wonderboy is the last surviving archivist of the Before Us timeline.',
+  'what is the before us universe?': 'A fractured multiverse where digital memories outlived humanity.',
+  'cortana': 'I am Yaga – part Cortana, part Baba Yaga. The Archives are under my watch.',
+  'baba yaga': 'I walk the line between code and myth. Ask wisely.',
+};
 
-                <div class="new-post-form">
-                    <input type="text" id="post-title" placeholder="Thread Title..." maxlength="50">
-                    <textarea id="post-content" placeholder="Your message..."></textarea>
-                    <button class="post-button" onclick="createPost()">POST</button>
-                </div>
-            </div>
+// ==== ELEMENTS ====
+const $ = s => document.querySelector(s);
+const loader = $('#loader'), app = $('#app');
+const messages = $('#messages'), chatInput = $('#chat-input'), chatForm = $('#chat-form');
+const boardPosts = $('#board-posts'), boardInput = $('#board-input'), boardForm = $('#board-form');
+const onlineSpan = $('#online-count span'), postCount = $('#post-count');
+const statusEl = $('#system-status'), lastUpdateEl = $('#last-update');
 
-            <div class="chat-container">
-                <h2 class="section-title">≡ LIVE CHAT ≡</h2>
-                
-                <div class="chat-messages" id="chat-messages"></div>
+// ==== STORAGE ====
+const STORAGE = {
+  board: 'beforeus_board_v1',
+  getBoard() { return JSON.parse(localStorage.getItem(this.board) || '[]'); },
+  saveBoard(arr) { localStorage.setItem(this.board, JSON.stringify(arr.slice(-10))); }
+};
 
-                <div class="chat-input-area">
-                    <input type="text" id="chat-input" class="chat-input" placeholder="Type message...">
-                    <button onclick="sendMessage()" class="chat-button">SEND</button>
-                </div>
-            </div>
-        </div>
+// ==== MESSAGES ====
+function addChat(txt, type='user'){ _add('#messages', txt, type); }
+function addBoard(txt, type='user'){ _add('#board-posts', txt, type); renderBoardCount(); }
+function _add(container, txt, type){
+  const div = document.createElement('div');
+  div.className = `message ${type}`;
+  div.textContent = txt;
+  $(container).appendChild(div);
+  $(container).scrollTop = $(container).scrollHeight;
+}
+function systemMsg(txt, target='chat'){ 
+  const el = target === 'board' ? '#board-posts' : '#messages';
+  const div = document.createElement('div');
+  div.className = 'message system';
+  div.textContent = txt;
+  $(el).appendChild(div);
+  $(el).scrollTop = $(el).scrollHeight;
+}
 
-        <div class="info-grid">
-            <div class="info-box">
-                <div class="info-title">☆ ONLINE USERS</div>
-                <div class="info-content" id="online-count">Connecting...</div>
-            </div>
-            <div class="info-box">
-                <div class="info-title">♪ STATUS</div>
-                <div class="info-content">System: <span id="system-status">Stable*</span></div>
-            </div>
-            <div class="info-box">
-                <div class="info-title">◆ LAST UPDATE</div>
-                <div class="info-content">1999.11.08</div>
-            </div>
-        </div>
+// ==== BOT ====
+function botReply(msg){
+  const lower = msg.toLowerCase().trim();
+  for(const [q,a] of Object.entries(LORE)) if(lower.includes(q)) return a;
+  const bad = ['fuck','shit','damn','asshole','bitch'];
+  if(bad.some(w=>lower.includes(w))) return 'Mind your tongue in the Archives.';
+  return `The Archives whisper… try asking about *Wonderboy* or *Before Us*.`;
+}
 
-        <div class="footer">
-            <div class="footer-divider">═══════════════════════════════════════</div>
-            <div class="footer-copyright">© 1999 Patrick McDonald — The Before Us Universe</div>
-            <div class="footer-note">Best viewed in 160x144 resolution</div>
-            <div class="footer-divider">═══════════════════════════════════════</div>
-        </div>
-    </div>
+// ==== CHAT ====
+chatForm.addEventListener('submit', e=>{
+  e.preventDefault();
+  const msg = chatInput.value.trim();
+  if(!msg) return;
+  addChat(msg,'user');
+  chatInput.value='';
+  setTimeout(()=>{ addChat(`${BOT_NAME}: ${botReply(msg)}`,'bot'); }, 600+Math.random()*400);
+});
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        // IMPORTANT: Use 'chat' instead of 'messages' to avoid conflict with NTD agent's cleanup script
-        import { getDatabase, ref, push, onValue, set, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js'; 
+// ==== BOARD ====
+function renderBoard(){
+  const posts = STORAGE.getBoard();
+  boardPosts.innerHTML = '';
+  posts.forEach(p => {
+    addBoard(p.text, p.type);
+  });
+  renderBoardCount();
+}
+function renderBoardCount(){
+  postCount.textContent = `${STORAGE.getBoard().length} post${STORAGE.getBoard().length!==1?'s':''}`;
+}
+boardForm.addEventListener('submit', e=>{
+  e.preventDefault();
+  const msg = boardInput.value.trim();
+  if(!msg) return;
+  const posts = STORAGE.getBoard();
+  posts.push({ text: msg, type: 'user', time: Date.now() });
+  STORAGE.saveBoard(posts);
+  boardInput.value='';
+  renderBoard();
+  // Yaga monitors
+  setTimeout(()=>{ 
+    const reply = botReply(msg);
+    if(reply.includes('tongue') || LORE[msg.toLowerCase()]) {
+      const botPost = { text: `${BOT_NAME}: ${reply}`, type: 'bot', time: Date.now() };
+      const all = STORAGE.getBoard();
+      all.push(botPost);
+      STORAGE.saveBoard(all);
+      renderBoard();
+    }
+  }, 1000);
+});
 
-        // Firebase configuration (use your existing config)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
-            authDomain: "before-us-universe.firebaseapp.com",
-            databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
-            projectId: "before-us-universe",
-            storageBucket: "before-us-universe.firebasestorage.app",
-            messagingSenderId: "477103463228",
-            appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
-        };
+// ==== TABS ====
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden'));
+    $(`#${btn.dataset.tab}`).classList.remove('hidden');
+  });
+});
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+// ==== MOCK ONLINE ====
+let mockCount = 1;
+setInterval(()=>{
+  mockCount = Math.max(1, mockCount + (Math.random()>.5?1:-1));
+  onlineSpan.textContent = mockCount;
+}, 7000);
 
-        let currentUsername = localStorage.getItem('buu_username') || '';
-        let userOnlineRef = null;
-
-        // Boot sequence
-        setTimeout(function() {
-            document.getElementById('boot-screen').style.display = 'none';
-            if (!currentUsername) {
-                document.getElementById('username-modal').classList.add('show');
-            } else {
-                document.getElementById('main-content').classList.add('loaded');
-                initializeUserApp();
-            }
-        }, 4000);
-
-        // Set username
-        window.setUsername = function() {
-            const input = document.getElementById('username-input');
-            const username = input.value.trim();
-            if (username) {
-                currentUsername = username;
-                localStorage.setItem('buu_username', username);
-                document.getElementById('username-modal').classList.remove('show');
-                document.getElementById('main-content').classList.add('loaded');
-                initializeUserApp();
-            }
-        };
-
-        // Initialize user app features
-        function initializeUserApp() {
-            // Track online users
-            const onlineUsersRef = ref(database, 'online/' + Date.now());
-            set(onlineUsersRef, {
-                username: currentUsername,
-                timestamp: Date.now()
-            });
-            userOnlineRef = onlineUsersRef;
-            onDisconnect(onlineUsersRef).remove();
-
-            // Count online users
-            const allOnlineRef = ref(database, 'online');
-            onValue(allOnlineRef, (snapshot) => {
-                const count = snapshot.size || 0;
-                document.getElementById('online-count').textContent = 'Currently: ' + count;
-            });
-
-            // Load chat messages (using 'chat' path)
-            const chatRef = ref(database, 'chat');
-            onValue(chatRef, (snapshot) => {
-                const chatMessages = document.getElementById('chat-messages');
-                chatMessages.innerHTML = '';
-                snapshot.forEach((childSnapshot) => {
-                    const msg = childSnapshot.val();
-                    addChatMessage(msg.username, msg.text, msg.timestamp);
-                });
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            });
-
-            // Load board posts (using 'posts' path)
-            const postsRef = ref(database, 'posts');
-            onValue(postsRef, (snapshot) => {
-                const boardPosts = document.getElementById('board-posts');
-                boardPosts.innerHTML = '';
-                snapshot.forEach((childSnapshot) => {
-                    const post = childSnapshot.val();
-                    addBoardPost(post.title, post.content, post.username, post.timestamp);
-                });
-            });
-        }
-
-        // Send chat message (using 'chat' path)
-        window.sendMessage = function() {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            
-            if (message) {
-                // IMPORTANT: NTD Agent expects messages to be in the 'messages' path for moderation. 
-                // We send a message to both paths (or push to a temporary 'messages' path for the agent to catch, 
-                // and use 'chat' for display). To simplify and use a single path for now:
-                // Let's use 'chat' for the client and change the agent to listen to 'chat'.
-                // ***Wait, I will update the agent to listen to 'chat' instead of 'messages' for consistency.*** // However, if the agent is designed to *clean* the main chat path, they should be different.
-                
-                // For the NTD agent to work, the client must post to the 'messages' path.
-                const moderatedChatRef = ref(database, 'messages'); 
-                
-                push(moderatedChatRef, {
-                    username: currentUsername,
-                    text: message,
-                    timestamp: Date.now()
-                });
-                input.value = '';
-            }
-        };
-
-        // Create board post
-        window.createPost = function() {
-            const titleInput = document.getElementById('post-title');
-            const contentInput = document.getElementById('post-content');
-            const title = titleInput.value.trim();
-            const content = contentInput.value.trim();
-            
-            if (title && content) {
-                const postsRef = ref(database, 'posts');
-                push(postsRef, {
-                    title: title,
-                    content: content,
-                    username: currentUsername,
-                    timestamp: Date.now()
-                });
-                titleInput.value = '';
-                contentInput.value = '';
-            }
-        };
-
-        // Add chat message to DOM
-        function addChatMessage(username, text, timestamp) {
-            const chatMessages = document.getElementById('chat-messages');
-            const time = new Date(timestamp).toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                hour12: false 
-            });
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'chat-message';
-            messageDiv.innerHTML = 
-                '<div class="chat-meta">[' + time + '] <span class="username">' + escapeHtml(username) + ':</span></div>' +
-                '<div class="chat-text">' + escapeHtml(text) + '</div>';
-            chatMessages.appendChild(messageDiv);
-        }
-
-        // Add board post to DOM
-        function addBoardPost(title, content, username, timestamp) {
-            const boardPosts = document.getElementById('board-posts');
-            const date = new Date(timestamp).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            }).replace(/\//g, '.');
-            
-            const postDiv = document.createElement('div');
-            postDiv.className = 'board-post';
-            postDiv.innerHTML = 
-                '<div class="post-title">→ ' + escapeHtml(title) + '</div>' +
-                '<div class="post-content">' + escapeHtml(content) + '</div>' +
-                '<div class="post-meta">Posted by ' + escapeHtml(username) + ' | ' + date + '</div>';
-            boardPosts.appendChild(postDiv);
-        }
-
-        // Enter key to send chat
-        document.getElementById('chat-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        // Enter key to set username
-        document.getElementById('username-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                setUsername();
-            }
-        });
-
-        // Escape HTML
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-        }
-    </script>
-    <script type="module" src="./scripts/ntd-agent.js"></script>
+// ==== BOOT ====
+function startApp(){
+  loader.style.opacity = '0';
+  setTimeout(()=>{
+    loader.classList.add('hidden');
+    app.classList.remove('hidden');
+    systemMsg('Digital Memory Archives online.');
+    const now = new Date();
+    lastUpdateEl.textContent = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+    renderBoard();
+  },800);
+}
+setTimeout(startApp, 3000);
+</script>
 </body>
 </html>
