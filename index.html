@@ -33,12 +33,11 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .input-area{display:flex;gap:8px;align-items:center;margin-top:6px}
 .input-area input[type="text"],#handleField{background:#0b0e11;border:1px solid #222;padding:8px;border-radius:4px;color:var(--muted);width:100%;font-family:monospace}
 .sendBtn{padding:8px 12px;border-radius:4px;background:var(--accent);color:#000;border:none;cursor:pointer;font-weight:700}
-#boardFrame{width:100%;height:500px;border:1px solid #222;border-radius:6px;background:#060708}
 #bootScreen{position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--accent);font-family:monospace}
 .boot-line{white-space:pre;font-size:1rem;margin:2px 0;opacity:0.95}
 .boot-progress{margin-top:10px;border:1px solid rgba(255,255,255,0.03);padding:6px;width:60%;border-radius:4px;color:#bfe8ff}
 .small{font-size:0.85rem;color:#9fb8c9}
-@media(max-width:980px){.maingrid{flex-direction:column}#boardFrame{height:320px}}
+@media(max-width:980px){.maingrid{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -60,6 +59,8 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 
 <div class="maingrid">
 <div class="leftcol">
+
+<!-- LOGIN PANEL -->
 <div class="panel">
   <div id="loginPanel">
     <div class="small">Enter a handle to join the BUU chatroom.</div>
@@ -70,6 +71,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
   </div>
 </div>
 
+<!-- CHAT PANEL -->
 <div class="panel" style="margin-top:8px">
   <div class="stream-toggle">
     <button class="btn active" data-channel="exuro">EXURO</button>
@@ -78,8 +80,6 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
     <button class="btn" data-channel="nero">NERO</button>
     <button class="btn" data-channel="loktal">LOKTAL</button>
     <button class="btn" data-channel="pilgrim" style="display:none">PILGRIM</button>
-    <div style="flex:1"></div>
-    <button id="openBoardBtn" class="btn">Open Message Board</button>
   </div>
   <div id="streamsContainer">
     <div id="exuro" class="stream exuro panel" style="display:block"></div>
@@ -96,16 +96,28 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
   <div class="small" style="margin-top:8px">Messages auto-delete after 24 hours.</div>
 </div>
 
+<!-- LOCAL MESSAGE BOARD -->
 <div class="panel" style="margin-top:8px">
-  <div class="small">Community message board (ProBoards)</div>
-  <iframe id="boardFrame" 
-          src="https://tokillamockinggoblin.boards.net/page/external-widget" 
-          width="100%" height="500px" frameborder="0" scrolling="auto"
-          onerror="this.style.display='none';">
-  </iframe>
-</div>
+  <div class="small">Local Message Board</div>
+  <div id="localBoard" class="stream panel" style="max-height:300px;overflow:auto"></div>
+  <div class="input-area" style="margin-top:6px">
+    <input type="text" id="boardInput" placeholder="Write a post...">
+    <button id="sendBoard" class="sendBtn">POST</button>
+  </div>
 </div>
 
+<!-- YOUTUBE STREAM -->
+<div class="panel" style="margin-top:8px">
+  <div class="small">Live YouTube Stream</div>
+  <iframe width="100%" height="360" 
+          src="https://www.youtube.com/embed/live_stream?channel=UC7f16X7r3jq2n3xKyI5X0Xw" 
+          title="Live Stream" frameborder="0" allowfullscreen>
+  </iframe>
+</div>
+
+</div>
+
+<!-- RIGHT COLUMN -->
 <div class="rightcol">
 <div class="panel">
   <strong>Active Users</strong>
@@ -135,17 +147,16 @@ const db = firebase.database();
 const bootScreenEl = document.getElementById('bootScreen');
 const bootLinesContainer = document.getElementById('bootLinesContainer');
 const bootProgress = document.getElementById('bootProgress');
-
 const bootLines = [
   "Booting Before Us Universe v1.0...",
   "Initializing Lux telemetry...",
   "Decrypting Tiamat protocols...",
   "Calibrating Vestus fleet sensors...",
   "Loading multi-channel chat modules...",
-  "Mounting ProBoards message board...",
+  "Mounting local message board...",
+  "Embedding YouTube live stream...",
   "Finalizing system checks..."
 ];
-
 let currentLine = 0;
 function glitchText(text){
   return text.split('').map(c => Math.random()<0.05 ? String.fromCharCode(33+Math.floor(Math.random()*94)) : c).join('');
@@ -176,6 +187,7 @@ setInterval(()=>{
 // ---------- Login & Chat ----------
 let handle=null,currentChannel='exuro',presenceRef=null;
 const chatRef=db.ref('chat');
+const boardRef=db.ref('board');
 
 document.getElementById('enterBtn').addEventListener('click',()=>{
   handle=(document.getElementById('handleField').value||'Anon'+Math.floor(Math.random()*9999))
@@ -185,7 +197,7 @@ document.getElementById('enterBtn').addEventListener('click',()=>{
   presenceRef=db.ref('online/'+handle); 
   presenceRef.set(true); 
   presenceRef.onDisconnect().remove();
-  listenChat(); listenOnline();
+  listenChat(); listenBoard(); listenOnline();
   if(handle.toLowerCase()==='pilgrim123') document.querySelector('[data-channel="pilgrim"]').style.display='inline-block';
 });
 
@@ -219,6 +231,26 @@ function listenChat(){
   });
 }
 
+// ---------- LOCAL MESSAGE BOARD ----------
+document.getElementById('sendBoard').addEventListener('click',()=>{postBoard(document.getElementById('boardInput').value);});
+document.getElementById('boardInput').addEventListener('keypress',e=>{if(e.key==='Enter') postBoard(document.getElementById('boardInput').value);});
+
+function postBoard(msg){
+  if(!msg||!handle) return;
+  boardRef.push({name:handle,msg:msg.slice(0,1000),ts:Date.now()});
+  document.getElementById('boardInput').value='';
+}
+
+function listenBoard(){
+  boardRef.limitToLast(200).on('child_added',snap=>{
+    const obj=snap.val(); if(!obj||!obj.msg) return;
+    const target=document.getElementById('localBoard');
+    const p=document.createElement('p'); p.innerHTML=`<span class="meta">[${obj.name}]</span> ${obj.msg}`;
+    target.appendChild(p); target.scrollTop=target.scrollHeight;
+  });
+}
+
+// ---------- Online users ----------
 function listenOnline(){
   db.ref('online').on('value',snap=>{
     const container=document.getElementById('activeUsers'); container.innerHTML='';
@@ -231,15 +263,11 @@ function listenOnline(){
   });
 }
 
-// ---------- Open Message Board Fallback ----------
-document.getElementById('openBoardBtn').addEventListener('click',()=>{
-  window.open('https://tokillamockinggoblin.boards.net','_blank');
-});
-
 // ---------- Prune old messages ----------
 function pruneOld(){
   const cutoff=Date.now()-24*60*60*1000;
   chatRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
+  boardRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
   setTimeout(pruneOld,60*60*1000);
 }
 pruneOld();
