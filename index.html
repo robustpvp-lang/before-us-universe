@@ -11,32 +11,30 @@
   --accent:#0aa; --muted:#555;
   --online:#00c853; --offline:#ff3d00;
   --bg-fallback:#08111a;
-  --yahoo-blue: linear-gradient(180deg,#1e73be,#0961a6);
+  --yahoo-blue-start:#2b8bd0;
+  --yahoo-blue-end:#0b5ea8;
+  --link-color:#0a6fbf;
+  --link-hover:#33a0ff;
 }
+/* Basic */
 html,body{height:100%;margin:0;font-family:Roboto, "Press Start 2P", monospace;background:var(--bg-fallback);color:var(--text);-webkit-font-smoothing:antialiased}
-/* Background */
-body{
-  background-color:var(--bg-fallback);
-  background-image:url('https://wallpapercave.com/wp/wp4468245.jpg');
-  background-position:center;
-  background-repeat:no-repeat;
-  background-size:cover;
-  overflow-y:scroll;
-}
-/* Boot overlay (retro terminal) */
+body{background-color:var(--bg-fallback);background-image:url('https://wallpapercave.com/wp/wp4468245.jpg');background-position:center;background-repeat:no-repeat;background-size:cover;overflow-y:auto}
+
+/* Boot overlay with login */
 #bootOverlay{position:fixed;left:0;top:0;width:100%;height:100%;background:#000;color:#7fffd4;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px}
-#bootText{font-family:Courier, monospace;max-width:900px;line-height:1.4;opacity:1;transform:translateY(0);transition:opacity 400ms}
-#bootProgress{width:420px;height:8px;border:2px solid #063; margin-top:18px;background:#031}
+#bootPanel{width:920px;max-width:95%;background:#07101a;border:3px solid #063;padding:18px;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.8)}
+#bootTitle{font-family:Courier, monospace;color:#aaffdd;font-size:18px;margin-bottom:8px}
+#bootText{font-family:Courier, monospace;color:#9ff;line-height:1.4}
+#bootForm{margin-top:14px;display:flex;gap:8px;align-items:center}
+#bootForm input[type="text"]{padding:8px;border:2px inset #022;font-family:Courier, monospace;color:#001;background:#e8fff6;border-radius:4px}
+#bootForm button{padding:8px 12px;background:#063;border:2px solid #0a7;color:#cff;border-radius:6px;cursor:pointer}
+
 /* Container */
 .app{position:relative;z-index:1;max-width:1180px;margin:18px auto;padding:12px;box-sizing:border-box}
-header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;padding:10px;background:linear-gradient(180deg,var(--panel),#dcdcdc);border:3px solid var(--panel-border);border-radius:6px}
-.nav-left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-header a{display:inline-block;padding:8px 10px;background:#fff;border:1px solid var(--panel-border);text-decoration:none;color:var(--text);font-size:14px;border-radius:4px}
-header a:hover{filter:brightness(0.95)}
-/* Yahoo-style title bar */
-.title-bar{display:flex;align-items:center;gap:16px;padding:8px 12px;border-radius:6px;background:linear-gradient(180deg,#1e73be,#0961a6);color:#fff;font-family:Courier, monospace}
+.title-bar{display:flex;align-items:center;gap:16px;padding:8px 12px;border-radius:6px;background:linear-gradient(90deg,var(--yahoo-blue-start),var(--yahoo-blue-end));color:#fff;font-family:Courier, monospace}
 .title-bar .logo{font-weight:700;letter-spacing:1px}
-.title-bar .subtitle{font-size:12px;opacity:0.9}
+.title-bar .subtitle{font-size:12px;opacity:0.95}
+.title-bar a.resource-link{color:#fff;text-decoration:underline;opacity:0.95;margin-left:12px;font-size:13px}
 
 /* Layout */
 .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
@@ -47,29 +45,26 @@ header a:hover{filter:brightness(0.95)}
 .small{font-size:12px;color:var(--muted)}
 .row{display:flex;gap:8px;align-items:center}
 
-/* Join */
-.join-row input[type="text"]{padding:8px;border:2px inset var(--panel-border);width:220px;font-family:monospace}
-.join-row select{padding:8px;border:2px inset var(--panel-border)}
-.join-row button{padding:8px 10px;border:2px outset var(--panel-border);background:#ddd;cursor:pointer}
-
 /* YouTube */
 .yt-wrap{display:flex;justify-content:center}
 .yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--panel-border);background:#000}
 
-/* Chat */
-.chat-win{border:3px solid var(--panel-border);background:linear-gradient(180deg,#f0f0f0,#e0e0e0);border-radius:6px;overflow:hidden;position:relative}
-.chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(180deg,#dcdcdc,#cfcfcf);border-bottom:2px solid var(--panel-border)}
-.chat-title .left{display:flex;gap:8px;align-items:center}
-.close-btn{background:#ffefef;border:1px solid #900;padding:4px 6px;border-radius:4px;cursor:pointer}
-.chat-body{padding:8px}
-.chat-messages{height:260px;overflow:auto;background:#fff;border:2px inset #bbb;padding:8px;white-space:pre-wrap;color:#111}
-.msg{margin:6px 0;padding:6px;border-radius:4px;background:linear-gradient(180deg,#fff,#f7f7f7);border:1px solid rgba(0,0,0,0.06)}
-.msg .meta{font-weight:700;color:var(--accent)}
+/* Chat (Yahoo-like) */
+.chat-win{border:4px solid #0b5ea8;border-radius:8px;overflow:hidden;position:relative;background:linear-gradient(180deg,#eaf6ff,#d7eeff)}
+.chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,#1e73be,#0961a6);color:#fff;font-family:Courier, monospace}
+.chat-title .left{display:flex;gap:12px;align-items:center}
+.chat-body{padding:10px}
+.chat-messages{height:360px;overflow:auto;background:linear-gradient(180deg,#ffffffcc,#eef8ffcc);border:2px solid rgba(0,0,0,0.06);padding:12px;white-space:normal;border-radius:6px}
+.chat-row{display:flex;gap:8px;margin:8px 0;align-items:flex-start}
+.chat-avatar{width:36px;height:36px;border-radius:6px;background:#d9eefc;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:Courier, monospace}
+.chat-bubble{max-width:78%;padding:10px;border-radius:8px;background:#fff;border:1px solid #cfe6ff;font-family:Arial, Helvetica, sans-serif}
+.chat-bubble.me{background:linear-gradient(180deg,#fff7d6,#fff2b3);border:1px solid #f0d280;text-align:right}
+.chat-meta{font-size:12px;color:#0a6fbf;font-weight:700;margin-bottom:6px;font-family:Courier, monospace}
+
+/* Chat controls */
 .chat-controls{display:flex;gap:8px;margin-top:8px}
 .chat-controls input[type="text"]{flex:1;padding:8px;border:2px inset var(--panel-border);font-family:monospace}
-
-/* Yahoo-chat gradient aesthetic for channel header */
-.channel-header{padding:8px;border-radius:4px;color:#fff;margin-bottom:8px;background:linear-gradient(90deg,#2b8bd0,#0b5ea8);font-family:Courier, monospace}
+.chat-controls button{padding:8px 10px;border:2px outset var(--panel-border);background:#dfefff;cursor:pointer;border-radius:6px}
 
 /* Active users */
 .active-list{display:flex;flex-direction:column;gap:6px}
@@ -77,51 +72,47 @@ header a:hover{filter:brightness(0.95)}
 .status-dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 6px rgba(0,0,0,0.08)}
 .dot-online{background:var(--online)}
 .dot-offline{background:var(--offline)}
-.uname{font-family:monospace;font-weight:700}
+.uname{font-family:Courier, monospace;font-weight:700;color:#0a4b7a}
 
 /* Board */
-.board-thread{background:#fff;border:2px solid var(--panel-border);padding:10px;margin-bottom:8px}
+.board-thread{background:#fff;border:2px solid var(--panel-border);padding:10px;margin-bottom:8px;border-radius:6px}
 textarea{width:100%;min-height:80px;padding:8px;border:2px inset var(--panel-border);font-family:monospace}
 
 /* tooltip */
 .tooltip{position:relative}
-.tooltip .tip{position:absolute;left:110%;top:0;background:#111;color:#7fffd4;padding:6px;border:1px solid #333;border-radius:4px;display:none;white-space:nowrap;z-index:999}
+.tooltip .tip{position:absolute;left:110%;top:0;background:#111;color:#fff;padding:6px;border:1px solid #333;border-radius:4px;display:none;white-space:nowrap;z-index:999}
 .tooltip:hover .tip{display:block}
 
 /* particles */
 #particleCanvas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}
 
-/* mobile active users under handle */
-#mobileActive{display:none;margin-top:8px;font-size:13px;color:#fff}
-@media(max-width:980px){ #mobileActive{display:block} .nav-left{justify-content:center} }
-
-/* small responsiveness */
-@media(max-width:600px){ .yt-wrap iframe{height:220px} }
-
-/* AIM-style DM windows */
-.dm-window{
-  position:fixed;background:#fff;border:3px solid #b8860b;border-radius:6px;padding:8px;z-index:9999;min-width:260px;max-width:420px;box-shadow:6px 6px 0 rgba(0,0,0,0.15)
-}
+/* DMs (AIM-style) */
+.dm-window{position:fixed;background:#fff;border:3px solid #b8860b;border-radius:6px;padding:8px;z-index:9999;min-width:260px;max-width:420px;box-shadow:6px 6px 0 rgba(0,0,0,0.15)}
 .dm-title{background:linear-gradient(180deg,#fddc6b,#f2c200);padding:6px;border-radius:4px;font-weight:700;cursor:move;font-family:Courier, monospace}
 .dm-msg{background:#fff7d6;padding:8px;border-radius:8px;margin:6px 0;max-width:90%}
 .dm-input{width:100%;padding:6px;border:1px solid #ddd}
 
-/* Random effects button */
-#randomBtn{padding:8px 10px;border-radius:6px;border:2px solid var(--panel-border);cursor:pointer;margin-left:8px}
-.effects-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-
-/* AI Lore Expert button */
-#loreBtn{padding:8px;background:#fff;border:2px solid #999;border-radius:6px;cursor:pointer;margin-left:8px}
+/* responsive */
+@media(max-width:600px){ .chat-messages{height:280px} .yt-wrap iframe{height:200px} }
 </style>
 </head>
 <body>
-<!-- Boot overlay -->
+<!-- Boot overlay (login moved here) -->
 <div id="bootOverlay" role="status" aria-live="polite">
-  <div id="bootText">
-    <div><strong>BEFORE US UNIVERSE — BOOT SEQUENCE</strong></div>
-    <div style="margin-top:12px">Initializing archival link... establishing attunement with the Archivist nodes.</div>
-    <div id="bootLog" style="margin-top:12px;font-size:13px">loading assets: ░░░░░░░░░░</div>
-    <div id="bootProgress"></div>
+  <div id="bootPanel" role="dialog" aria-modal="true">
+    <div id="bootTitle">BEFORE US UNIVERSE — SYSTEM LOGIN</div>
+    <div id="bootText">
+      <div>Establishing secure channel to Before Us Network...</div>
+      <div style="margin-top:8px">Please enter your handle to register your identity for chat, message board, and DMs. Your session is tied to Firebase Auth and will persist across reloads.</div>
+
+      <form id="bootForm" onsubmit="return false;" aria-label="Login form">
+        <input id="bootHandle" type="text" maxlength="30" placeholder="//YourHandle" aria-label="Handle input" />
+        <button id="bootLoginBtn" type="button">Authenticate</button>
+        <button id="bootCancelBtn" type="button" style="display:none">Cancel</button>
+      </form>
+
+      <div id="bootStatus" class="small" style="margin-top:10px;color:#9ff"></div>
+    </div>
   </div>
 </div>
 
@@ -132,84 +123,48 @@ textarea{width:100%;min-height:80px;padding:8px;border:2px inset var(--panel-bor
     <div class="logo">BUU</div>
     <div class="subtitle">Before Us Universe — community portal</div>
     <div style="margin-left:auto">
-      <button id="randomBtn" title="Random timeline effect">Random</button>
-      <button id="loreBtn" title="AI Lore Expert — replace # with your NotebookLM link">AI Lore Expert</button>
+      <a class="resource-link" href="http://www.oldversion.com/" target="_blank" rel="noopener">OldVersion</a>
+      <a class="resource-link" href="https://web.archive.org/" target="_blank" rel="noopener">Wayback Machine</a>
+      <a class="resource-link" id="projOrtegaLink" href="#" target="_blank" rel="noopener">Project ://ORTEGA</a>
     </div>
   </div>
 
-  <header>
-    <div class="nav-left">
-      <a href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener">To Kill a Mocking Goblin</a>
-      <a href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener">Melphia's Game (YouTube)</a>
-      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener">Book 1</a>
-      <a href="https://web.archive.org/" target="_blank" rel="noopener">Wayback Machine</a>
-    </div>
-    <div>
-      <button id="openChatBtn" class="open-chat-mobile" aria-label="Open chat">Open Chat</button>
+  <header style="margin-top:12px">
+    <div class="nav-left" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <a href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener" style="color:var(--link-color);text-decoration:none;font-weight:700">To Kill a Mocking Goblin</a>
+      <a href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener" style="color:var(--link-color);text-decoration:none;font-weight:700">Melphia's Game (YouTube)</a>
+      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener" style="color:var(--link-color);text-decoration:none;font-weight:700">Book 1</a>
     </div>
   </header>
 
   <div class="layout" aria-live="polite">
     <!-- LEFT column -->
     <div>
-      <!-- Join & YouTube -->
-      <div class="panel" aria-labelledby="joinHeading">
-        <div style="display:flex;justify-content:space-between;gap:12px">
-          <div style="flex:1">
-            <div class="small" id="joinHeading">Enter handle (required to join chat)</div>
-            <div class="join-row" style="margin-top:8px">
-              <input id="handleField" placeholder="//YourHandle" maxlength="30" aria-label="Handle" />
-              <select id="channelSelectTop" style="width:140px" aria-label="Choose channel">
-                <option value="exuro">//Exuro</option>
-                <option value="sam">//Sam</option>
-                <option value="nero">//Nero</option>
-                <option value="nora">//Nora</option>
-                <option value="loktal">//Loktal</option>
-                <option value="pilgrim" style="display:none">//Pilgrim</option>
-              </select>
-              <button id="joinBtn" aria-label="Join chat">JOIN</button>
-              <button id="leaveBtn" style="display:none" aria-label="Leave chat">LEAVE</button>
-            </div>
-            <div id="mobileActive" aria-hidden="false"></div>
-            <div class="small" style="margin-top:8px">Handles are reserved; choose carefully.</div>
-          </div>
-
-          <div style="width:160px">
-            <div class="small">Theme</div>
-            <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-              <div class="theme-swatch" data-theme="default" style="width:24px;height:24px;background:#e6e6e6;border:1px solid #222;cursor:pointer" title="Default"></div>
-              <div class="theme-swatch" data-theme="dark" style="width:24px;height:24px;background:#111;border:1px solid #222;cursor:pointer" title="Dark"></div>
-              <div class="theme-swatch" data-theme="retro" style="width:24px;height:24px;background:linear-gradient(45deg,#ffefba,#ffc3a0);border:1px solid #222;cursor:pointer" title="Retro"></div>
-            </div>
-            <div class="small" style="margin-top:8px">Saved per browser</div>
-          </div>
-        </div>
-
-        <hr/>
-
-        <div class="yt-wrap" aria-hidden="false">
-          <!-- YouTube playlist embed -->
+      <!-- YouTube -->
+      <div class="panel" aria-hidden="false">
+        <div class="small">Playlist</div>
+        <div class="yt-wrap" aria-hidden="false" style="margin-top:8px">
           <iframe id="ytIframe" src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" title="Melphia's Game playlist" allowfullscreen></iframe>
         </div>
       </div>
 
       <!-- Chat window -->
       <div class="panel chat-win" id="chatPanel" aria-live="polite" style="margin-top:12px">
-        <div class="channel-header">
-          <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="chat-title">
+          <div class="left">
             <div id="winChannelLabel">//Exuro</div>
-            <div style="display:flex;gap:12px;align-items:center">
-              <div class="small" id="userCountSmall">0 users</div>
-              <label class="small" for="doorToggle">Sound</label>
-              <input type="checkbox" id="doorToggle" checked aria-checked="true" />
-              <button class="close-btn" id="closeChatBtn" title="Close chat window" aria-label="Close chat">✖</button>
-            </div>
+            <div class="small" style="margin-left:12px" id="userCountSmall">0 users</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <label class="small" for="doorToggle" style="color:#fff">Sound</label>
+            <input type="checkbox" id="doorToggle" checked aria-checked="true" />
+            <button class="close-btn" id="closeChatBtn" title="Close chat window" aria-label="Close chat" style="background:#fff;color:#900;border-radius:6px;padding:6px">✖</button>
           </div>
         </div>
 
         <div class="chat-body">
           <div class="chat-messages" id="chatMessages" role="log" aria-live="polite"></div>
-          <div class="chat-controls">
+          <div class="chat-controls" style="margin-top:12px">
             <input id="chatInput" placeholder="Write message..." maxlength="500" aria-label="Message input" />
             <select id="channelSelect" style="width:120px" aria-label="Select channel">
               <option value="exuro">//Exuro</option>
@@ -217,7 +172,6 @@ textarea{width:100%;min-height:80px;padding:8px;border:2px inset var(--panel-bor
               <option value="nero">//Nero</option>
               <option value="nora">//Nora</option>
               <option value="loktal">//Loktal</option>
-              <option value="pilgrim" style="display:none">//Pilgrim</option>
             </select>
             <button id="sendBtn" aria-label="Send message">POST</button>
           </div>
@@ -249,7 +203,7 @@ textarea{width:100%;min-height:80px;padding:8px;border:2px inset var(--panel-bor
       <div class="panel" style="margin-top:12px">
         <div class="small">Direct Messages (DM)</div>
         <div id="dmList" style="margin-top:8px"></div>
-        <div class="small" style="margin-top:8px">Click name to open DM window (AIM-style)</div>
+        <div class="small" style="margin-top:8px">Click name to open DM window</div>
       </div>
 
       <div class="panel" style="margin-top:12px">
@@ -271,7 +225,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.0/firebas
 import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, query, orderByChild, update, get, off } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-auth.js";
 
-/* ---------- Config (from your original) ---------- */
+/* ---------- Config (your config — replace if needed) ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
   authDomain: "before-us-universe.firebaseapp.com",
@@ -286,87 +240,86 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 
 /* ---------- DOM refs ---------- */
-const handleField = document.getElementById('handleField');
-const joinBtn = document.getElementById('joinBtn');
-const leaveBtn = document.getElementById('leaveBtn');
-const channelSelect = document.getElementById('channelSelect');
-const channelSelectTop = document.getElementById('channelSelectTop');
+const bootOverlay = document.getElementById('bootOverlay');
+const bootHandle = document.getElementById('bootHandle');
+const bootLoginBtn = document.getElementById('bootLoginBtn');
+const bootStatus = document.getElementById('bootStatus');
+const appRoot = document.getElementById('app');
+
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
+const channelSelect = document.getElementById('channelSelect');
+const channelSelectTop = document.getElementById('channelSelectTop');
+const openChatBtn = document.getElementById('openChatBtn');
+const closeChatBtn = document.getElementById('closeChatBtn');
+const userCountSmall = document.getElementById('userCountSmall');
 const activeContainer = document.getElementById('activeContainer');
-const mobileActive = document.getElementById('mobileActive');
 const boardList = document.getElementById('boardList');
 const boardName = document.getElementById('boardName');
 const boardMsg = document.getElementById('boardMsg');
 const postBoardBtn = document.getElementById('postBoardBtn');
 const systemFeed = document.getElementById('systemFeed');
 const dmList = document.getElementById('dmList');
-const winChannelLabel = document.getElementById('winChannelLabel');
-const userCountSmall = document.getElementById('userCountSmall');
-const closeChatBtn = document.getElementById('closeChatBtn');
-const chatPanel = document.getElementById('chatPanel');
-const openChatBtn = document.getElementById('openChatBtn');
-const themeSwatches = document.querySelectorAll('.theme-swatch');
-const soundDoor = document.getElementById('soundDoor');
-const doorToggle = document.getElementById('doorToggle');
+const projOrtegaLink = document.getElementById('projOrtegaLink');
 const soundMsg = document.getElementById('soundMsg');
-const randomBtn = document.getElementById('randomBtn');
-const loreBtn = document.getElementById('loreBtn');
-const bootOverlay = document.getElementById('bootOverlay');
-const bootLog = document.getElementById('bootLog');
-const appRoot = document.querySelector('.app');
 
-/* ---------- State ---------- */
 let uid = null;
 let myHandle = null;
 let currentChannel = 'exuro';
 let presenceRef = null;
-let channelListeners = {}; // to detach listeners when switching
-let lastHashes = new Set();
+let channelListeners = {};
+const NOTEBOOKLM_URL = '#'; // replace '#' with your NotebookLM/public URL
 
-/* ---------- Boot animation ---------- */
-function finishBoot(){
-  bootLog.textContent = 'ready — welcome, Commander.';
-  setTimeout(()=>{
-    bootOverlay.style.transition = 'opacity 400ms'; bootOverlay.style.opacity = 0;
-    setTimeout(()=>{ bootOverlay.remove(); document.getElementById('app').removeAttribute('aria-hidden'); }, 450);
-  }, 900);
-}
-let bootPct = 0;
-const bootInterval = setInterval(()=>{
-  bootPct += Math.floor(Math.random()*12)+6;
-  if(bootPct > 98) { bootPct = 100; clearInterval(bootInterval); finishBoot(); }
-  bootLog.textContent = 'loading assets: ' + '█'.repeat(Math.floor(bootPct/8));
-  document.getElementById('bootProgress').style.width = Math.min(420, 4.2*bootPct) + 'px';
-}, 180);
-
-/* ---------- Particles (light) ---------- */
-const pCanvas = document.getElementById('particleCanvas');
-const pCtx = pCanvas.getContext('2d');
-function resizeCanvas(){ pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; }
-resizeCanvas(); window.addEventListener('resize', resizeCanvas);
-let particles = [];
-function spawnParticle(x,y){ particles.push({x,y,vx:(Math.random()-0.5)*0.8, vy:(Math.random()-0.5)*0.8, life:45, size:Math.random()*2+1}); }
-function particleLoop(){
-  pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
-  for(let i=particles.length-1;i>=0;i--){
-    const p = particles[i];
-    p.x += p.vx; p.y += p.vy; p.life--;
-    pCtx.fillStyle = `rgba(127,255,212,${p.life/45})`;
-    pCtx.fillRect(p.x, p.y, p.size, p.size);
-    if(p.life<=0) particles.splice(i,1);
-  }
-  requestAnimationFrame(particleLoop);
-}
-particleLoop();
-document.addEventListener('mousemove', e => spawnParticle(e.clientX, e.clientY));
-
-/* ---------- Auth ---------- */
+/* ---------- Boot/login logic (Firebase Auth + handle reservation) ---------- */
 signInAnonymously(auth).catch(e => appendSystem('Auth error: ' + e.message));
 onAuthStateChanged(auth, user => {
-  if(user) { uid = user.uid; appendSystem('Signed in: ' + uid); }
+  if(user) {
+    uid = user.uid;
+    appendSystem('Signed in: ' + uid);
+    // If we have a stored handle in localStorage, try to re-establish presence
+    const stored = localStorage.getItem('buu-handle');
+    if(stored && !myHandle){
+      // attempt to reserve again if server requires re-reserve on reload
+      attemptHandleReserve(stored).then(ok => {
+        if(ok){ myHandle = stored; finishLogin(); }
+        else { bootOverlay.style.display = ''; bootStatus.textContent = 'Handle taken on this device. Please enter a different handle.'; }
+      });
+    }
+  }
 });
+
+async function attemptHandleReserve(handle){
+  // try to claim handle; rules should prevent hijack
+  try{
+    await set(ref(db, `handles/${handle}`), { uid, joined: Date.now() });
+    return true;
+  } catch(e){
+    console.error('Reserve failed', e);
+    return false;
+  }
+}
+
+bootLoginBtn.addEventListener('click', async ()=>{
+  const raw = sanitizeHandle(bootHandle.value || '');
+  if(!raw){ bootStatus.textContent = 'Enter a handle (letters, numbers, _ or -).'; return; }
+  if(!uid){ bootStatus.textContent = 'Auth not ready. Wait a second...'; return; }
+  bootStatus.textContent = 'Reserving handle...';
+  const ok = await attemptHandleReserve(raw);
+  if(!ok){ bootStatus.textContent = 'Handle not available. Try another.'; return; }
+  myHandle = raw;
+  localStorage.setItem('buu-handle', myHandle);
+  // set profile
+  await set(ref(db, `users/${uid}/profile`), { name: myHandle, firstSeen: Date.now(), uid });
+  // set presence
+  setPresence(myHandle, currentChannel);
+  finishLogin();
+});
+
+function finishLogin(){
+  bootStatus.textContent = 'Authenticated. Welcome, ' + myHandle + '.';
+  setTimeout(()=>{ bootOverlay.style.display='none'; document.getElementById('app').removeAttribute('aria-hidden'); appendSystem('Interface ready.'); }, 700);
+}
 
 /* ---------- Utilities ---------- */
 function appendSystem(text){
@@ -384,7 +337,6 @@ async function computeHash(str){
     const hex = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
     return hex;
   } else {
-    // fallback: simple base64
     return btoa(unescape(encodeURIComponent(str))).slice(0,64);
   }
 }
@@ -423,16 +375,15 @@ function renderActive(data){
     const countSpan = document.createElement('span'); countSpan.textContent = ' ' + count + ' user' + (count!==1?'s':''); countSpan.style.marginLeft='8px';
     title.appendChild(countSpan);
     wrapper.appendChild(title);
-    // users list
     const list = document.createElement('div');
     const usersObj = data[ch] || {};
     Object.entries(usersObj).forEach(([userId, u]) => {
-      const row = document.createElement('div'); row.className = 'user-row';
+      const row = document.createElement('div'); row.className = 'user-row tooltip';
       const dot = document.createElement('div'); dot.className = 'status-dot ' + (u ? 'dot-online' : 'dot-offline');
-      const nameWrap = document.createElement('div'); nameWrap.className = 'tooltip';
+      const nameWrap = document.createElement('div');
       const uname = document.createElement('div'); uname.className = 'uname'; uname.textContent = u.name;
       const tip = document.createElement('div'); tip.className = 'tip';
-      tip.textContent = `UID: ${userId} · Last: ${u.ts ? new Date(u.ts).toLocaleTimeString() : '-'} · Channel: ${u.channel || '-'}`;
+      tip.textContent = `Click to open DM with ${u.name}`;
       nameWrap.appendChild(uname); nameWrap.appendChild(tip);
       nameWrap.style.cursor = 'pointer';
       nameWrap.addEventListener('click', () => openDM(userId, u.name));
@@ -442,19 +393,11 @@ function renderActive(data){
     wrapper.appendChild(list);
     activeContainer.appendChild(wrapper);
   });
-  // update userCountSmall
   const totals = data[currentChannel] ? Object.keys(data[currentChannel]).length : 0;
   userCountSmall.textContent = totals + ' user' + (totals!==1 ? 's' : '');
 }
 function renderMobileActive(data){
-  if(!mobileActive) return;
-  const channel = channelSelectTop.value || currentChannel;
-  const users = (data[channel] && Object.values(data[channel])) || [];
-  if(window.innerWidth <= 980){
-    mobileActive.textContent = `Active in ${'//'+channel.charAt(0).toUpperCase()+channel.slice(1)}: ${users.length} user${users.length!==1?'s':''}`;
-  } else {
-    mobileActive.textContent = '';
-  }
+  // Not used visually in Yahoo-style skin, but kept for mobile
 }
 
 /* ---------- DM list ---------- */
@@ -493,7 +436,7 @@ function makeDraggable(el, titleBar){
 }
 
 function openDM(targetUid, targetName){
-  if(!uid){ alert('Please join first'); return; }
+  if(!uid){ alert('Please login first'); return; }
   if(targetUid === uid){ alert("Can't DM yourself"); return; }
   const pid = [uid, targetUid].sort().join('_');
   const w = document.createElement('div'); w.className = 'dm-window';
@@ -508,7 +451,6 @@ function openDM(targetUid, targetName){
   w.appendChild(t); w.appendChild(msgs); w.appendChild(input); w.appendChild(send); w.appendChild(close);
   document.body.appendChild(w);
   makeDraggable(w, t);
-  // listen for dm messages (only permitted if rule allows)
   const dmRef = ref(db, `dm/${pid}`);
   onChildAdded(dmRef, snap => {
     const o = snap.val();
@@ -522,7 +464,6 @@ function openDM(targetUid, targetName){
     if(text.length > 1000) return alert('DM max 1000 chars');
     const ts = Date.now();
     const msgObj = { from: uid, to: targetUid, fromName: myHandle||'Anon', toName: targetName, msg: text, ts, uid: uid };
-    // compute hash and update both dm and dmHashes to avoid duplicates
     const h = await computeHash(JSON.stringify({from:uid,to:targetUid,msg:text,ts}));
     const updates = {};
     const newKey = push(ref(db, `dm/${pid}`)).key;
@@ -544,25 +485,26 @@ function listenChannel(channel){
   // detach previous
   for(const ch in channelListeners) detachChannelListener(ch);
   currentChannel = channel;
-  winChannelLabel.textContent = '//' + channel.charAt(0).toUpperCase() + channel.slice(1);
+  document.getElementById('winChannelLabel').textContent = '//' + channel.charAt(0).toUpperCase() + channel.slice(1);
   chatMessages.innerHTML = '';
   const channelRef = ref(db, `chat/${channel}`);
   const handler = (snap) => {
     const o = snap.val();
     if(!o) return;
-    // validate (client-side) fields quickly
-    const el = document.createElement('div'); el.className = 'msg';
-    const nameHtml = `<span class="meta">${escapeHtml(o.name)}</span>`;
-    const textHtml = `<span class="text"> ${escapeHtml(o.msg || o.text || '')}</span>`;
-    const timeHtml = `<div class="small">${new Date(o.ts || Date.now()).toLocaleTimeString()}</div>`;
-    el.innerHTML = nameHtml + ':' + textHtml + timeHtml;
-    chatMessages.appendChild(el);
+    const wrapper = document.createElement('div');
+    wrapper.className = 'chat-row';
+    const avatar = document.createElement('div'); avatar.className='chat-avatar'; avatar.textContent = (o.name||'?').slice(0,2).toUpperCase();
+    const bubble = document.createElement('div'); bubble.className = 'chat-bubble';
+    if(o.uid === uid) bubble.classList.add('me');
+    const meta = document.createElement('div'); meta.className='chat-meta'; meta.textContent = `${o.name} · ${new Date(o.ts || Date.now()).toLocaleTimeString()}`;
+    const text = document.createElement('div'); text.innerHTML = escapeHtml(o.msg || '');
+    bubble.appendChild(meta); bubble.appendChild(text);
+    wrapper.appendChild(avatar); wrapper.appendChild(bubble);
+    chatMessages.appendChild(wrapper);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-    if(doorToggle.checked) soundMsg.play().catch(()=>{});
     spawnParticle(Math.random()*window.innerWidth, Math.random()*40 + 20);
   };
   onChildAdded(channelRef, handler);
-  // store so we can off() later
   channelListeners[channel] = { ref: channelRef, fn: handler };
 }
 
@@ -574,20 +516,15 @@ async function postMessage(channel, name, msg){
   if(trimmed.length > 500) return alert('Chat message exceeds 500 chars');
   if((name||'').length > 30) return alert('Handle too long');
   const ts = Date.now();
-  // timestamp cannot be in future (allow small skew)
   if(ts > Date.now() + 5000) return appendSystem('Invalid timestamp');
-  // compute content hash
   const hash = await computeHash(`${channel}|${name}|${trimmed}|${uid}|${Math.floor(ts/1000)}`);
-  // build new push key
   const newKey = push(ref(db, `chat/${channel}`)).key;
   const msgObj = { name, msg: trimmed, channel, ts, uid, hash };
-  // write both chat and msgHash together using update to enforce atomic-ish write for rules
   const updates = {};
   updates[`/chat/${channel}/${newKey}`] = msgObj;
   updates[`/msgHashes/${hash}`] = { channel, key: newKey, ts, uid };
   try{
     await update(ref(db), updates);
-    // bump presence timestamp
     if(uid) set(ref(db, `online/${channel}/${uid}`), { name, ts: Date.now(), channel, uid }).catch(()=>{});
   } catch(e){
     appendSystem('Chat post error: ' + e.message);
@@ -602,56 +539,14 @@ function listenBoard(){
 function renderBoardPost(p){
   if(!p) return;
   const text = (p.msg || p.text || '');
-  if(text.includes('Archivist') && text.includes('ProBoards')) return; // drop mirrored archivist posts
   const el = document.createElement('div'); el.className='board-thread';
   el.innerHTML = `<div style="font-weight:700">${escapeHtml(p.name || p.user || 'Anon')}</div><div style="margin-top:6px">${escapeHtml(text)}</div><div class="small" style="margin-top:6px">${new Date(p.ts || Date.now()).toLocaleString()}</div>`;
   boardList.prepend(el);
 }
 
 /* ---------- UI Wiring ---------- */
-joinBtn.addEventListener('click', async ()=>{
-  const raw = sanitizeHandle(handleField.value || '');
-  if(!raw){ alert('Enter a handle'); return; }
-  myHandle = raw; handleField.value = myHandle;
-  if(!uid){ alert('Auth not ready'); return; }
-  // try to reserve handle (rules will reject if already taken)
-  const handlePath = `handles/${myHandle}`;
-  try{
-    await set(ref(db, handlePath), { uid, joined: Date.now() });
-    // set users profile
-    await set(ref(db, `users/${uid}/profile`), { name: myHandle, firstSeen: Date.now() });
-  } catch(e){
-    appendSystem('Handle reservation failed: ' + e.message);
-    alert('Handle unavailable. Try another.');
-    return;
-  }
-  const ch = channelSelectTop.value || 'exuro';
-  setPresence(myHandle, ch);
-  joinBtn.style.display = 'none'; leaveBtn.style.display = 'inline-block';
-  listenChannel(ch);
-  appendSystem(`Joined as ${myHandle} on ${ch}`);
-});
-leaveBtn.addEventListener('click', ()=>{
-  if(presenceRef) { remove(presenceRef).catch(()=>{}); presenceRef = null; }
-  // optional: free handle only by owning uid (rules enforce)
-  if(myHandle){
-    remove(ref(db, `online`)).catch(()=>{}); // best-effort: remove online entries
-  }
-  joinBtn.style.display = 'inline-block'; leaveBtn.style.display = 'none'; myHandle = null;
-  appendSystem('Left presence');
-});
-channelSelect.addEventListener('change', ()=>{
-  channelSelectTop.value = channelSelect.value;
-  listenChannel(channelSelect.value);
-  if(myHandle) setPresence(myHandle, channelSelect.value);
-});
-channelSelectTop.addEventListener('change', ()=>{
-  channelSelect.value = channelSelectTop.value;
-  listenChannel(channelSelectTop.value);
-  if(myHandle) setPresence(myHandle, channelSelectTop.value);
-});
 sendBtn.addEventListener('click', ()=>{
-  if(!myHandle){ alert('Join first'); return; }
+  if(!myHandle){ alert('Login first'); return; }
   const txt = chatInput.value.trim(); if(!txt) return;
   postMessage(channelSelect.value, myHandle, txt);
   chatInput.value = '';
@@ -676,35 +571,41 @@ postBoardBtn.addEventListener('click', async ()=>{
   } catch(e){ appendSystem('Board post error: ' + e.message); }
 });
 
-/* close/open chat panel */
-closeChatBtn.addEventListener('click', ()=>{ chatPanel.style.display='none'; openChatBtn.style.display='inline-block'; });
-openChatBtn.addEventListener('click', ()=>{ chatPanel.style.display='block'; openChatBtn.style.display='none'; });
+/* close/open chat panel (kept minimal) */
+closeChatBtn && closeChatBtn.addEventListener('click', ()=>{ document.querySelector('.chat-win').style.display='none'; });
 
-/* theme swatches */
-themeSwatches.forEach(s => s.addEventListener('click', ()=>{
-  const t = s.getAttribute('data-theme');
-  applyTheme(t); localStorage.setItem('buu-theme', t);
-}));
-function applyTheme(t){
-  if(t === 'dark'){
-    document.documentElement.style.setProperty('--panel','#121212');
-    document.documentElement.style.setProperty('--text','#eee');
-    document.documentElement.style.setProperty('--bg-fallback','#000');
-  } else if(t === 'retro'){
-    document.documentElement.style.setProperty('--panel','#fff7e6');
-    document.documentElement.style.setProperty('--text','#222');
-  } else {
-    document.documentElement.style.setProperty('--panel','#e6e6e6');
-    document.documentElement.style.setProperty('--text','#111');
-  }
-}
-const savedTheme = localStorage.getItem('buu-theme') || 'default'; applyTheme(savedTheme);
+/* theme & links */
+projOrtegaLink.addEventListener('click', (e)=>{
+  e.preventDefault();
+  if(NOTEBOOKLM_URL === '#') return alert('Project ://ORTEGA placeholder: replace NOTEBOOKLM_URL in code with your NotebookLM link.');
+  window.open(NOTEBOOKLM_URL, '_blank');
+});
 
 /* startup */
 watchOnline(); listenBoard(); listenChannel(currentChannel);
-appendSystem('Interface ready.');
 
-/* ---------- prune old chat (24h) - server-side best, but keep client-triggered cleanup for safety ---------- */
+/* ---------- Particles (light) ---------- */
+const pCanvas = document.getElementById('particleCanvas');
+const pCtx = pCanvas.getContext('2d');
+function resizeCanvas(){ pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; }
+resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+let particles = [];
+function spawnParticle(x,y){ particles.push({x,y,vx:(Math.random()-0.5)*0.8, vy:(Math.random()-0.5)*0.8, life:45, size:Math.random()*2+1}); }
+function particleLoop(){
+  pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
+  for(let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy; p.life--;
+    pCtx.fillStyle = `rgba(127,255,212,${p.life/45})`;
+    pCtx.fillRect(p.x, p.y, p.size, p.size);
+    if(p.life<=0) particles.splice(i,1);
+  }
+  requestAnimationFrame(particleLoop);
+}
+particleLoop();
+document.addEventListener('mousemove', e => spawnParticle(e.clientX, e.clientY));
+
+/* ---------- prune old chat (24h) ---------- */
 setInterval(async ()=>{
   try{
     const rootSnap = await get(ref(db, 'chat'));
@@ -720,36 +621,21 @@ setInterval(async ()=>{
   } catch(e){ /* ignore */ }
 }, 60*60*1000);
 
-/* ---------- Real-time watchers (board mirror & DM & online chain rebuild) ---------- */
+/* ---------- Real-time watchers ---------- */
 const onlineRef = ref(db, 'online');
 onValue(onlineRef, snapshot => {
   const data = snapshot.val() || {};
   renderActive(data);
-  renderMobileActive(data);
   rebuildDMList(data);
 });
 
-/* ---------- Random effects button (7 effects) ---------- */
-const effects = [
-  ()=> document.body.style.filter = 'grayscale(1)',
-  ()=> document.body.style.filter = 'saturate(1.6) hue-rotate(20deg)',
-  ()=> document.getElementById('particleCanvas').style.opacity = 0.25,
-  ()=> document.getElementById('particleCanvas').style.transform = 'scale(1.2)',
-  ()=> { document.querySelectorAll('.panel').forEach((p,i)=>p.style.transform = `rotate(${(i%2?1:-1)*(Math.random()*1.6)}deg)`); },
-  ()=> { document.documentElement.style.setProperty('--panel','#0b1220'); document.documentElement.style.setProperty('--text','#cfe'); },
-  ()=> alert('Timeline ripple: anachronies enabled (visual only)')
-];
-randomBtn.addEventListener('click', ()=> {
-  const f = effects[Math.floor(Math.random()*effects.length)];
-  try{ f(); appendSystem('Random effect applied'); } catch(e){ appendSystem('Effect failed') }
-});
+/* ---------- Helper: display system messages at load ---------- */
+appendSystem('Interface initializing...');
 
-/* AI Lore Expert - placeholder to replace hash with NotebookLM link */
-loreBtn.addEventListener('click', ()=> {
-  const url = '#'; // replace '#' with your NotebookLM/public URL
-  if(url === '#') return alert('AI Lore Expert placeholder: replace the link in the code with your NotebookLM URL.');
-  window.open(url, '_blank');
-});
+/* ---------- Small polyfills / helpers ---------- */
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function sanitizeHandle(s){ return String(s||'').replace(/[^\w\-\s]/g,'').slice(0,30).trim(); }
+
 </script>
 </body>
 </html>
