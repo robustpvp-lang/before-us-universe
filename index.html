@@ -6,80 +6,68 @@
 <title>Before Us Universe — BUU</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  /* =========================
-     THEME + WINDOWS 98 LOOK
-     ========================= */
   :root{
-    --panel:#e0e0e0; --panel-border:#000; --text:#000;
-    --accent:#00bfa3; --accent2:#00796b; --muted:#4e4e4e;
-    --bg-fallback:#0b2b3a;
-    --msg-bg:#fff;
+    --panel:#e6e6e6; --panel-border:#000; --text:#111;
+    --accent:#0aa; --muted:#555;
     --online:#00c853; --offline:#ff3d00;
+    --bg-fallback:#08111a;
   }
   html,body{height:100%;margin:0;font-family:Roboto, "Press Start 2P", monospace;background:var(--bg-fallback);color:var(--text);-webkit-font-smoothing:antialiased}
-  /* Desktop background (Windows 98 style) */
-  body::before{
-    content:"";
-    position:fixed; inset:0; z-index:0;
+  /* Background image with fallback */
+  body{
+    background-color:var(--bg-fallback);
     background-image: url('https://i.imgur.com/fdI7QXD.jpg');
-    background-size: cover; background-position:center;
-    opacity:0.95;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-size:cover;
   }
+  /* If image fails to load, background-color remains */
+  .app{position:relative;z-index:1;max-width:1180px;margin:18px auto;padding:12px;box-sizing:border-box}
+  header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;padding:10px;background:linear-gradient(180deg,var(--panel),#dcdcdc);border:3px solid var(--panel-border);border-radius:6px}
+  .nav-left{display:flex;gap:8px;align-items:center}
+  header a{display:inline-block;padding:8px 10px;background:#fff;border:1px solid var(--panel-border);text-decoration:none;color:var(--text);font-size:14px;border-radius:4px}
+  header .open-chat{padding:8px 10px;background:#fff;border:1px solid var(--panel-border);cursor:pointer}
+  @media(max-width:600px){ header{justify-content:center} .nav-left{flex-wrap:wrap;justify-content:center} header a{font-size:12px;padding:6px 8px} }
 
-  /* Page container */
-  .app{position:relative; z-index:1; max-width:1180px; margin:18px auto; padding:12px; box-sizing:border-box}
-
-  /* Header / top nav (responsive) */
-  header{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;align-items:center;padding:10px;background:linear-gradient(180deg,var(--panel),#d7d7d7);border:3px solid var(--panel-border);border-radius:6px}
-  header a{display:inline-block;padding:8px 12px;background:#fff;border:1px solid var(--panel-border);text-decoration:none;color:var(--text);font-size:14px;border-radius:4px}
-  header a:active, header a:focus{outline:2px solid rgba(0,0,0,0.12)}
-  @media(max-width:560px){ header a{padding:8px 10px;font-size:12px} }
-
-  /* Boot loader */
-  #boot{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#7fffd4;z-index:2000}
-  #boot .lines{font-family:monospace;white-space:pre;max-width:80%;text-align:center}
-  #boot .progress{margin-top:14px;font-size:13px;color:#9fead0}
-
-  /* Layout */
+  /* Layout columns: left (content), right (sidebar) */
   .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
   @media(max-width:980px){ .layout{grid-template-columns:1fr} }
 
-  /* Left column blocks */
-  .panel{background:var(--panel);border:3px solid var(--panel-border);border-radius:6px;padding:10px;box-shadow:3px 3px 0 rgba(0,0,0,0.15);position:relative;overflow:hidden}
+  .panel{background:var(--panel);border:3px solid var(--panel-border);border-radius:6px;padding:10px;box-shadow:3px 3px 0 rgba(0,0,0,0.12);position:relative;overflow:hidden}
   .small{font-size:12px;color:var(--muted)}
+  .row{display:flex;gap:8px;align-items:center}
 
-  /* Handle/join area */
-  .join-row{display:flex;gap:8px;align-items:center}
+  /* join area */
   .join-row input[type="text"]{padding:8px;border:2px inset var(--panel-border);width:220px;font-family:monospace}
+  .join-row select{padding:8px;border:2px inset var(--panel-border)}
   .join-row button{padding:8px 10px;border:2px outset var(--panel-border);background:#ddd;cursor:pointer}
 
-  /* YouTube embed responsive */
+  /* YouTube embed */
   .yt-wrap{display:flex;justify-content:center}
   .yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--panel-border);background:#000}
 
-  /* Chat windows (draggable) */
-  .chat-area{display:flex;flex-direction:column;gap:10px}
-  .win{width:100%;max-width:780px;border:3px solid var(--panel-border);background:linear-gradient(180deg,#e9e9e9,#d6d6d6);box-shadow:6px 6px 0 rgba(0,0,0,0.2);border-radius:6px;position:relative}
-  .win .title{background:linear-gradient(180deg,#cfcfcf,#bfbfbf);padding:8px;border-bottom:2px solid var(--panel-border);display:flex;align-items:center;justify-content:space-between;cursor:move}
-  .win .title .chname{font-weight:700}
-  .win .content{padding:8px}
-  .chat-messages{height:260px;overflow:auto;background:var(--msg-bg);border:2px inset #bbb;padding:8px;white-space:pre-wrap}
+  /* Chat window (non-draggable) */
+  .chat-win{border:3px solid var(--panel-border);background:linear-gradient(180deg,#f0f0f0,#e0e0e0);border-radius:6px;overflow:hidden;position:relative}
+  .chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(180deg,#dcdcdc,#cfcfcf);border-bottom:2px solid var(--panel-border)}
+  .chat-title .left{display:flex;gap:8px;align-items:center}
+  .close-btn{background:#ffefef;border:1px solid #900;padding:4px 6px;border-radius:4px;cursor:pointer}
+  .chat-body{padding:8px}
+  .chat-messages{height:260px;overflow:auto;background:#fff;border:2px inset #bbb;padding:8px;white-space:pre-wrap}
   .msg{margin:6px 0;padding:6px;border-radius:4px;background:linear-gradient(180deg,#fff,#f7f7f7);border:1px solid rgba(0,0,0,0.06)}
-  .msg .meta{font-weight:700;color:var(--accent2);margin-right:6px}
+  .msg .meta{font-weight:700;color:var(--accent)}
   .chat-controls{display:flex;gap:8px;margin-top:8px}
   .chat-controls input[type="text"]{flex:1;padding:8px;border:2px inset var(--panel-border);font-family:monospace}
 
-  /* Active users panel (right column) */
+  /* Active users list */
   .active-list{display:flex;flex-direction:column;gap:6px}
   .user-row{display:flex;align-items:center;gap:8px;padding:6px;border-radius:4px;background:#fff;border:1px solid rgba(0,0,0,0.06)}
   .status-dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 6px rgba(0,0,0,0.08)}
   .dot-online{background:var(--online)}
   .dot-offline{background:var(--offline)}
-  .user-row .uname{font-family:monospace;font-weight:700}
+  .uname{font-family:monospace;font-weight:700}
 
-  /* Board style (ProBoards-like) */
+  /* Board (ProBoards-like) */
   .board-thread{background:#fff;border:2px solid var(--panel-border);padding:10px;margin-bottom:8px}
-  .board-controls{display:flex;gap:8px;margin-top:8px}
   textarea{width:100%;min-height:80px;padding:8px;border:2px inset var(--panel-border);font-family:monospace}
 
   /* tooltip */
@@ -87,55 +75,47 @@
   .tooltip .tip{position:absolute;left:110%;top:0;background:#111;color:#7fffd4;padding:6px;border:1px solid #333;border-radius:4px;display:none;white-space:nowrap}
   .tooltip:hover .tip{display:block}
 
-  /* small widgets */
-  .row{display:flex;gap:8px;align-items:center}
-  select{padding:8px;border:2px inset var(--panel-border)}
+  /* particles canvas layering */
+  #particleCanvas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}
 
-  /* theme preview */
-  .theme-swatch{width:24px;height:24px;border-radius:4px;border:1px solid #222;cursor:pointer}
-
-  /* particle canvas */
-  #particles{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}
-
-  /* responsive tweaks */
-  @media(max-width:600px){
-    .chat-messages{height:200px}
-    .yt-wrap iframe{height:240px}
-  }
+  /* open chat button on mobile visible */
+  .open-chat-mobile{display:none}
+  @media(max-width:980px){ .open-chat-mobile{display:inline-block} }
 </style>
 </head>
 <body>
-<div id="particles"></div>
+<canvas id="particleCanvas"></canvas>
 
-<div id="boot">
-  <div class="lines" id="bootLines">INITIALIZING...</div>
-  <div class="progress" id="bootProgress">0%</div>
-</div>
-
-<div class="app" id="app" style="display:none">
+<div class="app" id="app">
   <header>
-    <a href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener">To Kill a Mocking Goblin</a>
-    <a href="https://youtube.com/playlist?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq&si=anZaakmimPIGuYwO" target="_blank" rel="noopener">Melphia's Game (Playlist)</a>
-    <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener">Book 1</a>
-    <a href="https://web.archive.org/" target="_blank" rel="noopener">Wayback Machine</a>
+    <div class="nav-left">
+      <a href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener">To Kill a Mocking Goblin</a>
+      <a href="https://youtube.com/playlist?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq&si=anZaakmimPIGuYwO" target="_blank" rel="noopener">Melphia's Game (Playlist)</a>
+      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener">Book 1</a>
+      <a href="https://web.archive.org/" target="_blank" rel="noopener">Wayback Machine</a>
+    </div>
+    <div>
+      <button id="openChatBtn" class="open-chat-mobile">Open Chat</button>
+    </div>
   </header>
 
-  <div class="layout">
-    <div class="left">
-      <!-- Join + YouTube -->
+  <div class="layout" style="margin-top:12px">
+    <!-- LEFT column -->
+    <div>
+      <!-- Join & YouTube panel -->
       <div class="panel">
-        <div class="row">
+        <div style="display:flex;justify-content:space-between;gap:12px">
           <div style="flex:1">
             <div class="small">Enter handle (required to join chat)</div>
             <div class="join-row" style="margin-top:8px">
-              <input type="text" id="handleField" placeholder="//YourHandle" maxlength="20" />
+              <input id="handleField" placeholder="//YourHandle" maxlength="20" />
               <select id="channelSelectTop" style="width:140px">
                 <option value="exuro">//Exuro</option>
                 <option value="sam">//Sam</option>
                 <option value="nero">//Nero</option>
                 <option value="nora">//Nora</option>
                 <option value="loktal">//Loktal</option>
-                <option value="pilgrim" style="display:none">//Pilgrim (secret)</option>
+                <option value="pilgrim" style="display:none">//Pilgrim</option>
               </select>
               <button id="joinBtn">JOIN</button>
               <button id="leaveBtn" style="display:none">LEAVE</button>
@@ -146,11 +126,11 @@
           <div style="width:160px">
             <div class="small">Theme</div>
             <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-              <div class="theme-swatch" data-theme="default" title="Default" style="background:#e0e0e0"></div>
-              <div class="theme-swatch" data-theme="dark" title="Dark" style="background:#111"></div>
-              <div class="theme-swatch" data-theme="retro" title="Retro" style="background:linear-gradient(45deg,#ffefba,#ffc3a0)"></div>
+              <div class="theme-swatch" data-theme="default" style="width:24px;height:24px;background:#e6e6e6;border:1px solid #222;cursor:pointer"></div>
+              <div class="theme-swatch" data-theme="dark" style="width:24px;height:24px;background:#111;border:1px solid #222;cursor:pointer"></div>
+              <div class="theme-swatch" data-theme="retro" style="width:24px;height:24px;background:linear-gradient(45deg,#ffefba,#ffc3a0);border:1px solid #222;cursor:pointer"></div>
             </div>
-            <div class="small" style="margin-top:8px">Save theme per browser.</div>
+            <div class="small" style="margin-top:8px">Saved per browser</div>
           </div>
         </div>
 
@@ -161,45 +141,46 @@
         </div>
       </div>
 
-      <!-- Chat windows -->
-      <div class="panel chat-area">
-        <div class="win" id="channelWindow" style="left:0;top:0">
-          <div class="title" id="winTitle">
-            <div class="chname" id="winChannelLabel">//Exuro</div>
-            <div class="row" style="gap:6px;align-items:center">
-              <div class="small">Door</div>
-              <input id="doorToggle" type="checkbox" title="Sound on" checked/>
-            </div>
+      <!-- Chat window (non-draggable) -->
+      <div class="panel chat-win" id="chatPanel" style="margin-top:12px">
+        <div class="chat-title">
+          <div class="left">
+            <div style="font-weight:700" id="winChannelLabel">//Exuro</div>
+            <div class="small" style="margin-left:12px" id="userCountSmall">0 users</div>
           </div>
-          <div class="content">
-            <div class="chat-messages" id="chatMessages"></div>
-            <div class="chat-controls">
-              <input type="text" id="chatInput" placeholder="Write message..." maxlength="500" />
-              <select id="channelSelect" style="width:120px">
-                <option value="exuro">//Exuro</option>
-                <option value="sam">//Sam</option>
-                <option value="nero">//Nero</option>
-                <option value="nora">//Nora</option>
-                <option value="loktal">//Loktal</option>
-                <option value="pilgrim" style="display:none">//Pilgrim</option>
-              </select>
-              <button id="sendBtn">POST</button>
-            </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <label class="small">Sound</label>
+            <input type="checkbox" id="doorToggle" checked />
+            <button class="close-btn" id="closeChatBtn" title="Close chat window">✖</button>
+          </div>
+        </div>
+
+        <div class="chat-body">
+          <div class="chat-messages" id="chatMessages"></div>
+          <div class="chat-controls">
+            <input id="chatInput" placeholder="Write message..." maxlength="500" />
+            <select id="channelSelect" style="width:120px">
+              <option value="exuro">//Exuro</option>
+              <option value="sam">//Sam</option>
+              <option value="nero">//Nero</option>
+              <option value="nora">//Nora</option>
+              <option value="loktal">//Loktal</option>
+              <option value="pilgrim" style="display:none">//Pilgrim</option>
+            </select>
+            <button id="sendBtn">POST</button>
           </div>
         </div>
       </div>
 
       <!-- Message board -->
-      <div class="panel">
+      <div class="panel" style="margin-top:12px">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div class="small">Local Message Board (ProBoards style)</div>
+          <div class="small">Local Message Board (ProBoards-style)</div>
           <div class="small">Posts persist; chat auto-deletes after 24 hours</div>
         </div>
-
-        <div id="boardList" style="margin-top:8px"></div>
-
+        <div id="boardList" style="margin-top:8px;max-height:380px;overflow:auto"></div>
         <div class="board-controls" style="margin-top:8px">
-          <input id="boardName" placeholder="Name (max 100)" style="width:180px;padding:6px"/>
+          <input id="boardName" placeholder="Name (max 100)" style="width:180px;padding:6px" />
           <textarea id="boardMsg" placeholder="Message (max 1000)"></textarea>
           <button id="postBoardBtn">Post</button>
         </div>
@@ -207,7 +188,8 @@
 
     </div>
 
-    <div class="right">
+    <!-- RIGHT column -->
+    <div>
       <div class="panel">
         <div class="small">Active Users by Channel</div>
         <div id="activeContainer" style="margin-top:8px"></div>
@@ -216,7 +198,7 @@
       <div class="panel" style="margin-top:12px">
         <div class="small">Direct Messages (DM)</div>
         <div id="dmList" style="margin-top:8px"></div>
-        <div class="small" style="margin-top:8px">Click a user to open a DM window.</div>
+        <div class="small" style="margin-top:8px">Click name to open DM window</div>
       </div>
 
       <div class="panel" style="margin-top:12px">
@@ -231,19 +213,13 @@
 <audio id="soundDoor" src="https://assets.mixkit.co/sfx/download/mixkit-unlock-game-notification-253.wav"></audio>
 <audio id="soundMsg" src="https://assets.mixkit.co/sfx/download/mixkit-positive-alert-600.wav"></audio>
 
-<!-- Particle canvas -->
-<canvas id="particleCanvas" style="position:fixed;left:0;top:0;pointer-events:none;z-index:0"></canvas>
-
-<!-- Firebase modular SDK -->
 <script type="module">
-/* ===============================
-   FULL APP SCRIPT — SINGLE FILE
-   =============================== */
+/* ---------- Firebase SDKs (modular) ---------- */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-app.js";
 import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-auth.js";
 
-/* ---------- CONFIG ---------- */
+/* ---------- Config ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
   authDomain: "before-us-universe.firebaseapp.com",
@@ -258,17 +234,11 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 
 /* ---------- DOM ---------- */
-const boot = document.getElementById('boot');
-const bootLines = document.getElementById('bootLines');
-const bootProgress = document.getElementById('bootProgress');
-const appRoot = document.getElementById('app');
-
 const handleField = document.getElementById('handleField');
 const joinBtn = document.getElementById('joinBtn');
 const leaveBtn = document.getElementById('leaveBtn');
 const channelSelect = document.getElementById('channelSelect');
 const channelSelectTop = document.getElementById('channelSelectTop');
-const winChannelLabel = document.getElementById('winChannelLabel');
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
@@ -279,314 +249,258 @@ const boardMsg = document.getElementById('boardMsg');
 const postBoardBtn = document.getElementById('postBoardBtn');
 const systemFeed = document.getElementById('systemFeed');
 const dmList = document.getElementById('dmList');
-const channelSelectWin = document.getElementById('channelSelectTop');
-const doorToggle = document.getElementById('doorToggle');
+const winChannelLabel = document.getElementById('winChannelLabel');
+const userCountSmall = document.getElementById('userCountSmall');
+const closeChatBtn = document.getElementById('closeChatBtn');
+const chatPanel = document.getElementById('chatPanel');
+const openChatBtn = document.getElementById('openChatBtn');
+const themeSwatches = document.querySelectorAll('.theme-swatch');
 const soundDoor = document.getElementById('soundDoor');
+const doorToggle = document.getElementById('doorToggle');
 const soundMsg = document.getElementById('soundMsg');
 
+/* ---------- State ---------- */
 let uid = null;
 let myHandle = null;
 let currentChannel = 'exuro';
-let presenceRef = null; // reference to online node for this user
-let onDisconnectRef = null;
+let presenceRef = null;
 
-/* ---------- BOOT LOADER + LORE ---------- */
-const bootSteps = [
-  "INITIALIZING BEFORE US UNIVERSE v1.2",
-  "Loading Lux telemetry modules...",
-  "Mounting interstellar chat hubs...",
-  "Calibrating presence & user tracking...",
-  "Embedding YouTube playlist...",
-  "Applying retro UI theme...",
-  "System online. Welcome, Commander."
-];
-let bs = 0;
-function bootTick(){
-  if(bs >= bootSteps.length){ boot.style.display='none'; appRoot.style.display='block'; return; }
-  bootLines.textContent = bootSteps.slice(0, bs+1).join("\n");
-  bootProgress.textContent = `Progress: ${Math.round(((bs+1)/bootSteps.length)*100)}%`;
-  bs++;
-  setTimeout(bootTick, 450 + Math.random()*350);
+/* ---------- Boot loader (short) ---------- */
+const appRoot = document.querySelector('.app');
+function initBoot(){
+  // small delay to allow Firebase to initialize auth
+  setTimeout(()=>{ appRoot.style.opacity = 0; appRoot.style.display='block'; appRoot.style.transition='opacity 300ms'; setTimeout(()=>appRoot.style.opacity=1,50); document.getElementById('boot')?.remove(); }, 900);
 }
-bootTick();
+initBoot();
 
-/* ---------- PARTICLES (lightweight) ---------- */
-const canvas = document.getElementById('particleCanvas');
-const ctx = canvas.getContext('2d');
-function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-resizeCanvas(); window.addEventListener('resize', resizeCanvas);
-let particles = [];
-function spawnParticle(x,y){
-  particles.push({x,y, vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6, life:60, size:Math.random()*2+1});
-}
-function tickParticles(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  for(let i=particles.length-1;i>=0;i--){
-    const p = particles[i];
-    p.x += p.vx; p.y += p.vy; p.life--;
-    ctx.fillStyle = `rgba(127,255,212,${p.life/60})`;
-    ctx.fillRect(p.x,p.y,p.size,p.size);
-    if(p.life<=0) particles.splice(i,1);
-  }
-  requestAnimationFrame(tickParticles);
-}
-tickParticles();
+/* ---------- Particles (light) ---------- */
+const pCanvas = document.getElementById('particleCanvas'); const pCtx = pCanvas.getContext('2d');
+function resize(){ pCanvas.width=innerWidth; pCanvas.height=innerHeight; } resize(); window.addEventListener('resize', resize);
+let parts = []; function spawn(x,y){ parts.push({x,y,vx:(Math.random()-0.5)*0.6,vy:(Math.random()-0.5)*0.6,life:40,size:Math.random()*2+1}); }
+function tick(){ pCtx.clearRect(0,0,pCanvas.width,pCanvas.height); for(let i=parts.length-1;i>=0;i--){ const pr=parts[i]; pr.x+=pr.vx;pr.y+=pr.vy;pr.life--; pCtx.fillStyle=`rgba(127,255,212,${pr.life/40})`; pCtx.fillRect(pr.x,pr.y,pr.size,pr.size); if(pr.life<=0) parts.splice(i,1); } requestAnimationFrame(tick); } tick();
+document.addEventListener('mousemove', e=> spawn(e.clientX,e.clientY));
 
-/* ---------- AUTH ---------- */
-signInAnonymously(auth).catch(e=>appendSystem(`Auth error: ${e.message}`));
-onAuthStateChanged(auth, user => {
-  if(user){ uid = user.uid; appendSystem(`Auth: ${uid}`); }
-});
+/* ---------- Auth ---------- */
+signInAnonymously(auth).catch(e=>appendSystem('Auth err '+e.message));
+onAuthStateChanged(auth,u=>{ if(u){ uid=u.uid; appendSystem('Signed in: '+uid); } });
 
-/* ---------- UTIL ---------- */
-function sanitizeHandle(h){ return String(h||'').replace(/[^\w\-]/g,'').slice(0,20); }
-function appendSystem(text){
-  const d = document.createElement('div'); d.style.fontSize='12px'; d.style.padding='4px'; d.textContent = `${new Date().toLocaleTimeString()} - ${text}`;
-  systemFeed.prepend(d);
-}
-function makeTooltip(text){ const span = document.createElement('span'); span.className='tooltip'; span.textContent=text; return span; }
+function appendSystem(text){ const d=document.createElement('div'); d.className='small'; d.style.padding='4px'; d.textContent=`${new Date().toLocaleTimeString()} - ${text}`; systemFeed.prepend(d); }
 
-/* ---------- PRESENCE (per-channel) ---------- */
+/* ---------- Presence functions ---------- */
+function sanitize(s){ return String(s||'').replace(/[^\w\-\s]/g,'').slice(0,40); }
 function setPresence(handle, channel){
-  if(!uid) { appendSystem('No uid yet for presence'); return; }
-  // remove existing presence if exists
-  if(presenceRef){ try{ remove(presenceRef); }catch(e){} }
-  const node = `online/${channel}/${uid}`;
-  presenceRef = ref(db, node);
-  set(presenceRef, { name: handle, ts: Date.now(), channel }).then(()=>{
-    // schedule onDisconnect removal
+  if(!uid) return appendSystem('Auth not ready for presence');
+  // remove previous
+  if(presenceRef) try{ remove(presenceRef); }catch(e){}
+  presenceRef = ref(db, `online/${channel}/${uid}`);
+  set(presenceRef, { name: handle, ts: Date.now(), channel }).then(()=> {
+    // onDisconnect remove
     try{ onDisconnect(presenceRef).remove(); }catch(e){}
     appendSystem(`Presence set: ${handle} @ ${channel}`);
-  }).catch(e=>appendSystem('Presence set failed: '+e.message));
+  }).catch(err=> appendSystem('Presence set failed: '+err.message));
 }
 
-/* ---------- WATCH ONLINE / ACTIVE USERS ---------- */
+/* ---------- Online watcher & render ---------- */
 function watchOnline(){
-  const onlineRoot = ref(db, 'online');
-  onValue(onlineRoot, snap => {
+  const r = ref(db,'online');
+  onValue(r, snap=>{
     const data = snap.val() || {};
-    renderActiveUsers(data);
+    renderActive(data);
   });
 }
-function renderActiveUsers(data){
-  // Build per channel UI with counts and user rows
-  activeContainer.innerHTML = '';
-  const channels = ['exuro','sam','nero','nora','loktal','pilgrim'];
-  const total = Object.values(data).reduce((acc, ch)=> acc + Object.keys(ch||{}).length, 0);
+function renderActive(data){
+  activeContainer.innerHTML='';
+  const channels=['exuro','sam','nero','nora','loktal','pilgrim'];
+  const totals = {};
   channels.forEach(ch=>{
-    const chNode = document.createElement('div');
-    chNode.style.marginBottom='8px';
-    const title = document.createElement('div'); title.textContent = `//${ch.charAt(0).toUpperCase()+ch.slice(1)}`; title.style.fontWeight='700';
-    const count = ((data[ch])?Object.keys(data[ch]).length:0);
-    const countSpan = document.createElement('span'); countSpan.textContent = ` ${count} user${count!==1?'s':''}`; countSpan.style.marginLeft='8px'; title.appendChild(countSpan);
-    chNode.appendChild(title);
-
-    const list = document.createElement('div');
-    const users = data[ch]||{};
-    Object.entries(users).forEach(([userId,u])=>{
-      const row = document.createElement('div'); row.className='user-row';
-      row.style.marginTop='6px';
-      const dot = document.createElement('div'); dot.className='status-dot ' + (u? 'dot-online':'dot-offline');
-      dot.title = u ? 'Online' : 'Offline';
-      const uname = document.createElement('div'); uname.className='uname'; uname.textContent = u.name;
-      // hover tooltip
-      const tipWrap = document.createElement('div'); tipWrap.className='tooltip';
-      const tip = document.createElement('div'); tip.className='tip'; tip.textContent = `UID: ${userId}\nLast: ${u.ts?new Date(u.ts).toLocaleTimeString():'-'}\nChannel: ${u.channel||'-'}`;
-      tipWrap.appendChild(uname); tipWrap.appendChild(tip);
-      // clicking user opens DM window
-      tipWrap.style.cursor = 'pointer';
-      tipWrap.addEventListener('click', ()=> openDM(userId, u.name));
-      row.appendChild(dot); row.appendChild(tipWrap);
-      list.appendChild(row);
+    const wrapper=document.createElement('div'); wrapper.style.marginBottom='10px';
+    const title=document.createElement('div'); title.textContent='//'+ch.charAt(0).toUpperCase()+ch.slice(1); title.style.fontWeight='700';
+    const count = data[ch] ? Object.keys(data[ch]).length : 0;
+    const countSpan=document.createElement('span'); countSpan.textContent=' '+count+' user'+(count!==1?'s':''); countSpan.style.marginLeft='8px';
+    title.appendChild(countSpan);
+    wrapper.appendChild(title);
+    // list users
+    const usersDiv=document.createElement('div');
+    const usersObj = data[ch] || {};
+    Object.entries(usersObj).forEach(([uId,u])=>{
+      const row=document.createElement('div'); row.className='user-row';
+      const dot=document.createElement('div'); dot.className='status-dot '+(u? 'dot-online':'dot-offline');
+      const nameWrap=document.createElement('div'); nameWrap.className='tooltip';
+      const uname=document.createElement('div'); uname.className='uname'; uname.textContent = u.name;
+      const tip=document.createElement('div'); tip.className='tip'; tip.textContent = `UID: ${uId}\nLast: ${u.ts?new Date(u.ts).toLocaleTimeString():'-'}\nChannel: ${u.channel||'-'}`;
+      nameWrap.appendChild(uname); nameWrap.appendChild(tip);
+      nameWrap.style.cursor='pointer';
+      nameWrap.addEventListener('click', ()=> openDM(uId,u.name));
+      row.appendChild(dot); row.appendChild(nameWrap);
+      usersDiv.appendChild(row);
     });
-    chNode.appendChild(list);
-    activeContainer.appendChild(chNode);
+    wrapper.appendChild(usersDiv);
+    activeContainer.appendChild(wrapper);
+    totals[ch]=count;
   });
-
-  // Update DM list (quick links) with all users
-  updateDMList(data);
+  // update small user count for current channel
+  userCountSmall.textContent = (totals[currentChannel] || 0) + ' user' + ((totals[currentChannel]||0)!==1 ? 's' : '');
+  // rebuild DM list
+  rebuildDMList(data);
 }
 
-/* ---------- DM UI ---------- */
-function pairId(a,b){ // deterministic pair id
-  return [a,b].sort().join('_');
-}
-function openDM(targetUid, targetName){
-  if(!uid){ alert('Join first to DM'); return; }
-  if(targetUid === uid){ alert('Cannot DM yourself'); return; }
-  const pid = pairId(uid, targetUid);
-  // create floating simple DM window
-  const win = document.createElement('div');
-  win.style.position='fixed'; win.style.right='20px'; win.style.bottom='20px';
-  win.style.width='300px'; win.style.background='#fff'; win.style.border='2px solid #000'; win.style.zIndex=9999; win.style.padding='6px';
-  const title = document.createElement('div'); title.textContent = `DM: ${targetName}`; title.style.fontWeight='700';
-  const msgs = document.createElement('div'); msgs.style.height='160px'; msgs.style.overflow='auto'; msgs.style.border='1px solid #ccc'; msgs.style.marginTop='6px'; msgs.style.padding='6px';
-  const input = document.createElement('input'); input.placeholder='Type DM...'; input.style.width='100%'; input.style.marginTop='6px';
-  const send = document.createElement('button'); send.textContent='Send'; send.style.marginTop='6px';
-  win.appendChild(title); win.appendChild(msgs); win.appendChild(input); win.appendChild(send);
-  document.body.appendChild(win);
-  // Listen to dm path
-  const dmRef = ref(db, `dm/${pid}`);
-  onChildAdded(dmRef, s=>{
-    const o = s.val();
-    const el = document.createElement('div');
-    el.style.padding='4px'; el.style.marginBottom='4px'; el.style.borderBottom='1px dotted #ddd';
-    el.textContent = `${o.fromName}: ${o.msg}`;
-    msgs.appendChild(el);
-    msgs.scrollTop = msgs.scrollHeight;
-  });
-  // send DM
-  send.addEventListener('click', ()=>{
-    const text = input.value.trim(); if(!text) return;
-    const mRef = push(ref(db, `dm/${pid}`));
-    set(mRef, { from: uid, to: targetUid, fromName: myHandle, toName: targetName, msg:text, ts:Date.now() });
-    input.value=''; soundMsg.play().catch(()=>{});
-  });
-}
-
-/* quick dm list */
-function updateDMList(data){
+/* ---------- DM list (quick) ---------- */
+function rebuildDMList(data){
   dmList.innerHTML='';
-  const all = [];
+  const seen=new Set();
   for(const ch in data){
     for(const uidKey in data[ch]||{}){
-      all.push({uid:uidKey,name:data[ch][uidKey].name});
+      const user = data[ch][uidKey];
+      if(uidKey === uid) continue;
+      if(!seen.has(uidKey)){
+        seen.add(uidKey);
+        const btn=document.createElement('div'); btn.textContent = user.name; btn.style.padding='6px'; btn.style.border='1px solid #ccc'; btn.style.marginBottom='6px'; btn.style.cursor='pointer';
+        btn.addEventListener('click', ()=> openDM(uidKey, user.name));
+        dmList.appendChild(btn);
+      }
     }
   }
-  // dedupe by uid
-  const unique = {};
-  all.forEach(u=>unique[u.uid]=u.name);
-  Object.entries(unique).forEach(([uId,uName])=>{
-    const btn = document.createElement('div'); btn.textContent = uName; btn.style.padding='6px'; btn.style.border='1px solid #ccc'; btn.style.marginBottom='6px'; btn.style.cursor='pointer';
-    btn.addEventListener('click', ()=> openDM(uId,uName));
-    dmList.appendChild(btn);
-  });
 }
 
-/* ---------- CHAT (channels) ---------- */
+/* ---------- DM window opener ---------- */
+function pairId(a,b){ return [a,b].sort().join('_'); }
+function openDM(targetUid,targetName){
+  if(!uid){ alert('Please join first'); return; }
+  if(targetUid===uid){ alert("Can't DM yourself"); return; }
+  const pid = pairId(uid,targetUid);
+  // simple modal-ish DM (non-persistent DOM)
+  const w = document.createElement('div'); w.style.position='fixed'; w.style.right='20px'; w.style.bottom='20px'; w.style.width='320px'; w.style.background='#fff'; w.style.border='2px solid #000'; w.style.zIndex=9999; w.style.padding='8px';
+  const t = document.createElement('div'); t.textContent=`DM: ${targetName}`; t.style.fontWeight='700';
+  const msgs = document.createElement('div'); msgs.style.height='180px'; msgs.style.overflow='auto'; msgs.style.border='1px solid #ddd'; msgs.style.marginTop='6px'; msgs.style.padding='6px';
+  const input = document.createElement('input'); input.placeholder='Type a DM...'; input.style.width='100%'; input.style.marginTop='6px';
+  const send = document.createElement('button'); send.textContent='Send'; send.style.marginTop='6px';
+  const close = document.createElement('button'); close.textContent='Close'; close.style.marginLeft='6px';
+  w.appendChild(t); w.appendChild(msgs); w.appendChild(input); w.appendChild(send); w.appendChild(close);
+  document.body.appendChild(w);
+  // listen
+  const dmRef = ref(db, `dm/${pid}`);
+  onChildAdded(dmRef, snap=>{
+    const o = snap.val();
+    const el = document.createElement('div'); el.style.padding='4px'; el.style.borderBottom='1px dotted #ddd'; el.textContent = `${o.fromName}: ${o.msg}`;
+    msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
+  });
+  send.onclick = ()=>{
+    const text = input.value.trim(); if(!text) return;
+    const r = push(ref(db, `dm/${pid}`)); set(r, { from:uid, to:targetUid, fromName:myHandle||'Anon', toName:targetName, msg:text, ts:Date.now() });
+    input.value=''; soundMsg.play().catch(()=>{});
+  };
+  close.onclick = ()=> w.remove();
+}
+
+/* ---------- Chat (channels) ---------- */
 function listenChannel(channel){
   currentChannel = channel;
-  winChannelLabel.textContent = '//' + channel.charAt(0).toUpperCase()+channel.slice(1);
+  winChannelLabel.textContent = '//' + channel.charAt(0).toUpperCase() + channel.slice(1);
   chatMessages.innerHTML = '';
-  const chatRef = ref(db, `chat/${channel}`);
-  onChildAdded(chatRef, snap=>{
+  const refChat = ref(db, `chat/${channel}`);
+  onChildAdded(refChat, snap=>{
     const o = snap.val();
     const el = document.createElement('div'); el.className='msg';
-    el.innerHTML = `<span class="meta">${o.name}</span>: <span class="text">${escapeHtml(o.msg)}</span><div class="small" style="font-size:10px;margin-top:4px">${new Date(o.ts || Date.now()).toLocaleTimeString()}</div>`;
+    el.innerHTML = `<span class="meta">${escapeHtml(o.name)}</span>: <span class="text">${escapeHtml(o.msg)}</span><div class="small">${new Date(o.ts||Date.now()).toLocaleTimeString()}</div>`;
     chatMessages.appendChild(el);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     if(doorToggle.checked) soundDoor.play().catch(()=>{});
-    spawnParticle( Math.random()*window.innerWidth, Math.random()*150 + 80 );
+    spawn(Math.random()*window.innerWidth, Math.random()*60+40);
   });
 }
-function postMessage(channel, name, text){
-  const r = push(ref(db, `chat/${channel}`));
-  set(r, { name, msg:text, channel, ts:Date.now() }).catch(e=>appendSystem('Chat post failed: '+e.message));
+function postMessage(channel,name,msg){
+  const r = push(ref(db, `chat/${channel}`)); set(r, { name, msg, channel, ts:Date.now() }).catch(e=>appendSystem('Chat error: '+e.message));
 }
 
-/* escape for display */
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-/* ---------- BOARD ---------- */
+/* ---------- Board ---------- */
 function listenBoard(){
-  const bRef = ref(db, 'board');
-  onChildAdded(bRef, snap=>{
-    const p = snap.val();
-    renderBoardPost(p);
-  });
+  const bRef = ref(db,'board');
+  onChildAdded(bRef, snap=> renderBoardPost(snap.val()));
 }
 function renderBoardPost(p){
-  const box = document.createElement('div'); box.className='board-thread';
-  box.innerHTML = `<div style="font-weight:700">${escapeHtml(p.name)}</div><div style="margin-top:6px">${escapeHtml(p.msg)}</div><div class="small" style="margin-top:6px">${new Date(p.ts || Date.now()).toLocaleString()}</div>`;
-  boardList.prepend(box);
+  const el = document.createElement('div'); el.className='board-thread';
+  el.innerHTML = `<div style="font-weight:700">${escapeHtml(p.name)}</div><div style="margin-top:6px">${escapeHtml(p.msg)}</div><div class="small" style="margin-top:6px">${new Date(p.ts||Date.now()).toLocaleString()}</div>`;
+  boardList.prepend(el);
 }
 
-/* ---------- UI BINDINGS ---------- */
+/* ---------- Helpers ---------- */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------- UI wiring ---------- */
 joinBtn.addEventListener('click', ()=>{
-  const raw = sanitizeHandle(handleField.value || '');
-  if(!raw){ alert('Please enter a handle'); return; }
+  const raw = sanitize(handleField.value || '');
+  if(!raw){ alert('Enter a handle'); return; }
   myHandle = raw; handleField.value = myHandle;
-  // set presence
-  setPresence(myHandle, channelSelectTop.value);
+  // reserve handle record
+  if(uid){ set(ref(db, `handles/${myHandle}`), { uid, joined:Date.now() }).catch(()=>{}); set(ref(db, `users/${uid}/profile`), { name: myHandle, firstSeen:Date.now() }).catch(()=>{}); }
+  setPresence(myHandle, channelSelectTop.value || channelSelect.value);
   joinBtn.style.display='none'; leaveBtn.style.display='inline-block';
-  appendSystem(`You joined as ${myHandle}`);
-  // save handle mapping
-  if(uid) { set(ref(db, `handles/${myHandle}`), { uid, joined:Date.now() }).catch(()=>{}); set(ref(db, `users/${uid}/profile`), { name: myHandle, firstSeen:Date.now() }).catch(()=>{}); }
-  listenChannel(channelSelectTop.value);
+  listenChannel(channelSelectTop.value || 'exuro');
 });
+
 leaveBtn.addEventListener('click', ()=>{
-  if(presenceRef) { remove(presenceRef).catch(()=>{}); presenceRef=null; appendSystem('You left'); }
+  if(presenceRef) { remove(presenceRef).catch(()=>{}); presenceRef=null; appendSystem('Left presence'); }
   joinBtn.style.display='inline-block'; leaveBtn.style.display='none'; myHandle=null;
 });
 
-channelSelectTop.addEventListener('change', ()=>{
-  if(myHandle) { setPresence(myHandle, channelSelectTop.value); listenChannel(channelSelectTop.value); channelSelect.value=channelSelectTop.value; }
-});
-channelSelect.addEventListener('change', ()=>{
-  channelSelectTop.value=channelSelect.value;
-  if(myHandle) setPresence(myHandle, channelSelect.value);
+channelSelect.addEventListener('change', ()=> {
+  channelSelectTop.value = channelSelect.value;
   listenChannel(channelSelect.value);
+  if(myHandle) setPresence(myHandle, channelSelect.value);
 });
-sendBtn.addEventListener('click', ()=>{
-  if(!myHandle){ alert('Enter a handle and JOIN first'); return; }
+channelSelectTop.addEventListener('change', ()=> {
+  channelSelect.value = channelSelectTop.value;
+  listenChannel(channelSelectTop.value);
+  if(myHandle) setPresence(myHandle, channelSelectTop.value);
+});
+
+sendBtn.addEventListener('click', ()=> {
+  if(!myHandle){ alert('Join first'); return; }
   const txt = chatInput.value.trim(); if(!txt) return;
   postMessage(channelSelect.value, myHandle, txt);
-  // update presence last msg
-  if(uid) set(ref(db, `online/${channelSelect.value}/${uid}`), { name: myHandle, ts: Date.now(), channel: channelSelect.value });
-  chatInput.value=''; soundMsg.play().catch(()=>{});
+  // update presence timestamp
+  if(uid) set(ref(db, `online/${channelSelect.value}/${uid}`), { name: myHandle, ts: Date.now(), channel: channelSelect.value }).catch(()=>{});
+  chatInput.value='';
+  soundMsg.play().catch(()=>{});
 });
 
 postBoardBtn.addEventListener('click', ()=>{
   const name = boardName.value.trim(); const msg = boardMsg.value.trim();
   if(!name || !msg) return alert('Board post requires name and message');
-  const r = push(ref(db, 'board')); set(r, { name, msg, ts:Date.now() }).catch(e=>appendSystem('Board post failed: '+e.message));
+  const r = push(ref(db,'board')); set(r, { name, msg, ts:Date.now() }).catch(e=>appendSystem('Board error: '+e.message));
   boardName.value=''; boardMsg.value='';
 });
 
-/* ---------- INITIAL LISTENERS ---------- */
+/* close chat panel toggle */
+closeChatBtn.addEventListener('click', ()=> { chatPanel.style.display='none'; openChatBtn.style.display='inline-block'; });
+openChatBtn.addEventListener('click', ()=> { chatPanel.style.display='block'; openChatBtn.style.display='none'; });
+
+/* theme swatches */
+themeSwatches.forEach(s=> s.addEventListener('click', ()=> { const t=s.getAttribute('data-theme'); applyTheme(t); localStorage.setItem('buu-theme',t); }));
+function applyTheme(t){ if(t==='dark'){ document.documentElement.style.setProperty('--panel','#121212'); document.documentElement.style.setProperty('--text','#eee'); document.documentElement.style.setProperty('--bg-fallback','#000'); } else if(t==='retro'){ document.documentElement.style.setProperty('--panel','#fff7e6'); document.documentElement.style.setProperty('--text','#222'); } else { document.documentElement.style.setProperty('--panel','#e6e6e6'); document.documentElement.style.setProperty('--text','#111'); } }
+const saved = localStorage.getItem('buu-theme')||'default'; applyTheme(saved);
+
+/* ---------- startup listeners ---------- */
 watchOnline();
 listenBoard();
 listenChannel(currentChannel);
 
-/* prune old chat (24h) - best-effort read+remove hourly */
+/* ---------- prune old chat hourly ---------- */
 setInterval(()=> {
-  const chatRoot = ref(db, 'chat');
-  onValue(chatRoot, snap=>{
-    const val = snap.val() || {};
-    for(const ch in val){
-      for(const id in val[ch]){
-        const item = val[ch][id];
-        if(item && item.ts && (Date.now() - item.ts) > 24*60*60*1000){
-          remove(ref(db, `chat/${ch}/${id}`)).catch(()=>{});
-        }
+  const root = ref(db,'chat');
+  onValue(root, snap=>{
+    const obj = snap.val() || {};
+    for(const ch in obj){
+      for(const id in obj[ch]){
+        const item = obj[ch][id];
+        if(item && item.ts && (Date.now() - item.ts) > 24*60*60*1000) remove(ref(db, `chat/${ch}/${id}`)).catch(()=>{});
       }
     }
   }, {onlyOnce:true});
 }, 60*60*1000);
 
-/* ---------- THEME SELECTOR (localStorage) ---------- */
-document.querySelectorAll('.theme-swatch').forEach(s=>{
-  s.addEventListener('click', ()=> {
-    const t = s.getAttribute('data-theme');
-    applyTheme(t);
-    localStorage.setItem('buu-theme', t);
-  });
-});
-function applyTheme(theme){
-  if(theme==='dark'){ document.documentElement.style.setProperty('--panel','#141414'); document.documentElement.style.setProperty('--text','#ddd'); document.documentElement.style.setProperty('--msg-bg','#0b0b0b'); }
-  else if(theme==='retro'){ document.documentElement.style.setProperty('--panel','#fff7e6'); document.documentElement.style.setProperty('--text','#333'); document.documentElement.style.setProperty('--msg-bg','#fffbe6'); }
-  else { document.documentElement.style.removeProperty('--panel'); document.documentElement.style.removeProperty('--text'); document.documentElement.style.removeProperty('--msg-bg'); }
-}
-const savedTheme = localStorage.getItem('buu-theme') || 'default'; applyTheme(savedTheme);
-
-/* ---------- SIMPLE INTERACTION STYLING ---------- */
-document.addEventListener('mousemove', e=>{ spawnParticle(e.clientX, e.clientY); });
-
-/* ---------- HELPER: show system feed initially ---------- */
-appendSystem('UI initialized.');
-
-/* ---------- END SCRIPT ---------- */
+/* ---------- system ready ---------- */
+appendSystem('Interface ready.');
 </script>
-
 </body>
 </html>
