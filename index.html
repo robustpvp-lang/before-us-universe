@@ -5,10 +5,12 @@
 <title>Before Us Universe — BUU</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Arial:wght@400;700&display=swap" rel="stylesheet"> <!-- For ProBoards Arial -->
 <style>
 /* ───── CRT / DOS THEME ───── */
 :root{
   --bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
+  --proboards-blue:#1e73be; --proboards-dark:#0066cc; --proboards-gray:#f5f5f5; --proboards-border:#ccc; --proboards-muted:#666;
   --yahoo-blue:#1e73be; --yahoo-dark:#0961a6; --online:#00ff9d; --muted:#00aaaa;
 }
 html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:hidden}
@@ -42,33 +44,41 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 /* YOUTUBE */
 .yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border)}
 
-/* SERVER LIST (ABOVE CHAT) */
-#serverListPanel .panel-body{max-height:180px;overflow:auto;background:#001f1f;border:1px solid var(--border);padding:6px}
-
-/* YAHOO CHAT */
-.chat-win{border:4px solid var(--yahoo-dark);border-radius:8px;overflow:hidden;background:#eaf6ff;margin-top:12px}
-.chat-title{display:flex;justify-content:space-between;align-items:center;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
-.chat-messages{height:340px;overflow:auto;background:#fff;border:2px solid #ccc;padding:8px;border-radius:4px}
+/* YAHOO CHAT (Nostalgic: Blue bar, white msgs, right users) */
+.chat-win{border:4px solid var(--yahoo-dark);border-radius:8px;overflow:hidden;background:#eaf6ff;margin-top:12px;display:flex;flex-direction:column;height:500px}
+.chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
+.chat-main{display:flex;flex:1;overflow:hidden}
+.chat-messages{flex:1;overflow:auto;background:#fff;border-right:1px solid #ccc;padding:8px}
+.chat-users{background:#f0f8ff;border-left:1px solid #ccc;padding:8px;overflow:auto;width:180px}
+@media(max-width:700px){.chat-main{flex-direction:column}.chat-users{width:auto;border-left:0;border-top:1px solid #ccc}}
 .chat-row{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
 .chat-avatar{width:32px;height:32px;border-radius:50%;background:#d9eefc;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#0961a6}
 .chat-bubble{max-width:78%;padding:8px;border-radius:8px;background:#fff;border:1px solid #cfe6ff;font-family:Arial}
 .chat-bubble.me{background:#fff7d6;border:1px solid #f0d280;text-align:right}
 .chat-meta{font-size:11px;color:#0a6fbf;font-weight:700;margin-bottom:4px}
-.chat-controls{display:flex;gap:6px;margin-top:8px}
+.user-row{display:flex;gap:4px;align-items:center;padding:4px;font-size:11px;cursor:pointer}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--online)}
+.uname{font-family:'Press Start 2P';color:#0a4b7a}
+.chat-controls{display:flex;gap:6px;padding:8px;background:#f0f8ff;border-top:1px solid #ccc}
 .chat-controls input{flex:1;padding:6px;border:2px inset #ccc;background:#fff}
 .chat-controls button{padding:6px;border:2px outset #ccc;background:#dfefff;cursor:pointer}
 
-/* PROBOARDS MESSAGE BOARD */
-.board-thread{background:#f5f5f5;border:1px solid #ccc;padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial}
-.board-thread strong{color:#0066cc}
-.board-thread .small{color:#666;font-style:italic}
+/* PROBOARDS MESSAGE BOARD (Blue/gray from your forum) */
+.board-header{background:var(--proboards-blue);color:#fff;padding:8px;font-weight:700;font-family:Arial;border-bottom:2px solid var(--proboards-border)}
+.board-thread{background:var(--proboards-gray);border:1px solid var(--proboards-border);padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial}
+.board-thread strong{color:var(--proboards-dark);font-size:14px}
+.board-thread .small{color:var(--proboards-muted);font-style:italic;margin-top:4px;display:block}
 
 /* RIGHT COLUMN */
-#serverSelectPanel, #ortegaPanel{margin-bottom:12px}
-#serverSelectPanel select{width:100%;padding:6px;background:var(--panel-bg);border:2px solid var(--border);color:var(--fg)}
+#serverSelectPanel{margin-bottom:12px}
+#serverSelectPanel .controls{display:flex;gap:6px;align-items:center}
+#serverSelectPanel select{flex:1;padding:6px;background:var(--panel-bg);border:2px solid var(--border);color:var(--fg)}
+#serverConfirm{background:var(--accent);color:#000;padding:6px;border:2px solid #000;cursor:pointer;font-weight:700}
+#ortegaPanel{margin-bottom:12px}
 #ortegaBtn{width:100%;background:var(--accent);color:#000;padding:10px;border:2px solid #000;border-radius:4px;font-weight:700;cursor:pointer;font-size:14px}
-
-/* SYSTEM FEED */
+#serverTrackingPanel{margin-bottom:12px}
+#serverTrackingPanel .server-detail{margin:4px 0;padding:4px;background:#001f1f;border:1px solid var(--border);border-radius:2px}
+#serverTrackingPanel .current-server{background:var(--accent);color:#000}
 #systemFeed{max-height:180px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px}
 
 /* DM */
@@ -114,14 +124,8 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
         </div>
       </div>
 
-      <!-- SERVER LIST (ABOVE CHAT) -->
-      <div class="panel" id="serverListPanel">
-        <div class="small">USERS BY SERVER</div>
-        <div class="panel-body" id="serverList"></div>
-      </div>
-
       <!-- YAHOO CHAT -->
-      <div class="panel chat-win">
+      <div class="chat-win">
         <div class="chat-title">
           <div style="display:flex;gap:12px;align-items:center">
             <span id="winChannelLabel">//EXURO</span>
@@ -133,7 +137,13 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
             <button id="closeChatBtn" style="background:#fff;color:#c00;padding:2px 6px;border-radius:4px">X</button>
           </div>
         </div>
-        <div class="chat-messages" id="chatMessages" style="padding:8px"></div>
+        <div class="chat-main">
+          <div class="chat-messages" id="chatMessages"></div>
+          <div class="chat-users">
+            <div class="small" style="margin-bottom:4px">USERS ONLINE</div>
+            <div id="activeUsersList"></div>
+          </div>
+        </div>
         <div class="chat-controls">
           <input id="chatInput" placeholder="Say something..." maxlength="500">
           <button id="sendBtn">SEND</button>
@@ -142,11 +152,9 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 
       <!-- PROBOARDS BOARD -->
       <div class="panel" style="margin-top:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div class="small">MESSAGE BOARD (ProBoards Style)</div>
-          <div class="small">Posts persist – chat deletes after 24h</div>
-        </div>
-        <div id="boardList" style="margin-top:8px;max-height:340px;overflow:auto"></div>
+        <div class="board-header">MESSAGE BOARD (ProBoards Style)</div>
+        <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
+        <div id="boardList" style="max-height:340px;overflow:auto"></div>
         <div style="margin-top:8px">
           <input id="boardName" placeholder="Name (max 100)" style="width:180px;padding:4px">
           <textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:70px;margin-top:4px"></textarea>
@@ -157,21 +165,30 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 
     <!-- RIGHT -->
     <div>
-      <!-- SERVER SELECTOR -->
+      <!-- SERVER SELECTOR + CONFIRM -->
       <div class="panel" id="serverSelectPanel">
         <div class="small">SELECT SERVER</div>
-        <select id="channelSelect">
-          <option value="exuro">//Exuro</option>
-          <option value="sam">//Sam</option>
-          <option value="nero">//Nero</option>
-          <option value="nora">//Nora</option>
-          <option value="loktal">//Loktal</option>
-        </select>
+        <div class="controls">
+          <select id="channelSelect">
+            <option value="exuro">//Exuro</option>
+            <option value="sam">//Sam</option>
+            <option value="nero">//Nero</option>
+            <option value="nora">//Nora</option>
+            <option value="loktal">//Loktal</option>
+          </select>
+          <button id="serverConfirm">Switch Server</button>
+        </div>
       </div>
 
       <!-- ORTEGA BUTTON -->
       <div class="panel" id="ortegaPanel">
         <button id="ortegaBtn">Project ://ORTEGA</button>
+      </div>
+
+      <!-- SERVER TRACKING (Detail + Users) -->
+      <div class="panel" id="serverTrackingPanel">
+        <div class="small">SERVER TRACKING</div>
+        <div id="serverTrackingList"></div>
       </div>
 
       <!-- SYSTEM FEED -->
@@ -213,9 +230,11 @@ const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
 const channelSelect = document.getElementById('channelSelect');
+const serverConfirm = document.getElementById('serverConfirm');
 const closeChatBtn = document.getElementById('closeChatBtn');
 const userCountSmall = document.getElementById('userCountSmall');
-const serverList = document.getElementById('serverList');
+const activeUsersList = document.getElementById('activeUsersList');
+const serverTrackingList = document.getElementById('serverTrackingList');
 const boardList = document.getElementById('boardList');
 const boardName = document.getElementById('boardName');
 const boardMsg = document.getElementById('boardMsg');
@@ -277,28 +296,44 @@ function setPresence(h,ch){
   set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid}).then(()=>onDisconnect(presenceRef).remove());
 }
 
-/* SERVER LIST (ABOVE CHAT) */
-function renderServerList(data){
-  serverList.innerHTML = '';
+/* SERVER TRACKING (Right column: Detail + Users) */
+function renderServerTracking(data){
+  serverTrackingList.innerHTML = '';
   const channels = ['exuro','sam','nero','nora','loktal'];
   channels.forEach(ch => {
-    const users = Object.keys(data[ch]||{}).length;
+    const users = data[ch] || {};
+    const count = Object.keys(users).length;
     const div = document.createElement('div');
-    div.innerHTML = `<strong>//${ch.toUpperCase()}</strong>: ${users} user${users===1?'':'s'}`;
-    div.style.margin = '4px 0';
-    serverList.appendChild(div);
+    div.className = `server-detail ${ch === currentChannel ? 'current-server' : ''}`;
+    div.innerHTML = `<strong>//${ch.toUpperCase()}</strong>: ${count} user${count===1?'':'s'}<div style="font-size:10px;margin-top:2px">Users: ${Object.values(users).map(u => u.name).join(', ') || 'None'}</div>`;
+    serverTrackingList.appendChild(div);
   });
-  const count = Object.keys(data[currentChannel]||{}).length;
-  userCountSmall.textContent = count + (count===1?' user':' users');
 }
 
-/* ONLINE TRACKING */
+/* ONLINE WATCH (Updates chat users + tracking) */
 function watchOnline(){
   onValue(ref(db,'online'),snap=>{
     const data = snap.val()||{};
-    renderServerList(data);
+    renderServerTracking(data);
+    renderActiveUsers(data[currentChannel] || {});
     rebuildDMList(data);
+    updateUserCount(data);
   });
+}
+function renderActiveUsers(users){
+  activeUsersList.innerHTML = '';
+  Object.entries(users).forEach(([id,u])=>{
+    const row = document.createElement('div'); row.className = 'user-row';
+    const dot = document.createElement('div'); dot.className = 'status-dot';
+    const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name;
+    name.onclick = () => openDM(id, u.name);
+    row.append(dot, name);
+    activeUsersList.appendChild(row);
+  });
+}
+function updateUserCount(data){
+  const count = Object.keys(data[currentChannel]||{}).length;
+  userCountSmall.textContent = count + (count===1?' user':' users');
 }
 function rebuildDMList(data){
   dmList.innerHTML='';
@@ -424,7 +459,16 @@ postBoardBtn.onclick=async()=>{
   boardName.value='';boardMsg.value='';
 };
 closeChatBtn.onclick=()=>{document.querySelector('.chat-win').style.display='none';};
-channelSelect.onchange=()=>{listenChannel(channelSelect.value);setPresence(myHandle,channelSelect.value);currentChannel=channelSelect.value;};
+serverConfirm.onclick=()=>{
+  const newCh = channelSelect.value;
+  if(newCh !== currentChannel){
+    if(confirm(`Switch to //${newCh.toUpperCase()}?`)){
+      listenChannel(newCh);
+      setPresence(myHandle, newCh);
+      currentChannel = newCh;
+    }
+  }
+};
 ortegaBtn.onclick=()=>{alert('Project ://ORTEGA – RAG-LM genie coming soon');};
 
 /* START */
