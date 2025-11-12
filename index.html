@@ -101,7 +101,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
   <iframe id="boardFrame" 
           src="https://tokillamockinggoblin.boards.net/page/external-widget" 
           width="100%" height="500px" frameborder="0" scrolling="auto"
-          onerror="this.style.display='none'; alert('ProBoards widget blocked; click the button to open the board.');">
+          onerror="this.style.display='none';">
   </iframe>
 </div>
 </div>
@@ -231,7 +231,7 @@ function listenOnline(){
   });
 }
 
-// ---------- Open Message Board ----------
+// ---------- Open Message Board Fallback ----------
 document.getElementById('openBoardBtn').addEventListener('click',()=>{
   window.open('https://tokillamockinggoblin.boards.net','_blank');
 });
