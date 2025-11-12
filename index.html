@@ -1,177 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
 <title>Before Us Universe — BUU</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+/* ────────────────────────────────────── DOS / CRT ────────────────────────────────────── */
 :root{
-  --panel:#e6e6e6; --panel-border:#000; --text:#111;
-  --accent:#0aa; --muted:#555;
-  --online:#00c853; --offline:#ff3d00;
-  --bg-fallback:#08111a;
-  --yahoo-blue-start:#2b8bd0;
-  --yahoo-blue-end:#0b5ea8;
-  --link-color:#0a6fbf;
-  --link-hover:#33a0ff;
+  --dos-bg:#000; --dos-fg:#0f0; --dos-border:#0c0;
+  --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
+  --accent:#0ff; --muted:#088;
 }
-html,body{height:100%;margin:0;font-family:Roboto, "Press Start 2P", monospace;background:var(--bg-fallback);color:var(--text);-webkit-font-smoothing:antialiased}
-body{background-color:var(--bg-fallback);background-image:url('https://wallpapercave.com/wp/wp4468245.jpg');background-position:center;background-repeat:no-repeat;background-size:cover;overflow-y:auto}
-#bootOverlay{position:fixed;left:0;top:0;width:100%;height:100%;background:#000;color:#7fffd4;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px}
-#bootPanel{width:920px;max-width:95%;background:#07101a;border:3px solid #063;padding:18px;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.8)}
-#bootTitle{font-family:Courier, monospace;color:#aaffdd;font-size:18px;margin-bottom:8px}
-#bootText{font-family:Courier, monospace;color:#9ff;line-height:1.4}
-#bootForm{margin-top:14px;display:flex;gap:8px;align-items:center}
-#bootForm input[type="text"]{padding:8px;border:2px inset #022;font-family:Courier, monospace;color:#001;background:#e8fff6;border-radius:4px}
-#bootForm button{padding:8px 12px;background:#063;border:2px solid #0a7;color:#cff;border-radius:6px;cursor:pointer}
-.app{position:relative;z-index:1;max-width:1180px;margin:18px auto;padding:12px;box-sizing:border-box}
-.title-bar{display:flex;align-items:center;gap:16px;padding:8px 12px;border-radius:6px;background:linear-gradient(90deg,var(--yahoo-blue-start),var(--yahoo-blue-end));color:#fff;font-family:Courier, monospace}
+html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--dos-bg);color:var(--dos-fg);overflow:hidden}
+body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
+
+/* CRT scan-lines */
+#crt::before{
+  content:"";position:fixed;top:0;left:0;right:0;bottom:0;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,0.08),rgba(0,0,0,0.08) 2px,transparent 2px,transparent 4px);
+  pointer-events:none;z-index:999;
+}
+
+/* Boot overlay */
+#bootOverlay{position:fixed;inset:0;background:#000;color:#0f0;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Press Start 2P',cursive}
+#bootPanel{width:90%;max-width:800px;background:#001a00;border:4px solid var(--dos-border);padding:20px;box-shadow:0 0 30px #0f0}
+#bootLog{line-height:1.6;white-space:pre-wrap;margin-bottom:20px}
+#bootPrompt{color:#0ff}
+#bootInput{background:#001a00;border:2px solid var(--dos-border);color:#0f0;font-family:inherit;padding:6px;width:70%;max-width:300px}
+#bootBtn{background:#001a00;border:2px solid var(--dos-border);color:#0f0;padding:6px 12px;cursor:pointer}
+
+/* Main app (hidden until login) */
+#app{display:none;height:100%;padding:8px;box-sizing:border-box;overflow-y:auto}
+.title-bar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P'}
 .title-bar .logo{font-weight:700;letter-spacing:1px}
-.title-bar .subtitle{font-size:12px;opacity:0.95}
-.title-bar a.resource-link{color:#fff;text-decoration:underline;opacity:0.95;margin-left:12px;font-size:13px}
+.top-links{display:flex;gap:12px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.top-links a{color:#fff;text-decoration:underline;font-size:13px}
+#ortegaBtn{background:#ff0;color:#000;padding:6px 14px;border-radius:4px;font-weight:700;cursor:pointer}
+
+/* Layout */
 .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
-@media(max-width:980px){ .layout{grid-template-columns:1fr} }
-.panel{background:var(--panel);border:3px solid var(--panel-border);border-radius:6px;padding:10px;box-shadow:3px 3px 0 rgba(0,0,0,0.12);position:relative;overflow:hidden}
+@media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+/* Panels – DOS style */
+.panel{background:#001a00;border:3px solid var(--dos-border);padding:10px;border-radius:4px;box-shadow:0 0 12px rgba(0,255,0,0.3);position:relative;overflow:hidden}
 .small{font-size:12px;color:var(--muted)}
-.row{display:flex;gap:8px;align-items:center}
-.yt-wrap{display:flex;justify-content:center}
-.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--panel-border);background:#000}
-.chat-win{border:4px solid #0b5ea8;border-radius:8px;overflow:hidden;position:relative;background:linear-gradient(180deg,#eaf6ff,#d7eeff)}
-.chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,#1e73be,#0961a6);color:#fff;font-family:Courier, monospace}
-.chat-title .left{display:flex;gap:12px;align-items:center}
-.chat-body{padding:10px}
-.chat-messages{height:360px;overflow:auto;background:linear-gradient(180deg,#ffffffcc,#eef8ffcc);border:2px solid rgba(0,0,0,0.06);padding:12px;white-space:normal;border-radius:6px}
-.chat-row{display:flex;gap:8px;margin:8px 0;align-items:flex-start}
-.chat-avatar{width:36px;height:36px;border-radius:6px;background:#d9eefc;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:Courier, monospace}
-.chat-bubble{max-width:78%;padding:10px;border-radius:8px;background:#fff;border:1px solid #cfe6ff;font-family:Arial, Helvetica, sans-serif}
-.chat-bubble.me{background:linear-gradient(180deg,#fff7d6,#fff2b3);border:1px solid #f0d280;text-align:right}
-.chat-meta{font-size:12px;color:#0a6fbf;font-weight:700;margin-bottom:6px;font-family:Courier, monospace}
-.chat-controls{display:flex;gap:8px;margin-top:8px}
-.chat-controls input[type="text"]{flex:1;padding:8px;border:2px inset var(--panel-border);font-family:monospace}
-.chat-controls button{padding:8px 10px;border:2px outset var(--panel-border);background:#dfefff;cursor:pointer;border-radius:6px}
-.active-list{display:flex;flex-direction:column;gap:6px}
-.user-row{display:flex;align-items:center;gap:8px;padding:6px;border-radius:4px;background:#fff;border:1px solid rgba(0,0,0,0.06)}
-.status-dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 6px rgba(0,0,0,0.08)}
-.dot-online{background:var(--online)}
-.dot-offline{background:var(--offline)}
-.uname{font-family:Courier, monospace;font-weight:700;color:#0a4b7a}
-.board-thread{background:#fff;border:2px solid var(--panel-border);padding:10px;margin-bottom:8px;border-radius:6px}
-textarea{width:100%;min-height:80px;padding:8px;border:2px inset var(--panel-border);font-family:monospace}
+
+/* YouTube */
+.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--dos-border)}
+
+/* Yahoo chat */
+.chat-win{border:4px solid var(--yahoo-dark);border-radius:8px;overflow:hidden;background:#eaf6ff}
+.chat-title{display:flex;justify-content:space-between;align-items:center;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
+.chat-body{padding:8px;display:grid;grid-template-columns:1fr 180px;gap:8px}
+@media(max-width:700px){.chat-body{grid-template-columns:1fr}}
+.chat-messages{height:340px;overflow:auto;background:#fff;border:2px solid #ccc;padding:8px;border-radius:4px}
+.chat-row{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
+.chat-avatar{width:32px;height:32px;border-radius:50%;background:#d9eefc;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
+.chat-bubble{max-width:78%;padding:8px;border-radius:8px;background:#fff;border:1px solid #cfe6ff;font-family:Arial}
+.chat-bubble.me{background:#fff7d6;border:1px solid #f0d280;text-align:right}
+.chat-meta{font-size:11px;color:#0a6fbf;font-weight:700;margin-bottom:4px}
+.chat-controls{display:flex;gap:6px;margin-top:8px}
+.chat-controls input{flex:1;padding:6px;border:2px inset #ccc;font-family:monospace}
+.chat-controls select, .chat-controls button{padding:6px;border:2px outset #ccc;background:#dfefff;cursor:pointer}
+
+/* Active users */
+.user-row{display:flex;align-items:center;gap:8px;padding:4px;border-radius:4px;background:#fff;border:1px solid #ccc;cursor:pointer}
+.status-dot{width:10px;height:10px;border-radius:50%;background:var(--online)}
+.uname{font-family:'Press Start 2P';font-size:11px;color:#0a4b7a}
 .tooltip{position:relative}
-.tooltip .tip{position:absolute;left:110%;top:0;background:#111;color:#fff;padding:6px;border:1px solid #333;border-radius:4px;display:none;white-space:nowrap;z-index:999}
+.tooltip .tip{position:absolute;left:105%;top:0;background:#111;color:#fff;padding:4px 8px;border-radius:4px;white-space:nowrap;display:none;z-index:99;font-size:11px}
 .tooltip:hover .tip{display:block}
-#particleCanvas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.dm-window{position:fixed;background:#fff;border:3px solid #b8860b;border-radius:6px;padding:8px;z-index:9999;min-width:260px;max-width:420px;box-shadow:6px 6px 0 rgba(0,0,0,0.15)}
-.dm-title{background:linear-gradient(180deg,#fddc6b,#f2c200);padding:6px;border-radius:4px;font-weight:700;cursor:move;font-family:Courier, monospace}
-.dm-msg{background:#fff7d6;padding:8px;border-radius:8px;margin:6px 0;max-width:90%}
-.dm-input{width:100%;padding:6px;border:1px solid #ddd}
-@media(max-width:600px){ .chat-messages{height:280px} .yt-wrap iframe{height:200px} }
+
+/* Message board */
+.board-thread{background:#fff;border:2px solid var(--dos-border);padding:8px;margin-bottom:8px;border-radius:4px}
+
+/* System feed */
+#systemFeed{max-height:180px;overflow:auto;background:#001a00;border:2px solid var(--dos-border);padding:6px;font-size:12px}
+
+/* DM window – AIM style */
+.dm-window{position:fixed;background:#fff;border:3px solid #b8860b;border-radius:6px;z-index:9999;min-width:260px;max-width:420px;box-shadow:6px 6px 0 rgba(0,0,0,0.2)}
+.dm-title{background:linear-gradient(180deg,#fddc6b,#f2c200);padding:6px;border-radius:4px;font-weight:700;cursor:move;font-family:'Press Start 2P';font-size:11px}
+.dm-msg{background:#fff7d6;padding:6px;border-radius:6px;margin:4px 0;max-width:90%}
+
+/* Particles */
+#particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:0}
 </style>
 </head>
 <body>
+<div id="crt"></div>
 
-<!-- Boot overlay -->
+<!-- BOOT SCREEN -->
 <div id="bootOverlay">
   <div id="bootPanel">
-    <div id="bootTitle">BEFORE US UNIVERSE — SYSTEM LOGIN</div>
-    <div id="bootText">
-      <div>Establishing secure channel to Before Us Network...</div>
-      <div style="margin-top:8px">Enter your handle (letters, numbers, _, -). It will be tied to your session.</div>
-      <form id="bootForm" onsubmit="return false;">
-        <input id="bootHandle" type="text" maxlength="30" placeholder="//YourHandle" />
-        <button id="bootLoginBtn" type="button">Authenticate</button>
-      </form>
-      <div id="bootStatus" class="small" style="margin-top:10px;color:#9ff"></div>
-    </div>
+    <div id="bootLog" class="small"></div>
+    <div id="bootPrompt">> ENTER HANDLE:</div>
+    <input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle">
+    <button id="bootBtn">AUTHENTICATE</button>
+    <div id="bootStatus" class="small" style="margin-top:8px;color:#0ff"></div>
   </div>
 </div>
 
 <canvas id="particleCanvas"></canvas>
 
-<div class="app" id="app" style="display:none">
+<div id="app">
   <div class="title-bar">
     <div class="logo">BUU</div>
-    <div class="subtitle">Before Us Universe — community portal</div>
-    <div style="margin-left:auto">
-      <a class="resource-link" href="http://www.oldversion.com/" target="_blank" rel="noopener">OldVersion</a>
-      <a class="resource-link" href="https://web.archive.org/" target="_blank" rel="noopener">Wayback Machine</a>
-      <a class="resource-link" id="projOrtegaLink" href="#" target="_blank" rel="noopener">Project ://ORTEGA</a>
+    <div style="flex:1"></div>
+    <div class="top-links">
+      <a href="https://tokillamockinggoblin.boards.net/" target="_blank">To Kill a Mocking Goblin</a>
+      <a href="https://youtube.com/@Patrickauthor" target="_blank">Melphia’s Game (YT)</a>
+      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank">Book 1</a>
     </div>
+    <button id="ortegaBtn">Project ://ORTEGA</button>
   </div>
 
-  <header style="margin-top:12px">
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <a href="https://tokillamockinggoblin.boards.net/" target="_blank" style="color:var(--link-color);text-decoration:none;font-weight:700">To Kill a Mocking Goblin</a>
-      <a href="https://youtube.com/@Patrickauthor" target="_blank" style="color:var(--link-color);text-decoration:none;font-weight:700">Melphia's Game (YouTube)</a>
-      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" style="color:var(--link-color);text-decoration:none;font-weight:700">Book 1</a>
-    </div>
-  </header>
-
   <div class="layout">
+    <!-- LEFT -->
     <div>
       <div class="panel">
-        <div class="small">Playlist</div>
+        <div class="small">PLAYLIST</div>
         <div class="yt-wrap" style="margin-top:8px">
-          <iframe id="ytIframe" src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" title="Melphia's Game" allowfullscreen></iframe>
+          <iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen></iframe>
         </div>
       </div>
 
-      <div class="panel chat-win" id="chatPanel" style="margin-top:12px">
+      <!-- Yahoo Chat -->
+      <div class="panel chat-win" style="margin-top:12px">
         <div class="chat-title">
-          <div class="left">
-            <div id="winChannelLabel">//Exuro</div>
-            <div class="small" style="margin-left:12px" id="userCountSmall">0 users</div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <span id="winChannelLabel">//EXURO</span>
+            <span class="small" id="userCountSmall">0 users</span>
           </div>
           <div style="display:flex;gap:8px;align-items:center">
-            <label class="small" for="doorToggle" style="color:#fff">Sound</label>
-            <input type="checkbox" id="doorToggle" checked />
-            <button id="closeChatBtn" title="Close chat" style="background:#fff;color:#900;border-radius:6px;padding:6px">X</button>
+            <label class="small" for="doorToggle" style="color:#fff">SOUND</label>
+            <input type="checkbox" id="doorToggle" checked>
+            <button id="closeChatBtn" style="background:#fff;color:#c00;padding:2px 6px;border-radius:4px">X</button>
           </div>
         </div>
         <div class="chat-body">
           <div class="chat-messages" id="chatMessages"></div>
-          <div class="chat-controls" style="margin-top:12px">
-            <input id="chatInput" placeholder="Write message..." maxlength="500" />
-            <select id="channelSelect">
-              <option value="exuro">//Exuro</option>
-              <option value="sam">//Sam</option>
-              <option value="nero">//Nero</option>
-              <option value="nora">//Nora</option>
-              <option value="loktal">//Loktal</option>
-            </select>
-            <button id="sendBtn">POST</button>
+          <div>
+            <div class="small" style="margin-bottom:4px">USERS</div>
+            <div id="activeContainer" style="max-height:320px;overflow:auto"></div>
           </div>
+        </div>
+        <div class="chat-controls">
+          <input id="chatInput" placeholder="Say something..." maxlength="500">
+          <select id="channelSelect">
+            <option value="exuro">//Exuro</option>
+            <option value="sam">//Sam</option>
+            <option value="nero">//Nero</option>
+            <option value="nora">//Nora</option>
+            <option value="loktal">//Loktal</option>
+          </select>
+          <button id="sendBtn">SEND</button>
         </div>
       </div>
 
+      <!-- Message Board -->
       <div class="panel" style="margin-top:12px">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div class="small">Local Message Board</div>
-          <div class="small">Posts persist; chat deletes after 24h</div>
+          <div class="small">MESSAGE BOARD</div>
+          <div class="small">Posts persist – chat auto-deletes 24 h</div>
         </div>
-        <div id="boardList" style="margin-top:8px;max-height:380px;overflow:auto"></div>
+        <div id="boardList" style="margin-top:8px;max-height:340px;overflow:auto"></div>
         <div style="margin-top:8px">
-          <input id="boardName" placeholder="Name (max 100)" style="width:180px;padding:6px" />
-          <textarea id="boardMsg" placeholder="Message (max 1000)"></textarea>
-          <button id="postBoardBtn">Post</button>
+          <input id="boardName" placeholder="Name (max 100)" style="width:180px;padding:4px">
+          <textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:70px;margin-top:4px"></textarea>
+          <button id="postBoardBtn" style="margin-top:4px">POST</button>
         </div>
       </div>
     </div>
 
+    <!-- RIGHT -->
     <div>
       <div class="panel">
-        <div class="small">Active Users by Channel</div>
-        <div id="activeContainer" style="margin-top:8px"></div>
+        <div class="small">SYSTEM FEED</div>
+        <div id="systemFeed"></div>
       </div>
       <div class="panel" style="margin-top:12px">
-        <div class="small">Direct Messages (DM)</div>
+        <div class="small">DIRECT MESSAGES</div>
         <div id="dmList" style="margin-top:8px"></div>
-        <div class="small" style="margin-top:8px">Click name to open DM</div>
-      </div>
-      <div class="panel" style="margin-top:12px">
-        <div class="small">System Feed</div>
-        <div id="systemFeed" style="margin-top:8px;max-height:220px;overflow:auto"></div>
+        <div class="small" style="margin-top:4px">Click a name to open DM</div>
       </div>
     </div>
   </div>
@@ -181,27 +192,19 @@ textarea{width:100%;min-height:80px;padding:8px;border:2px inset var(--panel-bor
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-app.js";
-import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, query, orderByChild, update, get, off } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-database.js";
+import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
-  authDomain: "before-us-universe.firebaseapp.com",
-  databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
-  projectId: "before-us-universe",
-  storageBucket: "before-us-universe.firebasestorage.app",
-  messagingSenderId: "477103463228",
-  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
-};
-
+const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
-/* DOM */
+/* ───── DOM ───── */
 const bootOverlay = document.getElementById('bootOverlay');
-const bootHandle = document.getElementById('bootHandle');
-const bootLoginBtn = document.getElementById('bootLoginBtn');
+const bootLog = document.getElementById('bootLog');
+const bootInput = document.getElementById('bootInput');
+const bootBtn = document.getElementById('bootBtn');
 const bootStatus = document.getElementById('bootStatus');
 const appRoot = document.getElementById('app');
 const chatMessages = document.getElementById('chatMessages');
@@ -217,304 +220,262 @@ const boardMsg = document.getElementById('boardMsg');
 const postBoardBtn = document.getElementById('postBoardBtn');
 const systemFeed = document.getElementById('systemFeed');
 const dmList = document.getElementById('dmList');
-const projOrtegaLink = document.getElementById('projOrtegaLink');
+const ortegaBtn = document.getElementById('ortegaBtn');
 const soundMsg = document.getElementById('soundMsg');
 
-let uid = null;
-let myHandle = null;
-let currentChannel = 'exuro';
-let presenceRef = null;
-let channelListeners = {};
+let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null, channelListeners = {};
 
-/* ---------- Boot/Login ---------- */
-signInAnonymously(auth).catch(e => bootStatus.textContent = 'Auth error: ' + e.message);
-
-onAuthStateChanged(auth, user => {
-  if (user) {
-    uid = user.uid;
-    const stored = localStorage.getItem('buu-handle');
-    if (stored && !myHandle) {
-      attemptHandleReserve(stored).then(ok => {
-        if (ok) { myHandle = stored; finishLogin(); }
-        else { bootStatus.textContent = 'Handle taken. Choose another.'; }
-      });
-    }
-  }
-});
-
-async function attemptHandleReserve(handle) {
-  const handleRef = ref(db, `handles/${handle}`);
-  try {
-    await set(handleRef, { uid, joined: Date.now() });
-    return true;
-  } catch (e) {
-    console.error(e);
-    return false;
+/* ───── BOOT SEQUENCE ───── */
+const bootLines = [
+  "INITIALIZING BEFORE US UNIVERSE...",
+  "Loading kernel.............[OK]",
+  "Mounting network...........[OK]",
+  "Checking Firebase link.....[OK]",
+  "Ready for authentication..."
+];
+let lineIdx = 0;
+function typeBootLine(){
+  if(lineIdx < bootLines.length){
+    bootLog.textContent += bootLines[lineIdx] + "\n";
+    lineIdx++;
+    setTimeout(typeBootLine, 300 + Math.random()*400);
   }
 }
+typeBootLine();
 
-bootLoginBtn.addEventListener('click', async () => {
-  const raw = sanitizeHandle(bootHandle.value);
-  if (!raw) return bootStatus.textContent = 'Enter a valid handle.';
-  if (!uid) return bootStatus.textContent = 'Auth not ready...';
+/* ───── AUTH ───── */
+signInAnonymously(auth).catch(e=>appendBoot("Auth error: "+e.message));
+onAuthStateChanged(auth, u=>{ if(u) uid = u.uid; });
 
-  bootStatus.textContent = 'Reserving handle...';
-  const ok = await attemptHandleReserve(raw);
-  if (!ok) return bootStatus.textContent = 'Handle taken. Try another.';
-
+bootBtn.addEventListener('click', async ()=>{
+  const raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
+  if(!raw) return bootStatus.textContent = "Invalid handle";
+  if(!uid) return bootStatus.textContent = "Auth not ready…";
+  bootStatus.textContent = "Reserving…";
+  const ok = await set(ref(db,`handles/${raw}`),{uid,joined:Date.now()}).then(()=>true).catch(()=>false);
+  if(!ok) return bootStatus.textContent = "Handle taken";
   myHandle = raw;
-  localStorage.setItem('buu-handle', myHandle);
-  await set(ref(db, `users/${uid}/profile`), { name: myHandle, uid, firstSeen: Date.now() });
-  setPresence(myHandle, currentChannel);
-  finishLogin();
+  localStorage.setItem('buu-handle',myHandle);
+  await set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()});
+  setPresence(myHandle,currentChannel);
+  finishBoot();
 });
 
-function finishLogin() {
-  bootStatus.textContent = `Welcome, ${myHandle}!`;
-  setTimeout(() => {
-    bootOverlay.style.display = 'none';
-    appRoot.style.display = 'block';
-    appendSystem('Interface ready.');
-  }, 800);
+function finishBoot(){
+  bootStatus.textContent = `Welcome, ${myHandle}`;
+  setTimeout(()=>{bootOverlay.style.display='none';appRoot.style.display='block';appendSystem('System ready');},1200);
 }
 
-/* ---------- Utils ---------- */
-function appendSystem(text) {
-  const el = document.createElement('div');
-  el.className = 'small';
-  el.style.padding = '4px';
-  el.textContent = `${new Date().toLocaleTimeString()} - ${text}`;
-  systemFeed.prepend(el);
-}
-function sanitizeHandle(s) { return (s || '').replace(/[^\w\-]/g, '').slice(0, 30).trim(); }
-function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-async function computeHash(str) {
-  const enc = new TextEncoder().encode(str);
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+/* ───── UTILS ───── */
+function appendSystem(t){ const d=document.createElement('div');d.textContent=`${new Date().toLocaleTimeString()} - ${t}`;systemFeed.prepend(d); }
+function appendBoot(t){ bootLog.textContent += t+"\n"; }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+async function hash(str){
+  const e=new TextEncoder().encode(str);
+  const b=await crypto.subtle.digest('SHA-256',e);
+  return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
 }
 
-/* ---------- Presence ---------- */
-function setPresence(handle, channel) {
-  if (!uid) return;
-  if (presenceRef) remove(presenceRef).catch(() => {});
-  presenceRef = ref(db, `online/${channel}/${uid}`);
-  set(presenceRef, { name: handle, ts: Date.now(), channel, uid })
-    .then(() => onDisconnect(presenceRef).remove())
-    .catch(e => appendSystem('Presence error: ' + e.message));
+/* ───── PRESENCE ───── */
+function setPresence(h,ch){
+  if(presenceRef) remove(presenceRef).catch(()=>{});
+  presenceRef = ref(db,`online/${ch}/${uid}`);
+  set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid}).then(()=>onDisconnect(presenceRef).remove());
 }
 
-/* ---------- Online Users ---------- */
-function watchOnline() {
-  onValue(ref(db, 'online'), snap => {
-    const data = snap.val() || {};
+/* ───── ONLINE LIST ───── */
+function watchOnline(){
+  onValue(ref(db,'online'),snap=>{
+    const data = snap.val()||{};
     renderActive(data);
     rebuildDMList(data);
   });
 }
-
-function renderActive(data) {
-  activeContainer.innerHTML = '';
+function renderActive(data){
+  activeContainer.innerHTML='';
   const channels = ['exuro','sam','nero','nora','loktal'];
-  channels.forEach(ch => {
-    const wrapper = document.createElement('div');
-    wrapper.style.marginBottom = '10px';
-    const title = document.createElement('div');
-    title.innerHTML = `<strong>//${ch.charAt(0).toUpperCase() + ch.slice(1)}</strong> <small>(${Object.keys(data[ch] || {}).length})</small>`;
-    wrapper.appendChild(title);
-    const list = document.createElement('div');
-    Object.entries(data[ch] || {}).forEach(([id, u]) => {
-      const row = document.createElement('div'); row.className = 'user-row tooltip';
-      const dot = document.createElement('div'); dot.className = 'status-dot dot-online';
-      const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name;
-      name.style.cursor = 'pointer';
-      name.onclick = () => openDM(id, u.name);
-      const tip = document.createElement('div'); tip.className = 'tip'; tip.textContent = 'Click to DM';
+  let total=0;
+  channels.forEach(ch=>{
+    const users = data[ch]||{};
+    total += Object.keys(users).length;
+    const sec=document.createElement('div');
+    sec.innerHTML=`<div style="font-weight:700;margin:6px 0">//${ch.toUpperCase()} (${Object.keys(users).length})</div>`;
+    const list=document.createElement('div');
+    Object.entries(users).forEach(([id,u])=>{
+      const row=document.createElement('div');row.className='user-row tooltip';
+      const dot=document.createElement('div');dot.className='status-dot';
+      const name=document.createElement('div');name.className='uname';name.textContent=u.name;
+      name.onclick=()=>openDM(id,u.name);
+      const tip=document.createElement('div');tip.className='tip';tip.textContent='Click to DM';
       name.appendChild(tip);
-      row.appendChild(dot); row.appendChild(name);
+      row.append(dot,name);
       list.appendChild(row);
     });
-    wrapper.appendChild(list);
-    activeContainer.appendChild(wrapper);
+    sec.appendChild(list);
+    activeContainer.appendChild(sec);
   });
-  userCountSmall.textContent = `${Object.keys(data[currentChannel] || {}).length} user${Object.keys(data[currentChannel] || {}).length !== 1 ? 's' : ''}`;
+  userCountSmall.textContent = total + (total===1?' user':' users');
 }
-
-function rebuildDMList(data) {
-  dmList.innerHTML = '';
-  const seen = new Set();
-  for (const ch in data) {
-    for (const id in data[ch]) {
-      const u = data[ch][id];
-      if (id === uid || seen.has(id)) continue;
+function rebuildDMList(data){
+  dmList.innerHTML='';
+  const seen=new Set();
+  for(const ch in data){
+    for(const id in data[ch]){
+      if(id===uid||seen.has(id))continue;
       seen.add(id);
-      const btn = document.createElement('div');
-      btn.textContent = u.name;
-      btn.style.cssText = 'padding:6px;border:1px solid #ccc;margin:4px 0;cursor:pointer';
-      btn.onclick = () => openDM(id, u.name);
-      dmList.appendChild(btn);
+      const b=document.createElement('div');
+      b.textContent=data[ch][id].name;
+      b.style.cssText='padding:4px;border:1px solid #ccc;margin:2px 0;cursor:pointer';
+      b.onclick=()=>openDM(id,data[ch][id].name);
+      dmList.appendChild(b);
     }
   }
 }
 
-/* ---------- DM ---------- */
-function openDM(targetUid, targetName) {
-  if (targetUid === uid) return alert("Can't DM yourself");
-  const pid = [uid, targetUid].sort().join('_');
-  const w = document.createElement('div'); w.className = 'dm-window';
-  w.style.right = '20px'; w.style.bottom = '20px';
-  const t = document.createElement('div'); t.className = 'dm-title'; t.textContent = `DM: ${targetName}`;
-  const msgs = document.createElement('div'); msgs.style.height='180px'; msgs.style.overflow='auto'; msgs.style.border='1px solid #ddd'; msgs.style.marginTop='6px'; msgs.style.padding='6px';
-  const input = document.createElement('input'); input.className='dm-input'; input.placeholder='Type DM...';
-  const send = document.createElement('button'); send.textContent='Send';
-  const close = document.createElement('button'); close.textContent='Close'; close.style.marginLeft='6px';
-  w.append(t, msgs, input, send, close);
-  document.body.appendChild(w);
-  makeDraggable(w, t);
+/* ───── DM WINDOWS ───── */
+async function registerDMPair(targetUid){
+  const pid=[uid,targetUid].sort().join('_');
+  const updates={};
+  updates[`dmPairs/${pid}/users/${uid}`]=true;
+  updates[`dmPairs/${pid}/users/${targetUid}`]=true;
+  await update(ref(db),updates);
+}
+function openDM(tuid,tname){
+  if(tuid===uid) return alert("Can't DM yourself");
+  registerDMPair(tuid);
+  const pid=[uid,tuid].sort().join('_');
+  const win=document.createElement('div');win.className='dm-window';
+  win.style.right='20px';win.style.bottom='20px';
+  const title=document.createElement('div');title.className='dm-title';title.textContent=`DM: ${tname}`;
+  const msgs=document.createElement('div');msgs.style.cssText='height:180px;overflow:auto;border:1px solid #ddd;margin-top:6px;padding:6px';
+  const inp=document.createElement('input');inp.className='dm-input';inp.placeholder='Type…';
+  const send=document.createElement('button');send.textContent='Send';
+  const close=document.createElement('button');close.textContent='X';close.style.marginLeft='4px';
+  win.append(title,msgs,inp,send,close);
+  document.body.appendChild(win);
+  makeDraggable(win,title);
 
-  const dmRef = ref(db, `dm/${pid}`);
-  onChildAdded(dmRef, snap => {
-    const o = snap.val();
-    const el = document.createElement('div'); el.className = 'dm-msg';
-    el.style.textAlign = (o.from === uid ? 'right' : 'left');
+  const dmRef=ref(db,`dm/${pid}`);
+  onChildAdded(dmRef,snap=>{
+    const o=snap.val();
+    const el=document.createElement('div');el.className='dm-msg';
+    el.style.textAlign = (o.from===uid?'right':'left');
     el.textContent = `${o.fromName}: ${o.msg}`;
-    msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
+    msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
   });
 
-  send.onclick = async () => {
-    const text = input.value.trim();
-    if (!text || text.length > 1000) return;
-    const ts = Date.now();
-    const h = await computeHash(JSON.stringify({from:uid,to:targetUid,msg:text,ts}));
-    const key = push(ref(db, `dm/${pid}`)).key;
-    const updates = {};
-    updates[`/dm/${pid}/${key}`] = { from: uid, to: targetUid, fromName: myHandle, toName: targetName, msg: text, ts };
-    updates[`/dmHashes/${h}`] = { pid, key, ts, from: uid };
-    await update(ref(db), updates);
-    input.value = ''; soundMsg.play().catch(()=>{});
+  send.onclick=async()=>{
+    const txt=inp.value.trim();
+    if(!txt||txt.length>1000) return;
+    const ts=Date.now();
+    const h=await hash(JSON.stringify({from:uid,to:tuid,msg:txt,ts}));
+    const key=push(ref(db,`dm/${pid}`)).key;
+    const updates={};
+    updates[`/dm/${pid}/${key}`]={from:uid,to:tuid,fromName:myHandle,toName:tname,msg:txt,ts};
+    updates[`/dmHashes/${h}`]={pid,key,ts,from:uid};
+    await update(ref(db),updates);
+    inp.value='';soundMsg.play().catch(()=>{});
   };
-
-  close.onclick = () => { off(dmRef); w.remove(); };
+  close.onclick=()=>{off(dmRef);win.remove();};
+}
+function makeDraggable(el,bar){
+  let ox=0,oy=0,drag=false;
+  bar.onmousedown=e=>{drag=true;ox=e.clientX-el.getBoundingClientRect().left;oy=e.clientY-el.getBoundingClientRect().top;};
+  document.onmousemove=e=>{if(drag){el.style.left=(e.clientX-ox)+'px';el.style.top=(e.clientY-oy)+'px';}};
+  document.onmouseup=()=>{drag=false;};
 }
 
-function makeDraggable(el, bar) {
-  let ox = 0, oy = 0, dragging = false;
-  bar.onmousedown = e => { dragging = true; ox = e.clientX - el.getBoundingClientRect().left; oy = e.clientY - el.getBoundingClientRect().top; };
-  document.onmousemove = e => { if(dragging) { el.style.left = (e.clientX - ox) + 'px'; el.style.top = (e.clientY - oy) + 'px'; } };
-  document.onmouseup = () => dragging = false;
-}
-
-/* ---------- Chat ---------- */
-function listenChannel(channel) {
-  for (const ch in channelListeners) off(channelListeners[ch].ref);
-  currentChannel = channel;
-  document.getElementById('winChannelLabel').textContent = '//' + channel.charAt(0).toUpperCase() + channel.slice(1);
-  chatMessages.innerHTML = '';
-  const r = ref(db, `chat/${channel}`);
-  const fn = snap => {
-    const o = snap.val();
-    if (!o) return;
-    const row = document.createElement('div'); row.className = 'chat-row';
-    const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
-    const bub = document.createElement('div'); bub.className = 'chat-bubble';
-    if (o.uid === uid) bub.classList.add('me');
-    bub.innerHTML = `<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${escapeHtml(o.msg)}</div>`;
-    row.append(av, bub);
+/* ───── CHAT ───── */
+function listenChannel(ch){
+  for(const c in channelListeners) off(channelListeners[c].ref);
+  currentChannel=ch;
+  document.getElementById('winChannelLabel').textContent='//'+ch.toUpperCase();
+  chatMessages.innerHTML='';
+  const r=ref(db,`chat/${ch}`);
+  const fn=snap=>{
+    const o=snap.val(); if(!o) return;
+    const row=document.createElement('div');row.className='chat-row';
+    const av=document.createElement('div');av.className='chat-avatar';av.textContent=(o.name||'?').slice(0,2).toUpperCase();
+    const bub=document.createElement('div');bub.className='chat-bubble';
+    if(o.uid===uid) bub.classList.add('me');
+    bub.innerHTML=`<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+    row.append(av,bub);
     chatMessages.appendChild(row);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    chatMessages.scrollTop=chatMessages.scrollHeight;
   };
-  onChildAdded(r, fn);
-  channelListeners[channel] = { ref: r, fn };
+  onChildAdded(r,fn);
+  channelListeners[ch]={ref:r,fn};
+}
+async function postMessage(ch,name,msg){
+  const m=msg.trim();
+  if(!m||m.length>500) return;
+  const ts=Date.now();
+  const h=await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
+  const key=push(ref(db,`chat/${ch}`)).key;
+  const updates={};
+  updates[`/chat/${ch}/${key}`]={name,msg:m,ts,uid,hash:h};
+  updates[`/msgHashes/${h}`]={channel:ch,key,ts,uid};
+  await update(ref(db),updates);
+  set(ref(db,`online/${ch}/${uid}`),{name,ts:Date.now(),channel:ch,uid});
 }
 
-async function postMessage(channel, name, msg) {
-  const trimmed = msg.trim();
-  if (!trimmed || trimmed.length > 500) return;
-  const ts = Date.now();
-  const hash = await computeHash(`${channel}|${name}|${trimmed}|${uid}|${Math.floor(ts/1000)}`);
-  const key = push(ref(db, `chat/${channel}`)).key;
-  const updates = {};
-  updates[`/chat/${channel}/${key}`] = { name, msg: trimmed, ts, uid, hash };
-  updates[`/msgHashes/${hash}`] = { channel, key, ts, uid };
-  await update(ref(db), updates);
-  set(ref(db, `online/${channel}/${uid}`), { name, ts: Date.now(), channel, uid });
-}
-
-/* ---------- Board ---------- */
-function listenBoard() {
-  onChildAdded(ref(db, 'board'), snap => {
-    const p = snap.val();
-    const el = document.createElement('div'); el.className = 'board-thread';
-    el.innerHTML = `<strong>${escapeHtml(p.name)}</strong><div style="margin-top:6px">${escapeHtml(p.msg)}</div><div class="small" style="margin-top:6px">${new Date(p.ts).toLocaleString()}</div>`;
+/* ───── BOARD ───── */
+function listenBoard(){
+  onChildAdded(ref(db,'board'),snap=>{
+    const p=snap.val();
+    const el=document.createElement('div');el.className='board-thread';
+    el.innerHTML=`<strong>${esc(p.name)}</strong><div style="margin-top:4px">${esc(p.msg)}</div><div class="small" style="margin-top:4px">${new Date(p.ts).toLocaleString()}</div>`;
     boardList.prepend(el);
   });
 }
 
-/* ---------- UI ---------- */
-sendBtn.onclick = () => {
-  if (!myHandle) return alert('Login first');
-  postMessage(channelSelect.value, myHandle, chatInput.value);
-  chatInput.value = '';
-  soundMsg.play().catch(()=>{});
+/* ───── UI HOOKS ───── */
+sendBtn.onclick=()=>{ if(!myHandle) return alert('Login first'); postMessage(channelSelect.value,myHandle,chatInput.value); chatInput.value=''; soundMsg.play().catch(()=>{}); };
+chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
+postBoardBtn.onclick=async()=>{
+  const n=boardName.value.trim(), m=boardMsg.value.trim();
+  if(!n||!m||n.length>100||m.length>1000) return alert('Invalid');
+  const r=push(ref(db,'board'));
+  await set(r,{name:n,msg:m,ts:Date.now(),uid});
+  boardName.value='';boardMsg.value='';
 };
-chatInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } });
+closeChatBtn.onclick=()=>{document.querySelector('.chat-win').style.display='none';};
+channelSelect.onchange=()=>{listenChannel(channelSelect.value);setPresence(myHandle,channelSelect.value);};
+ortegaBtn.onclick=()=>{alert('Project ://ORTEGA – RAG-LM integration coming soon');};
 
-postBoardBtn.onclick = async () => {
-  const name = boardName.value.trim();
-  const msg = boardMsg.value.trim();
-  if (!name || !msg || name.length > 100 || msg.length > 1000) return alert('Invalid input');
-  const r = push(ref(db, 'board'));
-  await set(r, { name, msg, ts: Date.now(), uid });
-  boardName.value = ''; boardMsg.value = '';
-};
+/* ───── STARTUP ───── */
+watchOnline(); listenBoard(); listenChannel(currentChannel); appendSystem('Initializing...');
 
-closeChatBtn.onclick = () => { document.querySelector('.chat-win').style.display = 'none'; };
-
-channelSelect.onchange = () => { listenChannel(channelSelect.value); setPresence(myHandle, channelSelect.value); };
-
-projOrtegaLink.onclick = e => { e.preventDefault(); alert('Replace NOTEBOOKLM_URL in JS with your link.'); };
-
-/* ---------- Start ---------- */
-watchOnline();
-listenBoard();
-listenChannel(currentChannel);
-appendSystem('Initializing...');
-
-/* ---------- Particles ---------- */
-const canvas = document.getElementById('particleCanvas');
-const ctx = canvas.getContext('2d');
-function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
-resize(); addEventListener('resize', resize);
-let particles = [];
-function spawn(x, y) { particles.push({x,y,vx:(Math.random()-0.5)*0.8,vy:(Math.random()-0.5)*0.8,life:45,size:Math.random()*2+1}); }
-addEventListener('mousemove', e => spawn(e.clientX, e.clientY));
-function loop() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  for (let i = particles.length-1; i >= 0; i--) {
-    const p = particles[i];
-    p.x += p.vx; p.y += p.vy; p.life--;
-    ctx.fillStyle = `rgba(127,255,212,${p.life/45})`;
-    ctx.fillRect(p.x, p.y, p.size, p.size);
-    if (p.life <= 0) particles.splice(i,1);
+/* ───── PARTICLES ───── */
+const pc=document.getElementById('particleCanvas'),ctx=pc.getContext('2d');
+function resize(){pc.width=innerWidth;pc.height=innerHeight;} resize(); addEventListener('resize',resize);
+let particles=[];
+function spawn(x,y){particles.push({x,y,vx:(Math.random()-0.5)*0.8,vy:(Math.random()-0.5)*0.8,life:45,size:Math.random()*2+1});}
+addEventListener('mousemove',e=>spawn(e.clientX,e.clientY));
+function loop(){
+  ctx.clearRect(0,0,pc.width,pc.height);
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx;p.y+=p.vy;p.life--;
+    ctx.fillStyle=`rgba(0,255,0,${p.life/45})`;
+    ctx.fillRect(p.x,p.y,p.size,p.size);
+    if(p.life<=0) particles.splice(i,1);
   }
   requestAnimationFrame(loop);
-}
-loop();
+} loop();
 
-/* ---------- Auto-prune old chat (24h) ---------- */
-setInterval(async () => {
-  const snap = await get(ref(db, 'chat'));
-  const data = snap.val() || {};
-  for (const ch in data) {
-    for (const id in data[ch]) {
-      if (data[ch][id].ts && (Date.now() - data[ch][id].ts) > 24*60*60*1000) {
-        await remove(ref(db, `chat/${ch}/${id}`));
+/* ───── PRUNE OLD CHAT (24 h) ───── */
+setInterval(async()=>{
+  const snap=await get(ref(db,'chat'));
+  const data=snap.val()||{};
+  for(const ch in data){
+    for(const id in data[ch]){
+      if(data[ch][id].ts && Date.now()-data[ch][id].ts>24*60*60*1000){
+        await remove(ref(db,`chat/${ch}/${id}`));
       }
     }
   }
-}, 60*60*1000);
-
+},60*60*1000);
 </script>
 </body>
 </html>
