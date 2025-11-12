@@ -1,438 +1,620 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Before Us Universe — BUU</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico">
 <style>
-/* ---------- Retro Windows 98 ---------- */
-* { box-sizing:border-box; }
-body {
-  margin:0; padding:0;
-  font-family:'Press Start 2P',monospace;
-  background:#008080;               /* classic teal */
-  color:#000;
-  overflow:hidden;
-}
-.window {
-  position:absolute; background:#c0c0c0;
-  border:2px solid #000; box-shadow:3px 3px 0 #000;
-  min-width:300px; font-size:0.75rem;
-}
-.title-bar {
-  background:#000080; color:#fff;
-  padding:2px 4px; cursor:move;
-  display:flex; justify-content:space-between; align-items:center;
-}
-.title-bar button { background:#c0c0c0; border:1px outset #000; width:16px; height:16px; font-weight:bold; }
-.title-bar .close { background:#c0c0c0; }
-.title-bar .minimize { background:#c0c0c0; }
-.content { padding:6px; background:#e0e0e0; }
-.inset { border:2px inset #000; background:#fff; padding:4px; }
-
-/* ---------- Background (Base64) ---------- */
-.bg {
-  position:fixed; inset:0; z-index:-1;
-  background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTExIWFRUXFRcVFRcVFRcVFRcVFRUVFhUVFRUYHSggGBolGxUVITEhJSkrLi4uFx8zODMsNygtLisBCgoKDg0OGxAQGy0lICYtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBQMGAAIHAQj/xAA/EAABBAECBAYDCQgCAwAAAAAAAQIDEQQFEjEHBkFRYQYTIoGRobHR8DJCUmJxkfAVFTRTYnKC4f/EABoBAQEBAQEBAQAAAAAAAAAAAAABAgMEBQb/xAAtEQABBAECBAQFBAMAAAAAAAAAAQIRAwQhMUEFIkFRYXEygZGhsfAUUnGBkdHh8f/aAAwDAQACEQMRAD8A4QAAAAAAAH//2Q==') center/cover no-repeat;
-}
-
-/* ---------- Loading Screen ---------- */
-#loading {
-  position:fixed; inset:0; background:#000; color:#0f0;
-  display:flex; flex-direction:column; justify-content:center; align-items:center;
-  z-index:9999; font-size:1rem;
-}
-#loadingLore { margin-top:1rem; }
-
-/* ---------- Header Links ---------- */
-header {
-  position:fixed; top:0; left:0; right:0; background:#c0c0c0;
-  border-bottom:2px solid #000; padding:4px; text-align:center;
-  z-index:100;
-}
-header a { margin:0 8px; color:#000; text-decoration:none; font-size:0.7rem; }
-
-/* ---------- Modal Handle Prompt ---------- */
-#handleModal {
-  position:fixed; inset:0; background:rgba(0,0,0,0.8);
-  display:flex; justify-content:center; align-items:center; z-index:2000;
-}
-#handleModal .window { width:320px; }
-#handleModal input { width:100%; padding:6px; margin-top:8px; }
-
-/* ---------- Chat Specific ---------- */
-#chat .messages { height:220px; overflow-y:auto; }
-#chat .message { margin-bottom:4px; }
-#chat .system { color:#555; font-style:italic; }
-#chat .nick { cursor:pointer; }
-#chat #typing { font-style:italic; color:#777; }
-
-/* ---------- Board Specific ---------- */
-#board .post { padding:6px; border-bottom:1px dashed #000; position:relative; }
-#board .reply { margin-left:20px; background:#f0f0f0; }
-#board .actions { position:absolute; right:6px; top:6px; font-size:0.6rem; }
-
-/* ---------- Misc ---------- */
-button { font-family:inherit; cursor:pointer; }
-input, textarea, select { font-family:inherit; }
+  /* --- Theme: Win98 desktop-ish background, terminal overlays --- */
+  :root{
+    --bg:#0b2b3a; --panel:#071014; --muted:#cfeff3; --accent:#00ffd6;
+    --accent2:#7afcff; --danger:#ff6b6b;
+    --exuro:#b4b4ff; --sam:#ffbf7a; --nora:#ff9bff; --nero:#7affd1; --loktal:#ffa07a; --pilgrim:#fff58a;
+  }
+  html,body{height:100%;margin:0;font-family: "Courier New", monospace;background:
+    linear-gradient(180deg,#2b5b8a 0,#0b2b3a 100%); color:var(--muted); -webkit-font-smoothing:antialiased;}
+  /* mimic a Windows 98 desktop panel behind */
+  body::before{
+    content:""; position:fixed; inset:0; background:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"><rect width="100%" height="100%" fill="%230c2940"/></svg>') center/cover no-repeat;
+    opacity:0.3; z-index:0;
+  }
+  .container{position:relative;z-index:1;max-width:1200px;margin:18px auto;padding:18px;display:flex;gap:12px;align-items:flex-start}
+  header{display:flex;align-items:center;justify-content:space-between;width:100%}
+  header h1{margin:0;font-size:1.4rem;color:var(--accent)}
+  .links{display:flex;gap:8px}
+  .links a{color:var(--accent2);background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:4px;text-decoration:none;border:1px solid rgba(255,255,255,0.02)}
+  .left{flex:2;display:flex;flex-direction:column;gap:12px}
+  .right{flex:1;min-width:260px}
+  .panel{background:linear-gradient(180deg, rgba(10,15,20,0.9), rgba(6,10,12,0.95));border:1px solid rgba(255,255,255,0.03);border-radius:6px;padding:12px;box-shadow:0 6px 30px rgba(0,0,0,0.6)}
+  .hint{font-size:0.85rem;color:#8fbfc6}
+  /* chat/message board */
+  .stream{height:280px;overflow:auto;padding:10px;background:rgba(0,0,0,0.15);border-radius:4px;border:1px dashed rgba(255,255,255,0.02)}
+  .post{padding:6px;margin:6px 0;border-radius:4px}
+  .meta{font-weight:700;color:var(--accent2);margin-right:6px}
+  /* active users */
+  #activeUsers{display:flex;flex-direction:column;gap:6px;max-height:360px;overflow:auto}
+  .user-row{display:flex;align-items:center;gap:8px;padding:6px;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,0.01),transparent)}
+  .status-dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 6px rgba(0,255,200,0.12)}
+  .dot-online{background:linear-gradient(180deg,#00ffd6,#00bfa3)}
+  .dot-idle{background:linear-gradient(180deg,#ffd36b,#bfa300)}
+  .dot-offline{background:linear-gradient(180deg,#ff6b6b,#bf2b2b)}
+  .user-row .handle{font-family:monospace;color:var(--muted)}
+  .user-row .metaSmall{font-size:0.8rem;color:#9ecfd6;margin-left:auto}
+  /* channel select */
+  select,input{background:#061018;border:1px solid rgba(255,255,255,0.03);color:var(--muted);padding:8px;border-radius:4px}
+  button{background:linear-gradient(180deg,var(--accent2),#00c0b7);border:none;padding:8px 12px;border-radius:6px;color:#002;cursor:pointer;font-weight:700}
+  button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
+  .small{font-size:0.85rem;color:#9fb8c9}
+  /* scanlines / CRT effect */
+  .crt:after{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);background-size:100% 3px;mix-blend-mode:overlay;opacity:0.12}
+  /* cursor trails */
+  .cursor-trail{position:fixed;pointer-events:none;z-index:9999}
+  /* flicker banner ad */
+  .flicker{padding:10px;border-radius:6px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));animation:flick 6s infinite}
+  @keyframes flick {0%{opacity:1}20%{opacity:0.6}40%{opacity:1}60%{opacity:0.7}100%{opacity:1}}
+  /* diagnostic overlay */
+  #diag{position:fixed;right:12px;bottom:12px;background:#011;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.03);font-size:0.85rem;z-index:999}
+  /* heartbeat */
+  #heartbeat{width:8px;height:8px;border-radius:50%;background:rgba(0,255,200,0.2);box-shadow:0 0 12px rgba(0,255,200,0.06);animation:beat 2s infinite}
+  @keyframes beat{0%{transform:scale(1);opacity:0.6}50%{transform:scale(1.6);opacity:1}100%{transform:scale(1);opacity:0.6}}
+  /* responsive */
+  @media(max-width:980px){.container{flex-direction:column;padding:10px}.right{order:3}}
 </style>
 </head>
 <body>
 
-<div class="bg"></div>
-
-<div id="loading">
-  <div>INITIALIZING BEFORE US UNIVERSE...</div>
-  <div id="loadingLore"></div>
+<!-- Boot / loading screen -->
+<div id="boot" style="position:fixed;inset:0;background:#000;color:var(--accent);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column">
+  <div id="bootText" style="font-family:monospace;white-space:pre-wrap;text-align:center;padding:20px"></div>
+  <div id="bootProgress" style="margin-top:12px;color:#9fdfe0" class="small"></div>
 </div>
 
-<header>
-  <a href="https://tokillamockinggoblin.boards.net/">To Kill a Mocking Goblin</a>
-  <a href="https://youtube.com/playlist?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq">Melphia's Game</a>
-  <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview">Book 1</a>
-  <a href="https://web.archive.org/">Wayback Machine</a>
-</header>
+<!-- diagnostic overlay (toggle with Ctrl+Alt+D) -->
+<div id="diag" title="Diagnostic (press Ctrl+Alt+D to toggle)">Diagnostics: <span id="diagText">idle</span></div>
 
-<!-- ==== HANDLE MODAL ==== -->
-<div id="handleModal">
-  <div class="window">
-    <div class="title-bar"><span>Choose Handle</span><button class="close" onclick="this.parentNode.parentNode.parentNode.remove()">X</button></div>
-    <div class="content">
-      <input id="modalHandle" placeholder="Max 16 chars" maxlength="16">
-      <button id="lockHandleBtn" style="margin-top:8px;width:100%;">LOCK IN</button>
+<div class="container crt" id="mainUI">
+  <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+    <header><h1>Before Us Universe — BUU</h1></header>
+    <div class="links">
+      <a href="https://tokillamockinggoblin.boards.net/" target="_blank">To Kill a Mocking Goblin</a>
+      <a href="https://www.youtube.com/@Patrickauthor" target="_blank">Melphia's Game</a>
+      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank">Book 1</a>
+      <a href="https://web.archive.org/" target="_blank">Wayback Machine</a>
+    </div>
+  </div>
+
+  <div class="left">
+    <!-- LOGIN / HANDLE -->
+    <div class="panel">
+      <div style="display:flex;gap:8px;align-items:center">
+        <div style="flex:1">
+          <div class="small">Enter handle (reserved via Firebase):</div>
+          <input id="handleInput" placeholder="//YourHandle" maxlength="20" style="width:100%;margin-top:6px" />
+        </div>
+        <div style="width:180px">
+          <div class="small">Choose channel:</div>
+          <select id="channelSelect" style="width:100%;margin-top:6px">
+            <option value="exuro">//Exuro</option>
+            <option value="sam">//Sam</option>
+            <option value="nora">//Nora</option>
+            <option value="nero">//Nero</option>
+            <option value="loktal">//Loktal</option>
+            <option value="pilgrim" style="display:none">//Pilgrim (secret)</option>
+          </select>
+        </div>
+        <div style="width:110px;display:flex;flex-direction:column;gap:6px">
+          <button id="joinBtn">JOIN</button>
+          <button id="disconnectBtn" class="secondary" style="display:none">DISCONNECT</button>
+        </div>
+      </div>
+      <div class="small" style="margin-top:8px">Reserved handles appear green. Hover a user for more info. Pilgrim unlocks after participation.</div>
+    </div>
+
+    <!-- YouTube stream (clean) -->
+    <div class="panel" id="streamPanel">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="small">Live YouTube Stream</div>
+        <div class="small">Local viewers: <span id="localViewerCount">0</span></div>
+      </div>
+      <div style="margin-top:8px">
+        <!-- channel live stream - uses channel embed (or video id if provided) -->
+        <iframe id="ytStream" width="100%" height="300" frameborder="0" allowfullscreen
+          src="https://www.youtube.com/embed/live_stream?channel=UC7f16X7r3jq2n3xKyI5X0Xw"></iframe>
+      </div>
+    </div>
+
+    <!-- chat -->
+    <div class="panel">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="small">Multi-channel Chat — current: <span id="currentChannelLabel">//Exuro</span></div>
+        <div style="display:flex;gap:8px;align-items:center"><div id="heartbeat"></div></div>
+      </div>
+      <div style="margin-top:8px" id="chatStreams">
+        <div id="stream-exuro" class="stream" style="display:block"></div>
+        <div id="stream-sam" class="stream" style="display:none"></div>
+        <div id="stream-nora" class="stream" style="display:none"></div>
+        <div id="stream-nero" class="stream" style="display:none"></div>
+        <div id="stream-loktal" class="stream" style="display:none"></div>
+        <div id="stream-pilgrim" class="stream" style="display:none"></div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input id="chatInput" placeholder="Write a message to current channel..." style="flex:1" maxlength="500" />
+        <button id="sendMsgBtn">POST</button>
+      </div>
+      <div class="small" style="margin-top:6px">Chat auto-prunes after 24 hours. Message links are verified upon posting.</div>
+    </div>
+
+    <!-- local message board -->
+    <div class="panel">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="small">Local Message Board (persistent)</div>
+        <div class="small">Chronicle logs: <button id="dumpChronicle" class="secondary">Export</button></div>
+      </div>
+      <div id="localBoard" class="stream" style="margin-top:8px"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input id="boardInput" placeholder="Post to message board..." style="flex:1" maxlength="1000" />
+        <button id="postBoardBtn">POST</button>
+      </div>
+      <div class="small" style="margin-top:6px">Local board backed by IndexedDB and Firebase mirror. Board posts persist unless removed by admin.</div>
+    </div>
+
+  </div>
+
+  <div class="right">
+    <!-- active users -->
+    <div class="panel">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="small">Active Users by Channel</div>
+        <div class="small">Status lights: <span style="display:inline-block;width:10px;height:10px;background:linear-gradient(#00ffd6,#00bfa3);border-radius:50%;margin-left:6px"></span></div>
+      </div>
+      <div id="activeUsers" style="margin-top:8px"></div>
+      <div class="small" style="margin-top:8px">Hover a user row to see last message and location. Reserved handles are green.</div>
+    </div>
+
+    <!-- flicker banner ad / diagnostic -->
+    <div class="panel flicker" style="margin-top:12px">
+      <div class="small">System Feed</div>
+      <div id="systemFeed" class="small" style="margin-top:8px;min-height:80px;overflow:auto"></div>
+    </div>
+
+    <!-- controls: unlock pilgrim, invite overlay -->
+    <div class="panel" style="margin-top:12px">
+      <div class="small">Tools</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+        <button id="unlockPilgrimBtn" class="secondary">Force-unlock //Pilgrim</button>
+        <button id="inviteOverlayBtn" class="secondary">Open ProBoards Invite</button>
+        <button id="toggleDiag" class="secondary">Toggle Diagnostics</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ==== YOUTUBE WINDOW ==== -->
-<div class="window" style="left:20px;top:80px;width:580px;">
-  <div class="title-bar">
-    <span>YouTube – Melphia’s Game</span>
-    <button class="minimize">_</button><button class="close">X</button>
-  </div>
-  <div class="content">
-    <iframe width="100%" height="315"
-      src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq"
-      frameborder="0" allowfullscreen></iframe>
-  </div>
+<!-- diagnostic overlay initial hidden -->
+<div id="diagOverlay" style="position:fixed;left:12px;top:12px;background:rgba(0,0,0,0.7);padding:8px;border-radius:6px;color:#9fdfe0;display:none;z-index:9999;font-size:0.85rem">
+  <div>Diagnostics</div>
+  <pre id="diagPre" style="white-space:pre-wrap;max-width:380px"></pre>
 </div>
 
-<!-- ==== CHAT WINDOW ==== -->
-<div id="chat" class="window" style="left:620px;top:80px;width:420px;">
-  <div class="title-bar">
-    <span>Live Chat – <span id="handleStatus"></span></span>
-    <select id="channelSelect" style="font-family:inherit;">
-      <option value="Exuro">//Exuro</option>
-      <option value="Sam">//Sam</option>
-      <option value="Nero">//Nero</option>
-      <option value="Nora">//Nora</option>
-      <option value="Loktal">//Loktal</option>
-      <option value="Pilgrim">//Pilgrim (secret)</option>
-    </select>
-    <button class="minimize">_</button><button class="close">X</button>
-  </div>
-  <div class="content">
-    <div class="messages inset" id="messages"></div>
-    <div id="typing"></div>
-    <input id="messageInput" placeholder="Type message…" maxlength="500" style="width:100%;margin-top:4px;">
-    <button id="sendBtn" style="width:100%;margin-top:4px;">Send</button>
-    <div id="activeUsers" style="margin-top:6px;font-size:0.65rem;"></div>
-  </div>
-</div>
+<!-- cursor trails container -->
+<canvas id="trailCanvas" class="cursor-trail" width="800" height="600"></canvas>
 
-<!-- ==== MESSAGE BOARD WINDOW ==== -->
-<div id="board" class="window" style="left:20px;top:460px;width:1020px;">
-  <div class="title-bar"><span>Message Board</span>
-    <button class="minimize">_</button><button class="close">X</button>
-  </div>
-  <div class="content">
-    <div id="posts" class="inset" style="height:300px;overflow-y:auto;"></div>
-    <input id="boardName" placeholder="Your Name (max 100)" maxlength="100" style="width:100%;margin-top:6px;">
-    <textarea id="boardMsg" placeholder="Your post (max 1000)" maxlength="1000" style="width:100%;height:80px;margin-top:4px;"></textarea>
-    <button id="postBtn" style="width:100%;margin-top:4px;">Post</button>
-  </div>
-</div>
+<!-- sounds -->
+<audio id="doorSoundIn" src="https://assets.mixkit.co/sfx/download/mixkit-unlock-game-notification-253.wav"></audio>
+<audio id="doorSoundOut" src="https://assets.mixkit.co/sfx/download/mixkit-retro-game-notification-212.wav"></audio>
+<audio id="staticLoop" src="https://assets.mixkit.co/sfx/download/mixkit-arcade-retro-game-over-213.wav" loop></audio>
 
-<audio id="doorSound" src="https://freesound.org/data/previews/3/3080_5159-lq.mp3"></audio>
-
+<!-- Firebase + app logic -->
 <script type="module">
-/* ============================================================= */
-/*                     FIREBASE SETUP                           */
-/* ============================================================= */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-import { getDatabase, ref, push, set, onValue, onChildAdded, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+/* ========= IMPORTS ========== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, push, set, onChildAdded, onValue, remove, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
+/* ========= CONFIG (your Firebase) ========= */
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
   authDomain: "before-us-universe.firebaseapp.com",
   databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
   projectId: "before-us-universe",
-  storageBucket: "before-us-universe.appspot.com",
+  storageBucket: "before-us-universe.firebasestorage.app",
   messagingSenderId: "477103463228",
   appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const auth = getAuth(app);
-signInAnonymously(auth);
+const auth = getAuth();
 
-/* ============================================================= */
-/*                     GLOBAL STATE                             */
-/* ============================================================= */
+/* ========= DOM ========= */
+const boot = document.getElementById('boot');
+const bootText = document.getElementById('bootText');
+const bootProgress = document.getElementById('bootProgress');
+const joinBtn = document.getElementById('joinBtn');
+const disconnectBtn = document.getElementById('disconnectBtn');
+const handleInput = document.getElementById('handleInput');
+const channelSelect = document.getElementById('channelSelect');
+const currentChannelLabel = document.getElementById('currentChannelLabel');
+const chatInput = document.getElementById('chatInput');
+const sendMsgBtn = document.getElementById('sendMsgBtn');
+const streamExuro = document.getElementById('stream-exuro');
+const streamSam = document.getElementById('stream-sam');
+const streamNora = document.getElementById('stream-nora');
+const streamNero = document.getElementById('stream-nero');
+const streamLoktal = document.getElementById('stream-loktal');
+const streamPilgrim = document.getElementById('stream-pilgrim');
+const localBoard = document.getElementById('localBoard');
+const postBoardBtn = document.getElementById('postBoardBtn');
+const boardInput = document.getElementById('boardInput');
+const activeUsersDiv = document.getElementById('activeUsers');
+const systemFeed = document.getElementById('systemFeed');
+const unlockPilgrimBtn = document.getElementById('unlockPilgrimBtn');
+const inviteOverlayBtn = document.getElementById('inviteOverlayBtn');
+const toggleDiag = document.getElementById('toggleDiag');
+const diag = document.getElementById('diagOverlay');
+const diagPre = document.getElementById('diagPre');
+const dumpChronicle = document.getElementById('dumpChronicle');
+const localViewerCountEl = document.getElementById('localViewerCount');
+const doorIn = document.getElementById('doorSoundIn'); const doorOut = document.getElementById('doorSoundOut');
+const staticLoop = document.getElementById('staticLoop');
+
 let uid = null;
-let currentHandle = "";
-let currentChannel = "Exuro";
-let nickColors = {};
+let handle = null;
+let currentChannel = 'exuro';
 
-/* ============================================================= */
-/*                     HANDLE MODAL                             */
-/* ============================================================= */
-const modal = document.getElementById('handleModal');
-const lockBtn = document.getElementById('lockHandleBtn');
-lockBtn.onclick = () => {
-  const h = document.getElementById('modalHandle').value.trim().substring(0,16);
-  if (!h) return alert("Handle required!");
-  currentHandle = h || "Anonymous";
-  document.getElementById('handleStatus').innerHTML = `<span style="color:#0f0">locked in: ${currentHandle}</span>`;
-  modal.remove();
-  initUserOnline();
-};
-
-/* ============================================================= */
-/*                     ONLINE TRACKING                          */
-/* ============================================================= */
-function initUserOnline() {
-  if (!uid) return;
-  const onlineRef = ref(db, `online/${uid}`);
-  const data = { handle: currentHandle, online: true, ts: serverTimestamp() };
-  set(onlineRef, data);
-
-  // Update handle if user changes it later (optional input in chat header)
-  const handleInputHeader = document.createElement('input');
-  handleInputHeader.placeholder = "change handle";
-  handleInputHeader.maxLength = 16;
-  handleInputHeader.style.width = "80px";
-  handleInputHeader.style.marginLeft = "8px";
-  document.querySelector('#chat .title-bar').appendChild(handleInputHeader);
-  handleInputHeader.onchange = () => {
-    const nh = handleInputHeader.value.trim().substring(0,16) || "Anonymous";
-    currentHandle = nh;
-    set(onlineRef, { handle: nh, online: true, ts: serverTimestamp() });
-    document.getElementById('handleStatus').innerHTML = `<span style="color:#0f0">locked in: ${nh}</span>`;
-  };
-
-  window.addEventListener('beforeunload', () => remove(onlineRef));
-}
-
-/* ============================================================= */
-/*                     AUTH LISTENER                            */
-/* ============================================================= */
-onAuthStateChanged(auth, user => {
-  if (user) { uid = user.uid; if (currentHandle) initUserOnline(); }
-});
-
-/* ============================================================= */
-/*                     ACTIVE USERS LIST                        */
-/* ============================================================= */
-const activeDiv = document.getElementById('activeUsers');
-function renderActiveUsers(snap) {
-  const data = snap.val() || {};
-  let html = "Active: ";
-  for (let id in data) {
-    const u = data[id];
-    const col = nickColors[u.handle] || (nickColors[u.handle] = randomColor());
-    html += `<span class="nick" style="color:${col}" title="${id}">${u.handle}</span> `;
-  }
-  activeDiv.innerHTML = html;
-}
-onValue(ref(db, 'online'), renderActiveUsers);
-
-function randomColor() {
-  const hue = Math.floor(Math.random()*360);
-  return `hsl(${hue},80%,45%)`;
-}
-
-/* ============================================================= */
-/*                     CHAT LOGIC                               */
-/* ============================================================= */
-const messagesDiv = document.getElementById('messages');
-const typingDiv = document.getElementById('typing');
-const sendBtn = document.getElementById('sendBtn');
-const msgInput = document.getElementById('messageInput');
-const channelSel = document.getElementById('channelSelect');
-const door = document.getElementById('doorSound');
-
-function switchChannel(ch) {
-  currentChannel = ch;
-  messagesDiv.innerHTML = "";
-  const chatRef = ref(db, `chat/${ch}`);
-  onChildAdded(chatRef, snap => addMessage(snap.val()));
-}
-channelSel.onchange = () => switchChannel(channelSel.value);
-switchChannel(currentChannel);
-
-function addMessage({name, msg, ts, type="msg"}) {
-  const div = document.createElement('div');
-  div.className = 'message';
-  if (type === "system") div.classList.add('system');
-  const time = ts ? new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : "";
-  const col = nickColors[name] || "#000";
-  div.innerHTML = type==="system"
-    ? `<em>${msg}</em>`
-    : `<span class="nick" style="color:${col}">[${time}] ${name}:</span> ${escapeHtml(msg)}`;
-  messagesDiv.appendChild(div);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
-
-/* send message */
-sendBtn.onclick = () => {
-  if (!currentHandle) return alert("Set a handle first!");
-  const txt = msgInput.value.trim();
-  if (!txt) return;
-  const payload = { name: currentHandle, msg: txt, ts: serverTimestamp() };
-  push(ref(db, `chat/${currentChannel}`), payload);
-  msgInput.value = "";
-  door.currentTime = 0; door.play();
-};
-
-/* typing indicator (very light) */
-let typingTimer;
-msgInput.oninput = () => {
-  if (!uid) return;
-  const typRef = ref(db, `typing/${currentChannel}/${uid}`);
-  set(typRef, {handle: currentHandle, ts: serverTimestamp()});
-  clearTimeout(typingTimer);
-  typingTimer = setTimeout(() => remove(typRef), 2000);
-};
-onValue(ref(db, `typing/${currentChannel}`), snap => {
-  const data = snap.val() || {};
-  const typers = Object.values(data).filter(t=>Date.now()-t.ts<3000).map(t=>t.handle);
-  typingDiv.textContent = typers.length ? `${typers.join(', ')} typing…` : '';
-});
-
-/* join / leave system messages */
-function broadcastSystem(msg) {
-  push(ref(db, `chat/${currentChannel}`), {name:"", msg, ts: serverTimestamp(), type:"system"});
-}
-onValue(ref(db, 'online'), snap => {
-  // we cannot detect exact joins here, but we can announce when our own status changes
-});
-
-/* ============================================================= */
-/*                     MESSAGE BOARD (ProBoards style)         */
-/* ============================================================= */
-const postsDiv = document.getElementById('posts');
-const boardNameInp = document.getElementById('boardName');
-const boardMsgInp = document.getElementById('boardMsg');
-const postBtn = document.getElementById('postBtn');
-const boardRef = ref(db, "board");
-
-onChildAdded(boardRef, snap => renderPost(snap.key, snap.val()));
-function renderPost(key, {name, msg, ts, replyTo}) {
-  const div = document.createElement('div');
-  div.className = 'post';
-  if (replyTo) div.classList.add('reply');
-  const time = ts ? new Date(ts).toLocaleString() : "";
-  div.innerHTML = `
-    <strong style="color:${nickColors[name]||'#000'}">${escapeHtml(name)}</strong> <small>${time}</small>
-    <div style="margin-top:4px;">${escapeHtml(msg).replace(/\n/g,'<br>')}</div>
-    <div class="actions">
-      <button onclick="quotePost('${key}',this)">Quote</button>
-      <button onclick="replyPost('${key}',this)">Reply</button>
-    </div>`;
-  if (replyTo) {
-    const parent = document.querySelector(`[data-key="${replyTo}"]`);
-    if (parent) parent.appendChild(div);
-    else postsDiv.appendChild(div);
-  } else {
-    div.dataset.key = key;
-    postsDiv.appendChild(div);
-  }
-  postsDiv.scrollTop = postsDiv.scrollHeight;
-}
-window.quotePost = (key, btn) => {
-  const post = btn.closest('.post');
-  const text = post.querySelector('div:nth-child(2)').innerText;
-  boardMsgInp.value = `> ${text}\n\n`;
-  boardMsgInp.focus();
-};
-window.replyPost = (key, btn) => {
-  const post = btn.closest('.post');
-  const name = post.querySelector('strong').innerText;
-  boardMsgInp.value = `@${name} `;
-  boardMsgInp.focus();
-  // store reply target for later
-  window.pendingReply = key;
-};
-
-postBtn.onclick = () => {
-  const name = (boardNameInp.value || currentHandle).trim().substring(0,100);
-  const msg = boardMsgInp.value.trim().substring(0,1000);
-  if (!name || !msg) return;
-  const payload = {name, msg, ts: serverTimestamp()};
-  if (window.pendingReply) payload.replyTo = window.pendingReply;
-  push(boardRef, payload).then(() => {
-    boardNameInp.value = "";
-    boardMsgInp.value = "";
-    delete window.pendingReply;
-  });
-};
-
-/* ============================================================= */
-/*                     DRAGGABLE / MINIMISE / CLOSE            */
-/* ============================================================= */
-document.querySelectorAll('.window').forEach(win => {
-  const title = win.querySelector('.title-bar');
-  let drag = false, ox, oy;
-  title.onmousedown = e => {
-    if (e.target.tagName==="BUTTON") return;
-    drag = true;
-    ox = e.clientX - win.offsetLeft;
-    oy = e.clientY - win.offsetTop;
-  };
-  document.onmousemove = e => {
-    if (!drag) return;
-    win.style.left = (e.clientX - ox) + 'px';
-    win.style.top  = (e.clientY - oy) + 'px';
-  };
-  document.onmouseup = () => drag = false;
-
-  // minimise / close
-  win.querySelector('.minimize').onclick = () => win.style.display = win.style.display==='none'?'block':'none';
-  win.querySelector('.close').onclick = () => win.remove();
-});
-
-/* ============================================================= */
-/*                     LOADING SCREEN                           */
-/* ============================================================= */
-const loadingLore = [
-  "Loading Sector 1: The Voidborn... 23% complete",
-  "Awakening ancient AI... 45% complete",
-  "Multiversal rifts stabilizing... 68% complete",
-  "Preparing Lux Fleet deployment... 89% complete",
-  "Initialization complete. Welcome to the Before Us Universe."
+/* ========= Boot sequence with lore-like lines ========= */
+const bootLines = [
+  "INITIALIZING…",
+  "Loading Sector telemetry...",
+  "Calibrating Lux arrays...",
+  "Attuning vestus relay nodes...",
+  "Mounting multi-channel comms...",
+  "Verifying local storage...",
+  "Bridging GitHub lore repository...",
+  "System nominal. Welcome."
 ];
-let li = 0;
-function showNext() {
-  if (li < loadingLore.length) {
-    document.getElementById('loadingLore').textContent = loadingLore[li++];
-    setTimeout(showNext, 1100);
-  } else {
-    document.getElementById('loading').remove();
+let bootI = 0;
+function bootStep(){
+  if(bootI >= bootLines.length){
+    boot.style.display = 'none';
+    return;
   }
+  bootText.textContent = bootLines.slice(0, bootI+1).join('\n');
+  bootProgress.textContent = `Progress: ${Math.round(((bootI+1)/bootLines.length)*100)}%`;
+  bootI++;
+  setTimeout(bootStep, 450 + Math.random()*350);
 }
-showNext();
+bootStep();
 
-/* ============================================================= */
-/*                     UTILS                                    */
-/* ============================================================= */
-function escapeHtml(s) {
-  const div = document.createElement('div');
-  div.textContent = s;
-  return div.innerHTML;
+/* ========= Auth (anonymous) ========= */
+signInAnonymously(auth).catch(err => console.warn('Auth failed', err));
+onAuthStateChanged(auth, (user) => {
+  if(user) { uid = user.uid; appendSystemFeed(`Auth: ${uid}`); staticLoop.play().catch(()=>{}); }
+});
+
+/* ========= UTIL ========= */
+function sanitizeHandle(s){ return s.replace(/[^\w-]/g,'').slice(0,20); }
+function appendSystemFeed(text){
+  const p = document.createElement('div'); p.textContent = `[${new Date().toLocaleTimeString()}] ${text}`; systemFeed.prepend(p);
 }
+
+/* ========= IndexedDB (simple wrapper for message-board persistence) ========= */
+const IDB_DB = 'buu-localdb', IDB_STORE = 'board';
+let idbDB = null;
+function openIDB(){
+  return new Promise((res,rej)=>{
+    const r = indexedDB.open(IDB_DB,1);
+    r.onupgradeneeded = () => { r.result.createObjectStore(IDB_STORE, { keyPath:'ts' }); };
+    r.onsuccess = ()=>{ idbDB = r.result; res(); };
+    r.onerror = ()=> rej(r.error);
+  });
+}
+async function idbSave(post){ if(!idbDB) await openIDB(); const tx = idbDB.transaction(IDB_STORE,'readwrite'); tx.objectStore(IDB_STORE).put(post); }
+async function idbGetAll(){ if(!idbDB) await openIDB(); return new Promise(r=>{ const tx = idbDB.transaction(IDB_STORE,'readonly'); const arr=[]; const cur = tx.objectStore(IDB_STORE).openCursor(); cur.onsuccess = ()=>{ const c = cur.result; if(c){ arr.push(c.value); c.continue(); } else r(arr); } }); }
+
+/* ========= Presence: per-channel online nodes with lastMessage ========= */
+function setPresence(channel){
+  if(!uid || !handle) return;
+  const pRef = ref(db, `online/${channel}/${uid}`);
+  set(pRef, { name: handle, lastMsg: '', ts: Date.now() });
+  // remove on unload
+  window.addEventListener('beforeunload', ()=> remove(pRef).catch(()=>{}));
+}
+
+/* update presence lastMsg */
+function updatePresenceLastMsg(channel, text){
+  if(!uid) return;
+  const pRef = ref(db, `online/${channel}/${uid}`);
+  update(pRef, { lastMsg: text.slice(0,200), ts: Date.now() }).catch(()=>{});
+}
+
+/* ========= Active users listener (per-channel listing + hover tooltips) ========= */
+function renderActiveUsers(snapshot){
+  activeUsersDiv.innerHTML = '';
+  const channels = ['exuro','sam','nora','nero','loktal','pilgrim'];
+  channels.forEach(ch=>{
+    const chNode = document.createElement('div');
+    chNode.style.marginBottom = '8px';
+    const title = document.createElement('div'); title.textContent = `//${ch.charAt(0).toUpperCase()+ch.slice(1)}`; title.style.fontWeight='700';
+    chNode.appendChild(title);
+    const list = document.createElement('div');
+    list.style.display='flex'; list.style.flexDirection='column'; list.style.gap='6px'; list.style.marginTop='6px';
+    activeUsersDiv.appendChild(chNode);
+    chNode.appendChild(list);
+  });
+}
+
+/* listen online changes */
+function listenAllOnline(){
+  onValue(ref(db, 'online'), snap=>{
+    activeUsersDiv.innerHTML = '';
+    const val = snap.val() || {};
+    const channels = Object.keys(val).sort();
+    let localViewerCount = 0;
+    ['exuro','sam','nora','nero','loktal','pilgrim'].forEach(ch=>{
+      const users = (val[ch]) ? Object.entries(val[ch]) : [];
+      const header = document.createElement('div'); header.style.display='flex'; header.style.justifyContent='space-between'; header.style.alignItems='center';
+      const title = document.createElement('div'); title.textContent = `//${ch.charAt(0).toUpperCase()+ch.slice(1)}`; title.style.fontWeight='700';
+      const count = document.createElement('div'); count.textContent = `${users.length} user${users.length!==1 ? 's':''}`; count.className='small';
+      header.appendChild(title); header.appendChild(count);
+      const container = document.createElement('div'); container.appendChild(header);
+      if(users.length){
+        users.forEach(([k,v])=>{
+          const row = document.createElement('div'); row.className='user-row';
+          const dot = document.createElement('div'); dot.className='status-dot dot-online';
+          const h = document.createElement('div'); h.className='handle'; h.textContent = v.name;
+          const meta = document.createElement('div'); meta.className='metaSmall'; meta.textContent = new Date(v.ts).toLocaleTimeString();
+          row.appendChild(dot); row.appendChild(h); row.appendChild(meta);
+          // hover tooltip showing lastMsg
+          row.title = `Last: ${v.lastMsg || '(no messages)'}\nUID: ${k}`;
+          container.appendChild(row);
+          localViewerCount++;
+        });
+      }
+      activeUsersDiv.appendChild(container);
+    });
+    localViewerCountEl.textContent = localViewerCount;
+  });
+}
+
+/* ========= Chat: post, listen, pruning ========= */
+function postChatMessage(channel, name, msg){
+  const payload = { name, msg, channel, ts: Date.now() };
+  push(ref(db, 'chat'), payload).then(()=> updatePresenceLastMsg(channel,msg)).catch(e=>console.warn(e));
+}
+onChildAdded(ref(db,'chat'), snap=>{
+  const obj = snap.val();
+  if(!obj) return;
+  // display in the channel stream
+  const el = document.createElement('div'); el.className='post';
+  el.innerHTML = `<span class="meta">${obj.name}</span> ${escapeHtml(obj.msg)} <div class="small">— ${new Date(obj.ts).toLocaleTimeString()}</div>`;
+  const target = document.getElementById('stream-'+obj.channel);
+  if(target){
+    target.appendChild(el);
+    target.scrollTop = target.scrollHeight;
+  }
+});
+
+/* prune chat older than 24h (run hourly) */
+async function pruneOldChat(){
+  const snapshot = await (await fetchPruned()).json?.catch(()=>null);
+  // fallback simple prune via reading all messages and removing old ones:
+  onValue(ref(db,'chat'), snap=>{
+    snap.forEach(child=>{
+      const v = child.val();
+      if(v && (Date.now() - v.ts) > 24*60*60*1000) remove(ref(db, `chat/${child.key}`)).catch(()=>{});
+    });
+  }, {onlyOnce:true});
+}
+setInterval(pruneOldChat, 60*60*1000);
+
+/* ========= Local message board backing: Firebase + IndexedDB mirror ========= */
+function renderBoardPost(obj){
+  const row = document.createElement('div'); row.className='post';
+  // link verification: detect links and mark unverified
+  const linkRegex = /(https?:\/\/[^\s]+)/g;
+  const hasLink = linkRegex.test(obj.msg);
+  const verified = obj.verified || false;
+  let msgHtml = escapeHtml(obj.msg).replace(linkRegex, (m)=> `<a href="${m}" target="_blank" rel="noopener noreferrer">${m}</a>`);
+  row.innerHTML = `<span class="meta">${obj.name}</span> ${msgHtml} ${hasLink?` <em style="color:${verified?'#7fffd4':'#ffb86b'}">[${verified?'verified':'unverified'}]</em>`:''}
+                   <div class="small">${new Date(obj.ts).toLocaleString()}</div>`;
+  localBoard.appendChild(row);
+  localBoard.scrollTop = localBoard.scrollHeight;
+}
+onChildAdded(ref(db,'board'), snap=>{
+  const obj = snap.val();
+  if(!obj) return;
+  renderBoardPost(obj);
+  // store locally
+  idbSave(obj).catch(()=>{});
+});
+
+/* post board (mirror to IndexedDB and Firebase) */
+postBoardBtn.addEventListener('click', ()=>{
+  const text = boardInput.value.trim();
+  if(!text || !handle) return;
+  // link verification flag default false
+  const payload = { name: handle, msg: text, ts: Date.now(), verified:false };
+  push(ref(db,'board'), payload).catch(e=>console.warn(e));
+  boardInput.value='';
+});
+
+/* recover local board to Firebase if remote empty */
+dumpChronicle.addEventListener('click', async ()=>{
+  const all = await idbGetAll();
+  const blob = new Blob([JSON.stringify(all, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='buu-chronicle.json'; a.click();
+});
+
+/* ========= Handle reservation + user record ========= */
+async function reserveHandle(uidVal, handleVal){
+  // attempt to set /handles/{handle} => uid (atomic naive)
+  const hRef = ref(db, `handles/${handleVal}`);
+  set(hRef, { uid: uidVal, ts: Date.now() }).then(()=> appendSystemFeed(`Handle ${handleVal} reserved.`)).catch(e=> appendSystemFeed(`Handle reserve failed: ${e.message}`));
+}
+
+/* ========= Unlock Pilgrim logic: tiered access based on posts count ========= */
+function checkUnlockForUser(uidVal){
+  // count posts by user in 'chat' or 'board' to determine unlock threshold
+  onValue(ref(db,'users/'+uidVal+'/stats'), snap=>{
+    const stats = snap.val() || { posts:0 };
+    if(stats.posts >= 5) {
+      // unlock pilgrim option
+      document.querySelector('#channelSelect option[value="pilgrim"]').style.display = 'block';
+    }
+  }, {onlyOnce:true});
+}
+
+/* update user stats on post */
+function incUserPostCount(uidVal){
+  const sRef = ref(db, `users/${uidVal}/stats`);
+  onValue(sRef, snap=>{
+    const cur = snap.val() || { posts:0 };
+    set(ref(db,`users/${uidVal}/stats`), { posts: (cur.posts || 0) + 1 });
+  }, {onlyOnce:true});
+}
+
+/* ========= UI bindings: join, send, channel switch ========= */
+joinBtn.addEventListener('click', async ()=>{
+  const raw = handleInput.value.trim();
+  if(!raw) { alert('Enter a handle'); return; }
+  handle = sanitizeHandle(raw);
+  handleInput.value = handle;
+  // reserve handle in firebase
+  if(!uid) return alert('auth not ready');
+  await reserveHandle(uid, handle);
+  currentChannel = channelSelect.value;
+  currentChannelLabel.textContent = `//${currentChannel.charAt(0).toUpperCase()+currentChannel.slice(1)}`;
+  setPresence(currentChannel);
+  // push user record
+  set(ref(db, `users/${uid}/profile`), { handle, firstSeen: Date.now() }).catch(()=>{});
+  // show UI state
+  joinBtn.style.display='none'; disconnectBtn.style.display='inline-block';
+  appendSystemFeed(`${handle} joined ${currentChannel}`);
+  doorIn.play().catch(()=>{});
+  listenAllOnline();
+  checkUnlockForUser(uid);
+});
+
+disconnectBtn.addEventListener('click', ()=>{
+  // remove presence
+  remove(ref(db, `online/${currentChannel}/${uid}`)).catch(()=>{});
+  appendSystemFeed(`${handle} disconnected`);
+  doorOut.play().catch(()=>{});
+  joinBtn.style.display='inline-block'; disconnectBtn.style.display='none';
+  handle = null;
+});
+
+/* channel select change: update presence node */
+channelSelect.addEventListener('change', ()=>{
+  const newCh = channelSelect.value;
+  if(!handle || !uid) return;
+  // remove old presence
+  remove(ref(db, `online/${currentChannel}/${uid}`)).catch(()=>{});
+  currentChannel = newCh;
+  setPresence(currentChannel);
+  currentChannelLabel.textContent = `//${currentChannel.charAt(0).toUpperCase()+currentChannel.slice(1)}`;
+});
+
+/* send chat */
+sendMsgBtn.addEventListener('click', ()=> {
+  const text = chatInput.value.trim();
+  if(!text || !handle) return;
+  postChatMessage(currentChannel, handle, text);
+  incUserPostCount(uid);
+  chatInput.value='';
+});
+
+/* Enter key sends in inputs */
+chatInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendMsgBtn.click(); });
+boardInput.addEventListener('keypress', e=>{ if(e.key==='Enter') postBoardBtn.click(); });
+
+/* admin invite overlay */
+inviteOverlayBtn.addEventListener('click', ()=> {
+  // simple modal-like open:
+  const url = 'https://tokillamockinggoblin.boards.net/';
+  window.open(url, '_blank');
+});
+
+/* unlock pilgrim forced */
+unlockPilgrimBtn.addEventListener('click', ()=> {
+  document.querySelector('#channelSelect option[value="pilgrim"]').style.display='block';
+  appendSystemFeed('Pilgrim channel force-unlocked by user.');
+});
+
+/* diagnostics */
+toggleDiag.addEventListener('click', ()=> diag.style.display = (diag.style.display==='none'?'block':'none') );
+document.addEventListener('keydown', e=> { if(e.ctrlKey && e.altKey && e.key.toLowerCase()==='d') toggleDiag.click(); });
+
+/* diag updater */
+setInterval(()=> {
+  const stats = {
+    time: new Date().toLocaleTimeString(),
+    uid: uid || '(none)',
+    handle: handle || '(none)',
+    channel: currentChannel
+  };
+  diagPre.textContent = JSON.stringify(stats, null, 2);
+}, 1000);
+
+/* ========= GitHub lore fetch placeholder (we skip rendering heavy lore per your request) ========= */
+async function fetchLorePlaceholders(){ appendSystemFeed('Lore placeholders ready.'); }
+
+/* ========= visual: cursor trails ========= */
+const trailCanvas = document.getElementById('trailCanvas');
+const tc = trailCanvas.getContext('2d'); function resizeTrail(){ trailCanvas.width = window.innerWidth; trailCanvas.height = window.innerHeight; }
+resizeTrail(); window.addEventListener('resize', resizeTrail);
+let trails = [];
+document.addEventListener('mousemove', (e)=> {
+  trails.push({ x:e.clientX, y:e.clientY, life:30 });
+});
+function drawTrails(){
+  tc.clearRect(0,0,trailCanvas.width,trailCanvas.height);
+  for(let i=trails.length-1;i>=0;i--){
+    const t = trails[i];
+    tc.beginPath();
+    tc.fillStyle = `rgba(0,255,200,${t.life/40})`;
+    tc.arc(t.x, t.y, (t.life/4)+1, 0, Math.PI*2);
+    tc.fill();
+    t.life--;
+    if(t.life<=0) trails.splice(i,1);
+  }
+  requestAnimationFrame(drawTrails);
+}
+drawTrails();
+
+/* ========= startup: listen presence and board ========= */
+listenAllOnline();
+
+/* load local board from IndexedDB on startup and rehydrate */
+(async ()=> {
+  try{
+    await openIDB();
+    const all = await idbGetAll();
+    all.sort((a,b)=>a.ts - b.ts).forEach(p => renderBoardPost(p));
+    appendSystemFeed(`Recovered ${all.length} local board posts.`);
+  }catch(e){ appendSystemFeed('No local posts recovered.'); }
+})();
+
+/* heartbeat animation tied to active user total */
+setInterval(async ()=>{
+  // count total online users
+  onValue(ref(db,'online'), snap=>{
+    const val = snap.val() || {};
+    let total = 0;
+    for(const ch in val) total += Object.keys(val[ch]||{}).length;
+    // heartbeat speed mapping
+    const beat = document.getElementById('heartbeat');
+    if(beat) beat.style.animationDuration = `${Math.max(0.6, 2 - Math.min(1.8, total/10))}s`;
+  }, {onlyOnce:true});
+}, 3000);
+
+/* helper: escape HTML */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+
 </script>
 </body>
 </html>
