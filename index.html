@@ -3,167 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Before Us Universe</title>
+<title>Before Us Universe — BUU</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-/* --- Body & Background --- */
+/* ---------- Retro Windows 98 ---------- */
+* { box-sizing:border-box; }
 body {
-  margin: 0;
-  font-family: 'Press Start 2P', monospace;
-  background: url('https://i.imgur.com/fdI7QXD.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color: #000;
-  overflow-x: hidden;
-}
-/* --- Header / Top Links --- */
-header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
-  padding: 0.5rem;
-  background: #c0c0c0;
-  border-bottom: 2px solid #000;
-}
-header a {
-  color: #000;
-  text-decoration: none;
-  font-size: 0.8rem;
-  padding: 0.2rem 0.5rem;
-  background: #e0e0e0;
-  border: 1px solid #000;
-}
-header a:hover {
-  background: #d0d0d0;
-}
-/* --- Handle Input --- */
-#handleInput {
-  display:flex;
-  justify-content:center;
-  margin:0.5rem;
-}
-#handleInput input {
-  padding:0.5rem;
-  font-family:monospace;
-  border:2px inset #000;
-  background:#fff;
+  margin:0; padding:0;
+  font-family:'Press Start 2P',monospace;
+  background:#008080;               /* classic teal */
   color:#000;
-  width:200px;
+  overflow:hidden;
 }
-/* --- YouTube Embed --- */
-#youtube {
-  display:flex;
-  justify-content:center;
-  margin:0.5rem;
+.window {
+  position:absolute; background:#c0c0c0;
+  border:2px solid #000; box-shadow:3px 3px 0 #000;
+  min-width:300px; font-size:0.75rem;
 }
-#youtube iframe {
-  width:80%;
-  height:315px;
-  max-width:560px;
-  border:2px solid #000;
+.title-bar {
+  background:#000080; color:#fff;
+  padding:2px 4px; cursor:move;
+  display:flex; justify-content:space-between; align-items:center;
 }
-/* --- Chat Window --- */
-.chat-window {
-  max-width:800px;
-  margin:1rem auto;
-  background: #e0e0e0;
-  padding:0.5rem;
-  border:2px solid #000;
-  font-size:0.8rem;
-  box-shadow: 2px 2px #888888;
-  position: relative;
-  cursor: move;
+.title-bar button { background:#c0c0c0; border:1px outset #000; width:16px; height:16px; font-weight:bold; }
+.title-bar .close { background:#c0c0c0; }
+.title-bar .minimize { background:#c0c0c0; }
+.content { padding:6px; background:#e0e0e0; }
+.inset { border:2px inset #000; background:#fff; padding:4px; }
+
+/* ---------- Background (Base64) ---------- */
+.bg {
+  position:fixed; inset:0; z-index:-1;
+  background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTExIWFRUXFRcVFRcVFRcVFRcVFRUVFhUVFRUYHSggGBolGxUVITEhJSkrLi4uFx8zODMsNygtLisBCgoKDg0OGxAQGy0lICYtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAOEA4QMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBQMGAAIHAQj/xAA/EAABBAECBAYDCQgCAwAAAAAAAQIDEQQFEjEHBkFRYQYTIoGRobHR8DJCUmJxkfAVFTRTYnKC4f/EABoBAQEBAQEBAQAAAAAAAAAAAAABAgMEBQb/xAAtEQABBAECBAQFBAMAAAAAAAAAAQIRAwQhMUEFIkFRYXEygZGhsfAUUnGBkdHh8f/aAAwDAQACEQMRAD8A4QAAAAAAAH//2Q==') center/cover no-repeat;
 }
-.chat-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#c0c0c0;
-  border-bottom:2px solid #000;
-  padding:0.3rem;
-}
-.messages {
-  height:200px;
-  overflow-y:auto;
-  border:2px inset #000;
-  background:#fff;
-  padding:0.5rem;
-  margin:0.5rem 0;
-}
-.message { margin-bottom:0.3rem; }
-.user-online { color:green; animation: blink 1s infinite; }
-.user-offline { color:red; }
-@keyframes blink {
-  0%{opacity:1;}
-  50%{opacity:0;}
-  100%{opacity:1;}
-}
-.tooltip { position: relative; display:inline-block; }
-.tooltip .tooltiptext {
-  visibility:hidden; width:140px; background-color:#000; color:#0f0;
-  text-align:center; border-radius:6px; padding:5px; position:absolute; z-index:1; top:-5px; left:105%;
-}
-.tooltip:hover .tooltiptext { visibility:visible; }
-/* --- Active Users --- */
-#activeUsers { font-size:0.7rem; margin-top:0.5rem; }
-/* --- Message Board --- */
-#board {
-  max-width:800px;
-  margin:1rem auto;
-  background: #e0e0e0;
-  padding:0.5rem;
-  border:2px solid #000;
-  font-size:0.8rem;
-}
-.post { border-bottom:1px dashed #000; margin-bottom:0.5rem; padding-bottom:0.5rem; background:#fff; }
-/* --- Lore Section --- */
-#lore { margin:1rem; font-size:0.8rem; max-width:800px; color:#000; background:#e0e0e0; padding:0.5rem; border:2px inset #000; }
-/* --- Loading --- */
+
+/* ---------- Loading Screen ---------- */
 #loading {
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:#000;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  z-index:1000;
-  color:#0f0;
-  font-size:0.8rem;
+  position:fixed; inset:0; background:#000; color:#0f0;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  z-index:9999; font-size:1rem;
 }
 #loadingLore { margin-top:1rem; }
-/* --- Inputs --- */
-input, textarea, select, button { font-family: 'Press Start 2P', monospace; }
-button { margin-top:0.5rem; border:2px outset #000; background:#c0c0c0; color:#000; cursor:pointer; }
+
+/* ---------- Header Links ---------- */
+header {
+  position:fixed; top:0; left:0; right:0; background:#c0c0c0;
+  border-bottom:2px solid #000; padding:4px; text-align:center;
+  z-index:100;
+}
+header a { margin:0 8px; color:#000; text-decoration:none; font-size:0.7rem; }
+
+/* ---------- Modal Handle Prompt ---------- */
+#handleModal {
+  position:fixed; inset:0; background:rgba(0,0,0,0.8);
+  display:flex; justify-content:center; align-items:center; z-index:2000;
+}
+#handleModal .window { width:320px; }
+#handleModal input { width:100%; padding:6px; margin-top:8px; }
+
+/* ---------- Chat Specific ---------- */
+#chat .messages { height:220px; overflow-y:auto; }
+#chat .message { margin-bottom:4px; }
+#chat .system { color:#555; font-style:italic; }
+#chat .nick { cursor:pointer; }
+#chat #typing { font-style:italic; color:#777; }
+
+/* ---------- Board Specific ---------- */
+#board .post { padding:6px; border-bottom:1px dashed #000; position:relative; }
+#board .reply { margin-left:20px; background:#f0f0f0; }
+#board .actions { position:absolute; right:6px; top:6px; font-size:0.6rem; }
+
+/* ---------- Misc ---------- */
+button { font-family:inherit; cursor:pointer; }
+input, textarea, select { font-family:inherit; }
 </style>
 </head>
 <body>
 
+<div class="bg"></div>
+
 <div id="loading">
-  <div id="loadingText">INITIALIZING...</div>
+  <div>INITIALIZING BEFORE US UNIVERSE...</div>
   <div id="loadingLore"></div>
 </div>
 
 <header>
   <a href="https://tokillamockinggoblin.boards.net/">To Kill a Mocking Goblin</a>
-  <a href="https://youtube.com/playlist?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq&si=anZaakmimPIGuYwO">Melphia's Game</a>
+  <a href="https://youtube.com/playlist?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq">Melphia's Game</a>
   <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview">Book 1</a>
   <a href="https://web.archive.org/">Wayback Machine</a>
 </header>
 
-<div id="handleInput">
-  <input type="text" id="handle" placeholder="Enter your handle" maxlength="16">
+<!-- ==== HANDLE MODAL ==== -->
+<div id="handleModal">
+  <div class="window">
+    <div class="title-bar"><span>Choose Handle</span><button class="close" onclick="this.parentNode.parentNode.parentNode.remove()">X</button></div>
+    <div class="content">
+      <input id="modalHandle" placeholder="Max 16 chars" maxlength="16">
+      <button id="lockHandleBtn" style="margin-top:8px;width:100%;">LOCK IN</button>
+    </div>
+  </div>
 </div>
 
-<div id="youtube">
-  <iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq&si=anZaakmimPIGuYwO" frameborder="0" allowfullscreen></iframe>
+<!-- ==== YOUTUBE WINDOW ==== -->
+<div class="window" style="left:20px;top:80px;width:580px;">
+  <div class="title-bar">
+    <span>YouTube – Melphia’s Game</span>
+    <button class="minimize">_</button><button class="close">X</button>
+  </div>
+  <div class="content">
+    <iframe width="100%" height="315"
+      src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq"
+      frameborder="0" allowfullscreen></iframe>
+  </div>
 </div>
 
-<div class="chat-window" id="chat">
-  <div class="chat-header">
-    <div>Live Chat</div>
-    <select id="channelSelect">
+<!-- ==== CHAT WINDOW ==== -->
+<div id="chat" class="window" style="left:620px;top:80px;width:420px;">
+  <div class="title-bar">
+    <span>Live Chat – <span id="handleStatus"></span></span>
+    <select id="channelSelect" style="font-family:inherit;">
       <option value="Exuro">//Exuro</option>
       <option value="Sam">//Sam</option>
       <option value="Nero">//Nero</option>
@@ -171,27 +130,38 @@ button { margin-top:0.5rem; border:2px outset #000; background:#c0c0c0; color:#0
       <option value="Loktal">//Loktal</option>
       <option value="Pilgrim">//Pilgrim (secret)</option>
     </select>
+    <button class="minimize">_</button><button class="close">X</button>
   </div>
-  <div class="messages" id="messages"></div>
-  <input type="text" id="messageInput" placeholder="Type your message (max 500 chars)">
-  <button id="sendBtn">Send</button>
-  <div id="activeUsers"></div>
+  <div class="content">
+    <div class="messages inset" id="messages"></div>
+    <div id="typing"></div>
+    <input id="messageInput" placeholder="Type message…" maxlength="500" style="width:100%;margin-top:4px;">
+    <button id="sendBtn" style="width:100%;margin-top:4px;">Send</button>
+    <div id="activeUsers" style="margin-top:6px;font-size:0.65rem;"></div>
+  </div>
 </div>
 
-<div id="board">
-  <h2>Message Board</h2>
-  <div id="posts"></div>
-  <input type="text" id="boardName" placeholder="Your Name (max 100)">
-  <textarea id="boardMsg" placeholder="Your post (max 1000)"></textarea>
-  <button id="postBtn">Post</button>
+<!-- ==== MESSAGE BOARD WINDOW ==== -->
+<div id="board" class="window" style="left:20px;top:460px;width:1020px;">
+  <div class="title-bar"><span>Message Board</span>
+    <button class="minimize">_</button><button class="close">X</button>
+  </div>
+  <div class="content">
+    <div id="posts" class="inset" style="height:300px;overflow-y:auto;"></div>
+    <input id="boardName" placeholder="Your Name (max 100)" maxlength="100" style="width:100%;margin-top:6px;">
+    <textarea id="boardMsg" placeholder="Your post (max 1000)" maxlength="1000" style="width:100%;height:80px;margin-top:4px;"></textarea>
+    <button id="postBtn" style="width:100%;margin-top:4px;">Post</button>
+  </div>
 </div>
 
-<div id="lore"></div>
 <audio id="doorSound" src="https://freesound.org/data/previews/3/3080_5159-lq.mp3"></audio>
 
 <script type="module">
+/* ============================================================= */
+/*                     FIREBASE SETUP                           */
+/* ============================================================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-import { getDatabase, ref, push, set, onChildAdded, onValue, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+import { getDatabase, ref, push, set, onValue, onChildAdded, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -203,129 +173,266 @@ const firebaseConfig = {
   messagingSenderId: "477103463228",
   appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
 };
-
 const app = initializeApp(firebaseConfig);
-const db = getDatabase();
-const auth = getAuth();
-
+const db = getDatabase(app);
+const auth = getAuth(app);
 signInAnonymously(auth);
 
+/* ============================================================= */
+/*                     GLOBAL STATE                             */
+/* ============================================================= */
+let uid = null;
 let currentHandle = "";
-const handleInput = document.getElementById('handle');
-handleInput.addEventListener('change', () => { currentHandle = handleInput.value.trim() || "Anonymous"; });
+let currentChannel = "Exuro";
+let nickColors = {};
 
+/* ============================================================= */
+/*                     HANDLE MODAL                             */
+/* ============================================================= */
+const modal = document.getElementById('handleModal');
+const lockBtn = document.getElementById('lockHandleBtn');
+lockBtn.onclick = () => {
+  const h = document.getElementById('modalHandle').value.trim().substring(0,16);
+  if (!h) return alert("Handle required!");
+  currentHandle = h || "Anonymous";
+  document.getElementById('handleStatus').innerHTML = `<span style="color:#0f0">locked in: ${currentHandle}</span>`;
+  modal.remove();
+  initUserOnline();
+};
+
+/* ============================================================= */
+/*                     ONLINE TRACKING                          */
+/* ============================================================= */
+function initUserOnline() {
+  if (!uid) return;
+  const onlineRef = ref(db, `online/${uid}`);
+  const data = { handle: currentHandle, online: true, ts: serverTimestamp() };
+  set(onlineRef, data);
+
+  // Update handle if user changes it later (optional input in chat header)
+  const handleInputHeader = document.createElement('input');
+  handleInputHeader.placeholder = "change handle";
+  handleInputHeader.maxLength = 16;
+  handleInputHeader.style.width = "80px";
+  handleInputHeader.style.marginLeft = "8px";
+  document.querySelector('#chat .title-bar').appendChild(handleInputHeader);
+  handleInputHeader.onchange = () => {
+    const nh = handleInputHeader.value.trim().substring(0,16) || "Anonymous";
+    currentHandle = nh;
+    set(onlineRef, { handle: nh, online: true, ts: serverTimestamp() });
+    document.getElementById('handleStatus').innerHTML = `<span style="color:#0f0">locked in: ${nh}</span>`;
+  };
+
+  window.addEventListener('beforeunload', () => remove(onlineRef));
+}
+
+/* ============================================================= */
+/*                     AUTH LISTENER                            */
+/* ============================================================= */
+onAuthStateChanged(auth, user => {
+  if (user) { uid = user.uid; if (currentHandle) initUserOnline(); }
+});
+
+/* ============================================================= */
+/*                     ACTIVE USERS LIST                        */
+/* ============================================================= */
+const activeDiv = document.getElementById('activeUsers');
+function renderActiveUsers(snap) {
+  const data = snap.val() || {};
+  let html = "Active: ";
+  for (let id in data) {
+    const u = data[id];
+    const col = nickColors[u.handle] || (nickColors[u.handle] = randomColor());
+    html += `<span class="nick" style="color:${col}" title="${id}">${u.handle}</span> `;
+  }
+  activeDiv.innerHTML = html;
+}
+onValue(ref(db, 'online'), renderActiveUsers);
+
+function randomColor() {
+  const hue = Math.floor(Math.random()*360);
+  return `hsl(${hue},80%,45%)`;
+}
+
+/* ============================================================= */
+/*                     CHAT LOGIC                               */
+/* ============================================================= */
 const messagesDiv = document.getElementById('messages');
-const messageInput = document.getElementById('messageInput');
+const typingDiv = document.getElementById('typing');
 const sendBtn = document.getElementById('sendBtn');
-const channelSelect = document.getElementById('channelSelect');
-const activeUsersDiv = document.getElementById('activeUsers');
-const doorSound = document.getElementById('doorSound');
+const msgInput = document.getElementById('messageInput');
+const channelSel = document.getElementById('channelSelect');
+const door = document.getElementById('doorSound');
 
-function updateActiveUsers() {
-  const onlineRef = ref(db, "online");
-  onValue(onlineRef, snapshot => {
-    const data = snapshot.val() || {};
-    let display = "Active Users: ";
-    for (let user in data) {
-      display += `<span class='tooltip ${data[user].online ? "user-online" : "user-offline"}'>${data[user].handle}<span class="tooltiptext">${user}</span></span> `;
-    }
-    activeUsersDiv.innerHTML = display;
-  });
-}
-updateActiveUsers();
-
-sendBtn.addEventListener('click', () => {
-  if (!currentHandle) { alert("Enter a handle first"); return; }
-  const msg = messageInput.value.trim();
-  if (!msg) return;
-  const channel = channelSelect.value;
-  const msgRef = push(ref(db, `chat/${channel}`));
-  set(msgRef, { name: currentHandle, msg });
-  messageInput.value = "";
-  doorSound.play();
-});
-
-function listenChannel(channel) {
+function switchChannel(ch) {
+  currentChannel = ch;
   messagesDiv.innerHTML = "";
-  const chatRef = ref(db, `chat/${channel}`);
-  onChildAdded(chatRef, snapshot => {
-    const { name, msg } = snapshot.val();
-    const div = document.createElement('div');
-    div.classList.add('message');
-    div.innerHTML = `<strong>${name}:</strong> ${msg}`;
-    messagesDiv.appendChild(div);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-  });
+  const chatRef = ref(db, `chat/${ch}`);
+  onChildAdded(chatRef, snap => addMessage(snap.val()));
 }
-channelSelect.addEventListener('change', () => listenChannel(channelSelect.value));
-listenChannel(channelSelect.value);
+channelSel.onchange = () => switchChannel(channelSel.value);
+switchChannel(currentChannel);
 
-// Local message board
-const postsDiv = document.getElementById('posts');
-const postBtn = document.getElementById('postBtn');
-const boardName = document.getElementById('boardName');
-const boardMsg = document.getElementById('boardMsg');
-const boardRef = ref(db, "board");
-onChildAdded(boardRef, snapshot => {
-  const { name, msg } = snapshot.val();
+function addMessage({name, msg, ts, type="msg"}) {
   const div = document.createElement('div');
-  div.classList.add('post');
-  div.innerHTML = `<strong>${name}</strong>: ${msg}`;
-  postsDiv.appendChild(div);
+  div.className = 'message';
+  if (type === "system") div.classList.add('system');
+  const time = ts ? new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : "";
+  const col = nickColors[name] || "#000";
+  div.innerHTML = type==="system"
+    ? `<em>${msg}</em>`
+    : `<span class="nick" style="color:${col}">[${time}] ${name}:</span> ${escapeHtml(msg)}`;
+  messagesDiv.appendChild(div);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+/* send message */
+sendBtn.onclick = () => {
+  if (!currentHandle) return alert("Set a handle first!");
+  const txt = msgInput.value.trim();
+  if (!txt) return;
+  const payload = { name: currentHandle, msg: txt, ts: serverTimestamp() };
+  push(ref(db, `chat/${currentChannel}`), payload);
+  msgInput.value = "";
+  door.currentTime = 0; door.play();
+};
+
+/* typing indicator (very light) */
+let typingTimer;
+msgInput.oninput = () => {
+  if (!uid) return;
+  const typRef = ref(db, `typing/${currentChannel}/${uid}`);
+  set(typRef, {handle: currentHandle, ts: serverTimestamp()});
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(() => remove(typRef), 2000);
+};
+onValue(ref(db, `typing/${currentChannel}`), snap => {
+  const data = snap.val() || {};
+  const typers = Object.values(data).filter(t=>Date.now()-t.ts<3000).map(t=>t.handle);
+  typingDiv.textContent = typers.length ? `${typers.join(', ')} typing…` : '';
 });
 
-postBtn.addEventListener('click', () => {
-  if (!boardName.value.trim() || !boardMsg.value.trim()) return;
-  push(boardRef, { name: boardName.value.trim(), msg: boardMsg.value.trim() });
-  boardName.value = "";
-  boardMsg.value = "";
+/* join / leave system messages */
+function broadcastSystem(msg) {
+  push(ref(db, `chat/${currentChannel}`), {name:"", msg, ts: serverTimestamp(), type:"system"});
+}
+onValue(ref(db, 'online'), snap => {
+  // we cannot detect exact joins here, but we can announce when our own status changes
 });
 
-// Dynamic loading & lore
-const loadingDiv = document.getElementById('loadingText');
-const loreDiv = document.getElementById('loadingLore');
-const loreContent = [
+/* ============================================================= */
+/*                     MESSAGE BOARD (ProBoards style)         */
+/* ============================================================= */
+const postsDiv = document.getElementById('posts');
+const boardNameInp = document.getElementById('boardName');
+const boardMsgInp = document.getElementById('boardMsg');
+const postBtn = document.getElementById('postBtn');
+const boardRef = ref(db, "board");
+
+onChildAdded(boardRef, snap => renderPost(snap.key, snap.val()));
+function renderPost(key, {name, msg, ts, replyTo}) {
+  const div = document.createElement('div');
+  div.className = 'post';
+  if (replyTo) div.classList.add('reply');
+  const time = ts ? new Date(ts).toLocaleString() : "";
+  div.innerHTML = `
+    <strong style="color:${nickColors[name]||'#000'}">${escapeHtml(name)}</strong> <small>${time}</small>
+    <div style="margin-top:4px;">${escapeHtml(msg).replace(/\n/g,'<br>')}</div>
+    <div class="actions">
+      <button onclick="quotePost('${key}',this)">Quote</button>
+      <button onclick="replyPost('${key}',this)">Reply</button>
+    </div>`;
+  if (replyTo) {
+    const parent = document.querySelector(`[data-key="${replyTo}"]`);
+    if (parent) parent.appendChild(div);
+    else postsDiv.appendChild(div);
+  } else {
+    div.dataset.key = key;
+    postsDiv.appendChild(div);
+  }
+  postsDiv.scrollTop = postsDiv.scrollHeight;
+}
+window.quotePost = (key, btn) => {
+  const post = btn.closest('.post');
+  const text = post.querySelector('div:nth-child(2)').innerText;
+  boardMsgInp.value = `> ${text}\n\n`;
+  boardMsgInp.focus();
+};
+window.replyPost = (key, btn) => {
+  const post = btn.closest('.post');
+  const name = post.querySelector('strong').innerText;
+  boardMsgInp.value = `@${name} `;
+  boardMsgInp.focus();
+  // store reply target for later
+  window.pendingReply = key;
+};
+
+postBtn.onclick = () => {
+  const name = (boardNameInp.value || currentHandle).trim().substring(0,100);
+  const msg = boardMsgInp.value.trim().substring(0,1000);
+  if (!name || !msg) return;
+  const payload = {name, msg, ts: serverTimestamp()};
+  if (window.pendingReply) payload.replyTo = window.pendingReply;
+  push(boardRef, payload).then(() => {
+    boardNameInp.value = "";
+    boardMsgInp.value = "";
+    delete window.pendingReply;
+  });
+};
+
+/* ============================================================= */
+/*                     DRAGGABLE / MINIMISE / CLOSE            */
+/* ============================================================= */
+document.querySelectorAll('.window').forEach(win => {
+  const title = win.querySelector('.title-bar');
+  let drag = false, ox, oy;
+  title.onmousedown = e => {
+    if (e.target.tagName==="BUTTON") return;
+    drag = true;
+    ox = e.clientX - win.offsetLeft;
+    oy = e.clientY - win.offsetTop;
+  };
+  document.onmousemove = e => {
+    if (!drag) return;
+    win.style.left = (e.clientX - ox) + 'px';
+    win.style.top  = (e.clientY - oy) + 'px';
+  };
+  document.onmouseup = () => drag = false;
+
+  // minimise / close
+  win.querySelector('.minimize').onclick = () => win.style.display = win.style.display==='none'?'block':'none';
+  win.querySelector('.close').onclick = () => win.remove();
+});
+
+/* ============================================================= */
+/*                     LOADING SCREEN                           */
+/* ============================================================= */
+const loadingLore = [
   "Loading Sector 1: The Voidborn... 23% complete",
   "Awakening ancient AI... 45% complete",
   "Multiversal rifts stabilizing... 68% complete",
   "Preparing Lux Fleet deployment... 89% complete",
   "Initialization complete. Welcome to the Before Us Universe."
 ];
-let idx = 0;
-function nextLore() {
-  if (idx < loreContent.length) {
-    loreDiv.innerText = loreContent[idx];
-    idx++;
-    setTimeout(nextLore, 1000);
+let li = 0;
+function showNext() {
+  if (li < loadingLore.length) {
+    document.getElementById('loadingLore').textContent = loadingLore[li++];
+    setTimeout(showNext, 1100);
   } else {
-    document.getElementById('loading').style.display = "none";
+    document.getElementById('loading').remove();
   }
 }
-nextLore();
+showNext();
 
-// Update online status
-onAuthStateChanged(auth, user => {
-  if (user) {
-    const onlineRef = ref(db, `online/${user.uid}`);
-    set(onlineRef, { handle: currentHandle || "Anonymous", online: true });
-    window.addEventListener('beforeunload', () => remove(onlineRef));
-  }
-});
-
-// --- Draggable Chat Window ---
-const chatWindow = document.querySelector('.chat-window');
-let isDragging = false, offsetX = 0, offsetY = 0;
-chatWindow.addEventListener('mousedown', e => {
-  isDragging = true;
-  offsetX = e.clientX - chatWindow.offsetLeft;
-  offsetY = e.clientY - chatWindow.offsetTop;
-});
-document.addEventListener('mousemove', e => {
-  if (!isDragging) return;
-  chatWindow.style.left = `${e.clientX - offsetX}px`;
-  chatWindow.style.top = `${e.clientY - offsetY}px`;
-});
-document.addEventListener('mouseup', e => { isDragging = false; });
+/* ============================================================= */
+/*                     UTILS                                    */
+/* ============================================================= */
+function escapeHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
 </script>
 </body>
 </html>
