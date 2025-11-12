@@ -42,6 +42,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 </style>
 </head>
 <body>
+
 <div id="bootScreen">
   <div id="bootLinesContainer"></div>
   <div class="boot-progress" id="bootProgress">[......................] 0%</div>
@@ -97,7 +98,11 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 
 <div class="panel" style="margin-top:8px">
   <div class="small">Community message board (ProBoards)</div>
-  <iframe id="boardFrame" src="https://tokillamockinggoblin.boards.net/page/external-widget" title="ProBoards message board"></iframe>
+  <iframe id="boardFrame" 
+          src="https://tokillamockinggoblin.boards.net/page/external-widget" 
+          width="100%" height="500px" frameborder="0" scrolling="auto"
+          onerror="this.style.display='none'; alert('ProBoards widget blocked; click the button to open the board.');">
+  </iframe>
 </div>
 </div>
 
@@ -126,7 +131,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ---------- Boot sequence with glitch ----------
+// ---------- Boot sequence ----------
 const bootScreenEl = document.getElementById('bootScreen');
 const bootLinesContainer = document.getElementById('bootLinesContainer');
 const bootProgress = document.getElementById('bootProgress');
@@ -142,84 +147,69 @@ const bootLines = [
 ];
 
 let currentLine = 0;
-
 function glitchText(text){
-  return text.split('').map(c => Math.random() < 0.05 ? String.fromCharCode(33 + Math.floor(Math.random()*94)) : c).join('');
+  return text.split('').map(c => Math.random()<0.05 ? String.fromCharCode(33+Math.floor(Math.random()*94)) : c).join('');
 }
-
 function bootStep(){
-  if(currentLine >= bootLines.length){
+  if(currentLine>=bootLines.length){
     bootScreenEl.style.display='none';
     document.getElementById('app').style.display='block';
     return;
   }
-  
-  const lineEl = document.createElement('div');
-  lineEl.className = 'boot-line';
-  lineEl.textContent = glitchText(bootLines[currentLine]);
+  const lineEl=document.createElement('div');
+  lineEl.className='boot-line';
+  lineEl.textContent=glitchText(bootLines[currentLine]);
   bootLinesContainer.appendChild(lineEl);
-  
-  bootProgress.textContent = '['+'#'.repeat((currentLine+1)*3)+'......................'.slice((currentLine+1)*3)+'] ' 
-                             + Math.floor(((currentLine+1)/bootLines.length)*100)+'%';
-  
+  bootProgress.textContent='['+'#'.repeat((currentLine+1)*3)+'......................'.slice((currentLine+1)*3)+'] '+
+                            Math.floor(((currentLine+1)/bootLines.length)*100)+'%';
   currentLine++;
-  setTimeout(bootStep, 500 + Math.random()*400);
+  setTimeout(bootStep,500+Math.random()*400);
 }
-
-// Start the boot animation
 bootStep();
-
-// Optional: add periodic line glitches while booting
 setInterval(()=>{
-  const lines = bootLinesContainer.children;
+  const lines=bootLinesContainer.children;
   for(let i=0;i<lines.length;i++){
-    if(Math.random()<0.1) lines[i].textContent = glitchText(lines[i].textContent);
+    if(Math.random()<0.1) lines[i].textContent=glitchText(lines[i].textContent);
   }
-}, 300);
+},300);
 
-// ---------- Login ----------
+// ---------- Login & Chat ----------
 let handle=null,currentChannel='exuro',presenceRef=null;
+const chatRef=db.ref('chat');
+
 document.getElementById('enterBtn').addEventListener('click',()=>{
-  handle = (document.getElementById('handleField').value||'Anon'+Math.floor(Math.random()*9999)).replace(/[^a-zA-Z0-9]/g,'');
+  handle=(document.getElementById('handleField').value||'Anon'+Math.floor(Math.random()*9999))
+          .replace(/[^a-zA-Z0-9]/g,'');
+  if(!handle) return;
   document.getElementById('loginPanel').style.display='none';
-  presenceRef=db.ref('online/'+handle); presenceRef.set(true); presenceRef.onDisconnect().remove();
+  presenceRef=db.ref('online/'+handle); 
+  presenceRef.set(true); 
+  presenceRef.onDisconnect().remove();
   listenChat(); listenOnline();
   if(handle.toLowerCase()==='pilgrim123') document.querySelector('[data-channel="pilgrim"]').style.display='inline-block';
 });
 
-// ---------- Channels ----------
 document.querySelectorAll('.stream-toggle .btn').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('.stream-toggle .btn').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active'); switchChannel(b.dataset.channel);
+    b.classList.add('active'); 
+    switchChannel(b.dataset.channel);
   });
 });
-function switchChannel(ch){currentChannel=ch; document.querySelectorAll('.stream').forEach(d=>d.style.display=(d.id===ch)?'block':'none');}
+function switchChannel(ch){
+  currentChannel=ch;
+  document.querySelectorAll('.stream').forEach(d=>d.style.display=(d.id===ch)?'block':'none');
+}
 
-// ---------- Chat ----------
-const chatRef=db.ref('chat');
 document.getElementById('sendChat').addEventListener('click',()=>{postChat(document.getElementById('chatInput').value);});
 document.getElementById('chatInput').addEventListener('keypress',e=>{if(e.key==='Enter') postChat(document.getElementById('chatInput').value);});
+
 function postChat(msg){
   if(!msg||!handle) return;
   chatRef.push({name:handle,msg:msg.slice(0,500),ts:Date.now(),channel:currentChannel});
   document.getElementById('chatInput').value='';
 }
 
-// ---------- Active Users ----------
-function listenOnline(){
-  db.ref('online').on('value',snap=>{
-    const container=document.getElementById('activeUsers'); container.innerHTML=''; 
-    snap.forEach(ch=>{
-      const name=ch.key;
-      if(name && !name.startsWith('-Odo')){ 
-        const p=document.createElement('p'); p.textContent=name; container.appendChild(p);
-      }
-    });
-  });
-}
-
-// ---------- Chat listener ----------
 function listenChat(){
   chatRef.limitToLast(200).on('child_added',snap=>{
     const obj=snap.val(); if(!obj||!obj.msg) return;
@@ -229,8 +219,22 @@ function listenChat(){
   });
 }
 
-// ---------- Open Board ----------
-document.getElementById('openBoardBtn').addEventListener('click',()=>{window.open('https://tokillamockinggoblin.boards.net','_blank');});
+function listenOnline(){
+  db.ref('online').on('value',snap=>{
+    const container=document.getElementById('activeUsers'); container.innerHTML='';
+    snap.forEach(ch=>{
+      const name=ch.key;
+      if(name && !name.startsWith('-')){
+        const p=document.createElement('p'); p.textContent=name; container.appendChild(p);
+      }
+    });
+  });
+}
+
+// ---------- Open Message Board ----------
+document.getElementById('openBoardBtn').addEventListener('click',()=>{
+  window.open('https://tokillamockinggoblin.boards.net','_blank');
+});
 
 // ---------- Prune old messages ----------
 function pruneOld(){
