@@ -6,18 +6,22 @@
 <title>Before Us Universe</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
+/* --- Body & Background --- */
 body {
   margin: 0;
   font-family: 'Press Start 2P', monospace;
   background: url('https://i.imgur.com/fdI7QXD.jpg') no-repeat center center fixed;
   background-size: cover;
   color: #000;
+  overflow-x: hidden;
 }
+/* --- Header / Top Links --- */
 header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 2rem;
-  padding: 1rem;
+  gap: 1rem;
+  padding: 0.5rem;
   background: #c0c0c0;
   border-bottom: 2px solid #000;
 }
@@ -29,10 +33,14 @@ header a {
   background: #e0e0e0;
   border: 1px solid #000;
 }
+header a:hover {
+  background: #d0d0d0;
+}
+/* --- Handle Input --- */
 #handleInput {
   display:flex;
   justify-content:center;
-  margin:1rem;
+  margin:0.5rem;
 }
 #handleInput input {
   padding:0.5rem;
@@ -40,12 +48,21 @@ header a {
   border:2px inset #000;
   background:#fff;
   color:#000;
+  width:200px;
 }
+/* --- YouTube Embed --- */
 #youtube {
   display:flex;
   justify-content:center;
-  margin:1rem;
+  margin:0.5rem;
 }
+#youtube iframe {
+  width:80%;
+  height:315px;
+  max-width:560px;
+  border:2px solid #000;
+}
+/* --- Chat Window --- */
 .chat-window {
   max-width:800px;
   margin:1rem auto;
@@ -55,6 +72,7 @@ header a {
   font-size:0.8rem;
   box-shadow: 2px 2px #888888;
   position: relative;
+  cursor: move;
 }
 .chat-header {
   display:flex;
@@ -72,9 +90,7 @@ header a {
   padding:0.5rem;
   margin:0.5rem 0;
 }
-.message {
-  margin-bottom:0.3rem;
-}
+.message { margin-bottom:0.3rem; }
 .user-online { color:green; animation: blink 1s infinite; }
 .user-offline { color:red; }
 @keyframes blink {
@@ -88,7 +104,9 @@ header a {
   text-align:center; border-radius:6px; padding:5px; position:absolute; z-index:1; top:-5px; left:105%;
 }
 .tooltip:hover .tooltiptext { visibility:visible; }
+/* --- Active Users --- */
 #activeUsers { font-size:0.7rem; margin-top:0.5rem; }
+/* --- Message Board --- */
 #board {
   max-width:800px;
   margin:1rem auto;
@@ -98,7 +116,9 @@ header a {
   font-size:0.8rem;
 }
 .post { border-bottom:1px dashed #000; margin-bottom:0.5rem; padding-bottom:0.5rem; background:#fff; }
+/* --- Lore Section --- */
 #lore { margin:1rem; font-size:0.8rem; max-width:800px; color:#000; background:#e0e0e0; padding:0.5rem; border:2px inset #000; }
+/* --- Loading --- */
 #loading {
   position: fixed;
   top:0; left:0;
@@ -113,6 +133,7 @@ header a {
   font-size:0.8rem;
 }
 #loadingLore { margin-top:1rem; }
+/* --- Inputs --- */
 input, textarea, select, button { font-family: 'Press Start 2P', monospace; }
 button { margin-top:0.5rem; border:2px outset #000; background:#c0c0c0; color:#000; cursor:pointer; }
 </style>
@@ -126,7 +147,7 @@ button { margin-top:0.5rem; border:2px outset #000; background:#c0c0c0; color:#0
 
 <header>
   <a href="https://tokillamockinggoblin.boards.net/">To Kill a Mocking Goblin</a>
-  <a href="https://www.youtube.com/@Patrickauthor">Melphia's Game</a>
+  <a href="https://youtube.com/playlist?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq&si=anZaakmimPIGuYwO">Melphia's Game</a>
   <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview">Book 1</a>
   <a href="https://web.archive.org/">Wayback Machine</a>
 </header>
@@ -136,7 +157,7 @@ button { margin-top:0.5rem; border:2px outset #000; background:#c0c0c0; color:#0
 </div>
 
 <div id="youtube">
-  <iframe width="560" height="315" src="https://www.youtube.com/embed?listType=user_uploads&list=Patrickauthor" frameborder="0" allowfullscreen></iframe>
+  <iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq&si=anZaakmimPIGuYwO" frameborder="0" allowfullscreen></iframe>
 </div>
 
 <div class="chat-window" id="chat">
@@ -166,7 +187,6 @@ button { margin-top:0.5rem; border:2px outset #000; background:#c0c0c0; color:#0
 </div>
 
 <div id="lore"></div>
-
 <audio id="doorSound" src="https://freesound.org/data/previews/3/3080_5159-lq.mp3"></audio>
 
 <script type="module">
@@ -215,8 +235,9 @@ function updateActiveUsers() {
 updateActiveUsers();
 
 sendBtn.addEventListener('click', () => {
+  if (!currentHandle) { alert("Enter a handle first"); return; }
   const msg = messageInput.value.trim();
-  if (!msg || !currentHandle) return;
+  if (!msg) return;
   const channel = channelSelect.value;
   const msgRef = push(ref(db, `chat/${channel}`));
   set(msgRef, { name: currentHandle, msg });
@@ -290,6 +311,21 @@ onAuthStateChanged(auth, user => {
     window.addEventListener('beforeunload', () => remove(onlineRef));
   }
 });
+
+// --- Draggable Chat Window ---
+const chatWindow = document.querySelector('.chat-window');
+let isDragging = false, offsetX = 0, offsetY = 0;
+chatWindow.addEventListener('mousedown', e => {
+  isDragging = true;
+  offsetX = e.clientX - chatWindow.offsetLeft;
+  offsetY = e.clientY - chatWindow.offsetTop;
+});
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  chatWindow.style.left = `${e.clientX - offsetX}px`;
+  chatWindow.style.top = `${e.clientY - offsetY}px`;
+});
+document.addEventListener('mouseup', e => { isDragging = false; });
 </script>
 </body>
 </html>
