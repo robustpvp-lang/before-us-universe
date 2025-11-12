@@ -6,98 +6,100 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* ────────────────────────────────────── DOS / CRT ────────────────────────────────────── */
+/* ───── CRT / DOS THEME (EASY ON EYES) ───── */
 :root{
-  --dos-bg:#000; --dos-fg:#0f0; --dos-border:#0c0;
-  --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
-  --accent:#0ff; --muted:#088;
+  --bg:#001a1a;               /* Deep teal */
+  --fg:#00ffff;               /* Cyan text */
+  --accent:#ffcc00;           /* Amber */
+  --border:#00cccc;           /* Soft cyan border */
+  --panel-bg:#002b2b;
+  --yahoo-blue:#1e73be;
+  --yahoo-dark:#0961a6;
+  --online:#00ff9d;
+  --muted:#00aaaa;
 }
-html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--dos-bg);color:var(--dos-fg);overflow:hidden}
+html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:hidden}
 body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
 
-/* CRT scan-lines */
-#crt::before{
-  content:"";position:fixed;top:0;left:0;right:0;bottom:0;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,0.08),rgba(0,0,0,0.08) 2px,transparent 2px,transparent 4px);
-  pointer-events:none;z-index:999;
-}
+/* CRT scanlines */
+#crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06) 2px,transparent 2px,transparent 4px);pointer-events:none;z-index:999}
 
-/* Boot overlay */
-#bootOverlay{position:fixed;inset:0;background:#000;color:#0f0;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Press Start 2P',cursive}
-#bootPanel{width:90%;max-width:800px;background:#001a00;border:4px solid var(--dos-border);padding:20px;box-shadow:0 0 30px #0f0}
-#bootLog{line-height:1.6;white-space:pre-wrap;margin-bottom:20px}
-#bootPrompt{color:#0ff}
-#bootInput{background:#001a00;border:2px solid var(--dos-border);color:#0f0;font-family:inherit;padding:6px;width:70%;max-width:300px}
-#bootBtn{background:#001a00;border:2px solid var(--dos-border);color:#0f0;padding:6px 12px;cursor:pointer}
+/* BOOT */
+#bootOverlay{position:fixed;inset:0;background:#000;color:var(--fg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Press Start 2P'}
+#bootPanel{width:90%;max-width:800px;background:var(--panel-bg);border:4px solid var(--border);padding:20px;box-shadow:0 0 30px #00cccc}
+#bootLog{line-height:1.6;white-space:pre-wrap;margin-bottom:20px;font-size:14px}
+#bootPrompt{color:var(--accent)}
+#bootInput{background:var(--panel-bg);border:2px solid var(--border);color:var(--fg);font-family:inherit;padding:6px;width:70%;max-width:300px}
+#bootBtn{background:var(--panel-bg);border:2px solid var(--border);color:var(--accent);padding:6px 12px;cursor:pointer}
 
-/* Main app (hidden until login) */
+/* APP */
 #app{display:none;height:100%;padding:8px;box-sizing:border-box;overflow-y:auto}
-.title-bar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P'}
+.title-bar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:13px}
 .title-bar .logo{font-weight:700;letter-spacing:1px}
 .top-links{display:flex;gap:12px;flex-wrap:wrap;margin-left:auto;align-items:center}
 .top-links a{color:#fff;text-decoration:underline;font-size:13px}
-#ortegaBtn{background:#ff0;color:#000;padding:6px 14px;border-radius:4px;font-weight:700;cursor:pointer}
+#ortegaBtn{background:var(--accent);color:#000;padding:6px 16px;border-radius:4px;font-weight:700;cursor:pointer;border:2px solid #000}
 
-/* Layout */
+/* LAYOUT */
 .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
 @media(max-width:980px){.layout{grid-template-columns:1fr}}
 
-/* Panels – DOS style */
-.panel{background:#001a00;border:3px solid var(--dos-border);padding:10px;border-radius:4px;box-shadow:0 0 12px rgba(0,255,0,0.3);position:relative;overflow:hidden}
+/* PANELS */
+.panel{background:var(--panel-bg);border:3px solid var(--border);padding:10px;border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.3);overflow:hidden}
 .small{font-size:12px;color:var(--muted)}
 
-/* YouTube */
-.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--dos-border)}
+/* YOUTUBE */
+.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border)}
 
-/* Yahoo chat */
+/* YAHOO CHAT */
 .chat-win{border:4px solid var(--yahoo-dark);border-radius:8px;overflow:hidden;background:#eaf6ff}
 .chat-title{display:flex;justify-content:space-between;align-items:center;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .chat-body{padding:8px;display:grid;grid-template-columns:1fr 180px;gap:8px}
 @media(max-width:700px){.chat-body{grid-template-columns:1fr}}
 .chat-messages{height:340px;overflow:auto;background:#fff;border:2px solid #ccc;padding:8px;border-radius:4px}
 .chat-row{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
-.chat-avatar{width:32px;height:32px;border-radius:50%;background:#d9eefc;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
+.chat-avatar{width:32px;height:32px;border-radius:50%;background:#d9eefc;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#0961a6}
 .chat-bubble{max-width:78%;padding:8px;border-radius:8px;background:#fff;border:1px solid #cfe6ff;font-family:Arial}
 .chat-bubble.me{background:#fff7d6;border:1px solid #f0d280;text-align:right}
 .chat-meta{font-size:11px;color:#0a6fbf;font-weight:700;margin-bottom:4px}
 .chat-controls{display:flex;gap:6px;margin-top:8px}
-.chat-controls input{flex:1;padding:6px;border:2px inset #ccc;font-family:monospace}
-.chat-controls select, .chat-controls button{padding:6px;border:2px outset #ccc;background:#dfefff;cursor:pointer}
+.chat-controls input{flex:1;padding:6px;border:2px inset #ccc;font-family:monospace;background:#fff}
+.chat-controls select,.chat-controls button{padding:6px;border:2px outset #ccc;background:#dfefff;cursor:pointer}
 
-/* Active users */
+/* ACTIVE USERS (per channel) */
 .user-row{display:flex;align-items:center;gap:8px;padding:4px;border-radius:4px;background:#fff;border:1px solid #ccc;cursor:pointer}
-.status-dot{width:10px;height:10px;border-radius:50%;background:var(--online)}
+.status-dot{width:10px;height:10px;border-radius:50%;background:var(--online);box-shadow:0 0 4px #0f0}
 .uname{font-family:'Press Start 2P';font-size:11px;color:#0a4b7a}
 .tooltip{position:relative}
 .tooltip .tip{position:absolute;left:105%;top:0;background:#111;color:#fff;padding:4px 8px;border-radius:4px;white-space:nowrap;display:none;z-index:99;font-size:11px}
 .tooltip:hover .tip{display:block}
 
-/* Message board */
-.board-thread{background:#fff;border:2px solid var(--dos-border);padding:8px;margin-bottom:8px;border-radius:4px}
+/* BOARD */
+.board-thread{background:#fff;border:2px solid var(--border);padding:8px;margin-bottom:8px;border-radius:4px}
 
-/* System feed */
-#systemFeed{max-height:180px;overflow:auto;background:#001a00;border:2px solid var(--dos-border);padding:6px;font-size:12px}
+/* SYSTEM FEED */
+#systemFeed{max-height:180px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px}
 
-/* DM window – AIM style */
+/* DM */
 .dm-window{position:fixed;background:#fff;border:3px solid #b8860b;border-radius:6px;z-index:9999;min-width:260px;max-width:420px;box-shadow:6px 6px 0 rgba(0,0,0,0.2)}
 .dm-title{background:linear-gradient(180deg,#fddc6b,#f2c200);padding:6px;border-radius:4px;font-weight:700;cursor:move;font-family:'Press Start 2P';font-size:11px}
 .dm-msg{background:#fff7d6;padding:6px;border-radius:6px;margin:4px 0;max-width:90%}
 
-/* Particles */
+/* PARTICLES */
 #particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:0}
 </style>
 </head>
 <body>
 <div id="crt"></div>
 
-<!-- BOOT SCREEN -->
+<!-- BOOT -->
 <div id="bootOverlay">
   <div id="bootPanel">
     <div id="bootLog" class="small"></div>
     <div id="bootPrompt">> ENTER HANDLE:</div>
     <input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle">
     <button id="bootBtn">AUTHENTICATE</button>
-    <div id="bootStatus" class="small" style="margin-top:8px;color:#0ff"></div>
+    <div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
   </div>
 </div>
 
@@ -125,7 +127,7 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
         </div>
       </div>
 
-      <!-- Yahoo Chat -->
+      <!-- YAHOO CHAT -->
       <div class="panel chat-win" style="margin-top:12px">
         <div class="chat-title">
           <div style="display:flex;gap:12px;align-items:center">
@@ -141,7 +143,7 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
         <div class="chat-body">
           <div class="chat-messages" id="chatMessages"></div>
           <div>
-            <div class="small" style="margin-bottom:4px">USERS</div>
+            <div class="small" style="margin-bottom:4px">USERS ONLINE</div>
             <div id="activeContainer" style="max-height:320px;overflow:auto"></div>
           </div>
         </div>
@@ -158,7 +160,7 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
         </div>
       </div>
 
-      <!-- Message Board -->
+      <!-- BOARD -->
       <div class="panel" style="margin-top:12px">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div class="small">MESSAGE BOARD</div>
@@ -200,7 +202,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
-/* ───── DOM ───── */
+/* DOM */
 const bootOverlay = document.getElementById('bootOverlay');
 const bootLog = document.getElementById('bootLog');
 const bootInput = document.getElementById('bootInput');
@@ -225,14 +227,8 @@ const soundMsg = document.getElementById('soundMsg');
 
 let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null, channelListeners = {};
 
-/* ───── BOOT SEQUENCE ───── */
-const bootLines = [
-  "INITIALIZING BEFORE US UNIVERSE...",
-  "Loading kernel.............[OK]",
-  "Mounting network...........[OK]",
-  "Checking Firebase link.....[OK]",
-  "Ready for authentication..."
-];
+/* BOOT */
+const bootLines = ["INITIALIZING BEFORE US UNIVERSE...","Loading kernel.............[OK]","Mounting network...........[OK]","Checking Firebase link.....[OK]","Ready for authentication..."];
 let lineIdx = 0;
 function typeBootLine(){
   if(lineIdx < bootLines.length){
@@ -243,8 +239,7 @@ function typeBootLine(){
 }
 typeBootLine();
 
-/* ───── AUTH ───── */
-signInAnonymously(auth).catch(e=>appendBoot("Auth error: "+e.message));
+signInAnonymously(auth).catch(e=>bootStatus.textContent="Auth error: "+e.message);
 onAuthStateChanged(auth, u=>{ if(u) uid = u.uid; });
 
 bootBtn.addEventListener('click', async ()=>{
@@ -266,9 +261,8 @@ function finishBoot(){
   setTimeout(()=>{bootOverlay.style.display='none';appRoot.style.display='block';appendSystem('System ready');},1200);
 }
 
-/* ───── UTILS ───── */
+/* UTILS */
 function appendSystem(t){ const d=document.createElement('div');d.textContent=`${new Date().toLocaleTimeString()} - ${t}`;systemFeed.prepend(d); }
-function appendBoot(t){ bootLog.textContent += t+"\n"; }
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 async function hash(str){
   const e=new TextEncoder().encode(str);
@@ -276,28 +270,27 @@ async function hash(str){
   return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
 }
 
-/* ───── PRESENCE ───── */
+/* PRESENCE */
 function setPresence(h,ch){
   if(presenceRef) remove(presenceRef).catch(()=>{});
   presenceRef = ref(db,`online/${ch}/${uid}`);
   set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid}).then(()=>onDisconnect(presenceRef).remove());
 }
 
-/* ───── ONLINE LIST ───── */
+/* ONLINE LIST - PER CHANNEL */
 function watchOnline(){
   onValue(ref(db,'online'),snap=>{
     const data = snap.val()||{};
     renderActive(data);
     rebuildDMList(data);
+    updateUserCount(data);
   });
 }
 function renderActive(data){
   activeContainer.innerHTML='';
   const channels = ['exuro','sam','nero','nora','loktal'];
-  let total=0;
   channels.forEach(ch=>{
     const users = data[ch]||{};
-    total += Object.keys(users).length;
     const sec=document.createElement('div');
     sec.innerHTML=`<div style="font-weight:700;margin:6px 0">//${ch.toUpperCase()} (${Object.keys(users).length})</div>`;
     const list=document.createElement('div');
@@ -314,7 +307,10 @@ function renderActive(data){
     sec.appendChild(list);
     activeContainer.appendChild(sec);
   });
-  userCountSmall.textContent = total + (total===1?' user':' users');
+}
+function updateUserCount(data){
+  const count = Object.keys(data[currentChannel]||{}).length;
+  userCountSmall.textContent = count + (count===1?' user':' users');
 }
 function rebuildDMList(data){
   dmList.innerHTML='';
@@ -332,12 +328,12 @@ function rebuildDMList(data){
   }
 }
 
-/* ───── DM WINDOWS ───── */
-async function registerDMPair(targetUid){
-  const pid=[uid,targetUid].sort().join('_');
+/* DM */
+async function registerDMPair(tuid){
+  const pid=[uid,tuid].sort().join('_');
   const updates={};
   updates[`dmPairs/${pid}/users/${uid}`]=true;
-  updates[`dmPairs/${pid}/users/${targetUid}`]=true;
+  updates[`dmPairs/${pid}/users/${tuid}`]=true;
   await update(ref(db),updates);
 }
 function openDM(tuid,tname){
@@ -348,7 +344,7 @@ function openDM(tuid,tname){
   win.style.right='20px';win.style.bottom='20px';
   const title=document.createElement('div');title.className='dm-title';title.textContent=`DM: ${tname}`;
   const msgs=document.createElement('div');msgs.style.cssText='height:180px;overflow:auto;border:1px solid #ddd;margin-top:6px;padding:6px';
-  const inp=document.createElement('input');inp.className='dm-input';inp.placeholder='Type…';
+  const inp=document.createElement('input');inp.placeholder='Type…';
   const send=document.createElement('button');send.textContent='Send';
   const close=document.createElement('button');close.textContent='X';close.style.marginLeft='4px';
   win.append(title,msgs,inp,send,close);
@@ -385,7 +381,7 @@ function makeDraggable(el,bar){
   document.onmouseup=()=>{drag=false;};
 }
 
-/* ───── CHAT ───── */
+/* CHAT */
 function listenChannel(ch){
   for(const c in channelListeners) off(channelListeners[c].ref);
   currentChannel=ch;
@@ -419,7 +415,7 @@ async function postMessage(ch,name,msg){
   set(ref(db,`online/${ch}/${uid}`),{name,ts:Date.now(),channel:ch,uid});
 }
 
-/* ───── BOARD ───── */
+/* BOARD */
 function listenBoard(){
   onChildAdded(ref(db,'board'),snap=>{
     const p=snap.val();
@@ -429,7 +425,7 @@ function listenBoard(){
   });
 }
 
-/* ───── UI HOOKS ───── */
+/* UI */
 sendBtn.onclick=()=>{ if(!myHandle) return alert('Login first'); postMessage(channelSelect.value,myHandle,chatInput.value); chatInput.value=''; soundMsg.play().catch(()=>{}); };
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
 postBoardBtn.onclick=async()=>{
@@ -443,10 +439,10 @@ closeChatBtn.onclick=()=>{document.querySelector('.chat-win').style.display='non
 channelSelect.onchange=()=>{listenChannel(channelSelect.value);setPresence(myHandle,channelSelect.value);};
 ortegaBtn.onclick=()=>{alert('Project ://ORTEGA – RAG-LM integration coming soon');};
 
-/* ───── STARTUP ───── */
+/* START */
 watchOnline(); listenBoard(); listenChannel(currentChannel); appendSystem('Initializing...');
 
-/* ───── PARTICLES ───── */
+/* PARTICLES */
 const pc=document.getElementById('particleCanvas'),ctx=pc.getContext('2d');
 function resize(){pc.width=innerWidth;pc.height=innerHeight;} resize(); addEventListener('resize',resize);
 let particles=[];
@@ -457,14 +453,14 @@ function loop(){
   for(let i=particles.length-1;i>=0;i--){
     const p=particles[i];
     p.x+=p.vx;p.y+=p.vy;p.life--;
-    ctx.fillStyle=`rgba(0,255,0,${p.life/45})`;
+    ctx.fillStyle=`rgba(0,255,255,${p.life/45})`;
     ctx.fillRect(p.x,p.y,p.size,p.size);
     if(p.life<=0) particles.splice(i,1);
   }
   requestAnimationFrame(loop);
 } loop();
 
-/* ───── PRUNE OLD CHAT (24 h) ───── */
+/* PRUNE */
 setInterval(async()=>{
   const snap=await get(ref(db,'chat'));
   const data=snap.val()||{};
