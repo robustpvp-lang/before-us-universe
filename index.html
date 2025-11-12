@@ -6,22 +6,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* ───── CRT / DOS THEME (EASY ON EYES) ───── */
+/* ───── CRT / DOS THEME ───── */
 :root{
-  --bg:#001a1a;               /* Deep teal */
-  --fg:#00ffff;               /* Cyan text */
-  --accent:#ffcc00;           /* Amber */
-  --border:#00cccc;           /* Soft cyan border */
-  --panel-bg:#002b2b;
-  --yahoo-blue:#1e73be;
-  --yahoo-dark:#0961a6;
-  --online:#00ff9d;
-  --muted:#00aaaa;
+  --bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
+  --yahoo-blue:#1e73be; --yahoo-dark:#0961a6; --online:#00ff9d; --muted:#00aaaa;
 }
 html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:hidden}
 body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
 
-/* CRT scanlines */
+/* CRT */
 #crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06) 2px,transparent 2px,transparent 4px);pointer-events:none;z-index:999}
 
 /* BOOT */
@@ -29,16 +22,14 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 #bootPanel{width:90%;max-width:800px;background:var(--panel-bg);border:4px solid var(--border);padding:20px;box-shadow:0 0 30px #00cccc}
 #bootLog{line-height:1.6;white-space:pre-wrap;margin-bottom:20px;font-size:14px}
 #bootPrompt{color:var(--accent)}
-#bootInput{background:var(--panel-bg);border:2px solid var(--border);color:var(--fg);font-family:inherit;padding:6px;width:70%;max-width:300px}
+#bootInput{background:var(--panel-bg);border:2px solid var(--border);color:var(--fg);padding:6px;width:70%;max-width:300px}
 #bootBtn{background:var(--panel-bg);border:2px solid var(--border);color:var(--accent);padding:6px 12px;cursor:pointer}
 
 /* APP */
 #app{display:none;height:100%;padding:8px;box-sizing:border-box;overflow-y:auto}
-.title-bar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:13px}
+.title-bar{display:flex;gap:12px;flex-wrap:wrap;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center}
 .title-bar .logo{font-weight:700;letter-spacing:1px}
-.top-links{display:flex;gap:12px;flex-wrap:wrap;margin-left:auto;align-items:center}
-.top-links a{color:#fff;text-decoration:underline;font-size:13px}
-#ortegaBtn{background:var(--accent);color:#000;padding:6px 16px;border-radius:4px;font-weight:700;cursor:pointer;border:2px solid #000}
+.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4px;font-weight:700;cursor:pointer;border:2px solid #000;margin:2px;font-size:11px}
 
 /* LAYOUT */
 .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
@@ -51,11 +42,12 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 /* YOUTUBE */
 .yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border)}
 
+/* SERVER LIST (ABOVE CHAT) */
+#serverListPanel .panel-body{max-height:180px;overflow:auto;background:#001f1f;border:1px solid var(--border);padding:6px}
+
 /* YAHOO CHAT */
-.chat-win{border:4px solid var(--yahoo-dark);border-radius:8px;overflow:hidden;background:#eaf6ff}
+.chat-win{border:4px solid var(--yahoo-dark);border-radius:8px;overflow:hidden;background:#eaf6ff;margin-top:12px}
 .chat-title{display:flex;justify-content:space-between;align-items:center;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
-.chat-body{padding:8px;display:grid;grid-template-columns:1fr 180px;gap:8px}
-@media(max-width:700px){.chat-body{grid-template-columns:1fr}}
 .chat-messages{height:340px;overflow:auto;background:#fff;border:2px solid #ccc;padding:8px;border-radius:4px}
 .chat-row{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
 .chat-avatar{width:32px;height:32px;border-radius:50%;background:#d9eefc;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#0961a6}
@@ -63,19 +55,18 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .chat-bubble.me{background:#fff7d6;border:1px solid #f0d280;text-align:right}
 .chat-meta{font-size:11px;color:#0a6fbf;font-weight:700;margin-bottom:4px}
 .chat-controls{display:flex;gap:6px;margin-top:8px}
-.chat-controls input{flex:1;padding:6px;border:2px inset #ccc;font-family:monospace;background:#fff}
-.chat-controls select,.chat-controls button{padding:6px;border:2px outset #ccc;background:#dfefff;cursor:pointer}
+.chat-controls input{flex:1;padding:6px;border:2px inset #ccc;background:#fff}
+.chat-controls button{padding:6px;border:2px outset #ccc;background:#dfefff;cursor:pointer}
 
-/* ACTIVE USERS (per channel) */
-.user-row{display:flex;align-items:center;gap:8px;padding:4px;border-radius:4px;background:#fff;border:1px solid #ccc;cursor:pointer}
-.status-dot{width:10px;height:10px;border-radius:50%;background:var(--online);box-shadow:0 0 4px #0f0}
-.uname{font-family:'Press Start 2P';font-size:11px;color:#0a4b7a}
-.tooltip{position:relative}
-.tooltip .tip{position:absolute;left:105%;top:0;background:#111;color:#fff;padding:4px 8px;border-radius:4px;white-space:nowrap;display:none;z-index:99;font-size:11px}
-.tooltip:hover .tip{display:block}
+/* PROBOARDS MESSAGE BOARD */
+.board-thread{background:#f5f5f5;border:1px solid #ccc;padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial}
+.board-thread strong{color:#0066cc}
+.board-thread .small{color:#666;font-style:italic}
 
-/* BOARD */
-.board-thread{background:#fff;border:2px solid var(--border);padding:8px;margin-bottom:8px;border-radius:4px}
+/* RIGHT COLUMN */
+#serverSelectPanel, #ortegaPanel{margin-bottom:12px}
+#serverSelectPanel select{width:100%;padding:6px;background:var(--panel-bg);border:2px solid var(--border);color:var(--fg)}
+#ortegaBtn{width:100%;background:var(--accent);color:#000;padding:10px;border:2px solid #000;border-radius:4px;font-weight:700;cursor:pointer;font-size:14px}
 
 /* SYSTEM FEED */
 #systemFeed{max-height:180px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px}
@@ -108,13 +99,9 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 <div id="app">
   <div class="title-bar">
     <div class="logo">BUU</div>
-    <div style="flex:1"></div>
-    <div class="top-links">
-      <a href="https://tokillamockinggoblin.boards.net/" target="_blank">To Kill a Mocking Goblin</a>
-      <a href="https://youtube.com/@Patrickauthor" target="_blank">Melphia’s Game (YT)</a>
-      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank">Book 1</a>
-    </div>
-    <button id="ortegaBtn">Project ://ORTEGA</button>
+    <button class="link-btn" onclick="window.open('https://tokillamockinggoblin.boards.net/','_blank')">To Kill a Mocking Goblin</button>
+    <button class="link-btn" onclick="window.open('https://youtube.com/@Patrickauthor','_blank')">Melphia’s Game (YT)</button>
+    <button class="link-btn" onclick="window.open('https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview','_blank')">Book 1</button>
   </div>
 
   <div class="layout">
@@ -127,8 +114,14 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
         </div>
       </div>
 
+      <!-- SERVER LIST (ABOVE CHAT) -->
+      <div class="panel" id="serverListPanel">
+        <div class="small">USERS BY SERVER</div>
+        <div class="panel-body" id="serverList"></div>
+      </div>
+
       <!-- YAHOO CHAT -->
-      <div class="panel chat-win" style="margin-top:12px">
+      <div class="panel chat-win">
         <div class="chat-title">
           <div style="display:flex;gap:12px;align-items:center">
             <span id="winChannelLabel">//EXURO</span>
@@ -140,31 +133,18 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
             <button id="closeChatBtn" style="background:#fff;color:#c00;padding:2px 6px;border-radius:4px">X</button>
           </div>
         </div>
-        <div class="chat-body">
-          <div class="chat-messages" id="chatMessages"></div>
-          <div>
-            <div class="small" style="margin-bottom:4px">USERS ONLINE</div>
-            <div id="activeContainer" style="max-height:320px;overflow:auto"></div>
-          </div>
-        </div>
+        <div class="chat-messages" id="chatMessages" style="padding:8px"></div>
         <div class="chat-controls">
           <input id="chatInput" placeholder="Say something..." maxlength="500">
-          <select id="channelSelect">
-            <option value="exuro">//Exuro</option>
-            <option value="sam">//Sam</option>
-            <option value="nero">//Nero</option>
-            <option value="nora">//Nora</option>
-            <option value="loktal">//Loktal</option>
-          </select>
           <button id="sendBtn">SEND</button>
         </div>
       </div>
 
-      <!-- BOARD -->
+      <!-- PROBOARDS BOARD -->
       <div class="panel" style="margin-top:12px">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div class="small">MESSAGE BOARD</div>
-          <div class="small">Posts persist – chat auto-deletes 24 h</div>
+          <div class="small">MESSAGE BOARD (ProBoards Style)</div>
+          <div class="small">Posts persist – chat deletes after 24h</div>
         </div>
         <div id="boardList" style="margin-top:8px;max-height:340px;overflow:auto"></div>
         <div style="margin-top:8px">
@@ -177,10 +157,30 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 
     <!-- RIGHT -->
     <div>
+      <!-- SERVER SELECTOR -->
+      <div class="panel" id="serverSelectPanel">
+        <div class="small">SELECT SERVER</div>
+        <select id="channelSelect">
+          <option value="exuro">//Exuro</option>
+          <option value="sam">//Sam</option>
+          <option value="nero">//Nero</option>
+          <option value="nora">//Nora</option>
+          <option value="loktal">//Loktal</option>
+        </select>
+      </div>
+
+      <!-- ORTEGA BUTTON -->
+      <div class="panel" id="ortegaPanel">
+        <button id="ortegaBtn">Project ://ORTEGA</button>
+      </div>
+
+      <!-- SYSTEM FEED -->
       <div class="panel">
         <div class="small">SYSTEM FEED</div>
         <div id="systemFeed"></div>
       </div>
+
+      <!-- DM LIST -->
       <div class="panel" style="margin-top:12px">
         <div class="small">DIRECT MESSAGES</div>
         <div id="dmList" style="margin-top:8px"></div>
@@ -215,7 +215,7 @@ const sendBtn = document.getElementById('sendBtn');
 const channelSelect = document.getElementById('channelSelect');
 const closeChatBtn = document.getElementById('closeChatBtn');
 const userCountSmall = document.getElementById('userCountSmall');
-const activeContainer = document.getElementById('activeContainer');
+const serverList = document.getElementById('serverList');
 const boardList = document.getElementById('boardList');
 const boardName = document.getElementById('boardName');
 const boardMsg = document.getElementById('boardMsg');
@@ -277,40 +277,28 @@ function setPresence(h,ch){
   set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid}).then(()=>onDisconnect(presenceRef).remove());
 }
 
-/* ONLINE LIST - PER CHANNEL */
+/* SERVER LIST (ABOVE CHAT) */
+function renderServerList(data){
+  serverList.innerHTML = '';
+  const channels = ['exuro','sam','nero','nora','loktal'];
+  channels.forEach(ch => {
+    const users = Object.keys(data[ch]||{}).length;
+    const div = document.createElement('div');
+    div.innerHTML = `<strong>//${ch.toUpperCase()}</strong>: ${users} user${users===1?'':'s'}`;
+    div.style.margin = '4px 0';
+    serverList.appendChild(div);
+  });
+  const count = Object.keys(data[currentChannel]||{}).length;
+  userCountSmall.textContent = count + (count===1?' user':' users');
+}
+
+/* ONLINE TRACKING */
 function watchOnline(){
   onValue(ref(db,'online'),snap=>{
     const data = snap.val()||{};
-    renderActive(data);
+    renderServerList(data);
     rebuildDMList(data);
-    updateUserCount(data);
   });
-}
-function renderActive(data){
-  activeContainer.innerHTML='';
-  const channels = ['exuro','sam','nero','nora','loktal'];
-  channels.forEach(ch=>{
-    const users = data[ch]||{};
-    const sec=document.createElement('div');
-    sec.innerHTML=`<div style="font-weight:700;margin:6px 0">//${ch.toUpperCase()} (${Object.keys(users).length})</div>`;
-    const list=document.createElement('div');
-    Object.entries(users).forEach(([id,u])=>{
-      const row=document.createElement('div');row.className='user-row tooltip';
-      const dot=document.createElement('div');dot.className='status-dot';
-      const name=document.createElement('div');name.className='uname';name.textContent=u.name;
-      name.onclick=()=>openDM(id,u.name);
-      const tip=document.createElement('div');tip.className='tip';tip.textContent='Click to DM';
-      name.appendChild(tip);
-      row.append(dot,name);
-      list.appendChild(row);
-    });
-    sec.appendChild(list);
-    activeContainer.appendChild(sec);
-  });
-}
-function updateUserCount(data){
-  const count = Object.keys(data[currentChannel]||{}).length;
-  userCountSmall.textContent = count + (count===1?' user':' users');
 }
 function rebuildDMList(data){
   dmList.innerHTML='';
@@ -415,18 +403,18 @@ async function postMessage(ch,name,msg){
   set(ref(db,`online/${ch}/${uid}`),{name,ts:Date.now(),channel:ch,uid});
 }
 
-/* BOARD */
+/* BOARD (ProBoards) */
 function listenBoard(){
   onChildAdded(ref(db,'board'),snap=>{
     const p=snap.val();
     const el=document.createElement('div');el.className='board-thread';
-    el.innerHTML=`<strong>${esc(p.name)}</strong><div style="margin-top:4px">${esc(p.msg)}</div><div class="small" style="margin-top:4px">${new Date(p.ts).toLocaleString()}</div>`;
+    el.innerHTML=`<strong>${esc(p.name)}</strong><br>${esc(p.msg)}<div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
     boardList.prepend(el);
   });
 }
 
 /* UI */
-sendBtn.onclick=()=>{ if(!myHandle) return alert('Login first'); postMessage(channelSelect.value,myHandle,chatInput.value); chatInput.value=''; soundMsg.play().catch(()=>{}); };
+sendBtn.onclick=()=>{ if(!myHandle) return alert('Login first'); postMessage(currentChannel,myHandle,chatInput.value); chatInput.value=''; soundMsg.play().catch(()=>{}); };
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
 postBoardBtn.onclick=async()=>{
   const n=boardName.value.trim(), m=boardMsg.value.trim();
@@ -436,8 +424,8 @@ postBoardBtn.onclick=async()=>{
   boardName.value='';boardMsg.value='';
 };
 closeChatBtn.onclick=()=>{document.querySelector('.chat-win').style.display='none';};
-channelSelect.onchange=()=>{listenChannel(channelSelect.value);setPresence(myHandle,channelSelect.value);};
-ortegaBtn.onclick=()=>{alert('Project ://ORTEGA – RAG-LM integration coming soon');};
+channelSelect.onchange=()=>{listenChannel(channelSelect.value);setPresence(myHandle,channelSelect.value);currentChannel=channelSelect.value;};
+ortegaBtn.onclick=()=>{alert('Project ://ORTEGA – RAG-LM genie coming soon');};
 
 /* START */
 watchOnline(); listenBoard(); listenChannel(currentChannel); appendSystem('Initializing...');
