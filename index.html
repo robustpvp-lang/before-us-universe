@@ -43,9 +43,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 </head>
 <body>
 <div id="bootScreen">
-  <div class="boot-line" id="bootLineA"></div>
-  <div class="boot-line" id="bootLineB"></div>
-  <div class="boot-line" id="bootLineC"></div>
+  <div id="bootLinesContainer"></div>
   <div class="boot-progress" id="bootProgress">[......................] 0%</div>
 </div>
 
@@ -128,24 +126,56 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ---------- Boot ----------
-const bootScreen=document.getElementById('bootScreen');
-const bootLines=[
-  "Initializing BUU virtual environment...",
-  "Decrypting Lux telemetry...",
+// ---------- Boot sequence with glitch ----------
+const bootScreenEl = document.getElementById('bootScreen');
+const bootLinesContainer = document.getElementById('bootLinesContainer');
+const bootProgress = document.getElementById('bootProgress');
+
+const bootLines = [
+  "Booting Before Us Universe v1.0...",
+  "Initializing Lux telemetry...",
+  "Decrypting Tiamat protocols...",
   "Calibrating Vestus fleet sensors...",
+  "Loading multi-channel chat modules...",
+  "Mounting ProBoards message board...",
   "Finalizing system checks..."
 ];
-let bootI=0;
-const bootProgress=document.getElementById('bootProgress');
-function bootStep(){
-  if(bootI>=bootLines.length){bootScreen.style.display='none';document.getElementById('app').style.display='block'; return;}
-  const line=document.createElement('div'); line.className='boot-line'; line.textContent=bootLines[bootI++];
-  bootScreen.appendChild(line);
-  bootProgress.textContent='['+'#'.repeat(bootI*5)+'......................'.slice(bootI*5)+'] '+Math.floor((bootI/bootLines.length)*100)+'%';
-  setTimeout(bootStep, 500 + Math.random()*500);
+
+let currentLine = 0;
+
+function glitchText(text){
+  return text.split('').map(c => Math.random() < 0.05 ? String.fromCharCode(33 + Math.floor(Math.random()*94)) : c).join('');
 }
+
+function bootStep(){
+  if(currentLine >= bootLines.length){
+    bootScreenEl.style.display='none';
+    document.getElementById('app').style.display='block';
+    return;
+  }
+  
+  const lineEl = document.createElement('div');
+  lineEl.className = 'boot-line';
+  lineEl.textContent = glitchText(bootLines[currentLine]);
+  bootLinesContainer.appendChild(lineEl);
+  
+  bootProgress.textContent = '['+'#'.repeat((currentLine+1)*3)+'......................'.slice((currentLine+1)*3)+'] ' 
+                             + Math.floor(((currentLine+1)/bootLines.length)*100)+'%';
+  
+  currentLine++;
+  setTimeout(bootStep, 500 + Math.random()*400);
+}
+
+// Start the boot animation
 bootStep();
+
+// Optional: add periodic line glitches while booting
+setInterval(()=>{
+  const lines = bootLinesContainer.children;
+  for(let i=0;i<lines.length;i++){
+    if(Math.random()<0.1) lines[i].textContent = glitchText(lines[i].textContent);
+  }
+}, 300);
 
 // ---------- Login ----------
 let handle=null,currentChannel='exuro',presenceRef=null;
