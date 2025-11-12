@@ -19,13 +19,9 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .maingrid{display:flex;gap:12px;align-items:flex-start}
 .leftcol{flex:2;display:flex;flex-direction:column;gap:12px;min-width:340px;}
 .rightcol{flex:1;min-width:260px;display:flex;flex-direction:column;gap:12px}
-.stream-toggle{display:flex;gap:8px;justify-content:center;margin-bottom:6px;flex-wrap:wrap}
-.btn{background:transparent;border:1px solid #222;color:var(--muted);padding:6px 10px;border-radius:4px;cursor:pointer}
-.btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,230,255,0.03)}
 .panel{background:var(--panel);border:1px solid #1e1f21;border-radius:6px;padding:12px;box-shadow:0 0 0 1px rgba(255,255,255,0.01) inset}
 .stream{min-height:260px;overflow:auto;padding:8px;white-space:pre-wrap;font-size:0.95rem}
 .stream p{margin:6px 0;padding:6px;border-radius:4px}
-.stream .meta{font-size:0.8rem;color:#b9d3e0}
 .exuro p{color:var(--exuro)}
 .sam p{color:var(--sam)}
 .nora p{color:var(--nora)}
@@ -33,7 +29,6 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .loktal p{color:var(--loktal)}
 .pilgrim p{color:var(--pilgrim)}
 #activeUsers{background:#0b0e11;border:1px solid #1f2326;border-radius:6px;padding:8px;max-height:300px;overflow:auto}
-#activeUsers p{margin:6px 0;color:#bfe8ff}
 .input-area{display:flex;gap:8px;align-items:center;margin-top:6px}
 .input-area input[type="text"],#handleField{background:#0b0e11;border:1px solid #222;padding:8px;border-radius:4px;color:var(--muted);width:100%;font-family:monospace}
 .sendBtn{padding:8px 12px;border-radius:4px;background:var(--accent);color:#000;border:none;cursor:pointer;font-weight:700}
@@ -41,6 +36,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .boot-line{white-space:pre;font-size:1rem;margin:2px 0;opacity:0.95}
 .boot-progress{margin-top:10px;border:1px solid rgba(255,255,255,0.03);padding:6px;width:60%;border-radius:4px;color:#bfe8ff}
 .small{font-size:0.85rem;color:#9fb8c9}
+select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;color:var(--muted);width:100%;font-family:monospace}
 @media(max-width:980px){.maingrid{flex-direction:column}}
 </style>
 </head>
@@ -65,7 +61,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 <div class="maingrid">
 <div class="leftcol">
 
-<!-- YOUTUBE STREAM TOP -->
+<!-- YOUTUBE STREAM -->
 <div class="panel">
   <div class="small">Live YouTube Stream</div>
   <iframe width="100%" height="360" 
@@ -85,16 +81,21 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
   </div>
 </div>
 
+<!-- CHANNEL SELECT -->
+<div class="panel">
+  <div class="small">Select Channel</div>
+  <select id="channelSelect">
+    <option value="exuro">//Exuro</option>
+    <option value="sam">//Sam</option>
+    <option value="nora">//Nora</option>
+    <option value="nero">//Nero</option>
+    <option value="loktal">//Loktal</option>
+    <option value="pilgrim" style="display:none">//Pilgrim</option>
+  </select>
+</div>
+
 <!-- CHAT PANEL -->
-<div class="panel" style="margin-top:8px">
-  <div class="stream-toggle">
-    <button class="btn active" data-channel="exuro">EXURO</button>
-    <button class="btn" data-channel="sam">SAM</button>
-    <button class="btn" data-channel="nora">NORA</button>
-    <button class="btn" data-channel="nero">NERO</button>
-    <button class="btn" data-channel="loktal">LOKTAL</button>
-    <button class="btn" data-channel="pilgrim" style="display:none">PILGRIM</button>
-  </div>
+<div class="panel">
   <div id="streamsContainer">
     <div id="exuro" class="stream exuro panel" style="display:block"></div>
     <div id="sam" class="stream sam panel" style="display:none"></div>
@@ -200,23 +201,22 @@ document.getElementById('enterBtn').addEventListener('click',()=>{
   if(!handle) return;
   document.getElementById('loginPanel').style.display='none';
   presenceRef=db.ref('online/'+handle); 
-  presenceRef.set(true); 
+  presenceRef.set(currentChannel); 
   presenceRef.onDisconnect().remove();
   listenChat(); listenBoard(); listenOnline();
-  // Unlock Pilgrim channel if handle matches secret
-  if(handle.toLowerCase()==='pilgrim123') document.querySelector('[data-channel="pilgrim"]').style.display='inline-block';
+  updateChannelPresence(currentChannel);
 });
 
-document.querySelectorAll('.stream-toggle .btn').forEach(b=>{
-  b.addEventListener('click',()=>{
-    document.querySelectorAll('.stream-toggle .btn').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active'); 
-    switchChannel(b.dataset.channel);
-  });
+const channelSelect=document.getElementById('channelSelect');
+channelSelect.addEventListener('change',()=>{
+  switchChannel(channelSelect.value);
 });
+
 function switchChannel(ch){
   currentChannel=ch;
   document.querySelectorAll('.stream').forEach(d=>d.style.display=(d.id===ch)?'block':'none');
+  if(presenceRef) presenceRef.set(currentChannel);
+  updateChannelPresence(currentChannel);
 }
 
 document.getElementById('sendChat').addEventListener('click',()=>{postChat(document.getElementById('chatInput').value);});
@@ -224,7 +224,7 @@ document.getElementById('chatInput').addEventListener('keypress',e=>{if(e.key===
 
 function postChat(msg){
   if(!msg||!handle) return;
-  chatRef.push({name:handle,msg:msg.slice(0,500),ts:Date.now(),channel:currentChannel});
+  chatRef.push({name:'//'+handle,msg:msg.slice(0,500),ts:Date.now(),channel:currentChannel});
   document.getElementById('chatInput').value='';
 }
 
@@ -232,7 +232,7 @@ function listenChat(){
   chatRef.limitToLast(200).on('child_added',snap=>{
     const obj=snap.val(); if(!obj||!obj.msg) return;
     const target=document.getElementById(obj.channel)||document.getElementById('exuro');
-    const p=document.createElement('p'); p.innerHTML=`<span class="meta">[${obj.name}]</span> ${obj.msg}`;
+    const p=document.createElement('p'); p.innerHTML=`<span class="meta">${obj.name}</span> ${obj.msg}`;
     target.appendChild(p); target.scrollTop=target.scrollHeight;
   });
 }
@@ -243,7 +243,7 @@ document.getElementById('boardInput').addEventListener('keypress',e=>{if(e.key==
 
 function postBoard(msg){
   if(!msg||!handle) return;
-  boardRef.push({name:handle,msg:msg.slice(0,1000),ts:Date.now()});
+  boardRef.push({name:'//'+handle,msg:msg.slice(0,1000),ts:Date.now()});
   document.getElementById('boardInput').value='';
 }
 
@@ -251,21 +251,31 @@ function listenBoard(){
   boardRef.limitToLast(200).on('child_added',snap=>{
     const obj=snap.val(); if(!obj||!obj.msg) return;
     const target=document.getElementById('localBoard');
-    const p=document.createElement('p'); p.innerHTML=`<span class="meta">[${obj.name}]</span> ${obj.msg}`;
+    const p=document.createElement('p'); p.innerHTML=`<span class="meta">${obj.name}</span> ${obj.msg}`;
     target.appendChild(p); target.scrollTop=target.scrollHeight;
   });
 }
 
-// ---------- Online users ----------
+// ---------- Active Users per Channel ----------
+function updateChannelPresence(channel){
+  if(!handle) return;
+  db.ref('online/'+handle).set(channel);
+}
+
 function listenOnline(){
   db.ref('online').on('value',snap=>{
+    const counts={exuro:0,sam:0,nora:0,nero:0,loktal:0,pilgrim:0};
     const container=document.getElementById('activeUsers'); container.innerHTML='';
-    snap.forEach(ch=>{
-      const name=ch.key;
-      if(name && !name.startsWith('-')){
-        const p=document.createElement('p'); p.textContent=name; container.appendChild(p);
-      }
+    snap.forEach(u=>{
+      const ch=u.val();
+      if(counts[ch]!==undefined) counts[ch]++;
     });
+    for(const ch in counts){
+      const p=document.createElement('p');
+      let name="//"+ch.charAt(0).toUpperCase()+ch.slice(1);
+      p.textContent=`${name} — ${counts[ch]} user${counts[ch]!==1?'s':''}`;
+      container.appendChild(p);
+    }
   });
 }
 
@@ -280,4 +290,3 @@ pruneOld();
 </script>
 </body>
 </html>
-
