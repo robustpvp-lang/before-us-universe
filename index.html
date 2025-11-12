@@ -8,8 +8,9 @@
 :root{
   --bg:#070709;--panel:#0f1112;--muted:#cfdff0;--accent:#00e6ff;
   --exuro:#aaf;--sam:#ffb470;--nora:#ff77ff;--nero:#77ffcc;--loktal:#ff8877;--pilgrim:#f5f55f;
+  --active-dot:#00ffcc;
 }
-html,body{height:100%;margin:0;background:#070709;color:var(--muted);font-family:"Courier New",monospace;}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--muted);font-family:"Courier New",monospace;}
 a{color:var(--accent);text-decoration:none;}
 .container{max-width:1200px;margin:18px auto;padding:18px;display:flex;flex-direction:column;gap:12px;}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -29,6 +30,9 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .loktal p{color:var(--loktal)}
 .pilgrim p{color:var(--pilgrim)}
 #activeUsers{background:#0b0e11;border:1px solid #1f2326;border-radius:6px;padding:8px;max-height:300px;overflow:auto}
+.active-user{display:flex;align-items:center;gap:6px;cursor:default}
+.active-dot{width:10px;height:10px;border-radius:50%;background:var(--active-dot);display:inline-block;animation:pulse 1s infinite alternate}
+@keyframes pulse{0%{opacity:0.5;}100%{opacity:1;}}
 .input-area{display:flex;gap:8px;align-items:center;margin-top:6px}
 .input-area input[type="text"],#handleField{background:#0b0e11;border:1px solid #222;padding:8px;border-radius:4px;color:var(--muted);width:100%;font-family:monospace}
 .sendBtn{padding:8px 12px;border-radius:4px;background:var(--accent);color:#000;border:none;cursor:pointer;font-weight:700}
@@ -37,8 +41,12 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .boot-progress{margin-top:10px;border:1px solid rgba(255,255,255,0.03);padding:6px;width:60%;border-radius:4px;color:#bfe8ff}
 .small{font-size:0.85rem;color:#9fb8c9}
 select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;color:var(--muted);width:100%;font-family:monospace}
+.lore-card{border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:8px;margin-top:6px;background:#0c0e11;cursor:pointer}
+.lore-card h3{margin:0;font-size:1rem;color:var(--accent)}
+.lore-content{display:none;margin-top:6px;font-size:0.9rem}
 @media(max-width:980px){.maingrid{flex-direction:column}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
@@ -74,12 +82,18 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
   </div>
 </div>
 
-<!-- YOUTUBE STREAM -->
+<!-- YOUTUBE STREAM + LIVE CHAT -->
 <div class="panel">
   <div class="small">Live YouTube Stream</div>
-  <iframe width="100%" height="360" 
+  <iframe width="100%" height="260" 
           src="https://www.youtube.com/embed/live_stream?channel=UC7f16X7r3jq2n3xKyI5X0Xw" 
           title="Live Stream" frameborder="0" allowfullscreen>
+  </iframe>
+
+  <div class="small" style="margin-top:6px">Live Chat</div>
+  <iframe width="100%" height="300"
+          src="https://www.youtube.com/live_chat?v=LIVE_VIDEO_ID&embed_domain=robustpvp-lang.github.io"
+          title="YouTube Live Chat" frameborder="0" sandbox="allow-scripts allow-same-origin allow-popups">
   </iframe>
 </div>
 
@@ -87,12 +101,12 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
 <div class="panel">
   <div class="small">Select Channel</div>
   <select id="channelSelect">
-    <option value="exuro" title="Conscious Lux operative guiding the fleet">//Exuro</option>
-    <option value="sam" title="Blonde boy navigating the post-homeworld crisis">//Sam</option>
-    <option value="nora" title="Chief scientist, elder Lux companion">//Nora</option>
-    <option value="nero" title="Spirit guide of Sam">//Nero</option>
-    <option value="loktal" title="Skinklizard warrior inspired by Vegeta">//Loktal</option>
-    <option value="pilgrim" style="display:none" title="Secret channel">//Pilgrim</option>
+    <option value="exuro">//Exuro</option>
+    <option value="sam">//Sam</option>
+    <option value="nora">//Nora</option>
+    <option value="nero">//Nero</option>
+    <option value="loktal">//Loktal</option>
+    <option value="pilgrim" style="display:none">//Pilgrim</option>
   </select>
 </div>
 
@@ -116,12 +130,18 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
 
 <!-- LOCAL MESSAGE BOARD -->
 <div class="panel" style="margin-top:8px">
-  <div class="small">Local Message Board</div>
+  <div class="small">Local Message Board (Markdown-enabled)</div>
   <div id="localBoard" class="stream panel" style="max-height:300px;overflow:auto"></div>
   <div class="input-area" style="margin-top:6px">
     <input type="text" id="boardInput" placeholder="Write a post...">
     <button id="sendBoard" class="sendBtn">POST</button>
   </div>
+</div>
+
+<!-- LORE PANEL -->
+<div class="panel">
+  <div class="small">Universe Lore</div>
+  <div id="loreContainer"></div>
 </div>
 
 </div>
@@ -138,6 +158,7 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
 // ---------- Firebase ----------
 const firebaseConfig = {
@@ -152,60 +173,50 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ---------- Boot sequence ----------
-const bootScreenEl = document.getElementById('bootScreen');
-const bootLinesContainer = document.getElementById('bootLinesContainer');
-const bootProgress = document.getElementById('bootProgress');
-const bootLines = [
+// ---------- Boot Loader ----------
+const bootScreenEl=document.getElementById('bootScreen');
+const bootLinesContainer=document.getElementById('bootLinesContainer');
+const bootProgress=document.getElementById('bootProgress');
+const bootLines=[
   "Booting Before Us Universe v1.0...",
   "Initializing Lux telemetry...",
   "Decrypting signals from Vestus Fleet...",
-  "Summoning Exuro's node...",
+  "Awakening Exuro nodes... Conscious AI detected...",
   "Calibrating Tiamat protocols...",
   "Mounting multi-channel chat modules...",
   "Embedding YouTube live stream...",
-  "Finalizing system checks..."
+  "Finalizing system checks... Universe ready."
 ];
-let currentLine = 0;
-function glitchText(text){
-  return text.split('').map(c => Math.random()<0.05 ? String.fromCharCode(33+Math.floor(Math.random()*94)) : c).join('');
-}
+const loreSnippets=[
+  "Sector 7: The Voidborn awaken beyond the prime directive.",
+  "Fragmented timelines converge at Vestus.",
+  "Ancient AI entities stir in the cosmic deep.",
+  "Lux operatives prepare for interstellar navigation."
+];
+let currentLine=0;
+function glitchText(text){return text.split('').map(c=>Math.random()<0.05?String.fromCharCode(33+Math.floor(Math.random()*94)):c).join('');}
 function bootStep(){
-  if(currentLine>=bootLines.length){
-    bootScreenEl.style.display='none';
-    document.getElementById('app').style.display='block';
-    return;
-  }
-  const lineEl=document.createElement('div');
-  lineEl.className='boot-line';
+  if(currentLine>=bootLines.length){bootScreenEl.style.display='none';document.getElementById('app').style.display='block';fetchLore();return;}
+  const lineEl=document.createElement('div'); lineEl.className='boot-line';
   lineEl.textContent=glitchText(bootLines[currentLine]);
+  if(currentLine<loreSnippets.length) lineEl.textContent+=" | "+loreSnippets[currentLine];
   bootLinesContainer.appendChild(lineEl);
-  bootProgress.textContent='['+'#'.repeat((currentLine+1)*3)+'......................'.slice((currentLine+1)*3)+'] '+
-                            Math.floor(((currentLine+1)/bootLines.length)*100)+'%';
+  bootProgress.textContent='['+'#'.repeat((currentLine+1)*3)+'......................'.slice((currentLine+1)*3)+'] '+Math.floor(((currentLine+1)/bootLines.length)*100)+'%';
   currentLine++;
   setTimeout(bootStep,500+Math.random()*400);
 }
 bootStep();
-setInterval(()=>{
-  const lines=bootLinesContainer.children;
-  for(let i=0;i<lines.length;i++){
-    if(Math.random()<0.1) lines[i].textContent=glitchText(lines[i].textContent);
-  }
-},300);
 
-// ---------- Login & Chat ----------
+// ---------- Chat / Message Board / Active Users Logic ----------
 let handle=null,currentChannel='exuro',presenceRef=null;
 const chatRef=db.ref('chat');
 const boardRef=db.ref('board');
 
 document.getElementById('enterBtn').addEventListener('click',()=>{
-  handle=(document.getElementById('handleField').value||'Anon'+Math.floor(Math.random()*9999))
-          .replace(/[^a-zA-Z0-9]/g,'');
+  handle=(document.getElementById('handleField').value||'Anon'+Math.floor(Math.random()*9999)).replace(/[^a-zA-Z0-9]/g,'');
   if(!handle) return;
   document.getElementById('loginPanel').style.display='none';
-  presenceRef=db.ref('online/'+handle); 
-  presenceRef.set(currentChannel); 
-  presenceRef.onDisconnect().remove();
+  presenceRef=db.ref('online/'+handle); presenceRef.set(currentChannel); presenceRef.onDisconnect().remove();
   document.getElementById('doorSound').play();
   listenChat(); listenBoard(); listenOnline();
   updateChannelPresence(currentChannel);
@@ -219,7 +230,6 @@ document.getElementById('logoutBtn').addEventListener('click',()=>{
 
 const channelSelect=document.getElementById('channelSelect');
 channelSelect.addEventListener('change',()=>{switchChannel(channelSelect.value);});
-
 function switchChannel(ch){
   currentChannel=ch;
   document.querySelectorAll('.stream').forEach(d=>d.style.display=(d.id===ch)?'block':'none');
@@ -230,69 +240,63 @@ function switchChannel(ch){
 // ---------- Post Chat ----------
 document.getElementById('sendChat').addEventListener('click',()=>{postChat(document.getElementById('chatInput').value);});
 document.getElementById('chatInput').addEventListener('keypress',e=>{if(e.key==='Enter') postChat(document.getElementById('chatInput').value);});
-
-function postChat(msg){
-  if(!msg||!handle) return;
-  chatRef.push({name:'//'+handle,msg:msg.slice(0,500),ts:Date.now(),channel:currentChannel});
-  document.getElementById('chatInput').value='';
-}
-
-function listenChat(){
-  chatRef.limitToLast(200).on('child_added',snap=>{
-    const obj=snap.val(); if(!obj||!obj.msg) return;
-    const target=document.getElementById(obj.channel)||document.getElementById('exuro');
-    const p=document.createElement('p'); 
-    p.innerHTML=`<span class="meta">${obj.name}</span> ${obj.msg}`;
-    if(handle && obj.msg.includes(handle)) p.style.background="rgba(0,255,255,0.15)";
-    target.appendChild(p); 
-    target.scrollTop=target.scrollHeight;
-  });
-}
+function postChat(msg){if(!msg||!handle) return; chatRef.push({name:'//'+handle,msg:msg.slice(0,500),ts:Date.now(),channel:currentChannel}); document.getElementById('chatInput').value='';}
+function listenChat(){chatRef.limitToLast(200).on('child_added',snap=>{const obj=snap.val(); if(!obj||!obj.msg) return; const target=document.getElementById(obj.channel)||document.getElementById('exuro'); const p=document.createElement('p'); p.innerHTML=`<span class="meta">${obj.name}</span> ${obj.msg}`; target.appendChild(p); target.scrollTop=target.scrollHeight;});}
 
 // ---------- Local Message Board ----------
 document.getElementById('sendBoard').addEventListener('click',()=>{postBoard(document.getElementById('boardInput').value);});
 document.getElementById('boardInput').addEventListener('keypress',e=>{if(e.key==='Enter') postBoard(document.getElementById('boardInput').value);});
-
-function postBoard(msg){
-  if(!msg||!handle) return;
-  boardRef.push({name:'//'+handle,msg:msg.slice(0,1000),ts:Date.now()});
-  document.getElementById('boardInput').value='';
-}
-
-function listenBoard(){
-  boardRef.limitToLast(500).on('child_added',snap=>{
-    const obj=snap.val(); if(!obj||!obj.msg) return;
-    const target=document.getElementById('localBoard');
-    const p=document.createElement('p'); p.innerHTML=`<span class="meta">${obj.name}</span> ${obj.msg}`;
-    target.appendChild(p);
-    target.scrollTop=target.scrollHeight;
-  });
-}
+function postBoard(msg){if(!msg||!handle) return; boardRef.push({name:'//'+handle,msg:msg.slice(0,1000),ts:Date.now()}); document.getElementById('boardInput').value='';}
+function listenBoard(){boardRef.limitToLast(500).on('child_added',snap=>{const obj=snap.val(); if(!obj||!obj.msg) return; const target=document.getElementById('localBoard'); const p=document.createElement('p'); p.innerHTML=marked.parse(`**${obj.name}**: ${obj.msg}`); target.appendChild(p); target.scrollTop=target.scrollHeight;});}
 
 // ---------- Active Users ----------
-function updateChannelPresence(channel){ if(!handle) return; db.ref('online/'+handle).set(channel);}
+function updateChannelPresence(channel){if(!handle) return; db.ref('online/'+handle).set(channel);}
 function listenOnline(){
   db.ref('online').on('value',snap=>{
     const counts={exuro:[],sam:[],nora:[],nero:[],loktal:[],pilgrim:[]};
     const container=document.getElementById('activeUsers'); container.innerHTML='';
     snap.forEach(u=>{const ch=u.val(); if(counts[ch]!==undefined) counts[ch].push(u.key);});
     for(const ch in counts){
-      const p=document.createElement('p');
+      const p=document.createElement('div'); p.className='active-user';
+      const dot=document.createElement('span'); dot.className='active-dot';
+      p.appendChild(dot);
+      const nameSpan=document.createElement('span');
       const userList=counts[ch].join(', ');
       let name="//"+ch.charAt(0).toUpperCase()+ch.slice(1);
-      p.textContent=`${name} — ${counts[ch].length} user${counts[ch].length!==1?'s':''}`;
+      nameSpan.textContent=`${name} — ${counts[ch].length} user${counts[ch].length!==1?'s':''}`;
       p.title=userList;
+      p.appendChild(nameSpan);
       container.appendChild(p);
     }
   });
 }
 
-// ---------- Prune chat only ----------
+// ---------- Chat Auto-Prune ----------
 function pruneChat(){const cutoff=Date.now()-24*60*60*1000; chatRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});}); setTimeout(pruneChat,60*60*1000);}
 pruneChat();
 
-// ---------- Unlock Pilgrim Channel ----------
+// ---------- Unlock Pilgrim ----------
 function unlockPilgrim(){document.querySelector('#channelSelect option[value="pilgrim"]').style.display='block';}
+
+// ---------- GitHub Lore ----------
+async function fetchLore(){
+  const repo="robustpvp-lang/buu-lore";
+  const container=document.getElementById('loreContainer');
+  try{
+    const res=await fetch(`https://api.github.com/repos/${repo}/contents/lore`);
+    const data=await res.json();
+    for(const f of data){
+      if(f.name.endsWith('.md')){
+        const mdResp=await fetch(f.download_url); const mdText=await mdResp.text();
+        const card=document.createElement('div'); card.className='lore-card';
+        card.innerHTML=`<h3>${f.name.replace('.md','')}</h3><div class="lore-content">${marked.parse(mdText)}</div>`;
+        card.addEventListener('click',()=>{card.querySelector('.lore-content').style.display=(card.querySelector('.lore-content').style.display==='block'?'none':'block');});
+        container.appendChild(card);
+      }
+    }
+  }catch(e){console.warn(e);}
+}
 </script>
+
 </body>
 </html>
