@@ -61,16 +61,7 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
 <div class="maingrid">
 <div class="leftcol">
 
-<!-- YOUTUBE STREAM -->
-<div class="panel">
-  <div class="small">Live YouTube Stream</div>
-  <iframe width="100%" height="360" 
-          src="https://www.youtube.com/embed/live_stream?channel=UC7f16X7r3jq2n3xKyI5X0Xw" 
-          title="Live Stream" frameborder="0" allowfullscreen>
-  </iframe>
-</div>
-
-<!-- LOGIN PANEL -->
+<!-- LOGIN PANEL ABOVE STREAM -->
 <div class="panel">
   <div id="loginPanel">
     <div class="small">Enter a handle to join the BUU chatroom.</div>
@@ -79,6 +70,15 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
       <button id="enterBtn" class="sendBtn">JOIN</button>
     </div>
   </div>
+</div>
+
+<!-- YOUTUBE STREAM -->
+<div class="panel">
+  <div class="small">Live YouTube Stream</div>
+  <iframe width="100%" height="360" 
+          src="https://www.youtube.com/embed/live_stream?channel=UC7f16X7r3jq2n3xKyI5X0Xw" 
+          title="Live Stream" frameborder="0" allowfullscreen>
+  </iframe>
 </div>
 
 <!-- CHANNEL SELECT -->
@@ -108,7 +108,7 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
     <input type="text" id="chatInput" placeholder="Write to current stream...">
     <button id="sendChat" class="sendBtn">POST</button>
   </div>
-  <div class="small" style="margin-top:8px">Messages auto-delete after 24 hours.</div>
+  <div class="small" style="margin-top:8px">Chat logs auto-delete after 24 hours.</div>
 </div>
 
 <!-- LOCAL MESSAGE BOARD -->
@@ -156,10 +156,10 @@ const bootProgress = document.getElementById('bootProgress');
 const bootLines = [
   "Booting Before Us Universe v1.0...",
   "Initializing Lux telemetry...",
-  "Decrypting Tiamat protocols...",
-  "Calibrating Vestus fleet sensors...",
-  "Loading multi-channel chat modules...",
-  "Mounting local message board...",
+  "Decrypting signals from Vestus Fleet...",
+  "Summoning Exuro's consciousness node...",
+  "Calibrating Tiamat containment protocols...",
+  "Mounting multi-channel chat modules...",
   "Embedding YouTube live stream...",
   "Finalizing system checks..."
 ];
@@ -248,11 +248,12 @@ function postBoard(msg){
 }
 
 function listenBoard(){
-  boardRef.limitToLast(200).on('child_added',snap=>{
+  boardRef.limitToLast(500).on('child_added',snap=>{
     const obj=snap.val(); if(!obj||!obj.msg) return;
     const target=document.getElementById('localBoard');
     const p=document.createElement('p'); p.innerHTML=`<span class="meta">${obj.name}</span> ${obj.msg}`;
-    target.appendChild(p); target.scrollTop=target.scrollHeight;
+    target.appendChild(p);
+    target.scrollTop=target.scrollHeight;
   });
 }
 
@@ -279,14 +280,13 @@ function listenOnline(){
   });
 }
 
-// ---------- Prune old messages ----------
-function pruneOld(){
+// ---------- Prune old chat messages only ----------
+function pruneChat(){
   const cutoff=Date.now()-24*60*60*1000;
   chatRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
-  boardRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
-  setTimeout(pruneOld,60*60*1000);
+  setTimeout(pruneChat,60*60*1000);
 }
-pruneOld();
+pruneChat();
 </script>
 </body>
 </html>
