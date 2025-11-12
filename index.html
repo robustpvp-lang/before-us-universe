@@ -6,55 +6,95 @@
 <title>Before Us Universe</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-  body {
-    margin: 0;
-    font-family: 'Press Start 2P', monospace;
-    background: url('https://i.imgur.com/fdI7QXD.jpg') no-repeat center center fixed; /* Windows 98-style desktop */
-    background-size: cover;
-    color: #ffffff;
-  }
-  header {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    padding: 1rem;
-    background: rgba(0,0,0,0.7);
-  }
-  header a {
-    color: #00ff00;
-    text-decoration: none;
-  }
-  #loading {
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:black;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    z-index:1000;
-    color:#0f0;
-  }
-  #lore { margin: 1rem; font-size: 0.9rem; max-width:800px; }
-  #handleInput { display:flex; justify-content:center; margin:1rem; }
-  #handleInput input { padding:0.5rem; font-family:monospace; }
-  #youtube { display:flex; justify-content:center; margin:1rem; }
-  #chat { max-width:800px; margin:1rem auto; background:rgba(0,0,0,0.6); padding:1rem; border:1px solid #0f0; }
-  #chat h2 { margin-top:0; }
-  .channel-select { margin-bottom:0.5rem; }
-  .messages { height:200px; overflow-y:auto; border:1px solid #0f0; padding:0.5rem; background:black; }
-  .user-online { color:#0f0; }
-  .user-offline { color:#444; }
-  #activeUsers { margin-top:0.5rem; font-size:0.8rem; }
-  #board { max-width:800px; margin:1rem auto; background:rgba(0,0,0,0.6); padding:1rem; border:1px solid #0f0; }
-  .post { border-bottom:1px dashed #0f0; margin-bottom:0.5rem; padding-bottom:0.5rem; }
-  .tooltip { position: relative; display:inline-block; }
-  .tooltip .tooltiptext {
-    visibility:hidden; width:120px; background-color:#000; color:#0f0; text-align:center; border-radius:6px;
-    padding:5px; position:absolute; z-index:1; top:-5px; left:105%;
-  }
-  .tooltip:hover .tooltiptext { visibility:visible; }
+body {
+  margin: 0;
+  font-family: 'Press Start 2P', monospace;
+  background: url('https://i.imgur.com/fdI7QXD.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #00ff00;
+}
+header {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
+  background: rgba(0,0,0,0.7);
+}
+header a {
+  color: #00ff00;
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+#loading {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:1000;
+  color:#0f0;
+  font-size:0.8rem;
+}
+#handleInput {
+  display:flex;
+  justify-content:center;
+  margin:1rem;
+}
+#handleInput input {
+  padding:0.5rem;
+  font-family:monospace;
+}
+#youtube {
+  display:flex;
+  justify-content:center;
+  margin:1rem;
+}
+.chat-window {
+  max-width:800px;
+  margin:1rem auto;
+  background: rgba(0,0,0,0.85);
+  padding:1rem;
+  border:2px solid #0f0;
+  position:relative;
+}
+.chat-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:0.8rem;
+}
+.messages {
+  height:200px;
+  overflow-y:auto;
+  border:1px solid #0f0;
+  background:black;
+  padding:0.5rem;
+  margin:0.5rem 0;
+}
+.message {
+  margin-bottom:0.3rem;
+}
+.user-online { color:#0f0; }
+.user-offline { color:#444; }
+.tooltip { position: relative; display:inline-block; }
+.tooltip .tooltiptext {
+  visibility:hidden; width:140px; background-color:#000; color:#0f0;
+  text-align:center; border-radius:6px; padding:5px; position:absolute; z-index:1; top:-5px; left:105%;
+}
+.tooltip:hover .tooltiptext { visibility:visible; }
+#activeUsers { font-size:0.7rem; margin-top:0.5rem; }
+#board {
+  max-width:800px;
+  margin:1rem auto;
+  background: rgba(0,0,0,0.85);
+  padding:1rem;
+  border:2px solid #0f0;
+}
+.post { border-bottom:1px dashed #0f0; margin-bottom:0.5rem; padding-bottom:0.5rem; }
+#lore { margin:1rem; font-size:0.8rem; max-width:800px; color:#0f0; }
 </style>
 </head>
 <body>
@@ -79,16 +119,18 @@
   <iframe width="560" height="315" src="https://www.youtube.com/embed?listType=user_uploads&list=Patrickauthor" frameborder="0" allowfullscreen></iframe>
 </div>
 
-<div id="chat">
-  <h2>Live Chat</h2>
-  <select id="channelSelect" class="channel-select">
-    <option value="Exuro">//Exuro</option>
-    <option value="Sam">//Sam</option>
-    <option value="Nero">//Nero</option>
-    <option value="Nora">//Nora</option>
-    <option value="Loktal">//Loktal</option>
-    <option value="Pilgrim">//Pilgrim (secret)</option>
-  </select>
+<div class="chat-window" id="chat">
+  <div class="chat-header">
+    <div>Live Chat</div>
+    <select id="channelSelect">
+      <option value="Exuro">//Exuro</option>
+      <option value="Sam">//Sam</option>
+      <option value="Nero">//Nero</option>
+      <option value="Nora">//Nora</option>
+      <option value="Loktal">//Loktal</option>
+      <option value="Pilgrim">//Pilgrim (secret)</option>
+    </select>
+  </div>
   <div class="messages" id="messages"></div>
   <input type="text" id="messageInput" placeholder="Type your message (max 500 chars)">
   <button id="sendBtn">Send</button>
@@ -105,129 +147,130 @@
 
 <div id="lore"></div>
 
+<audio id="doorSound" src="https://freesound.org/data/previews/3/3080_5159-lq.mp3"></audio>
+
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
-  import { getDatabase, ref, push, set, onChildAdded, onValue, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
-  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+import { getDatabase, ref, push, set, onChildAdded, onValue, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
-    authDomain: "before-us-universe.firebaseapp.com",
-    databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
-    projectId: "before-us-universe",
-    storageBucket: "before-us-universe.appspot.com",
-    messagingSenderId: "477103463228",
-    appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
+  authDomain: "before-us-universe.firebaseapp.com",
+  databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
+  projectId: "before-us-universe",
+  storageBucket: "before-us-universe.appspot.com",
+  messagingSenderId: "477103463228",
+  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase();
-  const auth = getAuth();
+const app = initializeApp(firebaseConfig);
+const db = getDatabase();
+const auth = getAuth();
 
-  // Sign in anonymously
-  signInAnonymously(auth);
+signInAnonymously(auth);
 
-  const handleInput = document.getElementById('handle');
-  let currentHandle = "";
+let currentHandle = "";
+const handleInput = document.getElementById('handle');
+handleInput.addEventListener('change', () => { currentHandle = handleInput.value.trim() || "Anonymous"; });
 
-  handleInput.addEventListener('change', () => { currentHandle = handleInput.value.trim() || "Anonymous"; });
+const messagesDiv = document.getElementById('messages');
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const channelSelect = document.getElementById('channelSelect');
+const activeUsersDiv = document.getElementById('activeUsers');
+const doorSound = document.getElementById('doorSound');
 
-  const messagesDiv = document.getElementById('messages');
-  const messageInput = document.getElementById('messageInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const channelSelect = document.getElementById('channelSelect');
-
-  const activeUsersDiv = document.getElementById('activeUsers');
-
-  function updateActiveUsers() {
-    const onlineRef = ref(db, "online");
-    onValue(onlineRef, snapshot => {
-      const data = snapshot.val() || {};
-      let display = "Active Users: ";
-      for (let user in data) { display += `<span class='tooltip ${data[user].online ? "user-online" : "user-offline"}'>${data[user].handle}<span class="tooltiptext">${user}</span></span> `; }
-      activeUsersDiv.innerHTML = display;
-    });
-  }
-  updateActiveUsers();
-
-  // Handle sending messages
-  sendBtn.addEventListener('click', () => {
-    const msg = messageInput.value.trim();
-    if (!msg || !currentHandle) return;
-    const channel = channelSelect.value;
-    const msgRef = push(ref(db, `chat/${channel}`));
-    set(msgRef, { name: currentHandle, msg });
-    messageInput.value = "";
+function updateActiveUsers() {
+  const onlineRef = ref(db, "online");
+  onValue(onlineRef, snapshot => {
+    const data = snapshot.val() || {};
+    let display = "Active Users: ";
+    for (let user in data) {
+      display += `<span class='tooltip ${data[user].online ? "user-online" : "user-offline"}'>${data[user].handle}<span class="tooltiptext">${user}</span></span> `;
+    }
+    activeUsersDiv.innerHTML = display;
   });
+}
+updateActiveUsers();
 
-  // Display messages per channel
-  function listenChannel(channel) {
-    messagesDiv.innerHTML = "";
-    const chatRef = ref(db, `chat/${channel}`);
-    onChildAdded(chatRef, snapshot => {
-      const { name, msg } = snapshot.val();
-      const div = document.createElement('div');
-      div.innerHTML = `<strong>${name}:</strong> ${msg}`;
-      messagesDiv.appendChild(div);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    });
-  }
-  channelSelect.addEventListener('change', () => listenChannel(channelSelect.value));
-  listenChannel(channelSelect.value);
+sendBtn.addEventListener('click', () => {
+  const msg = messageInput.value.trim();
+  if (!msg || !currentHandle) return;
+  const channel = channelSelect.value;
+  const msgRef = push(ref(db, `chat/${channel}`));
+  set(msgRef, { name: currentHandle, msg });
+  messageInput.value = "";
+  doorSound.play();
+});
 
-  // Local message board
-  const postsDiv = document.getElementById('posts');
-  const postBtn = document.getElementById('postBtn');
-  const boardName = document.getElementById('boardName');
-  const boardMsg = document.getElementById('boardMsg');
-
-  const boardRef = ref(db, "board");
-  onChildAdded(boardRef, snapshot => {
+function listenChannel(channel) {
+  messagesDiv.innerHTML = "";
+  const chatRef = ref(db, `chat/${channel}`);
+  onChildAdded(chatRef, snapshot => {
     const { name, msg } = snapshot.val();
     const div = document.createElement('div');
-    div.classList.add('post');
-    div.innerHTML = `<strong>${name}</strong>: ${msg}`;
-    postsDiv.appendChild(div);
+    div.classList.add('message');
+    div.innerHTML = `<strong>${name}:</strong> ${msg}`;
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
   });
+}
+channelSelect.addEventListener('change', () => listenChannel(channelSelect.value));
+listenChannel(channelSelect.value);
 
-  postBtn.addEventListener('click', () => {
-    if (!boardName.value.trim() || !boardMsg.value.trim()) return;
-    push(boardRef, { name: boardName.value.trim(), msg: boardMsg.value.trim() });
-    boardName.value = "";
-    boardMsg.value = "";
-  });
+// Local message board
+const postsDiv = document.getElementById('posts');
+const postBtn = document.getElementById('postBtn');
+const boardName = document.getElementById('boardName');
+const boardMsg = document.getElementById('boardMsg');
+const boardRef = ref(db, "board");
+onChildAdded(boardRef, snapshot => {
+  const { name, msg } = snapshot.val();
+  const div = document.createElement('div');
+  div.classList.add('post');
+  div.innerHTML = `<strong>${name}</strong>: ${msg}`;
+  postsDiv.appendChild(div);
+});
 
-  // Dynamic loading + lore
-  const loadingDiv = document.getElementById('loadingText');
-  const loreDiv = document.getElementById('loadingLore');
-  const loreContent = [
-    "Loading Sector 1: The Voidborn... 23% complete",
-    "Awakening ancient AI... 45% complete",
-    "Multiversal rifts stabilizing... 68% complete",
-    "Preparing Lux Fleet deployment... 89% complete",
-    "Initialization complete. Welcome to the Before Us Universe."
-  ];
-  let idx = 0;
-  function nextLore() {
-    if (idx < loreContent.length) {
-      loreDiv.innerText = loreContent[idx];
-      idx++;
-      setTimeout(nextLore, 1000);
-    } else {
-      document.getElementById('loading').style.display = "none";
-    }
+postBtn.addEventListener('click', () => {
+  if (!boardName.value.trim() || !boardMsg.value.trim()) return;
+  push(boardRef, { name: boardName.value.trim(), msg: boardMsg.value.trim() });
+  boardName.value = "";
+  boardMsg.value = "";
+});
+
+// Dynamic loading & lore
+const loadingDiv = document.getElementById('loadingText');
+const loreDiv = document.getElementById('loadingLore');
+const loreContent = [
+  "Loading Sector 1: The Voidborn... 23% complete",
+  "Awakening ancient AI... 45% complete",
+  "Multiversal rifts stabilizing... 68% complete",
+  "Preparing Lux Fleet deployment... 89% complete",
+  "Initialization complete. Welcome to the Before Us Universe."
+];
+let idx = 0;
+function nextLore() {
+  if (idx < loreContent.length) {
+    loreDiv.innerText = loreContent[idx];
+    idx++;
+    setTimeout(nextLore, 1000);
+  } else {
+    document.getElementById('loading').style.display = "none";
   }
-  nextLore();
+}
+nextLore();
 
-  // Update user online status
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      const onlineRef = ref(db, `online/${user.uid}`);
-      set(onlineRef, { handle: currentHandle || "Anonymous", online: true });
-      window.addEventListener('beforeunload', () => remove(onlineRef));
-    }
-  });
-
+// Update online status
+onAuthStateChanged(auth, user => {
+  if (user) {
+    const onlineRef = ref(db, `online/${user.uid}`);
+    set(onlineRef, { handle: currentHandle || "Anonymous", online: true });
+    window.addEventListener('beforeunload', () => remove(onlineRef));
+  }
+});
 </script>
 </body>
 </html>
+
