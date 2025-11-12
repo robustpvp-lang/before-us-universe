@@ -160,8 +160,8 @@ const bootLines = [
   "Booting Before Us Universe v1.0...",
   "Initializing Lux telemetry...",
   "Decrypting signals from Vestus Fleet...",
-  "Summoning Exuro's consciousness node...",
-  "Calibrating Tiamat containment protocols...",
+  "Summoning Exuro's node...",
+  "Calibrating Tiamat protocols...",
   "Mounting multi-channel chat modules...",
   "Embedding YouTube live stream...",
   "Finalizing system checks..."
@@ -218,9 +218,7 @@ document.getElementById('logoutBtn').addEventListener('click',()=>{
 });
 
 const channelSelect=document.getElementById('channelSelect');
-channelSelect.addEventListener('change',()=>{
-  switchChannel(channelSelect.value);
-});
+channelSelect.addEventListener('change',()=>{switchChannel(channelSelect.value);});
 
 function switchChannel(ch){
   currentChannel=ch;
@@ -229,6 +227,7 @@ function switchChannel(ch){
   updateChannelPresence(currentChannel);
 }
 
+// ---------- Post Chat ----------
 document.getElementById('sendChat').addEventListener('click',()=>{postChat(document.getElementById('chatInput').value);});
 document.getElementById('chatInput').addEventListener('keypress',e=>{if(e.key==='Enter') postChat(document.getElementById('chatInput').value);});
 
@@ -250,7 +249,7 @@ function listenChat(){
   });
 }
 
-// ---------- LOCAL MESSAGE BOARD ----------
+// ---------- Local Message Board ----------
 document.getElementById('sendBoard').addEventListener('click',()=>{postBoard(document.getElementById('boardInput').value);});
 document.getElementById('boardInput').addEventListener('keypress',e=>{if(e.key==='Enter') postBoard(document.getElementById('boardInput').value);});
 
@@ -270,20 +269,13 @@ function listenBoard(){
   });
 }
 
-// ---------- Active Users per Channel ----------
-function updateChannelPresence(channel){
-  if(!handle) return;
-  db.ref('online/'+handle).set(channel);
-}
-
+// ---------- Active Users ----------
+function updateChannelPresence(channel){ if(!handle) return; db.ref('online/'+handle).set(channel);}
 function listenOnline(){
   db.ref('online').on('value',snap=>{
     const counts={exuro:[],sam:[],nora:[],nero:[],loktal:[],pilgrim:[]};
     const container=document.getElementById('activeUsers'); container.innerHTML='';
-    snap.forEach(u=>{
-      const ch=u.val();
-      if(counts[ch]!==undefined) counts[ch].push(u.key);
-    });
+    snap.forEach(u=>{const ch=u.val(); if(counts[ch]!==undefined) counts[ch].push(u.key);});
     for(const ch in counts){
       const p=document.createElement('p');
       const userList=counts[ch].join(', ');
@@ -295,12 +287,8 @@ function listenOnline(){
   });
 }
 
-// ---------- Prune old chat messages only ----------
-function pruneChat(){
-  const cutoff=Date.now()-24*60*60*1000;
-  chatRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
-  setTimeout(pruneChat,60*60*1000);
-}
+// ---------- Prune chat only ----------
+function pruneChat(){const cutoff=Date.now()-24*60*60*1000; chatRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});}); setTimeout(pruneChat,60*60*1000);}
 pruneChat();
 
 // ---------- Unlock Pilgrim Channel ----------
