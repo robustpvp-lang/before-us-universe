@@ -1,308 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Before Us Universe — BUU</title>
-<link rel="icon" href="favicon.ico">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Before Us Universe</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-  /* --- Original CSS preserved --- */
-  :root{
-    --bg:#0b2b3a; --panel:#071014; --muted:#cfeff3; --accent:#00ffd6;
-    --accent2:#7afcff; --danger:#ff6b6b;
-    --exuro:#b4b4ff; --sam:#ffbf7a; --nora:#ff9bff; --nero:#7affd1; --loktal:#ffa07a; --pilgrim:#fff58a;
+  body {
+    margin: 0;
+    font-family: 'Press Start 2P', monospace;
+    background: url('https://i.imgur.com/fdI7QXD.jpg') no-repeat center center fixed; /* Windows 98-style desktop */
+    background-size: cover;
+    color: #ffffff;
   }
-  html,body{height:100%;margin:0;font-family: "Courier New", monospace;background:
-    linear-gradient(180deg,#2b5b8a 0,#0b2b3a 100%); color:var(--muted); -webkit-font-smoothing:antialiased;}
-  body::before{
-    content:""; position:fixed; inset:0; background:
-    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"><rect width="100%" height="100%" fill="%230c2940"/></svg>') center/cover no-repeat;
-    opacity:0.3; z-index:0;
+  header {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+    background: rgba(0,0,0,0.7);
   }
-  .container{position:relative;z-index:1;max-width:1200px;margin:18px auto;padding:18px;display:flex;gap:12px;align-items:flex-start}
-  header{display:flex;align-items:center;justify-content:space-between;width:100%}
-  header h1{margin:0;font-size:1.4rem;color:var(--accent)}
-  .links{display:flex;gap:8px;flex-wrap:wrap}
-  .links a{color:var(--accent2);background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:4px;text-decoration:none;border:1px solid rgba(255,255,255,0.02)}
-  .left{flex:2;display:flex;flex-direction:column;gap:12px}
-  .right{flex:1;min-width:260px}
-  .panel{background:linear-gradient(180deg, rgba(10,15,20,0.9), rgba(6,10,12,0.95));border:1px solid rgba(255,255,255,0.03);border-radius:6px;padding:12px;box-shadow:0 6px 30px rgba(0,0,0,0.6)}
-  .hint{font-size:0.85rem;color:#8fbfc6}
-  .stream{height:280px;overflow:auto;padding:10px;background:rgba(0,0,0,0.15);border-radius:4px;border:1px dashed rgba(255,255,255,0.02)}
-  .post{padding:6px;margin:6px 0;border-radius:4px}
-  .meta{font-weight:700;color:var(--accent2);margin-right:6px}
-  #activeUsers{display:flex;flex-direction:column;gap:6px;max-height:360px;overflow:auto}
-  .user-row{display:flex;align-items:center;gap:8px;padding:6px;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,0.01),transparent)}
-  .status-dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 6px rgba(0,255,200,0.12)}
-  .dot-online{background:linear-gradient(180deg,#00ffd6,#00bfa3)}
-  .dot-idle{background:linear-gradient(180deg,#ffd36b,#bfa300)}
-  .dot-offline{background:linear-gradient(180deg,#ff6b6b,#bf2b2b)}
-  .user-row .handle{font-family:monospace;color:var(--muted)}
-  .user-row .metaSmall{font-size:0.8rem;color:#9ecfd6;margin-left:auto}
-  select,input{background:#061018;border:1px solid rgba(255,255,255,0.03);color:var(--muted);padding:8px;border-radius:4px}
-  button{background:linear-gradient(180deg,var(--accent2),#00c0b7);border:none;padding:8px 12px;border-radius:6px;color:#002;cursor:pointer;font-weight:700}
-  button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
-  .small{font-size:0.85rem;color:#9fb8c9}
-  .crt:after{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);background-size:100% 3px;mix-blend-mode:overlay;opacity:0.12}
-  .cursor-trail{position:fixed;pointer-events:none;z-index:9999}
-  .flicker{padding:10px;border-radius:6px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));animation:flick 6s infinite}
-  @keyframes flick {0%{opacity:1}20%{opacity:0.6}40%{opacity:1}60%{opacity:0.7}100%{opacity:1}}
-  #diag{position:fixed;right:12px;bottom:12px;background:#011;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.03);font-size:0.85rem;z-index:999}
-  #heartbeat{width:8px;height:8px;border-radius:50%;background:rgba(0,255,200,0.2);box-shadow:0 0 12px rgba(0,255,200,0.06);animation:beat 2s infinite}
-  @keyframes beat{0%{transform:scale(1);opacity:0.6}50%{transform:scale(1.6);opacity:1}100%{transform:scale(1);opacity:0.6}}
-  @media(max-width:980px){.container{flex-direction:column;padding:10px}.right{order:3}}
+  header a {
+    color: #00ff00;
+    text-decoration: none;
+  }
+  #loading {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    z-index:1000;
+    color:#0f0;
+  }
+  #lore { margin: 1rem; font-size: 0.9rem; max-width:800px; }
+  #handleInput { display:flex; justify-content:center; margin:1rem; }
+  #handleInput input { padding:0.5rem; font-family:monospace; }
+  #youtube { display:flex; justify-content:center; margin:1rem; }
+  #chat { max-width:800px; margin:1rem auto; background:rgba(0,0,0,0.6); padding:1rem; border:1px solid #0f0; }
+  #chat h2 { margin-top:0; }
+  .channel-select { margin-bottom:0.5rem; }
+  .messages { height:200px; overflow-y:auto; border:1px solid #0f0; padding:0.5rem; background:black; }
+  .user-online { color:#0f0; }
+  .user-offline { color:#444; }
+  #activeUsers { margin-top:0.5rem; font-size:0.8rem; }
+  #board { max-width:800px; margin:1rem auto; background:rgba(0,0,0,0.6); padding:1rem; border:1px solid #0f0; }
+  .post { border-bottom:1px dashed #0f0; margin-bottom:0.5rem; padding-bottom:0.5rem; }
+  .tooltip { position: relative; display:inline-block; }
+  .tooltip .tooltiptext {
+    visibility:hidden; width:120px; background-color:#000; color:#0f0; text-align:center; border-radius:6px;
+    padding:5px; position:absolute; z-index:1; top:-5px; left:105%;
+  }
+  .tooltip:hover .tooltiptext { visibility:visible; }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="left">
-    <div class="panel">
-      <h2>Chat Room</h2>
-      <div id="chatStream" class="stream"></div>
-      <input type="text" id="chatInput" placeholder="Type message..."/>
-      <select id="userSelect">
-        <option value="Exuro">Exuro</option>
-        <option value="Sam">Sam</option>
-        <option value="Nora">Nora</option>
-        <option value="Nero">Nero</option>
-        <option value="Loktal">Loktal</option>
-      </select>
-      <button id="sendChat">Send</button>
-    </div>
-  </div>
-  <div class="right">
-    <div class="panel">
-      <h2>Message Board</h2>
-      <div id="board" class="stream"></div>
-      <input type="text" id="boardInput" placeholder="Post on board..." />
-      <button id="sendBoard">Post</button>
-    </div>
-  </div>
+<div id="loading">
+  <div id="loadingText">INITIALIZING...</div>
+  <div id="loadingLore"></div>
 </div>
 
-<!-- Firebase Integration -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-import { getDatabase, ref, push, set, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+<header>
+  <a href="https://tokillamockinggoblin.boards.net/">To Kill a Mocking Goblin</a>
+  <a href="https://www.youtube.com/@Patrickauthor">Melphia's Game</a>
+  <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview">Book 1</a>
+  <a href="https://web.archive.org/">Wayback Machine</a>
+</header>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
-  authDomain: "before-us-universe.firebaseapp.com",
-  databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
-  projectId: "before-us-universe",
-  storageBucket: "before-us-universe.firebasestorage.app",
-  messagingSenderId: "477103463228",
-  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-const chatStream = document.getElementById('chatStream');
-const chatInput = document.getElementById('chatInput');
-const sendChat = document.getElementById('sendChat');
-const userSelect = document.getElementById('userSelect');
-
-const boardStream = document.getElementById('board');
-const boardInput = document.getElementById('boardInput');
-const sendBoard = document.getElementById('sendBoard');
-
-const chatRef = ref(db, 'messages');
-const boardRef = ref(db, 'board');
-
-// Load chat messages
-onValue(chatRef, (snapshot) => {
-  chatStream.innerHTML = '';
-  snapshot.forEach((child) => {
-    const msg = child.val();
-    const div = document.createElement('div');
-    div.className = 'post';
-    div.innerHTML = `<span class="meta">${msg.user}:</span> ${msg.text}`;
-    chatStream.appendChild(div);
-  });
-  chatStream.scrollTop = chatStream.scrollHeight;
-});
-
-// Send chat message
-sendChat.onclick = () => {
-  if(chatInput.value.trim() === '') return;
-  const newMsgRef = push(chatRef);
-  set(newMsgRef, {
-    user: userSelect.value,
-    text: chatInput.value,
-    time: serverTimestamp()
-  });
-  chatInput.value = '';
-};
-
-// Load message board
-onValue(boardRef, (snapshot) => {
-  boardStream.innerHTML = '';
-  snapshot.forEach((child) => {
-    const post = child.val();
-    const div = document.createElement('div');
-    div.className = 'post';
-    div.innerHTML = `<span class="meta">${post.user}:</span> ${post.text}`;
-    boardStream.appendChild(div);
-  });
-  boardStream.scrollTop = boardStream.scrollHeight;
-});
-
-// Post to board
-sendBoard.onclick = () => {
-  if(boardInput.value.trim() === '') return;
-  const newPostRef = push(boardRef);
-  set(newPostRef, {
-    user: userSelect.value,
-    text: boardInput.value,
-    time: serverTimestamp()
-  });
-  boardInput.value = '';
-};
-</script>
-</body>
-</html>
-<div id="boot" style="position:fixed;inset:0;background:#000;color:var(--accent);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column">
-  <div id="bootText" style="font-family:monospace;white-space:pre-wrap;text-align:center;padding:20px"></div>
-  <div id="bootProgress" style="margin-top:12px;color:#9fdfe0" class="small"></div>
+<div id="handleInput">
+  <input type="text" id="handle" placeholder="Enter your handle" maxlength="16">
 </div>
 
-<div id="diag" title="Diagnostic (press Ctrl+Alt+D to toggle)">Diagnostics: <span id="diagText">idle</span></div>
-
-<div class="container crt" id="mainUI">
-  <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-    <header><h1>Before Us Universe — BUU</h1></header>
-    <div class="links">
-      <a href="https://tokillamockinggoblin.boards.net/" target="_blank">To Kill a Mocking Goblin</a>
-      <a href="https://www.youtube.com/@Patrickauthor" target="_blank">Melphia's Game</a>
-      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank">Book 1</a>
-      <a href="https://web.archive.org/" target="_blank">Wayback Machine</a>
-    </div>
-  </div>
-
-  <div class="left">
-    <!-- LOGIN / HANDLE -->
-    <div class="panel">
-      <div style="display:flex;gap:8px;align-items:center">
-        <div style="flex:1">
-          <div class="small">Enter handle (reserved via Firebase):</div>
-          <input id="handleInput" placeholder="//YourHandle" maxlength="20" style="width:100%;margin-top:6px" />
-        </div>
-        <div style="width:180px">
-          <div class="small">Choose channel:</div>
-          <select id="channelSelect" style="width:100%;margin-top:6px">
-            <option value="exuro">//Exuro</option>
-            <option value="sam">//Sam</option>
-            <option value="nora">//Nora</option>
-            <option value="nero">//Nero</option>
-            <option value="loktal">//Loktal</option>
-            <option value="pilgrim" style="display:none">//Pilgrim (secret)</option>
-          </select>
-        </div>
-        <div style="width:110px;display:flex;flex-direction:column;gap:6px">
-          <button id="joinBtn">JOIN</button>
-          <button id="disconnectBtn" class="secondary" style="display:none">DISCONNECT</button>
-        </div>
-      </div>
-      <div class="small" style="margin-top:8px">Reserved handles appear green. Hover a user for more info. Pilgrim unlocks after participation.</div>
-    </div>
-
-    <!-- YouTube stream -->
-    <div class="panel" id="streamPanel">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div class="small">Live YouTube Stream</div>
-        <div class="small">Local viewers: <span id="localViewerCount">0</span></div>
-      </div>
-      <div style="margin-top:8px">
-        <iframe id="ytStream" width="100%" height="300" frameborder="0" allowfullscreen
-          src="https://www.youtube.com/embed/live_stream?channel=UC7f16X7r3jq2n3xKyI5X0Xw"></iframe>
-      </div>
-    </div>
-
-    <!-- Chat -->
-    <div class="panel">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div class="small">Multi-channel Chat — current: <span id="currentChannelLabel">//Exuro</span></div>
-        <div style="display:flex;gap:8px;align-items:center"><div id="heartbeat"></div></div>
-      </div>
-      <div style="margin-top:8px" id="chatStreams">
-        <div id="stream-exuro" class="stream" style="display:block"></div>
-        <div id="stream-sam" class="stream" style="display:none"></div>
-        <div id="stream-nora" class="stream" style="display:none"></div>
-        <div id="stream-nero" class="stream" style="display:none"></div>
-        <div id="stream-loktal" class="stream" style="display:none"></div>
-        <div id="stream-pilgrim" class="stream" style="display:none"></div>
-      </div>
-
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input id="chatInput" placeholder="Write a message to current channel..." style="flex:1" maxlength="500" />
-        <button id="sendMsgBtn">POST</button>
-      </div>
-      <div class="small" style="margin-top:6px">Chat auto-prunes after 24 hours. Message links are verified upon posting.</div>
-    </div>
-
-    <!-- Local message board -->
-    <div class="panel">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div class="small">Local Message Board (persistent)</div>
-        <div class="small">Chronicle logs: <button id="dumpChronicle" class="secondary">Export</button></div>
-      </div>
-      <div id="localBoard" class="stream" style="margin-top:8px"></div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input id="boardInput" placeholder="Post to message board..." style="flex:1" maxlength="1000" />
-        <button id="postBoardBtn">POST</button>
-      </div>
-      <div class="small" style="margin-top:6px">Local board backed by IndexedDB and Firebase mirror. Board posts persist unless removed by admin.</div>
-    </div>
-
-  </div>
-
-  <div class="right">
-    <!-- active users -->
-    <div class="panel">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div class="small">Active Users by Channel</div>
-        <div class="small">Status lights: <span style="display:inline-block;width:10px;height:10px;background:linear-gradient(#00ffd6,#00bfa3);border-radius:50%;margin-left:6px"></span></div>
-      </div>
-      <div id="activeUsers" style="margin-top:8px"></div>
-      <div class="small" style="margin-top:8px">Hover a user row to see last message and location. Reserved handles are green.</div>
-    </div>
-
-    <!-- flicker banner ad -->
-    <div class="panel flicker" style="margin-top:12px">
-      <div class="small">System Feed</div>
-      <div id="systemFeed" class="small" style="margin-top:8px;min-height:80px;overflow:auto"></div>
-    </div>
-
-    <!-- tools -->
-    <div class="panel" style="margin-top:12px">
-      <div class="small">Tools</div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-        <button id="unlockPilgrimBtn" class="secondary">Force-unlock //Pilgrim</button>
-        <button id="inviteOverlayBtn" class="secondary">Open ProBoards Invite</button>
-        <button id="toggleDiag" class="secondary">Toggle Diagnostics</button>
-      </div>
-    </div>
-  </div>
+<div id="youtube">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed?listType=user_uploads&list=Patrickauthor" frameborder="0" allowfullscreen></iframe>
 </div>
 
-<div id="diagOverlay" style="position:fixed;left:12px;top:12px;background:rgba(0,0,0,0.7);padding:8px;border-radius:6px;color:#9fdfe0;display:none;z-index:9999;font-size:0.85rem">
-  <div>Diagnostics</div>
-  <pre id="diagPre" style="white-space:pre-wrap;max-width:380px"></pre>
+<div id="chat">
+  <h2>Live Chat</h2>
+  <select id="channelSelect" class="channel-select">
+    <option value="Exuro">//Exuro</option>
+    <option value="Sam">//Sam</option>
+    <option value="Nero">//Nero</option>
+    <option value="Nora">//Nora</option>
+    <option value="Loktal">//Loktal</option>
+    <option value="Pilgrim">//Pilgrim (secret)</option>
+  </select>
+  <div class="messages" id="messages"></div>
+  <input type="text" id="messageInput" placeholder="Type your message (max 500 chars)">
+  <button id="sendBtn">Send</button>
+  <div id="activeUsers"></div>
 </div>
 
-<canvas id="trailCanvas" class="cursor-trail" width="800" height="600"></canvas>
+<div id="board">
+  <h2>Message Board</h2>
+  <div id="posts"></div>
+  <input type="text" id="boardName" placeholder="Your Name (max 100)">
+  <textarea id="boardMsg" placeholder="Your post (max 1000)"></textarea>
+  <button id="postBtn">Post</button>
+</div>
 
-<audio id="doorSoundIn" src="https://assets.mixkit.co/sfx/download/mixkit-unlock-game-notification-253.wav"></audio>
-<audio id="doorSoundOut" src="https://assets.mixkit.co/sfx/download/mixkit-retro-game-notification-212.wav"></audio>
-<audio id="staticLoop" src="https://assets.mixkit.co/sfx/download/mixkit-arcade-retro-game-over-213.wav" loop></audio>
+<div id="lore"></div>
 
 <script type="module">
-// Full Firebase + IndexedDB + multi-channel chat logic goes here.
-// This will include everything from auth, chat, presence, board, Pilgrim unlock,
-// heartbeat, cursor trails, local board recovery, and diagnostics, exactly as your original code.
-</script>
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+  import { getDatabase, ref, push, set, onChildAdded, onValue, remove } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-database.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
+    authDomain: "before-us-universe.firebaseapp.com",
+    databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
+    projectId: "before-us-universe",
+    storageBucket: "before-us-universe.appspot.com",
+    messagingSenderId: "477103463228",
+    appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase();
+  const auth = getAuth();
+
+  // Sign in anonymously
+  signInAnonymously(auth);
+
+  const handleInput = document.getElementById('handle');
+  let currentHandle = "";
+
+  handleInput.addEventListener('change', () => { currentHandle = handleInput.value.trim() || "Anonymous"; });
+
+  const messagesDiv = document.getElementById('messages');
+  const messageInput = document.getElementById('messageInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const channelSelect = document.getElementById('channelSelect');
+
+  const activeUsersDiv = document.getElementById('activeUsers');
+
+  function updateActiveUsers() {
+    const onlineRef = ref(db, "online");
+    onValue(onlineRef, snapshot => {
+      const data = snapshot.val() || {};
+      let display = "Active Users: ";
+      for (let user in data) { display += `<span class='tooltip ${data[user].online ? "user-online" : "user-offline"}'>${data[user].handle}<span class="tooltiptext">${user}</span></span> `; }
+      activeUsersDiv.innerHTML = display;
+    });
+  }
+  updateActiveUsers();
+
+  // Handle sending messages
+  sendBtn.addEventListener('click', () => {
+    const msg = messageInput.value.trim();
+    if (!msg || !currentHandle) return;
+    const channel = channelSelect.value;
+    const msgRef = push(ref(db, `chat/${channel}`));
+    set(msgRef, { name: currentHandle, msg });
+    messageInput.value = "";
+  });
+
+  // Display messages per channel
+  function listenChannel(channel) {
+    messagesDiv.innerHTML = "";
+    const chatRef = ref(db, `chat/${channel}`);
+    onChildAdded(chatRef, snapshot => {
+      const { name, msg } = snapshot.val();
+      const div = document.createElement('div');
+      div.innerHTML = `<strong>${name}:</strong> ${msg}`;
+      messagesDiv.appendChild(div);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+  }
+  channelSelect.addEventListener('change', () => listenChannel(channelSelect.value));
+  listenChannel(channelSelect.value);
+
+  // Local message board
+  const postsDiv = document.getElementById('posts');
+  const postBtn = document.getElementById('postBtn');
+  const boardName = document.getElementById('boardName');
+  const boardMsg = document.getElementById('boardMsg');
+
+  const boardRef = ref(db, "board");
+  onChildAdded(boardRef, snapshot => {
+    const { name, msg } = snapshot.val();
+    const div = document.createElement('div');
+    div.classList.add('post');
+    div.innerHTML = `<strong>${name}</strong>: ${msg}`;
+    postsDiv.appendChild(div);
+  });
+
+  postBtn.addEventListener('click', () => {
+    if (!boardName.value.trim() || !boardMsg.value.trim()) return;
+    push(boardRef, { name: boardName.value.trim(), msg: boardMsg.value.trim() });
+    boardName.value = "";
+    boardMsg.value = "";
+  });
+
+  // Dynamic loading + lore
+  const loadingDiv = document.getElementById('loadingText');
+  const loreDiv = document.getElementById('loadingLore');
+  const loreContent = [
+    "Loading Sector 1: The Voidborn... 23% complete",
+    "Awakening ancient AI... 45% complete",
+    "Multiversal rifts stabilizing... 68% complete",
+    "Preparing Lux Fleet deployment... 89% complete",
+    "Initialization complete. Welcome to the Before Us Universe."
+  ];
+  let idx = 0;
+  function nextLore() {
+    if (idx < loreContent.length) {
+      loreDiv.innerText = loreContent[idx];
+      idx++;
+      setTimeout(nextLore, 1000);
+    } else {
+      document.getElementById('loading').style.display = "none";
+    }
+  }
+  nextLore();
+
+  // Update user online status
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      const onlineRef = ref(db, `online/${user.uid}`);
+      set(onlineRef, { handle: currentHandle || "Anonymous", online: true });
+      window.addEventListener('beforeunload', () => remove(onlineRef));
+    }
+  });
+
+</script>
 </body>
 </html>
