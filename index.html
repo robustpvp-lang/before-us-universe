@@ -94,7 +94,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
     <button class="btn" data-channel="nora">NORA</button>
     <button class="btn" data-channel="nero">NERO</button>
     <button class="btn" data-channel="loktal">LOKTAL</button>
-    <button class="btn" data-channel="pilgrim">Pilgrim</button>
+    <button class="btn" data-channel="pilgrim" style="display:none">PILGRIM</button>
     <div style="flex:1"></div>
     <button id="openBoardBtn" class="btn">Open Message Board</button>
   </div>
@@ -156,23 +156,34 @@ const db = firebase.database();
 
 // ---------- Boot ----------
 const bootScreen=document.getElementById('bootScreen');
-const bootLines=["SYSTEM BOOT","Loading Lux telemetry","Calibrating Vestus sensors","Decrypting Anu keys","Mounting Companion log","Finalizing boot"];
-let i=0;
+const bootLines=[
+  "Initializing BUU virtual environment...",
+  "Decrypting Lux telemetry...",
+  "Calibrating Vestus fleet sensors...",
+  "Mounting companion log modules...",
+  "Finalizing system checks..."
+];
+let bootI=0;
+const bootProgress=document.getElementById('bootProgress');
 function bootStep(){
-  if(i>=bootLines.length){bootScreen.style.display='none';document.getElementById('app').style.display='block';return;}
-  const line=document.createElement('div'); line.className='boot-line'; line.textContent=bootLines[i++]; bootScreen.appendChild(line);
-  setTimeout(bootStep,400+Math.random()*400);
+  if(bootI>=bootLines.length){bootScreen.style.display='none';document.getElementById('app').style.display='block'; return;}
+  const line=document.createElement('div'); line.className='boot-line glitch'; line.setAttribute('data-text',bootLines[bootI]); line.textContent=bootLines[bootI++];
+  bootScreen.appendChild(line);
+  bootProgress.textContent='['+'#'.repeat(bootI*4)+'......................'.slice(bootI*4)+'] '+Math.floor((bootI/bootLines.length)*100)+'%';
+  setTimeout(bootStep, 500 + Math.random()*500);
 }
 bootStep();
 
 // ---------- Login ----------
-let handle=null, currentChannel='exuro', presenceRef=null;
+let handle=null,currentChannel='exuro',presenceRef=null;
 document.getElementById('enterBtn').addEventListener('click',()=>{
   handle = (document.getElementById('handleField').value||'Anon'+Math.floor(Math.random()*9999)).replace(/[^a-zA-Z0-9]/g,'');
   document.getElementById('loginPanel').style.display='none';
   presenceRef=db.ref('online/'+handle); presenceRef.set(true); presenceRef.onDisconnect().remove();
   addSystemActivity(`${handle} joined`);
   listenChat(); listenOnline(); listenBoard(); startCompanionLore();
+  // Pilgrim unlock via handle
+  if(handle.toLowerCase()==='pilgrim123') document.querySelector('[data-channel="pilgrim"]').style.display='inline-block';
 });
 
 // ---------- Channels ----------
@@ -188,33 +199,72 @@ function switchChannel(ch){currentChannel=ch; document.querySelectorAll('.stream
 const chatRef=db.ref('chat');
 document.getElementById('sendChat').addEventListener('click',()=>{postChat(document.getElementById('chatInput').value);});
 document.getElementById('chatInput').addEventListener('keypress',e=>{if(e.key==='Enter') postChat(document.getElementById('chatInput').value);});
-function postChat(msg){if(!msg||!handle) return; chatRef.push({name:handle,msg:msg.slice(0,500),ts:Date.now(),channel:currentChannel}); document.getElementById('chatInput').value='';}
+function postChat(msg){
+  if(!msg||!handle) return;
+  chatRef.push({name:handle,msg:msg.slice(0,500),ts:Date.now(),channel:currentChannel});
+  document.getElementById('chatInput').value='';
+}
 
 // ---------- Board ----------
 const boardRef=db.ref('board');
-function listenBoard(){boardRef.limitToLast(50).on('child_added',snap=>{const obj=snap.val(); if(!obj) return; const p=document.createElement('p'); p.textContent=`[${obj.name}] ${obj.title||''}: ${obj.msg}`; document.getElementById('recentActivity').appendChild(p);});}
+function listenBoard(){boardRef.limitToLast(50).on('child_added',snap=>{
+  const obj=snap.val(); if(!obj) return; const p=document.createElement('p'); p.textContent=`[${obj.name}] ${obj.title||''}: ${obj.msg}`;
+  document.getElementById('recentActivity').appendChild(p);
+});}
 document.getElementById('openBoardBtn').addEventListener('click',()=>{window.open('https://tokillamockinggoblin.boards.net','_blank');});
 
 // ---------- Active Users ----------
-function listenOnline(){db.ref('online').on('value',snap=>{const ul=document.getElementById('activeUsers'); ul.innerHTML=''; let cnt=0; snap.forEach(ch=>{const p=document.createElement('p'); p.textContent=ch.key; ul.appendChild(p); cnt++;}); document.getElementById('channelActivity').textContent=String(cnt).padStart(3,'0');});}
+function listenOnline(){
+  db.ref('online').on('value',snap=>{
+    const ul=document.getElementById('activeUsers'); ul.innerHTML=''; let cnt=0;
+    snap.forEach(ch=>{const p=document.createElement('p'); p.textContent=ch.key; ul.appendChild(p); cnt++;});
+    document.getElementById('channelActivity').textContent=String(cnt).padStart(3,'0');
+  });
+}
 
 // ---------- Chat listener ----------
-function listenChat(){chatRef.limitToLast(200).on('child_added',snap=>{const obj=snap.val(); if(!obj||!obj.msg) return; const target=document.getElementById(obj.channel)||document.getElementById('exuro'); const p=document.createElement('p'); p.innerHTML=`<span class="meta">[${obj.name}]</span> ${obj.msg}`; target.appendChild(p); target.scrollTop=target.scrollHeight;});}
+function listenChat(){
+  chatRef.limitToLast(200).on('child_added',snap=>{
+    const obj=snap.val(); if(!obj||!obj.msg) return;
+    const target=document.getElementById(obj.channel)||document.getElementById('exuro');
+    const p=document.createElement('p'); p.innerHTML=`<span class="meta">[${obj.name}]</span> ${obj.msg}`;
+    target.appendChild(p); target.scrollTop=target.scrollHeight;
+  });
+}
 
 // ---------- Companion Log ----------
-const loreLines=["Exuro: Energy readings spike across Vestus","Sam: Temporal instability detected","Nora: Sensors show interference","Nero: Tactical arrays recalibrating","Loktal: Vessels on rim detected"];
-function startCompanionLore(){let i=0; setInterval(()=>{const p=document.createElement('p'); p.textContent=loreLines[i++ % loreLines.length]; document.getElementById('companionLog').appendChild(p);},5000);}
+const companionData={
+  exuro:["Exuro: Energy readings spike across Vestus","Exuro: Temporal flux detected near sector 12"],
+  sam:["Sam: Grand hid my journal again...","Sam: The sky looks heavy, like someone is laying on it."],
+  nora:["Nora: Sensor arrays report Lux interference","Nora: Anomaly detected in calibration module"],
+  nero:["Nero: Tactical arrays recalibrating","Nero: Lux fleet readiness nominal"],
+  loktal:["Loktal: I never wanted any of this...","Loktal: we deserve to be free."],
+};
+function startCompanionLore(){
+  setInterval(()=>{
+    if(!handle) return;
+    const logPanel=document.getElementById('companionLog');
+    const characters=Object.keys(companionData);
+    const char=characters[Math.floor(Math.random()*characters.length)];
+    const lines=companionData[char];
+    const line=lines[Math.floor(Math.random()*lines.length)];
+    const p=document.createElement('p'); p.textContent=line; logPanel.appendChild(p);
+    if(logPanel.children.length>30) logPanel.removeChild(logPanel.children[0]);
+    logPanel.scrollTop=logPanel.scrollHeight;
+  },8000);
+}
 
 // ---------- System activity ----------
 function addSystemActivity(msg){const p=document.createElement('p'); p.textContent=msg; document.getElementById('recentActivity').appendChild(p);}
 
 // ---------- Prune old messages ----------
-function pruneOld(){const cutoff=Date.now()-24*60*60*1000; chatRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff)s.ref.remove();});}); boardRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff)s.ref.remove();});}); setTimeout(pruneOld,60*60*1000);} pruneOld();
-
-// ---------- Secret Pilgrim channel unlock ----------
-document.getElementById('handleField').addEventListener('keypress',e=>{
-  if(e.key==='Enter' && e.target.value.toLowerCase()==='pilgrim123'){document.querySelector('[data-channel="pilgrim"]').style.display='block'; addSystemActivity('Pilgrim channel unlocked');}
-});
+function pruneOld(){
+  const cutoff=Date.now()-24*60*60*1000;
+  chatRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
+  boardRef.once('value',snap=>{snap.forEach(s=>{if(s.val().ts<cutoff) s.ref.remove();});});
+  setTimeout(pruneOld,60*60*1000);
+}
+pruneOld();
 </script>
 </body>
 </html>
