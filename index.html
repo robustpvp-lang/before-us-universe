@@ -4,216 +4,246 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Before Us Universe — BUU</title>
-<link rel="icon" href="favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-  /* --- Theme: Win98 desktop-ish background, terminal overlays --- */
+  /* =========================
+     THEME + WINDOWS 98 LOOK
+     ========================= */
   :root{
-    --bg:#0b2b3a; --panel:#071014; --muted:#cfeff3; --accent:#00ffd6;
-    --accent2:#7afcff; --danger:#ff6b6b;
-    --exuro:#b4b4ff; --sam:#ffbf7a; --nora:#ff9bff; --nero:#7affd1; --loktal:#ffa07a; --pilgrim:#fff58a;
+    --panel:#e0e0e0; --panel-border:#000; --text:#000;
+    --accent:#00bfa3; --accent2:#00796b; --muted:#4e4e4e;
+    --bg-fallback:#0b2b3a;
+    --msg-bg:#fff;
+    --online:#00c853; --offline:#ff3d00;
   }
-  html,body{height:100%;margin:0;font-family: "Courier New", monospace;background:
-    linear-gradient(180deg,#2b5b8a 0,#0b2b3a 100%); color:var(--muted); -webkit-font-smoothing:antialiased;}
-  /* mimic a Windows 98 desktop panel behind */
+  html,body{height:100%;margin:0;font-family:Roboto, "Press Start 2P", monospace;background:var(--bg-fallback);color:var(--text);-webkit-font-smoothing:antialiased}
+  /* Desktop background (Windows 98 style) */
   body::before{
-    content:""; position:fixed; inset:0; background:
-    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720"><rect width="100%" height="100%" fill="%230c2940"/></svg>') center/cover no-repeat;
-    opacity:0.3; z-index:0;
+    content:"";
+    position:fixed; inset:0; z-index:0;
+    background-image: url('https://i.imgur.com/fdI7QXD.jpg');
+    background-size: cover; background-position:center;
+    opacity:0.95;
   }
-  .container{position:relative;z-index:1;max-width:1200px;margin:18px auto;padding:18px;display:flex;gap:12px;align-items:flex-start}
-  header{display:flex;align-items:center;justify-content:space-between;width:100%}
-  header h1{margin:0;font-size:1.4rem;color:var(--accent)}
-  .links{display:flex;gap:8px}
-  .links a{color:var(--accent2);background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:4px;text-decoration:none;border:1px solid rgba(255,255,255,0.02)}
-  .left{flex:2;display:flex;flex-direction:column;gap:12px}
-  .right{flex:1;min-width:260px}
-  .panel{background:linear-gradient(180deg, rgba(10,15,20,0.9), rgba(6,10,12,0.95));border:1px solid rgba(255,255,255,0.03);border-radius:6px;padding:12px;box-shadow:0 6px 30px rgba(0,0,0,0.6)}
-  .hint{font-size:0.85rem;color:#8fbfc6}
-  /* chat/message board */
-  .stream{height:280px;overflow:auto;padding:10px;background:rgba(0,0,0,0.15);border-radius:4px;border:1px dashed rgba(255,255,255,0.02)}
-  .post{padding:6px;margin:6px 0;border-radius:4px}
-  .meta{font-weight:700;color:var(--accent2);margin-right:6px}
-  /* active users */
-  #activeUsers{display:flex;flex-direction:column;gap:6px;max-height:360px;overflow:auto}
-  .user-row{display:flex;align-items:center;gap:8px;padding:6px;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,0.01),transparent)}
-  .status-dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 6px rgba(0,255,200,0.12)}
-  .dot-online{background:linear-gradient(180deg,#00ffd6,#00bfa3)}
-  .dot-idle{background:linear-gradient(180deg,#ffd36b,#bfa300)}
-  .dot-offline{background:linear-gradient(180deg,#ff6b6b,#bf2b2b)}
-  .user-row .handle{font-family:monospace;color:var(--muted)}
-  .user-row .metaSmall{font-size:0.8rem;color:#9ecfd6;margin-left:auto}
-  /* channel select */
-  select,input{background:#061018;border:1px solid rgba(255,255,255,0.03);color:var(--muted);padding:8px;border-radius:4px}
-  button{background:linear-gradient(180deg,var(--accent2),#00c0b7);border:none;padding:8px 12px;border-radius:6px;color:#002;cursor:pointer;font-weight:700}
-  button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
-  .small{font-size:0.85rem;color:#9fb8c9}
-  /* scanlines / CRT effect */
-  .crt:after{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);background-size:100% 3px;mix-blend-mode:overlay;opacity:0.12}
-  /* cursor trails */
-  .cursor-trail{position:fixed;pointer-events:none;z-index:9999}
-  /* flicker banner ad */
-  .flicker{padding:10px;border-radius:6px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));animation:flick 6s infinite}
-  @keyframes flick {0%{opacity:1}20%{opacity:0.6}40%{opacity:1}60%{opacity:0.7}100%{opacity:1}}
-  /* diagnostic overlay */
-  #diag{position:fixed;right:12px;bottom:12px;background:#011;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.03);font-size:0.85rem;z-index:999}
-  /* heartbeat */
-  #heartbeat{width:8px;height:8px;border-radius:50%;background:rgba(0,255,200,0.2);box-shadow:0 0 12px rgba(0,255,200,0.06);animation:beat 2s infinite}
-  @keyframes beat{0%{transform:scale(1);opacity:0.6}50%{transform:scale(1.6);opacity:1}100%{transform:scale(1);opacity:0.6}}
-  /* responsive */
-  @media(max-width:980px){.container{flex-direction:column;padding:10px}.right{order:3}}
+
+  /* Page container */
+  .app{position:relative; z-index:1; max-width:1180px; margin:18px auto; padding:12px; box-sizing:border-box}
+
+  /* Header / top nav (responsive) */
+  header{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;align-items:center;padding:10px;background:linear-gradient(180deg,var(--panel),#d7d7d7);border:3px solid var(--panel-border);border-radius:6px}
+  header a{display:inline-block;padding:8px 12px;background:#fff;border:1px solid var(--panel-border);text-decoration:none;color:var(--text);font-size:14px;border-radius:4px}
+  header a:active, header a:focus{outline:2px solid rgba(0,0,0,0.12)}
+  @media(max-width:560px){ header a{padding:8px 10px;font-size:12px} }
+
+  /* Boot loader */
+  #boot{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#7fffd4;z-index:2000}
+  #boot .lines{font-family:monospace;white-space:pre;max-width:80%;text-align:center}
+  #boot .progress{margin-top:14px;font-size:13px;color:#9fead0}
+
+  /* Layout */
+  .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
+  @media(max-width:980px){ .layout{grid-template-columns:1fr} }
+
+  /* Left column blocks */
+  .panel{background:var(--panel);border:3px solid var(--panel-border);border-radius:6px;padding:10px;box-shadow:3px 3px 0 rgba(0,0,0,0.15);position:relative;overflow:hidden}
+  .small{font-size:12px;color:var(--muted)}
+
+  /* Handle/join area */
+  .join-row{display:flex;gap:8px;align-items:center}
+  .join-row input[type="text"]{padding:8px;border:2px inset var(--panel-border);width:220px;font-family:monospace}
+  .join-row button{padding:8px 10px;border:2px outset var(--panel-border);background:#ddd;cursor:pointer}
+
+  /* YouTube embed responsive */
+  .yt-wrap{display:flex;justify-content:center}
+  .yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--panel-border);background:#000}
+
+  /* Chat windows (draggable) */
+  .chat-area{display:flex;flex-direction:column;gap:10px}
+  .win{width:100%;max-width:780px;border:3px solid var(--panel-border);background:linear-gradient(180deg,#e9e9e9,#d6d6d6);box-shadow:6px 6px 0 rgba(0,0,0,0.2);border-radius:6px;position:relative}
+  .win .title{background:linear-gradient(180deg,#cfcfcf,#bfbfbf);padding:8px;border-bottom:2px solid var(--panel-border);display:flex;align-items:center;justify-content:space-between;cursor:move}
+  .win .title .chname{font-weight:700}
+  .win .content{padding:8px}
+  .chat-messages{height:260px;overflow:auto;background:var(--msg-bg);border:2px inset #bbb;padding:8px;white-space:pre-wrap}
+  .msg{margin:6px 0;padding:6px;border-radius:4px;background:linear-gradient(180deg,#fff,#f7f7f7);border:1px solid rgba(0,0,0,0.06)}
+  .msg .meta{font-weight:700;color:var(--accent2);margin-right:6px}
+  .chat-controls{display:flex;gap:8px;margin-top:8px}
+  .chat-controls input[type="text"]{flex:1;padding:8px;border:2px inset var(--panel-border);font-family:monospace}
+
+  /* Active users panel (right column) */
+  .active-list{display:flex;flex-direction:column;gap:6px}
+  .user-row{display:flex;align-items:center;gap:8px;padding:6px;border-radius:4px;background:#fff;border:1px solid rgba(0,0,0,0.06)}
+  .status-dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 6px rgba(0,0,0,0.08)}
+  .dot-online{background:var(--online)}
+  .dot-offline{background:var(--offline)}
+  .user-row .uname{font-family:monospace;font-weight:700}
+
+  /* Board style (ProBoards-like) */
+  .board-thread{background:#fff;border:2px solid var(--panel-border);padding:10px;margin-bottom:8px}
+  .board-controls{display:flex;gap:8px;margin-top:8px}
+  textarea{width:100%;min-height:80px;padding:8px;border:2px inset var(--panel-border);font-family:monospace}
+
+  /* tooltip */
+  .tooltip{position:relative}
+  .tooltip .tip{position:absolute;left:110%;top:0;background:#111;color:#7fffd4;padding:6px;border:1px solid #333;border-radius:4px;display:none;white-space:nowrap}
+  .tooltip:hover .tip{display:block}
+
+  /* small widgets */
+  .row{display:flex;gap:8px;align-items:center}
+  select{padding:8px;border:2px inset var(--panel-border)}
+
+  /* theme preview */
+  .theme-swatch{width:24px;height:24px;border-radius:4px;border:1px solid #222;cursor:pointer}
+
+  /* particle canvas */
+  #particles{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+  /* responsive tweaks */
+  @media(max-width:600px){
+    .chat-messages{height:200px}
+    .yt-wrap iframe{height:240px}
+  }
 </style>
 </head>
 <body>
+<div id="particles"></div>
 
-<!-- Boot / loading screen -->
-<div id="boot" style="position:fixed;inset:0;background:#000;color:var(--accent);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column">
-  <div id="bootText" style="font-family:monospace;white-space:pre-wrap;text-align:center;padding:20px"></div>
-  <div id="bootProgress" style="margin-top:12px;color:#9fdfe0" class="small"></div>
+<div id="boot">
+  <div class="lines" id="bootLines">INITIALIZING...</div>
+  <div class="progress" id="bootProgress">0%</div>
 </div>
 
-<!-- diagnostic overlay (toggle with Ctrl+Alt+D) -->
-<div id="diag" title="Diagnostic (press Ctrl+Alt+D to toggle)">Diagnostics: <span id="diagText">idle</span></div>
+<div class="app" id="app" style="display:none">
+  <header>
+    <a href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener">To Kill a Mocking Goblin</a>
+    <a href="https://youtube.com/playlist?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq&si=anZaakmimPIGuYwO" target="_blank" rel="noopener">Melphia's Game (Playlist)</a>
+    <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener">Book 1</a>
+    <a href="https://web.archive.org/" target="_blank" rel="noopener">Wayback Machine</a>
+  </header>
 
-<div class="container crt" id="mainUI">
-  <div style="width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-    <header><h1>Before Us Universe — BUU</h1></header>
-    <div class="links">
-      <a href="https://tokillamockinggoblin.boards.net/" target="_blank">To Kill a Mocking Goblin</a>
-      <a href="https://www.youtube.com/@Patrickauthor" target="_blank">Melphia's Game</a>
-      <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank">Book 1</a>
-      <a href="https://web.archive.org/" target="_blank">Wayback Machine</a>
-    </div>
-  </div>
+  <div class="layout">
+    <div class="left">
+      <!-- Join + YouTube -->
+      <div class="panel">
+        <div class="row">
+          <div style="flex:1">
+            <div class="small">Enter handle (required to join chat)</div>
+            <div class="join-row" style="margin-top:8px">
+              <input type="text" id="handleField" placeholder="//YourHandle" maxlength="20" />
+              <select id="channelSelectTop" style="width:140px">
+                <option value="exuro">//Exuro</option>
+                <option value="sam">//Sam</option>
+                <option value="nero">//Nero</option>
+                <option value="nora">//Nora</option>
+                <option value="loktal">//Loktal</option>
+                <option value="pilgrim" style="display:none">//Pilgrim (secret)</option>
+              </select>
+              <button id="joinBtn">JOIN</button>
+              <button id="leaveBtn" style="display:none">LEAVE</button>
+            </div>
+            <div class="small" style="margin-top:8px">Handles are reserved; choose carefully.</div>
+          </div>
 
-  <div class="left">
-    <!-- LOGIN / HANDLE -->
-    <div class="panel">
-      <div style="display:flex;gap:8px;align-items:center">
-        <div style="flex:1">
-          <div class="small">Enter handle (reserved via Firebase):</div>
-          <input id="handleInput" placeholder="//YourHandle" maxlength="20" style="width:100%;margin-top:6px" />
+          <div style="width:160px">
+            <div class="small">Theme</div>
+            <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+              <div class="theme-swatch" data-theme="default" title="Default" style="background:#e0e0e0"></div>
+              <div class="theme-swatch" data-theme="dark" title="Dark" style="background:#111"></div>
+              <div class="theme-swatch" data-theme="retro" title="Retro" style="background:linear-gradient(45deg,#ffefba,#ffc3a0)"></div>
+            </div>
+            <div class="small" style="margin-top:8px">Save theme per browser.</div>
+          </div>
         </div>
-        <div style="width:180px">
-          <div class="small">Choose channel:</div>
-          <select id="channelSelect" style="width:100%;margin-top:6px">
-            <option value="exuro">//Exuro</option>
-            <option value="sam">//Sam</option>
-            <option value="nora">//Nora</option>
-            <option value="nero">//Nero</option>
-            <option value="loktal">//Loktal</option>
-            <option value="pilgrim" style="display:none">//Pilgrim (secret)</option>
-          </select>
-        </div>
-        <div style="width:110px;display:flex;flex-direction:column;gap:6px">
-          <button id="joinBtn">JOIN</button>
-          <button id="disconnectBtn" class="secondary" style="display:none">DISCONNECT</button>
+
+        <hr/>
+
+        <div class="yt-wrap">
+          <iframe id="ytIframe" src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq&si=anZaakmimPIGuYwO" frameborder="0" allowfullscreen></iframe>
         </div>
       </div>
-      <div class="small" style="margin-top:8px">Reserved handles appear green. Hover a user for more info. Pilgrim unlocks after participation.</div>
+
+      <!-- Chat windows -->
+      <div class="panel chat-area">
+        <div class="win" id="channelWindow" style="left:0;top:0">
+          <div class="title" id="winTitle">
+            <div class="chname" id="winChannelLabel">//Exuro</div>
+            <div class="row" style="gap:6px;align-items:center">
+              <div class="small">Door</div>
+              <input id="doorToggle" type="checkbox" title="Sound on" checked/>
+            </div>
+          </div>
+          <div class="content">
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-controls">
+              <input type="text" id="chatInput" placeholder="Write message..." maxlength="500" />
+              <select id="channelSelect" style="width:120px">
+                <option value="exuro">//Exuro</option>
+                <option value="sam">//Sam</option>
+                <option value="nero">//Nero</option>
+                <option value="nora">//Nora</option>
+                <option value="loktal">//Loktal</option>
+                <option value="pilgrim" style="display:none">//Pilgrim</option>
+              </select>
+              <button id="sendBtn">POST</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message board -->
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="small">Local Message Board (ProBoards style)</div>
+          <div class="small">Posts persist; chat auto-deletes after 24 hours</div>
+        </div>
+
+        <div id="boardList" style="margin-top:8px"></div>
+
+        <div class="board-controls" style="margin-top:8px">
+          <input id="boardName" placeholder="Name (max 100)" style="width:180px;padding:6px"/>
+          <textarea id="boardMsg" placeholder="Message (max 1000)"></textarea>
+          <button id="postBoardBtn">Post</button>
+        </div>
+      </div>
+
     </div>
 
-    <!-- YouTube stream (clean) -->
-    <div class="panel" id="streamPanel">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div class="small">Live YouTube Stream</div>
-        <div class="small">Local viewers: <span id="localViewerCount">0</span></div>
-      </div>
-      <div style="margin-top:8px">
-        <!-- channel live stream - uses channel embed (or video id if provided) -->
-        <iframe id="ytStream" width="100%" height="300" frameborder="0" allowfullscreen
-          src="https://www.youtube.com/embed/live_stream?channel=UC7f16X7r3jq2n3xKyI5X0Xw"></iframe>
-      </div>
-    </div>
-
-    <!-- chat -->
-    <div class="panel">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div class="small">Multi-channel Chat — current: <span id="currentChannelLabel">//Exuro</span></div>
-        <div style="display:flex;gap:8px;align-items:center"><div id="heartbeat"></div></div>
-      </div>
-      <div style="margin-top:8px" id="chatStreams">
-        <div id="stream-exuro" class="stream" style="display:block"></div>
-        <div id="stream-sam" class="stream" style="display:none"></div>
-        <div id="stream-nora" class="stream" style="display:none"></div>
-        <div id="stream-nero" class="stream" style="display:none"></div>
-        <div id="stream-loktal" class="stream" style="display:none"></div>
-        <div id="stream-pilgrim" class="stream" style="display:none"></div>
-      </div>
-
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input id="chatInput" placeholder="Write a message to current channel..." style="flex:1" maxlength="500" />
-        <button id="sendMsgBtn">POST</button>
-      </div>
-      <div class="small" style="margin-top:6px">Chat auto-prunes after 24 hours. Message links are verified upon posting.</div>
-    </div>
-
-    <!-- local message board -->
-    <div class="panel">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div class="small">Local Message Board (persistent)</div>
-        <div class="small">Chronicle logs: <button id="dumpChronicle" class="secondary">Export</button></div>
-      </div>
-      <div id="localBoard" class="stream" style="margin-top:8px"></div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input id="boardInput" placeholder="Post to message board..." style="flex:1" maxlength="1000" />
-        <button id="postBoardBtn">POST</button>
-      </div>
-      <div class="small" style="margin-top:6px">Local board backed by IndexedDB and Firebase mirror. Board posts persist unless removed by admin.</div>
-    </div>
-
-  </div>
-
-  <div class="right">
-    <!-- active users -->
-    <div class="panel">
-      <div style="display:flex;align-items:center;justify-content:space-between">
+    <div class="right">
+      <div class="panel">
         <div class="small">Active Users by Channel</div>
-        <div class="small">Status lights: <span style="display:inline-block;width:10px;height:10px;background:linear-gradient(#00ffd6,#00bfa3);border-radius:50%;margin-left:6px"></span></div>
+        <div id="activeContainer" style="margin-top:8px"></div>
       </div>
-      <div id="activeUsers" style="margin-top:8px"></div>
-      <div class="small" style="margin-top:8px">Hover a user row to see last message and location. Reserved handles are green.</div>
-    </div>
 
-    <!-- flicker banner ad / diagnostic -->
-    <div class="panel flicker" style="margin-top:12px">
-      <div class="small">System Feed</div>
-      <div id="systemFeed" class="small" style="margin-top:8px;min-height:80px;overflow:auto"></div>
-    </div>
+      <div class="panel" style="margin-top:12px">
+        <div class="small">Direct Messages (DM)</div>
+        <div id="dmList" style="margin-top:8px"></div>
+        <div class="small" style="margin-top:8px">Click a user to open a DM window.</div>
+      </div>
 
-    <!-- controls: unlock pilgrim, invite overlay -->
-    <div class="panel" style="margin-top:12px">
-      <div class="small">Tools</div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-        <button id="unlockPilgrimBtn" class="secondary">Force-unlock //Pilgrim</button>
-        <button id="inviteOverlayBtn" class="secondary">Open ProBoards Invite</button>
-        <button id="toggleDiag" class="secondary">Toggle Diagnostics</button>
+      <div class="panel" style="margin-top:12px">
+        <div class="small">System Feed</div>
+        <div id="systemFeed" style="margin-top:8px;max-height:220px;overflow:auto"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- diagnostic overlay initial hidden -->
-<div id="diagOverlay" style="position:fixed;left:12px;top:12px;background:rgba(0,0,0,0.7);padding:8px;border-radius:6px;color:#9fdfe0;display:none;z-index:9999;font-size:0.85rem">
-  <div>Diagnostics</div>
-  <pre id="diagPre" style="white-space:pre-wrap;max-width:380px"></pre>
-</div>
+<!-- Sounds -->
+<audio id="soundDoor" src="https://assets.mixkit.co/sfx/download/mixkit-unlock-game-notification-253.wav"></audio>
+<audio id="soundMsg" src="https://assets.mixkit.co/sfx/download/mixkit-positive-alert-600.wav"></audio>
 
-<!-- cursor trails container -->
-<canvas id="trailCanvas" class="cursor-trail" width="800" height="600"></canvas>
+<!-- Particle canvas -->
+<canvas id="particleCanvas" style="position:fixed;left:0;top:0;pointer-events:none;z-index:0"></canvas>
 
-<!-- sounds -->
-<audio id="doorSoundIn" src="https://assets.mixkit.co/sfx/download/mixkit-unlock-game-notification-253.wav"></audio>
-<audio id="doorSoundOut" src="https://assets.mixkit.co/sfx/download/mixkit-retro-game-notification-212.wav"></audio>
-<audio id="staticLoop" src="https://assets.mixkit.co/sfx/download/mixkit-arcade-retro-game-over-213.wav" loop></audio>
-
-<!-- Firebase + app logic -->
+<!-- Firebase modular SDK -->
 <script type="module">
-/* ========= IMPORTS ========== */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getDatabase, ref, push, set, onChildAdded, onValue, remove, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+/* ===============================
+   FULL APP SCRIPT — SINGLE FILE
+   =============================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-app.js";
+import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-database.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-auth.js";
 
-/* ========= CONFIG (your Firebase) ========= */
+/* ---------- CONFIG ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
   authDomain: "before-us-universe.firebaseapp.com",
@@ -223,398 +253,340 @@ const firebaseConfig = {
   messagingSenderId: "477103463228",
   appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const auth = getAuth();
+const auth = getAuth(app);
 
-/* ========= DOM ========= */
+/* ---------- DOM ---------- */
 const boot = document.getElementById('boot');
-const bootText = document.getElementById('bootText');
+const bootLines = document.getElementById('bootLines');
 const bootProgress = document.getElementById('bootProgress');
+const appRoot = document.getElementById('app');
+
+const handleField = document.getElementById('handleField');
 const joinBtn = document.getElementById('joinBtn');
-const disconnectBtn = document.getElementById('disconnectBtn');
-const handleInput = document.getElementById('handleInput');
+const leaveBtn = document.getElementById('leaveBtn');
 const channelSelect = document.getElementById('channelSelect');
-const currentChannelLabel = document.getElementById('currentChannelLabel');
+const channelSelectTop = document.getElementById('channelSelectTop');
+const winChannelLabel = document.getElementById('winChannelLabel');
+const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
-const sendMsgBtn = document.getElementById('sendMsgBtn');
-const streamExuro = document.getElementById('stream-exuro');
-const streamSam = document.getElementById('stream-sam');
-const streamNora = document.getElementById('stream-nora');
-const streamNero = document.getElementById('stream-nero');
-const streamLoktal = document.getElementById('stream-loktal');
-const streamPilgrim = document.getElementById('stream-pilgrim');
-const localBoard = document.getElementById('localBoard');
+const sendBtn = document.getElementById('sendBtn');
+const activeContainer = document.getElementById('activeContainer');
+const boardList = document.getElementById('boardList');
+const boardName = document.getElementById('boardName');
+const boardMsg = document.getElementById('boardMsg');
 const postBoardBtn = document.getElementById('postBoardBtn');
-const boardInput = document.getElementById('boardInput');
-const activeUsersDiv = document.getElementById('activeUsers');
 const systemFeed = document.getElementById('systemFeed');
-const unlockPilgrimBtn = document.getElementById('unlockPilgrimBtn');
-const inviteOverlayBtn = document.getElementById('inviteOverlayBtn');
-const toggleDiag = document.getElementById('toggleDiag');
-const diag = document.getElementById('diagOverlay');
-const diagPre = document.getElementById('diagPre');
-const dumpChronicle = document.getElementById('dumpChronicle');
-const localViewerCountEl = document.getElementById('localViewerCount');
-const doorIn = document.getElementById('doorSoundIn'); const doorOut = document.getElementById('doorSoundOut');
-const staticLoop = document.getElementById('staticLoop');
+const dmList = document.getElementById('dmList');
+const channelSelectWin = document.getElementById('channelSelectTop');
+const doorToggle = document.getElementById('doorToggle');
+const soundDoor = document.getElementById('soundDoor');
+const soundMsg = document.getElementById('soundMsg');
 
 let uid = null;
-let handle = null;
+let myHandle = null;
 let currentChannel = 'exuro';
+let presenceRef = null; // reference to online node for this user
+let onDisconnectRef = null;
 
-/* ========= Boot sequence with lore-like lines ========= */
-const bootLines = [
-  "INITIALIZING…",
-  "Loading Sector telemetry...",
-  "Calibrating Lux arrays...",
-  "Attuning vestus relay nodes...",
-  "Mounting multi-channel comms...",
-  "Verifying local storage...",
-  "Bridging GitHub lore repository...",
-  "System nominal. Welcome."
+/* ---------- BOOT LOADER + LORE ---------- */
+const bootSteps = [
+  "INITIALIZING BEFORE US UNIVERSE v1.2",
+  "Loading Lux telemetry modules...",
+  "Mounting interstellar chat hubs...",
+  "Calibrating presence & user tracking...",
+  "Embedding YouTube playlist...",
+  "Applying retro UI theme...",
+  "System online. Welcome, Commander."
 ];
-let bootI = 0;
-function bootStep(){
-  if(bootI >= bootLines.length){
-    boot.style.display = 'none';
-    return;
-  }
-  bootText.textContent = bootLines.slice(0, bootI+1).join('\n');
-  bootProgress.textContent = `Progress: ${Math.round(((bootI+1)/bootLines.length)*100)}%`;
-  bootI++;
-  setTimeout(bootStep, 450 + Math.random()*350);
+let bs = 0;
+function bootTick(){
+  if(bs >= bootSteps.length){ boot.style.display='none'; appRoot.style.display='block'; return; }
+  bootLines.textContent = bootSteps.slice(0, bs+1).join("\n");
+  bootProgress.textContent = `Progress: ${Math.round(((bs+1)/bootSteps.length)*100)}%`;
+  bs++;
+  setTimeout(bootTick, 450 + Math.random()*350);
 }
-bootStep();
+bootTick();
 
-/* ========= Auth (anonymous) ========= */
-signInAnonymously(auth).catch(err => console.warn('Auth failed', err));
-onAuthStateChanged(auth, (user) => {
-  if(user) { uid = user.uid; appendSystemFeed(`Auth: ${uid}`); staticLoop.play().catch(()=>{}); }
+/* ---------- PARTICLES (lightweight) ---------- */
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+let particles = [];
+function spawnParticle(x,y){
+  particles.push({x,y, vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6, life:60, size:Math.random()*2+1});
+}
+function tickParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy; p.life--;
+    ctx.fillStyle = `rgba(127,255,212,${p.life/60})`;
+    ctx.fillRect(p.x,p.y,p.size,p.size);
+    if(p.life<=0) particles.splice(i,1);
+  }
+  requestAnimationFrame(tickParticles);
+}
+tickParticles();
+
+/* ---------- AUTH ---------- */
+signInAnonymously(auth).catch(e=>appendSystem(`Auth error: ${e.message}`));
+onAuthStateChanged(auth, user => {
+  if(user){ uid = user.uid; appendSystem(`Auth: ${uid}`); }
 });
 
-/* ========= UTIL ========= */
-function sanitizeHandle(s){ return s.replace(/[^\w-]/g,'').slice(0,20); }
-function appendSystemFeed(text){
-  const p = document.createElement('div'); p.textContent = `[${new Date().toLocaleTimeString()}] ${text}`; systemFeed.prepend(p);
+/* ---------- UTIL ---------- */
+function sanitizeHandle(h){ return String(h||'').replace(/[^\w\-]/g,'').slice(0,20); }
+function appendSystem(text){
+  const d = document.createElement('div'); d.style.fontSize='12px'; d.style.padding='4px'; d.textContent = `${new Date().toLocaleTimeString()} - ${text}`;
+  systemFeed.prepend(d);
+}
+function makeTooltip(text){ const span = document.createElement('span'); span.className='tooltip'; span.textContent=text; return span; }
+
+/* ---------- PRESENCE (per-channel) ---------- */
+function setPresence(handle, channel){
+  if(!uid) { appendSystem('No uid yet for presence'); return; }
+  // remove existing presence if exists
+  if(presenceRef){ try{ remove(presenceRef); }catch(e){} }
+  const node = `online/${channel}/${uid}`;
+  presenceRef = ref(db, node);
+  set(presenceRef, { name: handle, ts: Date.now(), channel }).then(()=>{
+    // schedule onDisconnect removal
+    try{ onDisconnect(presenceRef).remove(); }catch(e){}
+    appendSystem(`Presence set: ${handle} @ ${channel}`);
+  }).catch(e=>appendSystem('Presence set failed: '+e.message));
 }
 
-/* ========= IndexedDB (simple wrapper for message-board persistence) ========= */
-const IDB_DB = 'buu-localdb', IDB_STORE = 'board';
-let idbDB = null;
-function openIDB(){
-  return new Promise((res,rej)=>{
-    const r = indexedDB.open(IDB_DB,1);
-    r.onupgradeneeded = () => { r.result.createObjectStore(IDB_STORE, { keyPath:'ts' }); };
-    r.onsuccess = ()=>{ idbDB = r.result; res(); };
-    r.onerror = ()=> rej(r.error);
+/* ---------- WATCH ONLINE / ACTIVE USERS ---------- */
+function watchOnline(){
+  const onlineRoot = ref(db, 'online');
+  onValue(onlineRoot, snap => {
+    const data = snap.val() || {};
+    renderActiveUsers(data);
   });
 }
-async function idbSave(post){ if(!idbDB) await openIDB(); const tx = idbDB.transaction(IDB_STORE,'readwrite'); tx.objectStore(IDB_STORE).put(post); }
-async function idbGetAll(){ if(!idbDB) await openIDB(); return new Promise(r=>{ const tx = idbDB.transaction(IDB_STORE,'readonly'); const arr=[]; const cur = tx.objectStore(IDB_STORE).openCursor(); cur.onsuccess = ()=>{ const c = cur.result; if(c){ arr.push(c.value); c.continue(); } else r(arr); } }); }
-
-/* ========= Presence: per-channel online nodes with lastMessage ========= */
-function setPresence(channel){
-  if(!uid || !handle) return;
-  const pRef = ref(db, `online/${channel}/${uid}`);
-  set(pRef, { name: handle, lastMsg: '', ts: Date.now() });
-  // remove on unload
-  window.addEventListener('beforeunload', ()=> remove(pRef).catch(()=>{}));
-}
-
-/* update presence lastMsg */
-function updatePresenceLastMsg(channel, text){
-  if(!uid) return;
-  const pRef = ref(db, `online/${channel}/${uid}`);
-  update(pRef, { lastMsg: text.slice(0,200), ts: Date.now() }).catch(()=>{});
-}
-
-/* ========= Active users listener (per-channel listing + hover tooltips) ========= */
-function renderActiveUsers(snapshot){
-  activeUsersDiv.innerHTML = '';
-  const channels = ['exuro','sam','nora','nero','loktal','pilgrim'];
+function renderActiveUsers(data){
+  // Build per channel UI with counts and user rows
+  activeContainer.innerHTML = '';
+  const channels = ['exuro','sam','nero','nora','loktal','pilgrim'];
+  const total = Object.values(data).reduce((acc, ch)=> acc + Object.keys(ch||{}).length, 0);
   channels.forEach(ch=>{
     const chNode = document.createElement('div');
-    chNode.style.marginBottom = '8px';
+    chNode.style.marginBottom='8px';
     const title = document.createElement('div'); title.textContent = `//${ch.charAt(0).toUpperCase()+ch.slice(1)}`; title.style.fontWeight='700';
+    const count = ((data[ch])?Object.keys(data[ch]).length:0);
+    const countSpan = document.createElement('span'); countSpan.textContent = ` ${count} user${count!==1?'s':''}`; countSpan.style.marginLeft='8px'; title.appendChild(countSpan);
     chNode.appendChild(title);
+
     const list = document.createElement('div');
-    list.style.display='flex'; list.style.flexDirection='column'; list.style.gap='6px'; list.style.marginTop='6px';
-    activeUsersDiv.appendChild(chNode);
+    const users = data[ch]||{};
+    Object.entries(users).forEach(([userId,u])=>{
+      const row = document.createElement('div'); row.className='user-row';
+      row.style.marginTop='6px';
+      const dot = document.createElement('div'); dot.className='status-dot ' + (u? 'dot-online':'dot-offline');
+      dot.title = u ? 'Online' : 'Offline';
+      const uname = document.createElement('div'); uname.className='uname'; uname.textContent = u.name;
+      // hover tooltip
+      const tipWrap = document.createElement('div'); tipWrap.className='tooltip';
+      const tip = document.createElement('div'); tip.className='tip'; tip.textContent = `UID: ${userId}\nLast: ${u.ts?new Date(u.ts).toLocaleTimeString():'-'}\nChannel: ${u.channel||'-'}`;
+      tipWrap.appendChild(uname); tipWrap.appendChild(tip);
+      // clicking user opens DM window
+      tipWrap.style.cursor = 'pointer';
+      tipWrap.addEventListener('click', ()=> openDM(userId, u.name));
+      row.appendChild(dot); row.appendChild(tipWrap);
+      list.appendChild(row);
+    });
     chNode.appendChild(list);
+    activeContainer.appendChild(chNode);
+  });
+
+  // Update DM list (quick links) with all users
+  updateDMList(data);
+}
+
+/* ---------- DM UI ---------- */
+function pairId(a,b){ // deterministic pair id
+  return [a,b].sort().join('_');
+}
+function openDM(targetUid, targetName){
+  if(!uid){ alert('Join first to DM'); return; }
+  if(targetUid === uid){ alert('Cannot DM yourself'); return; }
+  const pid = pairId(uid, targetUid);
+  // create floating simple DM window
+  const win = document.createElement('div');
+  win.style.position='fixed'; win.style.right='20px'; win.style.bottom='20px';
+  win.style.width='300px'; win.style.background='#fff'; win.style.border='2px solid #000'; win.style.zIndex=9999; win.style.padding='6px';
+  const title = document.createElement('div'); title.textContent = `DM: ${targetName}`; title.style.fontWeight='700';
+  const msgs = document.createElement('div'); msgs.style.height='160px'; msgs.style.overflow='auto'; msgs.style.border='1px solid #ccc'; msgs.style.marginTop='6px'; msgs.style.padding='6px';
+  const input = document.createElement('input'); input.placeholder='Type DM...'; input.style.width='100%'; input.style.marginTop='6px';
+  const send = document.createElement('button'); send.textContent='Send'; send.style.marginTop='6px';
+  win.appendChild(title); win.appendChild(msgs); win.appendChild(input); win.appendChild(send);
+  document.body.appendChild(win);
+  // Listen to dm path
+  const dmRef = ref(db, `dm/${pid}`);
+  onChildAdded(dmRef, s=>{
+    const o = s.val();
+    const el = document.createElement('div');
+    el.style.padding='4px'; el.style.marginBottom='4px'; el.style.borderBottom='1px dotted #ddd';
+    el.textContent = `${o.fromName}: ${o.msg}`;
+    msgs.appendChild(el);
+    msgs.scrollTop = msgs.scrollHeight;
+  });
+  // send DM
+  send.addEventListener('click', ()=>{
+    const text = input.value.trim(); if(!text) return;
+    const mRef = push(ref(db, `dm/${pid}`));
+    set(mRef, { from: uid, to: targetUid, fromName: myHandle, toName: targetName, msg:text, ts:Date.now() });
+    input.value=''; soundMsg.play().catch(()=>{});
   });
 }
 
-/* listen online changes */
-function listenAllOnline(){
-  onValue(ref(db, 'online'), snap=>{
-    activeUsersDiv.innerHTML = '';
-    const val = snap.val() || {};
-    const channels = Object.keys(val).sort();
-    let localViewerCount = 0;
-    ['exuro','sam','nora','nero','loktal','pilgrim'].forEach(ch=>{
-      const users = (val[ch]) ? Object.entries(val[ch]) : [];
-      const header = document.createElement('div'); header.style.display='flex'; header.style.justifyContent='space-between'; header.style.alignItems='center';
-      const title = document.createElement('div'); title.textContent = `//${ch.charAt(0).toUpperCase()+ch.slice(1)}`; title.style.fontWeight='700';
-      const count = document.createElement('div'); count.textContent = `${users.length} user${users.length!==1 ? 's':''}`; count.className='small';
-      header.appendChild(title); header.appendChild(count);
-      const container = document.createElement('div'); container.appendChild(header);
-      if(users.length){
-        users.forEach(([k,v])=>{
-          const row = document.createElement('div'); row.className='user-row';
-          const dot = document.createElement('div'); dot.className='status-dot dot-online';
-          const h = document.createElement('div'); h.className='handle'; h.textContent = v.name;
-          const meta = document.createElement('div'); meta.className='metaSmall'; meta.textContent = new Date(v.ts).toLocaleTimeString();
-          row.appendChild(dot); row.appendChild(h); row.appendChild(meta);
-          // hover tooltip showing lastMsg
-          row.title = `Last: ${v.lastMsg || '(no messages)'}\nUID: ${k}`;
-          container.appendChild(row);
-          localViewerCount++;
-        });
-      }
-      activeUsersDiv.appendChild(container);
-    });
-    localViewerCountEl.textContent = localViewerCount;
-  });
-}
-
-/* ========= Chat: post, listen, pruning ========= */
-function postChatMessage(channel, name, msg){
-  const payload = { name, msg, channel, ts: Date.now() };
-  push(ref(db, 'chat'), payload).then(()=> updatePresenceLastMsg(channel,msg)).catch(e=>console.warn(e));
-}
-onChildAdded(ref(db,'chat'), snap=>{
-  const obj = snap.val();
-  if(!obj) return;
-  // display in the channel stream
-  const el = document.createElement('div'); el.className='post';
-  el.innerHTML = `<span class="meta">${obj.name}</span> ${escapeHtml(obj.msg)} <div class="small">— ${new Date(obj.ts).toLocaleTimeString()}</div>`;
-  const target = document.getElementById('stream-'+obj.channel);
-  if(target){
-    target.appendChild(el);
-    target.scrollTop = target.scrollHeight;
+/* quick dm list */
+function updateDMList(data){
+  dmList.innerHTML='';
+  const all = [];
+  for(const ch in data){
+    for(const uidKey in data[ch]||{}){
+      all.push({uid:uidKey,name:data[ch][uidKey].name});
+    }
   }
+  // dedupe by uid
+  const unique = {};
+  all.forEach(u=>unique[u.uid]=u.name);
+  Object.entries(unique).forEach(([uId,uName])=>{
+    const btn = document.createElement('div'); btn.textContent = uName; btn.style.padding='6px'; btn.style.border='1px solid #ccc'; btn.style.marginBottom='6px'; btn.style.cursor='pointer';
+    btn.addEventListener('click', ()=> openDM(uId,uName));
+    dmList.appendChild(btn);
+  });
+}
+
+/* ---------- CHAT (channels) ---------- */
+function listenChannel(channel){
+  currentChannel = channel;
+  winChannelLabel.textContent = '//' + channel.charAt(0).toUpperCase()+channel.slice(1);
+  chatMessages.innerHTML = '';
+  const chatRef = ref(db, `chat/${channel}`);
+  onChildAdded(chatRef, snap=>{
+    const o = snap.val();
+    const el = document.createElement('div'); el.className='msg';
+    el.innerHTML = `<span class="meta">${o.name}</span>: <span class="text">${escapeHtml(o.msg)}</span><div class="small" style="font-size:10px;margin-top:4px">${new Date(o.ts || Date.now()).toLocaleTimeString()}</div>`;
+    chatMessages.appendChild(el);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    if(doorToggle.checked) soundDoor.play().catch(()=>{});
+    spawnParticle( Math.random()*window.innerWidth, Math.random()*150 + 80 );
+  });
+}
+function postMessage(channel, name, text){
+  const r = push(ref(db, `chat/${channel}`));
+  set(r, { name, msg:text, channel, ts:Date.now() }).catch(e=>appendSystem('Chat post failed: '+e.message));
+}
+
+/* escape for display */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------- BOARD ---------- */
+function listenBoard(){
+  const bRef = ref(db, 'board');
+  onChildAdded(bRef, snap=>{
+    const p = snap.val();
+    renderBoardPost(p);
+  });
+}
+function renderBoardPost(p){
+  const box = document.createElement('div'); box.className='board-thread';
+  box.innerHTML = `<div style="font-weight:700">${escapeHtml(p.name)}</div><div style="margin-top:6px">${escapeHtml(p.msg)}</div><div class="small" style="margin-top:6px">${new Date(p.ts || Date.now()).toLocaleString()}</div>`;
+  boardList.prepend(box);
+}
+
+/* ---------- UI BINDINGS ---------- */
+joinBtn.addEventListener('click', ()=>{
+  const raw = sanitizeHandle(handleField.value || '');
+  if(!raw){ alert('Please enter a handle'); return; }
+  myHandle = raw; handleField.value = myHandle;
+  // set presence
+  setPresence(myHandle, channelSelectTop.value);
+  joinBtn.style.display='none'; leaveBtn.style.display='inline-block';
+  appendSystem(`You joined as ${myHandle}`);
+  // save handle mapping
+  if(uid) { set(ref(db, `handles/${myHandle}`), { uid, joined:Date.now() }).catch(()=>{}); set(ref(db, `users/${uid}/profile`), { name: myHandle, firstSeen:Date.now() }).catch(()=>{}); }
+  listenChannel(channelSelectTop.value);
+});
+leaveBtn.addEventListener('click', ()=>{
+  if(presenceRef) { remove(presenceRef).catch(()=>{}); presenceRef=null; appendSystem('You left'); }
+  joinBtn.style.display='inline-block'; leaveBtn.style.display='none'; myHandle=null;
 });
 
-/* prune chat older than 24h (run hourly) */
-async function pruneOldChat(){
-  const snapshot = await (await fetchPruned()).json?.catch(()=>null);
-  // fallback simple prune via reading all messages and removing old ones:
-  onValue(ref(db,'chat'), snap=>{
-    snap.forEach(child=>{
-      const v = child.val();
-      if(v && (Date.now() - v.ts) > 24*60*60*1000) remove(ref(db, `chat/${child.key}`)).catch(()=>{});
-    });
-  }, {onlyOnce:true});
-}
-setInterval(pruneOldChat, 60*60*1000);
-
-/* ========= Local message board backing: Firebase + IndexedDB mirror ========= */
-function renderBoardPost(obj){
-  const row = document.createElement('div'); row.className='post';
-  // link verification: detect links and mark unverified
-  const linkRegex = /(https?:\/\/[^\s]+)/g;
-  const hasLink = linkRegex.test(obj.msg);
-  const verified = obj.verified || false;
-  let msgHtml = escapeHtml(obj.msg).replace(linkRegex, (m)=> `<a href="${m}" target="_blank" rel="noopener noreferrer">${m}</a>`);
-  row.innerHTML = `<span class="meta">${obj.name}</span> ${msgHtml} ${hasLink?` <em style="color:${verified?'#7fffd4':'#ffb86b'}">[${verified?'verified':'unverified'}]</em>`:''}
-                   <div class="small">${new Date(obj.ts).toLocaleString()}</div>`;
-  localBoard.appendChild(row);
-  localBoard.scrollTop = localBoard.scrollHeight;
-}
-onChildAdded(ref(db,'board'), snap=>{
-  const obj = snap.val();
-  if(!obj) return;
-  renderBoardPost(obj);
-  // store locally
-  idbSave(obj).catch(()=>{});
+channelSelectTop.addEventListener('change', ()=>{
+  if(myHandle) { setPresence(myHandle, channelSelectTop.value); listenChannel(channelSelectTop.value); channelSelect.value=channelSelectTop.value; }
+});
+channelSelect.addEventListener('change', ()=>{
+  channelSelectTop.value=channelSelect.value;
+  if(myHandle) setPresence(myHandle, channelSelect.value);
+  listenChannel(channelSelect.value);
+});
+sendBtn.addEventListener('click', ()=>{
+  if(!myHandle){ alert('Enter a handle and JOIN first'); return; }
+  const txt = chatInput.value.trim(); if(!txt) return;
+  postMessage(channelSelect.value, myHandle, txt);
+  // update presence last msg
+  if(uid) set(ref(db, `online/${channelSelect.value}/${uid}`), { name: myHandle, ts: Date.now(), channel: channelSelect.value });
+  chatInput.value=''; soundMsg.play().catch(()=>{});
 });
 
-/* post board (mirror to IndexedDB and Firebase) */
 postBoardBtn.addEventListener('click', ()=>{
-  const text = boardInput.value.trim();
-  if(!text || !handle) return;
-  // link verification flag default false
-  const payload = { name: handle, msg: text, ts: Date.now(), verified:false };
-  push(ref(db,'board'), payload).catch(e=>console.warn(e));
-  boardInput.value='';
+  const name = boardName.value.trim(); const msg = boardMsg.value.trim();
+  if(!name || !msg) return alert('Board post requires name and message');
+  const r = push(ref(db, 'board')); set(r, { name, msg, ts:Date.now() }).catch(e=>appendSystem('Board post failed: '+e.message));
+  boardName.value=''; boardMsg.value='';
 });
 
-/* recover local board to Firebase if remote empty */
-dumpChronicle.addEventListener('click', async ()=>{
-  const all = await idbGetAll();
-  const blob = new Blob([JSON.stringify(all, null, 2)], { type:'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download='buu-chronicle.json'; a.click();
-});
+/* ---------- INITIAL LISTENERS ---------- */
+watchOnline();
+listenBoard();
+listenChannel(currentChannel);
 
-/* ========= Handle reservation + user record ========= */
-async function reserveHandle(uidVal, handleVal){
-  // attempt to set /handles/{handle} => uid (atomic naive)
-  const hRef = ref(db, `handles/${handleVal}`);
-  set(hRef, { uid: uidVal, ts: Date.now() }).then(()=> appendSystemFeed(`Handle ${handleVal} reserved.`)).catch(e=> appendSystemFeed(`Handle reserve failed: ${e.message}`));
-}
-
-/* ========= Unlock Pilgrim logic: tiered access based on posts count ========= */
-function checkUnlockForUser(uidVal){
-  // count posts by user in 'chat' or 'board' to determine unlock threshold
-  onValue(ref(db,'users/'+uidVal+'/stats'), snap=>{
-    const stats = snap.val() || { posts:0 };
-    if(stats.posts >= 5) {
-      // unlock pilgrim option
-      document.querySelector('#channelSelect option[value="pilgrim"]').style.display = 'block';
+/* prune old chat (24h) - best-effort read+remove hourly */
+setInterval(()=> {
+  const chatRoot = ref(db, 'chat');
+  onValue(chatRoot, snap=>{
+    const val = snap.val() || {};
+    for(const ch in val){
+      for(const id in val[ch]){
+        const item = val[ch][id];
+        if(item && item.ts && (Date.now() - item.ts) > 24*60*60*1000){
+          remove(ref(db, `chat/${ch}/${id}`)).catch(()=>{});
+        }
+      }
     }
   }, {onlyOnce:true});
+}, 60*60*1000);
+
+/* ---------- THEME SELECTOR (localStorage) ---------- */
+document.querySelectorAll('.theme-swatch').forEach(s=>{
+  s.addEventListener('click', ()=> {
+    const t = s.getAttribute('data-theme');
+    applyTheme(t);
+    localStorage.setItem('buu-theme', t);
+  });
+});
+function applyTheme(theme){
+  if(theme==='dark'){ document.documentElement.style.setProperty('--panel','#141414'); document.documentElement.style.setProperty('--text','#ddd'); document.documentElement.style.setProperty('--msg-bg','#0b0b0b'); }
+  else if(theme==='retro'){ document.documentElement.style.setProperty('--panel','#fff7e6'); document.documentElement.style.setProperty('--text','#333'); document.documentElement.style.setProperty('--msg-bg','#fffbe6'); }
+  else { document.documentElement.style.removeProperty('--panel'); document.documentElement.style.removeProperty('--text'); document.documentElement.style.removeProperty('--msg-bg'); }
 }
+const savedTheme = localStorage.getItem('buu-theme') || 'default'; applyTheme(savedTheme);
 
-/* update user stats on post */
-function incUserPostCount(uidVal){
-  const sRef = ref(db, `users/${uidVal}/stats`);
-  onValue(sRef, snap=>{
-    const cur = snap.val() || { posts:0 };
-    set(ref(db,`users/${uidVal}/stats`), { posts: (cur.posts || 0) + 1 });
-  }, {onlyOnce:true});
-}
+/* ---------- SIMPLE INTERACTION STYLING ---------- */
+document.addEventListener('mousemove', e=>{ spawnParticle(e.clientX, e.clientY); });
 
-/* ========= UI bindings: join, send, channel switch ========= */
-joinBtn.addEventListener('click', async ()=>{
-  const raw = handleInput.value.trim();
-  if(!raw) { alert('Enter a handle'); return; }
-  handle = sanitizeHandle(raw);
-  handleInput.value = handle;
-  // reserve handle in firebase
-  if(!uid) return alert('auth not ready');
-  await reserveHandle(uid, handle);
-  currentChannel = channelSelect.value;
-  currentChannelLabel.textContent = `//${currentChannel.charAt(0).toUpperCase()+currentChannel.slice(1)}`;
-  setPresence(currentChannel);
-  // push user record
-  set(ref(db, `users/${uid}/profile`), { handle, firstSeen: Date.now() }).catch(()=>{});
-  // show UI state
-  joinBtn.style.display='none'; disconnectBtn.style.display='inline-block';
-  appendSystemFeed(`${handle} joined ${currentChannel}`);
-  doorIn.play().catch(()=>{});
-  listenAllOnline();
-  checkUnlockForUser(uid);
-});
+/* ---------- HELPER: show system feed initially ---------- */
+appendSystem('UI initialized.');
 
-disconnectBtn.addEventListener('click', ()=>{
-  // remove presence
-  remove(ref(db, `online/${currentChannel}/${uid}`)).catch(()=>{});
-  appendSystemFeed(`${handle} disconnected`);
-  doorOut.play().catch(()=>{});
-  joinBtn.style.display='inline-block'; disconnectBtn.style.display='none';
-  handle = null;
-});
-
-/* channel select change: update presence node */
-channelSelect.addEventListener('change', ()=>{
-  const newCh = channelSelect.value;
-  if(!handle || !uid) return;
-  // remove old presence
-  remove(ref(db, `online/${currentChannel}/${uid}`)).catch(()=>{});
-  currentChannel = newCh;
-  setPresence(currentChannel);
-  currentChannelLabel.textContent = `//${currentChannel.charAt(0).toUpperCase()+currentChannel.slice(1)}`;
-});
-
-/* send chat */
-sendMsgBtn.addEventListener('click', ()=> {
-  const text = chatInput.value.trim();
-  if(!text || !handle) return;
-  postChatMessage(currentChannel, handle, text);
-  incUserPostCount(uid);
-  chatInput.value='';
-});
-
-/* Enter key sends in inputs */
-chatInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendMsgBtn.click(); });
-boardInput.addEventListener('keypress', e=>{ if(e.key==='Enter') postBoardBtn.click(); });
-
-/* admin invite overlay */
-inviteOverlayBtn.addEventListener('click', ()=> {
-  // simple modal-like open:
-  const url = 'https://tokillamockinggoblin.boards.net/';
-  window.open(url, '_blank');
-});
-
-/* unlock pilgrim forced */
-unlockPilgrimBtn.addEventListener('click', ()=> {
-  document.querySelector('#channelSelect option[value="pilgrim"]').style.display='block';
-  appendSystemFeed('Pilgrim channel force-unlocked by user.');
-});
-
-/* diagnostics */
-toggleDiag.addEventListener('click', ()=> diag.style.display = (diag.style.display==='none'?'block':'none') );
-document.addEventListener('keydown', e=> { if(e.ctrlKey && e.altKey && e.key.toLowerCase()==='d') toggleDiag.click(); });
-
-/* diag updater */
-setInterval(()=> {
-  const stats = {
-    time: new Date().toLocaleTimeString(),
-    uid: uid || '(none)',
-    handle: handle || '(none)',
-    channel: currentChannel
-  };
-  diagPre.textContent = JSON.stringify(stats, null, 2);
-}, 1000);
-
-/* ========= GitHub lore fetch placeholder (we skip rendering heavy lore per your request) ========= */
-async function fetchLorePlaceholders(){ appendSystemFeed('Lore placeholders ready.'); }
-
-/* ========= visual: cursor trails ========= */
-const trailCanvas = document.getElementById('trailCanvas');
-const tc = trailCanvas.getContext('2d'); function resizeTrail(){ trailCanvas.width = window.innerWidth; trailCanvas.height = window.innerHeight; }
-resizeTrail(); window.addEventListener('resize', resizeTrail);
-let trails = [];
-document.addEventListener('mousemove', (e)=> {
-  trails.push({ x:e.clientX, y:e.clientY, life:30 });
-});
-function drawTrails(){
-  tc.clearRect(0,0,trailCanvas.width,trailCanvas.height);
-  for(let i=trails.length-1;i>=0;i--){
-    const t = trails[i];
-    tc.beginPath();
-    tc.fillStyle = `rgba(0,255,200,${t.life/40})`;
-    tc.arc(t.x, t.y, (t.life/4)+1, 0, Math.PI*2);
-    tc.fill();
-    t.life--;
-    if(t.life<=0) trails.splice(i,1);
-  }
-  requestAnimationFrame(drawTrails);
-}
-drawTrails();
-
-/* ========= startup: listen presence and board ========= */
-listenAllOnline();
-
-/* load local board from IndexedDB on startup and rehydrate */
-(async ()=> {
-  try{
-    await openIDB();
-    const all = await idbGetAll();
-    all.sort((a,b)=>a.ts - b.ts).forEach(p => renderBoardPost(p));
-    appendSystemFeed(`Recovered ${all.length} local board posts.`);
-  }catch(e){ appendSystemFeed('No local posts recovered.'); }
-})();
-
-/* heartbeat animation tied to active user total */
-setInterval(async ()=>{
-  // count total online users
-  onValue(ref(db,'online'), snap=>{
-    const val = snap.val() || {};
-    let total = 0;
-    for(const ch in val) total += Object.keys(val[ch]||{}).length;
-    // heartbeat speed mapping
-    const beat = document.getElementById('heartbeat');
-    if(beat) beat.style.animationDuration = `${Math.max(0.6, 2 - Math.min(1.8, total/10))}s`;
-  }, {onlyOnce:true});
-}, 3000);
-
-/* helper: escape HTML */
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
-
+/* ---------- END SCRIPT ---------- */
 </script>
+
 </body>
 </html>
