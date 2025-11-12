@@ -9,7 +9,7 @@
   --bg:#070709;--panel:#0f1112;--muted:#cfdff0;--accent:#00e6ff;
   --exuro:#aaf;--sam:#ffb470;--nora:#ff77ff;--nero:#77ffcc;--loktal:#ff8877;--pilgrim:#f5f55f;
 }
-html,body{height:100%;margin:0;background:linear-gradient(180deg,#050507 0%,#0b0b0b 100%);color:var(--muted);font-family:"Courier New",monospace;}
+html,body{height:100%;margin:0;background:#070709;color:var(--muted);font-family:"Courier New",monospace;}
 a{color:var(--accent);text-decoration:none;}
 .container{max-width:1200px;margin:18px auto;padding:18px;display:flex;flex-direction:column;gap:12px;}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -20,7 +20,7 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .leftcol{flex:2;display:flex;flex-direction:column;gap:12px;min-width:340px;}
 .rightcol{flex:1;min-width:260px;display:flex;flex-direction:column;gap:12px}
 .panel{background:var(--panel);border:1px solid #1e1f21;border-radius:6px;padding:12px;box-shadow:0 0 0 1px rgba(255,255,255,0.01) inset}
-.stream{min-height:260px;overflow:auto;padding:8px;white-space:pre-wrap;font-size:0.95rem}
+.stream{min-height:260px;overflow:auto;padding:8px;white-space:pre-wrap;font-size:0.95rem;transition:background 0.2s}
 .stream p{margin:6px 0;padding:6px;border-radius:4px}
 .exuro p{color:var(--exuro)}
 .sam p{color:var(--sam)}
@@ -42,6 +42,8 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
 </head>
 <body>
 
+<audio id="doorSound" src="https://www.soundjay.com/button/sounds/button-09.mp3"></audio>
+
 <div id="bootScreen">
   <div id="bootLinesContainer"></div>
   <div class="boot-progress" id="bootProgress">[......................] 0%</div>
@@ -61,12 +63,12 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
 <div class="maingrid">
 <div class="leftcol">
 
-<!-- LOGIN PANEL ABOVE STREAM -->
+<!-- LOGIN PANEL -->
 <div class="panel">
   <div id="loginPanel">
     <div class="small">Enter a handle to join the BUU chatroom.</div>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <input id="handleField" placeholder="Choose a handle (e.g. CommanderSam)">
+      <input id="handleField" placeholder="Choose a handle (e.g. //Sam)">
       <button id="enterBtn" class="sendBtn">JOIN</button>
     </div>
   </div>
@@ -85,12 +87,12 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
 <div class="panel">
   <div class="small">Select Channel</div>
   <select id="channelSelect">
-    <option value="exuro">//Exuro</option>
-    <option value="sam">//Sam</option>
-    <option value="nora">//Nora</option>
-    <option value="nero">//Nero</option>
-    <option value="loktal">//Loktal</option>
-    <option value="pilgrim" style="display:none">//Pilgrim</option>
+    <option value="exuro" title="Conscious Lux operative guiding the fleet">//Exuro</option>
+    <option value="sam" title="Blonde boy navigating the post-homeworld crisis">//Sam</option>
+    <option value="nora" title="Chief scientist, elder Lux companion">//Nora</option>
+    <option value="nero" title="Spirit guide of Sam">//Nero</option>
+    <option value="loktal" title="Skinklizard warrior inspired by Vegeta">//Loktal</option>
+    <option value="pilgrim" style="display:none" title="Secret channel">//Pilgrim</option>
   </select>
 </div>
 
@@ -107,6 +109,7 @@ select{background:#0b0e11;border:1px solid #222;padding:6px;border-radius:4px;co
   <div class="input-area" style="margin-top:10px">
     <input type="text" id="chatInput" placeholder="Write to current stream...">
     <button id="sendChat" class="sendBtn">POST</button>
+    <button id="logoutBtn" class="sendBtn">DISCONNECT</button>
   </div>
   <div class="small" style="margin-top:8px">Chat logs auto-delete after 24 hours.</div>
 </div>
@@ -203,8 +206,15 @@ document.getElementById('enterBtn').addEventListener('click',()=>{
   presenceRef=db.ref('online/'+handle); 
   presenceRef.set(currentChannel); 
   presenceRef.onDisconnect().remove();
+  document.getElementById('doorSound').play();
   listenChat(); listenBoard(); listenOnline();
   updateChannelPresence(currentChannel);
+});
+
+document.getElementById('logoutBtn').addEventListener('click',()=>{
+  if(presenceRef){ presenceRef.remove(); presenceRef=null; }
+  handle=null; document.getElementById('loginPanel').style.display='block';
+  document.getElementById('doorSound').play();
 });
 
 const channelSelect=document.getElementById('channelSelect');
@@ -232,8 +242,11 @@ function listenChat(){
   chatRef.limitToLast(200).on('child_added',snap=>{
     const obj=snap.val(); if(!obj||!obj.msg) return;
     const target=document.getElementById(obj.channel)||document.getElementById('exuro');
-    const p=document.createElement('p'); p.innerHTML=`<span class="meta">${obj.name}</span> ${obj.msg}`;
-    target.appendChild(p); target.scrollTop=target.scrollHeight;
+    const p=document.createElement('p'); 
+    p.innerHTML=`<span class="meta">${obj.name}</span> ${obj.msg}`;
+    if(handle && obj.msg.includes(handle)) p.style.background="rgba(0,255,255,0.15)";
+    target.appendChild(p); 
+    target.scrollTop=target.scrollHeight;
   });
 }
 
@@ -265,16 +278,18 @@ function updateChannelPresence(channel){
 
 function listenOnline(){
   db.ref('online').on('value',snap=>{
-    const counts={exuro:0,sam:0,nora:0,nero:0,loktal:0,pilgrim:0};
+    const counts={exuro:[],sam:[],nora:[],nero:[],loktal:[],pilgrim:[]};
     const container=document.getElementById('activeUsers'); container.innerHTML='';
     snap.forEach(u=>{
       const ch=u.val();
-      if(counts[ch]!==undefined) counts[ch]++;
+      if(counts[ch]!==undefined) counts[ch].push(u.key);
     });
     for(const ch in counts){
       const p=document.createElement('p');
+      const userList=counts[ch].join(', ');
       let name="//"+ch.charAt(0).toUpperCase()+ch.slice(1);
-      p.textContent=`${name} — ${counts[ch]} user${counts[ch]!==1?'s':''}`;
+      p.textContent=`${name} — ${counts[ch].length} user${counts[ch].length!==1?'s':''}`;
+      p.title=userList;
       container.appendChild(p);
     }
   });
@@ -287,6 +302,9 @@ function pruneChat(){
   setTimeout(pruneChat,60*60*1000);
 }
 pruneChat();
+
+// ---------- Unlock Pilgrim Channel ----------
+function unlockPilgrim(){document.querySelector('#channelSelect option[value="pilgrim"]').style.display='block';}
 </script>
 </body>
 </html>
