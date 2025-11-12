@@ -7,7 +7,7 @@
 <style>
 :root{
   --bg:#070709;--panel:#0f1112;--muted:#cfdff0;--accent:#00e6ff;
-  --exuro:#aaf;--sam:#ffb470;
+  --exuro:#aaf;--sam:#ffb470;--nora:#ff77ff;--nero:#77ffcc;--loktal:#ff8877;--pilgrim:#f5f55f;
 }
 html,body{height:100%;margin:0;background:linear-gradient(180deg,#050507 0%,#0b0b0b 100%);color:var(--muted);font-family:"Courier New",monospace;}
 a{color:var(--accent);text-decoration:none;}
@@ -16,10 +16,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px}
 header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .links{display:flex;gap:8px}
 .links a{display:inline-block;padding:6px 10px;border:1px solid rgba(0,230,255,0.12);border-radius:4px;color:var(--accent);background:transparent;font-size:0.9rem}
-.maingrid{display:flex;gap:12px;align-items:stretch}
+.maingrid{display:flex;gap:12px;align-items:flex-start}
 .leftcol{flex:2;display:flex;flex-direction:column;gap:12px;min-width:340px;}
 .rightcol{flex:1;min-width:260px;display:flex;flex-direction:column;gap:12px}
-.stream-toggle{display:flex;gap:8px;justify-content:center;margin-bottom:6px}
+.stream-toggle{display:flex;gap:8px;justify-content:center;margin-bottom:6px;flex-wrap:wrap}
 .btn{background:transparent;border:1px solid #222;color:var(--muted);padding:6px 10px;border-radius:4px;cursor:pointer}
 .btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,230,255,0.03)}
 .panel{background:var(--panel);border:1px solid #1e1f21;border-radius:6px;padding:12px;box-shadow:0 0 0 1px rgba(255,255,255,0.01) inset}
@@ -28,7 +28,11 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 .stream .meta{font-size:0.8rem;color:#b9d3e0}
 .exuro p{color:var(--exuro)}
 .sam p{color:var(--sam)}
-#activeUsers{background:#0b0e11;border:1px solid #1f2326;border-radius:6px;padding:8px;max-height:140px;overflow:auto}
+.nora p{color:var(--nora)}
+.nero p{color:var(--nero)}
+.loktal p{color:var(--loktal)}
+.pilgrim p{color:var(--pilgrim)}
+#activeUsers{background:#0b0e11;border:1px solid #1f2326;border-radius:6px;padding:8px;max-height:300px;overflow:auto}
 #activeUsers p{margin:6px 0;color:#bfe8ff}
 .input-area{display:flex;gap:8px;align-items:center;margin-top:6px}
 .input-area input[type="text"],#handleField{background:#0b0e11;border:1px solid #222;padding:8px;border-radius:4px;color:var(--muted);width:100%;font-family:monospace}
@@ -51,14 +55,24 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
 <header>
   <h1>Before Us Universe</h1>
   <div class="links">
-    <a href="https://www.youtube.com/@Patrickauthor" target="_blank">YouTube</a>
-    <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank">Reedsy</a>
-    <a href="https://web.archive.org/" target="_blank">Web Archive</a>
+    <a href="https://tokillamockinggoblin.boards.net/" target="_blank">To Kill a Mocking Goblin</a>
+    <a href="https://www.youtube.com/@Patrickauthor" target="_blank">Melphia's Game</a>
+    <a href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank">Book 1</a>
+    <a href="https://web.archive.org/" target="_blank">Way Back Machine</a>
   </div>
 </header>
 
 <div class="maingrid">
 <div class="leftcol">
+
+<!-- YOUTUBE STREAM TOP -->
+<div class="panel">
+  <div class="small">Live YouTube Stream</div>
+  <iframe width="100%" height="360" 
+          src="https://www.youtube.com/embed/live_stream?channel=UC7f16X7r3jq2n3xKyI5X0Xw" 
+          title="Live Stream" frameborder="0" allowfullscreen>
+  </iframe>
+</div>
 
 <!-- LOGIN PANEL -->
 <div class="panel">
@@ -84,10 +98,10 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
   <div id="streamsContainer">
     <div id="exuro" class="stream exuro panel" style="display:block"></div>
     <div id="sam" class="stream sam panel" style="display:none"></div>
-    <div id="nora" class="stream panel" style="display:none"></div>
-    <div id="nero" class="stream panel" style="display:none"></div>
-    <div id="loktal" class="stream panel" style="display:none"></div>
-    <div id="pilgrim" class="stream panel" style="display:none"></div>
+    <div id="nora" class="stream nora panel" style="display:none"></div>
+    <div id="nero" class="stream nero panel" style="display:none"></div>
+    <div id="loktal" class="stream loktal panel" style="display:none"></div>
+    <div id="pilgrim" class="stream pilgrim panel" style="display:none"></div>
   </div>
   <div class="input-area" style="margin-top:10px">
     <input type="text" id="chatInput" placeholder="Write to current stream...">
@@ -104,15 +118,6 @@ header h1{margin:0;font-size:1.6rem;letter-spacing:1px}
     <input type="text" id="boardInput" placeholder="Write a post...">
     <button id="sendBoard" class="sendBtn">POST</button>
   </div>
-</div>
-
-<!-- YOUTUBE STREAM -->
-<div class="panel" style="margin-top:8px">
-  <div class="small">Live YouTube Stream</div>
-  <iframe width="100%" height="360" 
-          src="https://www.youtube.com/embed/live_stream?channel=UC7f16X7r3jq2n3xKyI5X0Xw" 
-          title="Live Stream" frameborder="0" allowfullscreen>
-  </iframe>
 </div>
 
 </div>
@@ -198,6 +203,7 @@ document.getElementById('enterBtn').addEventListener('click',()=>{
   presenceRef.set(true); 
   presenceRef.onDisconnect().remove();
   listenChat(); listenBoard(); listenOnline();
+  // Unlock Pilgrim channel if handle matches secret
   if(handle.toLowerCase()==='pilgrim123') document.querySelector('[data-channel="pilgrim"]').style.display='inline-block';
 });
 
@@ -274,3 +280,4 @@ pruneOld();
 </script>
 </body>
 </html>
+
