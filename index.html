@@ -119,8 +119,8 @@ body,html{overflow-x:hidden}
       <div id="bootInputs">
         <input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle">
         <select id="bootChannel">
-          <option value="exuro">//Exuro</option>
           <option value="sam">//Sam</option>
+          <option value="exuro">//Exuro</option>
           <option value="nero">//Nero</option>
           <option value="nora">//Nora</option>
           <option value="loktal">//Loktal</option>
@@ -128,7 +128,7 @@ body,html{overflow-x:hidden}
         <button id="bootBtn">ENTER NETWORK</button>
       </div>
       <div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
-      <div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Awaiting transmission...</span></div>
+      <div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Timeline stability.. 84%</span></div>
     </div>
   </div>
 
@@ -158,7 +158,7 @@ body,html{overflow-x:hidden}
         </div>
 
         <div class="panel">
-          <div class="panel-title"><div class="title" id="chatTitle">//EXURO <span class="small" id="userCountSmall">0 users</span></div></div>
+          <div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
           <div class="panel-body chat-win" id="chatBody">
             <div class="chat-main">
               <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
@@ -194,8 +194,8 @@ body,html{overflow-x:hidden}
           <div class="small">SELECT SERVER</div>
           <div class="controls">
             <select id="channelSelect" aria-label="Choose server">
-              <option value="exuro">//Exuro</option>
               <option value="sam">//Sam</option>
+              <option value="exuro">//Exuro</option>
               <option value="nero">//Nero</option>
               <option value="nora">//Nora</option>
               <option value="loktal">//Loktal</option>
@@ -205,7 +205,7 @@ body,html{overflow-x:hidden}
         </div>
 
         <div class="panel" id="ortegaPanel">
-          <button id="ortegaBtn">Project ://ORTEGA (Under Maintenance — Future RAG/LM)</button>
+          <button id="ortegaBtn">Project ://ORTEGA (Under Maintenance)</button>
         </div>
 
         <div class="panel" id="serverTrackingPanel">
@@ -221,7 +221,7 @@ body,html{overflow-x:hidden}
         <div class="panel">
           <div class="small">DIRECT MESSAGES</div>
           <div id="dmList" style="margin-top:8px"></div>
-          <div class="small" style="margin-top:6px">Click a name to open inline DM</div>
+          <div class="small" style="margin-top:6px">Click a name to DM</div>
         </div>
       </div>
     </div>
@@ -231,14 +231,7 @@ body,html{overflow-x:hidden}
 
 <script type="module">
 /* =========================================================
-   Firebase + App logic
-   - Kept your existing firebase config / structure
-   - Marquee listens to /feed
-   - Boot banner mirrors latest feed item
-   - Server selector on boot and app, larger
-   - No theme/notifications
-   - Board uses logged in handle automatically
-   - Presence and listeners cleaned properly
+
    ========================================================= */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -287,10 +280,11 @@ let feedCache = []; // recent feed items for rotating marquee
 /* ---------- Boot typing lines ---------- */
 const bootLines = [
   "INITIALIZING BEFORE US UNIVERSE...",
-  "Loading kernel.............[OK]",
-  "Mounting network...........[OK]",
-  "Checking Firebase link.....[OK]",
+  "Loading kernel.............[ONLINE]",
+  "Checking Ra'Norric link...........[ONLINE]",
+  "System is .....[ONLINE]",
   "Ready for authentication..."
+  "Please type a handle to login to the instance..."
 ];
 let lineIdx = 0;
 function typeBootLine(){
@@ -318,7 +312,7 @@ function prependFeedEntry(text){
 function updateMarqueeFromCache(){
   // rotate through recent messages concatenated
   if(feedCache.length === 0){
-    marqueeInner.textContent = "Welcome to the Before Us Network — awaiting transmission…";
+    marqueeInner.textContent = "Welcome to the Before Us Network — system: stable …";
     startMarqueeAnimation();
     return;
   }
@@ -417,7 +411,7 @@ function watchOnline(){
 /* Render helpers */
 function renderServerTracking(data){
   serverTrackingList.innerHTML = '';
-  const channels = ['exuro','sam','nero','nora','loktal'];
+  const channels = ['sam','exuro','nero','nora','loktal'];
   channels.forEach(ch => {
     const usersObj = data[ch] || {};
     const users = Object.values(usersObj);
@@ -478,7 +472,7 @@ function rebuildDMList(data){
 
 /* Watch presence events for join/leave announcements */
 function watchPresenceEvents() {
-  const channels = ['exuro','sam','nero','nora','loktal'];
+  const channels = ['sam','exuro','nero','nora','loktal'];
   channels.forEach(ch => {
     onChildAdded(ref(db, `online/${ch}`), snap => {
       const u = snap.val();
@@ -642,7 +636,7 @@ serverConfirm.onclick = ()=>{
 };
 
 /* Ortega placeholder */
-ortegaBtn.onclick = ()=>{ appendSystem('Project ORTEGA is currently a placeholder for future RAG/LM integration.'); };
+ortegaBtn.onclick = ()=>{ appendSystem('Project ORTEGA is currently [DOWN].'); };
 
 /* ---------- Simplified Inline DM (no draggable windows) ---------- */
 async function registerDMPair(tuid){
@@ -653,7 +647,7 @@ async function registerDMPair(tuid){
   await update(ref(db), updates).catch(e => appendSystem('DM pair error: ' + e.message));
 }
 function openDMInline(tuid, tname){
-  if(tuid === uid) return alert("Can't DM yourself");
+  if(tuid === uid) return alert("ewww..Can't DM yourself");
   registerDMPair(tuid);
   const pid = [uid, tuid].sort().join('_');
   // create inline panel inside dmList (or reuse)
