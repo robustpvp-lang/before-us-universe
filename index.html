@@ -248,7 +248,6 @@ bootBtn.addEventListener('click', async ()=>{
   const raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
   if(!raw) return bootStatus.textContent = "Invalid handle";
   if(!uid) return bootStatus.textContent = "Auth not ready…";
-
   // Easter-egg for Neo & Nero – friendly message + auto-clear
   if (['neo','nero'].includes(raw.toLowerCase())) {
     const lore = {
@@ -265,7 +264,6 @@ bootBtn.addEventListener('click', async ()=>{
     }, 4000);
     return;
   }
-
   bootStatus.textContent = "Reserving…";
   const ok = await set(ref(db,`handles/${raw}`),{uid,joined:Date.now()}).then(()=>true).catch(()=>false);
   if(!ok) return bootStatus.textContent = "Handle taken";
@@ -278,9 +276,9 @@ bootBtn.addEventListener('click', async ()=>{
 });
 function finishBoot(){
   bootStatus.textContent = `Welcome, ${myHandle}`;
-  setTimeout(()=>{ 
-    bootOverlay.style.display='none'; 
-    appRoot.style.display='block'; 
+  setTimeout(()=>{
+    bootOverlay.style.display='none';
+    appRoot.style.display='block';
     initializePanels();
     appendSystem('System ready');
   },1200);
@@ -451,7 +449,7 @@ function makeDraggable(el,bar){
 function listenChannel(ch){
   for(const c in channelListeners) off(channelListeners[c].ref);
   currentChannel=ch;
-  chatMessages.inner  HTML='';
+  chatMessages.innerHTML='';
   const r=ref(db,`chat/${ch}`);
   const fn=snap=>{
     const o=snap.val(); if(!o) return;
