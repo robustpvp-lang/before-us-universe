@@ -59,11 +59,8 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
 @media(max-width:980px){.layout{grid-template-columns:1fr}}
 .panel{background:var(--panel-bg);border:3px solid var(--border);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.3);margin-bottom:12px;overflow:hidden}
-.panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px;cursor:pointer}
+.panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .panel-title .title{font-weight:700}
-.panel-title .toggle-btn{background:#fff;color:#000;padding:2px 6px;border-radius:4px;font-size:10px;width:16px;text-align:center}
-.panel-body{transition:max-height 0.3s ease;overflow:hidden}
-.panel-body.collapsed{max-height:0 !important}
 .yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border)}
 .chat-win{display:flex;flex-direction:column;height:500px}
 .chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
@@ -134,6 +131,9 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 /* Edit/Delete Buttons */
 .edit-btn, .delete-btn { font-size: 10px; margin-left: 5px; cursor: pointer; color: var(--accent); }
+
+/* Users Online Color */
+.chat-users .small { color: red; }
 </style>
 </head>
 <body>
@@ -172,9 +172,8 @@ input:checked + .slider:before { transform: translateX(20px); }
   <div class="layout">
     <div>
       <div class="panel">
-        <div class="panel-title" onclick="togglePanel(this)">
+        <div class="panel-title">
           <div class="title">PLAYLIST</div>
-          <div class="toggle-btn">−</div>
         </div>
         <div class="panel-body" id="ytBody">
           <div class="yt-wrap" style="margin:8px">
@@ -183,9 +182,8 @@ input:checked + .slider:before { transform: translateX(20px); }
         </div>
       </div>
       <div class="panel">
-        <div class="panel-title" onclick="togglePanel(this)">
+        <div class="panel-title">
           <div class="title" id="chatTitle">//EXURO <span class="small" id="userCountSmall">0 users</span></div>
-          <div class="toggle-btn">−</div>
         </div>
         <div class="panel-body chat-win" id="chatBody">
           <div class="chat-main">
@@ -203,9 +201,8 @@ input:checked + .slider:before { transform: translateX(20px); }
         </div>
       </div>
       <div class="panel">
-        <div class="panel-title" onclick="togglePanel(this)">
+        <div class="panel-title">
           <div class="title">MESSAGE BOARD</div>
-          <div class="toggle-btn">−</div>
         </div>
         <div class="panel-body" id="boardBody">
           <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
@@ -284,27 +281,9 @@ const ortegaBtn = document.getElementById('ortegaBtn');
 const soundMsg = document.getElementById('soundMsg');
 const chatTitle = document.getElementById('chatTitle');
 let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null, channelListeners = {};
-function togglePanel(title) {
-  const body = title.parentElement.nextElementSibling;
-  const btn = title.querySelector('.toggle-btn');
-  if (body.classList.contains('collapsed')) {
-    body.classList.remove('collapsed');
-    body.style.maxHeight = body.scrollHeight + 'px';
-    btn.textContent = '−';
-  } else {
-    body.classList.add('collapsed');
-    body.style.maxHeight = '0';
-    btn.textContent = '+';
-  }
-}
 function initializePanels() {
   document.querySelectorAll('.panel .panel-body').forEach(body => {
-    if (!body.style.maxHeight || body.style.maxHeight === '0px') {
-      body.style.maxHeight = body.scrollHeight + 'px';
-    }
-  });
-  document.querySelectorAll('.panel-title').forEach(title => {
-    title.onclick = () => togglePanel(title);
+    body.style.maxHeight = 'none';
   });
 }
 const bootLines = ["INITIALIZING BEFORE US UNIVERSE...","Loading kernel.............[OK]","Mounting network...........[OK]","Checking Firebase link.....[OK]","Ready for authentication..."];
@@ -323,7 +302,6 @@ bootBtn.addEventListener('click', async ()=>{
   const raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
   if(!raw) return bootStatus.textContent = "Invalid handle";
   if(!uid) return bootStatus.textContent = "Auth not ready…";
-  // Easter-egg for Neo & Nero – friendly message + auto-accept
   if (['neo','nero'].includes(raw.toLowerCase())) {
     const lore = {
       neo: "Neo: The One who glitches the code. Your signal is too loud. Try a quieter alias.",
@@ -334,20 +312,18 @@ bootBtn.addEventListener('click', async ()=>{
     setTimeout(() => {
       bootStatus.textContent = '';
       bootStatus.style.color = 'var(--accent)';
-      // Auto-accept the handle after easter egg
       myHandle = raw;
       boardName.value = myHandle;
-      set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()}).catch(console.error);
+      set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()}).catch(e => appendSystem('Profile error: ' + e.message));
       setPresence(myHandle,currentChannel);
       finishBoot();
     }, 4000);
     return;
   }
-  // No reservation check - direct accept
   bootStatus.textContent = "Authenticating…";
   myHandle = raw;
   boardName.value = myHandle;
-  await set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()}).catch(console.error);
+  await set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()}).catch(e => appendSystem('Profile error: ' + e.message));
   setPresence(myHandle,currentChannel);
   finishBoot();
 });
@@ -374,17 +350,10 @@ async function hash(str){
   return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
 }
 function setPresence(h,ch){
-  if(presenceRef) remove(presenceRef).catch(()=>{});
+  if(presenceRef) remove(presenceRef).catch(e => appendSystem('Presence remove error: ' + e.message));
   presenceRef = ref(db,`online/${ch}/${uid}`);
-  set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid}).then(()=>onDisconnect(presenceRef).remove());
+  set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid}).then(()=>onDisconnect(presenceRef).remove()).catch(e => appendSystem('Presence set error: ' + e.message));
 }
-const serverDescs = {
-  exuro: 'Main hub for universal discussions.',
-  sam: 'Lore about Sam - mysterious artifacts.',
-  nero: 'Dark secrets and shadows.',
-  nora: 'Exploration and adventures.',
-  loktal: 'Tech and hacking zone.'
-};
 function renderServerTracking(data){
   serverTrackingList.innerHTML = '';
   const channels = ['exuro','sam','nero','nora','loktal'];
@@ -394,17 +363,7 @@ function renderServerTracking(data){
     const count = users.length;
     const branch = document.createElement('div');
     branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
-    branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count})</div><div class="small">${serverDescs[ch]}</div><div class="user-list collapsed"></div>`;
-    const userListToggle = branch.querySelector('.server-title');
-    userListToggle.onclick = () => {
-      const userList = branch.querySelector('.user-list');
-      userList.classList.toggle('collapsed');
-      if (!userList.classList.contains('collapsed')) {
-        userList.style.maxHeight = userList.scrollHeight + 'px';
-      } else {
-        userList.style.maxHeight = '0';
-      }
-    };
+    branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count})</div><div class="user-list"></div>`;
     const userList = branch.querySelector('.user-list');
     users.forEach(u => {
       const div = document.createElement('div');
@@ -438,7 +397,7 @@ function watchOnline(){
       updateUserCount(data);
       rebuildDMList(data);
       updateTypingIndicator(data[currentChannel] || {});
-    });
+    }).catch(e => appendSystem('Online get error: ' + e.message));
   }, 1000);
 }
 function renderActiveUsers(usersObj){
@@ -498,7 +457,7 @@ async function registerDMPair(tuid){
   const updates={};
   updates[`dmPairs/${pid}/users/${uid}`]=true;
   updates[`dmPairs/${pid}/users/${tuid}`]=true;
-  await update(ref(db),updates);
+  await update(ref(db),updates).catch(e => appendSystem('DM pair error: ' + e.message));
 }
 function openDM(tuid,tname){
   if(tuid===uid) return alert("Can't DM yourself");
@@ -531,7 +490,7 @@ function openDM(tuid,tname){
     const updates={};
     updates[`/dm/${pid}/${key}`]={from:uid,to:tuid,fromName:myHandle,toName:tname,msg:txt,ts};
     updates[`/dmHashes/${h}`]={pid,key,ts,from:uid};
-    await update(ref(db),updates);
+    await update(ref(db),updates).catch(e => appendSystem('DM send error: ' + e.message));
     inp.value='';soundMsg.play().catch(()=>{});
   };
   close.onclick=()=>{off(dmRef);win.remove();};
@@ -561,13 +520,13 @@ function listenChannel(ch){
         if (newMsg && newMsg !== o.msg) {
           const ts = Date.now();
           const h = await hash(`${currentChannel}|${o.name}|${newMsg}|${uid}|${Math.floor(ts/1000)}`);
-          update(ref(db, `chat/${currentChannel}/${snap.key}`), {msg: newMsg, ts, hash: h});
-          update(ref(db, `/msgHashes/${h}`), {channel: currentChannel, key: snap.key, ts, uid});
+          update(ref(db, `chat/${currentChannel}/${snap.key}`), {msg: newMsg, ts, hash: h}).catch(e => appendSystem('Edit error: ' + e.message));
+          update(ref(db, `/msgHashes/${h}`), {channel: currentChannel, key: snap.key, ts, uid}).catch(e => appendSystem('Hash update error: ' + e.message));
         }
       };
       const deleteBtn = document.createElement('span'); deleteBtn.className = 'delete-btn'; deleteBtn.textContent = '[Delete]';
       deleteBtn.onclick = () => {
-        update(ref(db, `chat/${currentChannel}/${snap.key}`), {deleted: true});
+        update(ref(db, `chat/${currentChannel}/${snap.key}`), {deleted: true}).catch(e => appendSystem('Delete error: ' + e.message));
       };
       bub.append(editBtn, deleteBtn);
     }
@@ -578,7 +537,7 @@ function listenChannel(ch){
       new Notification(`New message from ${o.name}`, { body: o.msg });
     }
   };
-  onChildAdded(r,fn);
+  onChildAdded(r,fn, (error) => appendSystem('Chat listen error: ' + error.message));
   channelListeners[ch]={ref:r,fn};
 }
 async function postMessage(ch,name,msg){
@@ -590,8 +549,9 @@ async function postMessage(ch,name,msg){
   const updates={};
   updates[`/chat/${ch}/${key}`]={name,msg:m,ts,uid,hash:h};
   updates[`/msgHashes/${h}`]={channel:ch,key,ts,uid};
-  await update(ref(db),updates);
-  set(ref(db,`online/${ch}/${uid}`),{name,ts:Date.now(),channel:ch,uid});
+  await update(ref(db),updates).catch(e => appendSystem('Post message error: ' + e.message));
+  set(ref(db,`online/${ch}/${uid}`),{name,ts:Date.now(),channel:ch,uid}).catch(e => appendSystem('Presence update error: ' + e.message));
+  await set(ref(db, `users/${uid}/lastPost`), Date.now()).catch(e => appendSystem('Last post error: ' + e.message));
 }
 function listenBoard(){
   onChildAdded(ref(db,'board'),snap=>{
@@ -599,7 +559,7 @@ function listenBoard(){
     const el=document.createElement('div');el.className='board-thread';
     el.innerHTML=`<strong>${esc(p.name)}</strong><br>${esc(p.msg)}<div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
     boardList.prepend(el);
-  });
+  }, (error) => appendSystem('Board listen error: ' + error.message));
 }
 sendBtn.onclick=()=>{ if(!myHandle) return alert('Login first'); postMessage(currentChannel,myHandle,chatInput.value); chatInput.value=''; soundMsg.play().catch(()=>{}); };
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
@@ -608,7 +568,8 @@ postBoardBtn.onclick=async()=>{
   const m=boardMsg.value.trim();
   if(!m||m.length>1000) return alert('Invalid');
   const r=push(ref(db,'board'));
-  await set(r,{name:n,msg:m,ts:Date.now(),uid});
+  await set(r,{name:n,msg:m,ts:Date.now(),uid}).catch(e => appendSystem('Board post error: ' + e.message));
+  await set(ref(db, `users/${uid}/lastBoardPost`), Date.now()).catch(e => appendSystem('Last board post error: ' + e.message));
   boardMsg.value='';
 };
 serverConfirm.onclick=()=>{
@@ -642,12 +603,12 @@ function loop(){
   requestAnimationFrame(loop);
 } loop();
 setInterval(async()=>{
-  const snap=await get(ref(db,'chat'));
+  const snap=await get(ref(db,'chat')).catch(e => appendSystem('Chat purge get error: ' + e.message));
   const data=snap.val()||{};
   for(const ch in data){
     for(const id in data[ch]){
       if(data[ch][id].ts && Date.now()-data[ch][id].ts>24*60*60*1000){
-        await remove(ref(db,`chat/${ch}/${id}`));
+        await remove(ref(db,`chat/${ch}/${id}`)).catch(e => appendSystem('Chat purge remove error: ' + e.message));
       }
     }
   }
@@ -677,13 +638,13 @@ enableNotifications.addEventListener('click', () => {
 let typingTimeout;
 chatInput.addEventListener('input', () => {
   if (chatInput.value.trim()) {
-    set(ref(db, `online/${currentChannel}/${uid}/typing`), true);
+    set(ref(db, `online/${currentChannel}/${uid}/typing`), true).catch(e => appendSystem('Typing set error: ' + e.message));
     clearTimeout(typingTimeout);
     typingTimeout = setTimeout(() => {
-      set(ref(db, `online/${currentChannel}/${uid}/typing`), false);
+      set(ref(db, `online/${currentChannel}/${uid}/typing`), false).catch(e => appendSystem('Typing unset error: ' + e.message));
     }, 3000);
   } else {
-    set(ref(db, `online/${currentChannel}/${uid}/typing`), false);
+    set(ref(db, `online/${currentChannel}/${uid}/typing`), false).catch(e => appendSystem('Typing unset error: ' + e.message));
   }
 });
 
