@@ -13,7 +13,36 @@
   --proboards-blue:#1e73be; --proboards-dark:#0066cc; --proboards-gray:#f5f5f5; --proboards-border:#ccc; --proboards-muted:#666; --proboards-text:#444;
   --yahoo-blue:#1e73be; --yahoo-dark:#0961a6; --online:#00ff9d; --muted:#00aaaa;
   --text-gray:#444;
+  --theme-name: 'cyber'; /* Default theme */
 }
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --bg: #161625; --fg: #e1e1ff; --accent: #9A97F3; --border: #818cab;
+  --panel-bg: #25253a; --proboards-blue: #818cab; --proboards-dark: #536390;
+  --proboards-gray: #292922; --proboards-border: #424242; --proboards-muted: #424242; --proboards-text: #e1e1ff;
+  --yahoo-blue: #818cab; --yahoo-dark: #536390; --online: #66bb6a; --muted: #536390;
+  --text-gray: #e1e1ff;
+}
+
+/* Light Theme */
+[data-theme="light"] {
+  --bg: #fff; --fg: #424242; --accent: #302AE6; --border: #536390;
+  --panel-bg: #f5f5f5; --proboards-blue: #1e73be; --proboards-dark: #0066cc;
+  --proboards-gray: #f5f5f5; --proboards-border: #ccc; --proboards-muted: #666; --proboards-text: #444;
+  --yahoo-blue: #1e73be; --yahoo-dark: #0961a6; --online: #00ff9d; --muted: #00aaaa;
+  --text-gray: #444;
+}
+
+/* Matrix Green Theme */
+[data-theme="matrix"] {
+  --bg: #000; --fg: #00ff00; --accent: #00cc00; --border: #008800;
+  --panel-bg: #001100; --proboards-blue: #00aa00; --proboards-dark: #008800;
+  --proboards-gray: #002200; --proboards-border: #004400; --proboards-muted: #006600; --proboards-text: #00ff00;
+  --yahoo-blue: #00aa00; --yahoo-dark: #008800; --online: #00ff00; --muted: #00aa00;
+  --text-gray: #00ff00;
+}
+
 html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:hidden}
 body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
 #crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06) 2px,transparent 2px,transparent 4px);pointer-events:none;z-index:999}
@@ -74,6 +103,37 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .dm-title{background:linear-gradient(180deg,#fddc6b,#f2c200);padding:6px;border-radius:4px;font-weight:700;cursor:move;font-family:'Press Start 2P';font-size:11px}
 .dm-msg{background:#fff7d6;padding:6px;border-radius:6px;margin:4px 0;max-width:90%}
 #particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* Mobile Optimization for DMs */
+@media (max-width: 600px) {
+  .dm-window {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Typing Indicator */
+.typing-indicator { font-size: 11px; color: var(--muted); padding: 4px; font-style: italic; }
+
+/* Theme Switcher Styles */
+.theme-switch-wrapper { display: flex; align-items: center; margin-left: auto; }
+.theme-switch { display: inline-block; height: 20px; position: relative; width: 40px; }
+.theme-switch input { display: none; }
+.slider { background-color: var(--border); bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 20px; }
+.slider:before { background-color: var(--fg); bottom: 4px; content: ""; height: 12px; left: 4px; position: absolute; transition: .4s; width: 12px; border-radius: 50%; }
+input:checked + .slider { background-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* Edit/Delete Buttons */
+.edit-btn, .delete-btn { font-size: 10px; margin-left: 5px; cursor: pointer; color: var(--accent); }
 </style>
 </head>
 <body>
@@ -94,6 +154,20 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
     <button class="link-btn" onclick="window.open('https://tokillamockinggoblin.boards.net/','_blank')">To Kill a Mocking Goblin</button>
     <button class="link-btn" onclick="window.open('https://youtube.com/@Patrickauthor','_blank')">Melphia’s Game (YT)</button>
     <button class="link-btn" onclick="window.open('https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview','_blank')">Book 1</button>
+    <div class="theme-switch-wrapper">
+      <label class="theme-switch" for="checkbox">
+        <input type="checkbox" id="checkbox" />
+        <div class="slider round"></div>
+      </label>
+      <em>Toggle Theme</em>
+      <select id="themeSelect">
+        <option value="cyber">Cyber</option>
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+        <option value="matrix">Matrix Green</option>
+      </select>
+    </div>
+    <button id="enableNotifications">Enable Notifications</button>
   </div>
   <div class="layout">
     <div>
@@ -116,6 +190,7 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
         <div class="panel-body chat-win" id="chatBody">
           <div class="chat-main">
             <div class="chat-messages" id="chatMessages"></div>
+            <div id="typingIndicator" class="typing-indicator"></div>
             <div class="chat-users">
               <div class="small" style="margin-bottom:4px">USERS ONLINE</div>
               <div id="activeUsersList"></div>
@@ -303,6 +378,13 @@ function setPresence(h,ch){
   presenceRef = ref(db,`online/${ch}/${uid}`);
   set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid}).then(()=>onDisconnect(presenceRef).remove());
 }
+const serverDescs = {
+  exuro: 'Main hub for universal discussions.',
+  sam: 'Lore about Sam - mysterious artifacts.',
+  nero: 'Dark secrets and shadows.',
+  nora: 'Exploration and adventures.',
+  loktal: 'Tech and hacking zone.'
+};
 function renderServerTracking(data){
   serverTrackingList.innerHTML = '';
   const channels = ['exuro','sam','nero','nora','loktal'];
@@ -312,11 +394,21 @@ function renderServerTracking(data){
     const count = users.length;
     const branch = document.createElement('div');
     branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
-    branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count})</div><div class="user-list"></div>`;
+    branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count})</div><div class="small">${serverDescs[ch]}</div><div class="user-list collapsed"></div>`;
+    const userListToggle = branch.querySelector('.server-title');
+    userListToggle.onclick = () => {
+      const userList = branch.querySelector('.user-list');
+      userList.classList.toggle('collapsed');
+      if (!userList.classList.contains('collapsed')) {
+        userList.style.maxHeight = userList.scrollHeight + 'px';
+      } else {
+        userList.style.maxHeight = '0';
+      }
+    };
     const userList = branch.querySelector('.user-list');
     users.forEach(u => {
       const div = document.createElement('div');
-      div.textContent = u.name;
+      div.textContent = u.name + (u.typing ? ' (typing...)' : '');
       div.onclick = () => openDM(u.uid, u.name);
       userList.appendChild(div);
     });
@@ -336,6 +428,7 @@ function watchOnline(){
     renderActiveUsers(data[currentChannel] || {});
     updateUserCount(data);
     rebuildDMList(data);
+    updateTypingIndicator(data[currentChannel] || {});
   }, (error) => { appendSystem('Online watch error: ' + error.message); });
   setTimeout(() => {
     get(ref(db, 'online')).then(snap => {
@@ -344,6 +437,7 @@ function watchOnline(){
       renderActiveUsers(data[currentChannel] || {});
       updateUserCount(data);
       rebuildDMList(data);
+      updateTypingIndicator(data[currentChannel] || {});
     });
   }, 1000);
 }
@@ -454,15 +548,35 @@ function listenChannel(ch){
   chatMessages.innerHTML='';
   const r=ref(db,`chat/${ch}`);
   const fn=snap=>{
-    const o=snap.val(); if(!o) return;
+    const o=snap.val(); if(!o || o.deleted) return;
     const row=document.createElement('div');row.className='chat-row';
     const av=document.createElement('div');av.className='chat-avatar';av.textContent=(o.name||'?').slice(0,2).toUpperCase();
     const bub=document.createElement('div');bub.className='chat-bubble';
     if(o.uid===uid) bub.classList.add('me');
     bub.innerHTML=`<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+    if (o.uid === uid) {
+      const editBtn = document.createElement('span'); editBtn.className = 'edit-btn'; editBtn.textContent = '[Edit]';
+      editBtn.onclick = async () => {
+        const newMsg = prompt('Edit message:', o.msg);
+        if (newMsg && newMsg !== o.msg) {
+          const ts = Date.now();
+          const h = await hash(`${currentChannel}|${o.name}|${newMsg}|${uid}|${Math.floor(ts/1000)}`);
+          update(ref(db, `chat/${currentChannel}/${snap.key}`), {msg: newMsg, ts, hash: h});
+          update(ref(db, `/msgHashes/${h}`), {channel: currentChannel, key: snap.key, ts, uid});
+        }
+      };
+      const deleteBtn = document.createElement('span'); deleteBtn.className = 'delete-btn'; deleteBtn.textContent = '[Delete]';
+      deleteBtn.onclick = () => {
+        update(ref(db, `chat/${currentChannel}/${snap.key}`), {deleted: true});
+      };
+      bub.append(editBtn, deleteBtn);
+    }
     row.append(av,bub);
     chatMessages.appendChild(row);
     chatMessages.scrollTop=chatMessages.scrollHeight;
+    if (Notification.permission === 'granted' && document.hidden) {
+      new Notification(`New message from ${o.name}`, { body: o.msg });
+    }
   };
   onChildAdded(r,fn);
   channelListeners[ch]={ref:r,fn};
@@ -538,6 +652,46 @@ setInterval(async()=>{
     }
   }
 },60*60*1000);
+
+// Theme Switcher
+const themeSelect = document.getElementById('themeSelect');
+themeSelect.addEventListener('change', (e) => {
+  const theme = e.target.value;
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+});
+const currentTheme = localStorage.getItem('theme') || 'cyber';
+document.documentElement.setAttribute('data-theme', currentTheme);
+themeSelect.value = currentTheme;
+
+// Notifications
+const enableNotifications = document.getElementById('enableNotifications');
+enableNotifications.addEventListener('click', () => {
+  if (!("Notification" in window)) return alert('Notifications not supported');
+  Notification.requestPermission().then(permission => {
+    if (permission === 'granted') enableNotifications.style.display = 'none';
+  });
+});
+
+// Typing Indicators
+let typingTimeout;
+chatInput.addEventListener('input', () => {
+  if (chatInput.value.trim()) {
+    set(ref(db, `online/${currentChannel}/${uid}/typing`), true);
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      set(ref(db, `online/${currentChannel}/${uid}/typing`), false);
+    }, 3000);
+  } else {
+    set(ref(db, `online/${currentChannel}/${uid}/typing`), false);
+  }
+});
+
+function updateTypingIndicator(usersObj) {
+  const typingUsers = Object.values(usersObj).filter(u => u.typing && u.uid !== uid).map(u => u.name);
+  const typingIndicator = document.getElementById('typingIndicator');
+  typingIndicator.textContent = typingUsers.length > 0 ? `${typingUsers.join(', ')} ${typingUsers.length > 1 ? 'are' : 'is'} typing...` : '';
+}
 </script>
 </body>
 </html>
