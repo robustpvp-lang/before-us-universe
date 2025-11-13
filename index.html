@@ -18,10 +18,8 @@
 }
 html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:hidden}
 body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
-
 /* CRT */
 #crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06) 2px,transparent 2px,transparent 4px);pointer-events:none;z-index:999}
-
 /* BOOT */
 #bootOverlay{position:fixed;inset:0;background:#000;color:var(--fg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Press Start 2P'}
 #bootPanel{width:90%;max-width:800px;background:var(--panel-bg);border:4px solid var(--border);padding:20px;box-shadow:0 0 30px #00cccc}
@@ -29,17 +27,14 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 #bootPrompt{color:var(--accent)}
 #bootInput{background:var(--panel-bg);border:2px solid var(--border);color:var(--fg);padding:6px;width:70%;max-width:300px}
 #bootBtn{background:var(--panel-bg);border:2px solid var(--border);color:var(--accent);padding:6px 12px;cursor:pointer}
-
 /* APP */
 #app{display:none;height:100%;padding:8px;box-sizing:border-box;overflow-y:auto}
 .title-bar{display:flex;gap:12px;flex-wrap:wrap;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center}
 .title-bar .logo{font-weight:700;letter-spacing:1px}
 .link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4px;font-weight:700;cursor:pointer;border:2px solid #000;margin:2px;font-size:11px}
-
 /* LAYOUT */
 .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
 @media(max-width:980px){.layout{grid-template-columns:1fr}}
-
 /* PANELS – COLLAPSIBLE (Win98 style) */
 .panel{background:var(--panel-bg);border:3px solid var(--border);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.3);margin-bottom:12px;overflow:hidden}
 .panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px;cursor:pointer}
@@ -47,10 +42,8 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .panel-title .toggle-btn{background:#fff;color:#000;padding:2px 6px;border-radius:4px;font-size:10px;width:16px;text-align:center}
 .panel-body{transition:max-height 0.3s ease;overflow:hidden}
 .panel-body.collapsed{max-height:0 !important}
-
 /* YOUTUBE */
 .yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border)}
-
 /* YAHOO CHAT – GRAY TEXT */
 .chat-win{display:flex;flex-direction:column;height:500px}
 .chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
@@ -69,13 +62,11 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .chat-controls{display:flex;gap:6px;padding:8px;background:#f0f8ff;border-top:1px solid #ccc}
 .chat-controls input{flex:1;padding:6px;border:2px inset #ccc;background:#fff}
 .chat-controls button{padding:6px;border:2px outset #ccc;background:#dfefff;cursor:pointer}
-
 /* PROBOARDS MESSAGE BOARD – GRAY TEXT + HANDLE */
 .board-header{background:var(--proboards-blue);color:#fff;padding:8px;font-weight:700;font-family:Arial;border-bottom:2px solid var(--proboards-border)}
 .board-thread{background:var(--proboards-gray);border:1px solid var(--proboards-border);padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:var(--text-gray)}
 .board-thread strong{color:var(--proboards-dark);font-size:14px}
 .board-thread .small{color:var(--proboards-muted);font-style:italic;margin-top:4px;display:block}
-
 /* RIGHT COLUMN */
 #serverSelectPanel{margin-bottom:12px}
 #serverSelectPanel .controls{display:flex;gap:6px;align-items:center}
@@ -90,19 +81,16 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 #serverTrackingPanel .user-list div{margin:2px 0;padding:2px 6px;background:#001f1f;border-radius:2px;cursor:pointer}
 #serverTrackingPanel .current-server .server-title{color:#000;background:var(--accent);padding:2px 6px;border-radius:2px}
 #systemFeed{max-height:180px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px}
-
 /* DM */
 .dm-window{position:fixed;background:#fff;border:3px solid #b8860b;border-radius:6px;z-index:9999;min-width:260px;max-width:420px;box-shadow:6px 6px 0 rgba(0,0,0,0.2)}
 .dm-title{background:linear-gradient(180deg,#fddc6b,#f2c200);padding:6px;border-radius:4px;font-weight:700;cursor:move;font-family:'Press Start 2P';font-size:11px}
 .dm-msg{background:#fff7d6;padding:6px;border-radius:6px;margin:4px 0;max-width:90%}
-
 /* PARTICLES */
 #particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:0}
 </style>
 </head>
 <body>
 <div id="crt"></div>
-
 <!-- BOOT -->
 <div id="bootOverlay">
   <div id="bootPanel">
@@ -113,9 +101,7 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
     <div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
   </div>
 </div>
-
 <canvas id="particleCanvas"></canvas>
-
 <div id="app">
   <div class="title-bar">
     <div class="logo">BUU</div>
@@ -123,7 +109,6 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
     <button class="link-btn" onclick="window.open('https://youtube.com/@Patrickauthor','_blank')">Melphia’s Game (YT)</button>
     <button class="link-btn" onclick="window.open('https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview','_blank')">Book 1</button>
   </div>
-
   <div class="layout">
     <!-- LEFT -->
     <div>
@@ -139,7 +124,6 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
           </div>
         </div>
       </div>
-
       <!-- CHAT (Collapsible) -->
       <div class="panel">
         <div class="panel-title" onclick="togglePanel(this)">
@@ -160,7 +144,6 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
           </div>
         </div>
       </div>
-
       <!-- MESSAGE BOARD (Collapsible) -->
       <div class="panel">
         <div class="panel-title" onclick="togglePanel(this)">
@@ -178,7 +161,6 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
         </div>
       </div>
     </div>
-
     <!-- RIGHT -->
     <div>
       <!-- SERVER SELECTOR + CONFIRM -->
@@ -195,24 +177,20 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
           <button id="serverConfirm">Switch Server</button>
         </div>
       </div>
-
       <!-- ORTEGA -->
       <div class="panel" id="ortegaPanel">
         <button id="ortegaBtn">Project ://ORTEGA</button>
       </div>
-
       <!-- SERVER TRACKING – LIVE, TREE STYLE -->
       <div class="panel" id="serverTrackingPanel">
         <div class="small">SERVER TRACKING</div>
         <div id="serverTrackingList"></div>
       </div>
-
       <!-- SYSTEM FEED – LIVE -->
       <div class="panel">
         <div class="small">SYSTEM FEED</div>
         <div id="systemFeed"></div>
       </div>
-
       <!-- DM LIST -->
       <div class="panel" style="margin-top:12px">
         <div class="small">DIRECT MESSAGES</div>
@@ -222,19 +200,15 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
     </div>
   </div>
 </div>
-
 <audio id="soundMsg" src="https://assets.mixkit.co/sfx/download/mixkit-positive-alert-600.wav" preload="auto"></audio>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-app.js";
 import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-auth.js";
-
 const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"4771034632228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
-
 /* DOM */
 const bootOverlay = document.getElementById('bootOverlay');
 const bootLog = document.getElementById('bootLog');
@@ -259,12 +233,10 @@ const dmList = document.getElementById('dmList');
 const ortegaBtn = document.getElementById('ortegaBtn');
 const soundMsg = document.getElementById('soundMsg');
 const chatTitle = document.getElementById('chatTitle');
-
 let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null, channelListeners = {};
-
 /* COLLAPSIBLE PANELS – FIXED */
 function togglePanel(title) {
-  const body = title.parentElement.querySelector('.panel-body');
+  const body = title.parentElement.nextElementSibling; // Direct next for body
   const btn = title.querySelector('.toggle-btn');
   if (body.classList.contains('collapsed')) {
     body.classList.remove('collapsed');
@@ -276,7 +248,18 @@ function togglePanel(title) {
     btn.textContent = '+';
   }
 }
-
+// NEW: Initialize all panels with proper heights on load
+function initializePanels() {
+  document.querySelectorAll('.panel .panel-body').forEach(body => {
+    if (!body.style.maxHeight || body.style.maxHeight === '0px') {
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  });
+  // Re-attach event listeners if needed (for dynamic content)
+  document.querySelectorAll('.panel-title').forEach(title => {
+    title.onclick = () => togglePanel(title);
+  });
+}
 /* BOOT */
 const bootLines = ["INITIALIZING BEFORE US UNIVERSE...","Loading kernel.............[OK]","Mounting network...........[OK]","Checking Firebase link.....[OK]","Ready for authentication..."];
 let lineIdx = 0;
@@ -288,10 +271,8 @@ function typeBootLine(){
   }
 }
 typeBootLine();
-
 signInAnonymously(auth).catch(e=>bootStatus.textContent="Auth error: "+e.message);
 onAuthStateChanged(auth, u=>{ if(u) uid = u.uid; });
-
 bootBtn.addEventListener('click', async ()=>{
   const raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
   if(!raw) return bootStatus.textContent = "Invalid handle";
@@ -306,18 +287,22 @@ bootBtn.addEventListener('click', async ()=>{
   setPresence(myHandle,currentChannel);
   finishBoot();
 });
-
 function finishBoot(){
   bootStatus.textContent = `Welcome, ${myHandle}`;
-  setTimeout(()=>{bootOverlay.style.display='none';appRoot.style.display='block';appendSystem('System ready');},1200);
+  setTimeout(()=>{ 
+    bootOverlay.style.display='none'; 
+    appRoot.style.display='block'; 
+    initializePanels(); // NEW: Fix panels on show
+    appendSystem('System ready');
+  },1200);
 }
-
 /* UTILS */
-function appendSystem(t){ 
-  const d=document.createElement('div'); 
+function appendSystem(t){
+  const d=document.createElement('div');
   d.textContent=`[${new Date().toLocaleTimeString()}] ${t}`;
   d.style.fontSize = '11px';
-  systemFeed.prepend(d); 
+  systemFeed.prepend(d);
+  systemFeed.scrollTop = systemFeed.scrollHeight; // Auto-scroll
 }
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 async function hash(str){
@@ -325,26 +310,25 @@ async function hash(str){
   const b=await crypto.subtle.digest('SHA-256',e);
   return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
 }
-
 /* PRESENCE */
 function setPresence(h,ch){
   if(presenceRef) remove(presenceRef).catch(()=>{});
   presenceRef = ref(db,`online/${ch}/${uid}`);
   set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid}).then(()=>onDisconnect(presenceRef).remove());
 }
-
-/* SERVER TRACKING – LIVE, TREE STYLE */
+/* SERVER TRACKING – LIVE, TREE STYLE – FIXED */
 function renderServerTracking(data){
-  serverTrackingList.innerHTML = '';
+  serverTrackingList.innerHTML = ''; // Clear first
   const channels = ['exuro','sam','nero','nora','loktal'];
   channels.forEach(ch => {
-    const users = data[ch] || {};
-    const count = Object.keys(users).length;
+    const usersObj = data[ch] || {};
+    const users = Object.values(usersObj); // Ensure array
+    const count = users.length;
     const branch = document.createElement('div');
     branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
     branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count})</div><div class="user-list"></div>`;
     const userList = branch.querySelector('.user-list');
-    Object.values(users).forEach(u => {
+    users.forEach(u => { // Loop over array
       const div = document.createElement('div');
       div.textContent = u.name;
       div.onclick = () => openDM(u.uid, u.name);
@@ -359,30 +343,41 @@ function renderServerTracking(data){
     serverTrackingList.appendChild(branch);
   });
 }
-
-/* ONLINE WATCH – LIVE USER COUNT & TRACKING */
+/* ONLINE WATCH – LIVE USER COUNT & TRACKING – FIXED */
 function watchOnline(){
   onValue(ref(db,'online'),snap=>{
     const data = snap.val()||{};
-    renderServerTracking(data);
+    renderServerTracking(data); // Force re-render every time
     renderActiveUsers(data[currentChannel] || {});
-    updateUserCount(data);
+    updateUserCount(data); // Already there, but now called on initial too
     rebuildDMList(data);
-  });
+  }, (error) => { appendSystem('Online watch error: ' + error.message); }); // Error handling
+  // NEW: Initial call after short delay for cold start
+  setTimeout(() => {
+    get(ref(db, 'online')).then(snap => {
+      const data = snap.val() || {};
+      renderServerTracking(data);
+      renderActiveUsers(data[currentChannel] || {});
+      updateUserCount(data);
+      rebuildDMList(data);
+    });
+  }, 1000);
 }
-function renderActiveUsers(users){
+function renderActiveUsers(usersObj){
   activeUsersList.innerHTML = '';
-  Object.entries(users).forEach(([id,u])=>{
+  const users = Object.values(usersObj || {});
+  users.forEach(u=>{
     const row = document.createElement('div'); row.className = 'user-row';
     const dot = document.createElement('div'); dot.className = 'status-dot';
     const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name;
-    name.onclick = () => openDM(id, u.name);
+    name.onclick = () => openDM(u.uid, u.name);
     row.append(dot, name);
     activeUsersList.appendChild(row);
   });
 }
 function updateUserCount(data){
-  const count = Object.keys(data[currentChannel]||{}).length;
+  const usersObj = data[currentChannel] || {};
+  const count = Object.keys(usersObj).length;
   userCountSmall.textContent = count + (count===1?' user':' users');
   chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count===1?'':'s'}</span>`;
 }
@@ -390,18 +385,38 @@ function rebuildDMList(data){
   dmList.innerHTML='';
   const seen=new Set();
   for(const ch in data){
-    for(const id in data[ch]){
+    const usersObj = data[ch] || {};
+    for(const id in usersObj){
+      const u = usersObj[id];
       if(id===uid||seen.has(id))continue;
       seen.add(id);
       const b=document.createElement('div');
-      b.textContent=data[ch][id].name;
+      b.textContent=u.name;
       b.style.cssText='padding:4px;border:1px solid #ccc;margin:2px 0;cursor:pointer';
-      b.onclick=()=>openDM(id,data[ch][id].name);
+      b.onclick=()=>openDM(id,u.name);
       dmList.appendChild(b);
     }
   }
 }
-
+/* NEW: Watch presence events for system feed */
+function watchPresenceEvents() {
+  const channels = ['exuro','sam','nero','nora','loktal'];
+  channels.forEach(ch => {
+    onChildAdded(ref(db, `online/${ch}`), snap => {
+      const u = snap.val();
+      if (u && u.uid !== uid) { // Don't log self
+        appendSystem(`User '${u.name}' joined //${ch.toUpperCase()}`);
+      }
+    });
+    // For leaves, use onChildRemoved
+    onChildRemoved(ref(db, `online/${ch}`), snap => {
+      const u = snap.val();
+      if (u && u.uid !== uid) {
+        appendSystem(`User '${u.name}' left //${ch.toUpperCase()}`);
+      }
+    });
+  });
+}
 /* DM */
 async function registerDMPair(tuid){
   const pid=[uid,tuid].sort().join('_');
@@ -424,7 +439,6 @@ function openDM(tuid,tname){
   win.append(title,msgs,inp,send,close);
   document.body.appendChild(win);
   makeDraggable(win,title);
-
   const dmRef=ref(db,`dm/${pid}`);
   onChildAdded(dmRef,snap=>{
     const o=snap.val();
@@ -433,7 +447,6 @@ function openDM(tuid,tname){
     el.textContent = `${o.fromName}: ${o.msg}`;
     msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
   });
-
   send.onclick=async()=>{
     const txt=inp.value.trim();
     if(!txt||txt.length>1000) return;
@@ -454,7 +467,6 @@ function makeDraggable(el,bar){
   document.onmousemove=e=>{if(drag){el.style.left=(e.clientX-ox)+'px';el.style.top=(e.clientY-oy)+'px';}};
   document.onmouseup=()=>{drag=false;};
 }
-
 /* CHAT */
 function listenChannel(ch){
   for(const c in channelListeners) off(channelListeners[c].ref);
@@ -487,7 +499,6 @@ async function postMessage(ch,name,msg){
   await update(ref(db),updates);
   set(ref(db,`online/${ch}/${uid}`),{name,ts:Date.now(),channel:ch,uid});
 }
-
 /* BOARD – USES HANDLE */
 function listenBoard(){
   onChildAdded(ref(db,'board'),snap=>{
@@ -497,7 +508,6 @@ function listenBoard(){
     boardList.prepend(el);
   });
 }
-
 /* UI */
 sendBtn.onclick=()=>{ if(!myHandle) return alert('Login first'); postMessage(currentChannel,myHandle,chatInput.value); chatInput.value=''; soundMsg.play().catch(()=>{}); };
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
@@ -520,10 +530,10 @@ serverConfirm.onclick=()=>{
   }
 };
 ortegaBtn.onclick=()=>{alert('Project ://ORTEGA – RAG-LM genie coming soon');};
-
 /* START */
-watchOnline(); listenBoard(); listenChannel(currentChannel); appendSystem('Initializing...');
-
+watchOnline(); // FIXED: Now includes initial render
+watchPresenceEvents(); // NEW: For system feed updates
+listenBoard(); listenChannel(currentChannel); appendSystem('Initializing...');
 /* PARTICLES */
 const pc=document.getElementById('particleCanvas'),ctx=pc.getContext('2d');
 function resize(){pc.width=innerWidth;pc.height=innerHeight;} resize(); addEventListener('resize',resize);
@@ -541,7 +551,6 @@ function loop(){
   }
   requestAnimationFrame(loop);
 } loop();
-
 /* PRUNE */
 setInterval(async()=>{
   const snap=await get(ref(db,'chat'));
