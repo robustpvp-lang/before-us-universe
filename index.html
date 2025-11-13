@@ -12,6 +12,7 @@
   --bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
   --proboards-blue:#1e73be; --proboards-dark:#0066cc; --proboards-gray:#f5f5f5; --proboards-border:#ccc; --proboards-muted:#666; --proboards-text:#444;
   --yahoo-blue:#1e73be; --yahoo-dark:#0961a6; --online:#00ff9d; --muted:#00aaaa;
+  --text-gray:#444;
 }
 html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:hidden}
 body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
@@ -37,23 +38,27 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
 @media(max-width:980px){.layout{grid-template-columns:1fr}}
 
-/* PANELS */
-.panel{background:var(--panel-bg);border:3px solid var(--border);padding:10px;border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.3);overflow:hidden}
-.small{font-size:12px;color:var(--muted)}
+/* PANELS – COLLAPSIBLE (Win98 style) */
+.panel{background:var(--panel-bg);border:3px solid var(--border);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.3);margin-bottom:12px;overflow:hidden}
+.panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px;cursor:pointer}
+.panel-title .title{font-weight:700}
+.panel-title .toggle-btn{background:#fff;color:#000;padding:2px 6px;border-radius:4px;font-size:10px}
+.panel-body{transition:max-height 0.3s ease;overflow:hidden}
+.panel-body.collapsed{max-height:0 !important}
 
 /* YOUTUBE */
 .yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border)}
 
-/* YAHOO CHAT */
-.chat-win{border:4px solid var(--yahoo-dark);border-radius:8px;overflow:hidden;background:#eaf6ff;margin-top:12px;display:flex;flex-direction:column;height:500px}
+/* YAHOO CHAT – GRAY TEXT */
+.chat-win{display:flex;flex-direction:column;height:500px}
 .chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .chat-main{display:flex;flex:1;overflow:hidden}
-.chat-messages{flex:1;overflow:auto;background:#fff;border-right:1px solid #ccc;padding:8px}
+.chat-messages{flex:1;overflow:auto;background:#fff;border-right:1px solid #ccc;padding:8px;color:var(--text-gray)}
 .chat-users{background:#f0f8ff;border-left:1px solid #ccc;padding:8px;overflow:auto;width:180px}
 @media(max-width:700px){.chat-main{flex-direction:column}.chat-users{width:auto;border-left:0;border-top:1px solid #ccc}}
 .chat-row{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
 .chat-avatar{width:32px;height:32px;border-radius:50%;background:#d9eefc;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#0961a6}
-.chat-bubble{max-width:78%;padding:8px;border-radius:8px;background:#fff;border:1px solid #cfe6ff;font-family:Arial}
+.chat-bubble{max-width:78%;padding:8px;border-radius:8px;background:#fff;border:1px solid #cfe6ff;font-family:Arial;color:var(--text-gray)}
 .chat-bubble.me{background:#fff7d6;border:1px solid #f0d280;text-align:right}
 .chat-meta{font-size:11px;color:#0a6fbf;font-weight:700;margin-bottom:4px}
 .user-row{display:flex;gap:4px;align-items:center;padding:4px;font-size:11px;cursor:pointer}
@@ -63,9 +68,9 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .chat-controls input{flex:1;padding:6px;border:2px inset #ccc;background:#fff}
 .chat-controls button{padding:6px;border:2px outset #ccc;background:#dfefff;cursor:pointer}
 
-/* PROBOARDS MESSAGE BOARD – EXACT COLORS */
+/* PROBOARDS MESSAGE BOARD – GRAY TEXT + HANDLE */
 .board-header{background:var(--proboards-blue);color:#fff;padding:8px;font-weight:700;font-family:Arial;border-bottom:2px solid var(--proboards-border)}
-.board-thread{background:var(--proboards-gray);border:1px solid var(--proboards-border);padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:var(--proboards-text)}
+.board-thread{background:var(--proboards-gray);border:1px solid var(--proboards-border);padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:var(--text-gray)}
 .board-thread strong{color:var(--proboards-dark);font-size:14px}
 .board-thread .small{color:var(--proboards-muted);font-style:italic;margin-top:4px;display:block}
 
@@ -77,10 +82,10 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 #ortegaPanel{margin-bottom:12px}
 #ortegaBtn{width:100%;background:var(--accent);color:#000;padding:10px;border:2px solid #000;border-radius:4px;font-weight:700;cursor:pointer;font-size:14px}
 #serverTrackingPanel{margin-bottom:12px}
-#serverTrackingPanel .server-block{margin-bottom:12px}
-#serverTrackingPanel .server-title{font-weight:700;color:var(--accent);font-size:13px}
-#serverTrackingPanel .user-list{margin-top:4px;font-size:11px}
-#serverTrackingPanel .user-list div{margin:2px 0;padding:2px 4px;background:#001f1f;border-radius:2px}
+#serverTrackingPanel .server-branch{margin-bottom:12px}
+#serverTrackingPanel .server-title{font-weight:700;color:var(--accent);font-size:13px;cursor:pointer}
+#serverTrackingPanel .user-list{margin-left:12px;margin-top:4px;font-size:11px}
+#serverTrackingPanel .user-list div{margin:2px 0;padding:2px 6px;background:#001f1f;border-radius:2px;cursor:pointer}
 #serverTrackingPanel .current-server .server-title{color:#000;background:var(--accent);padding:2px 6px;border-radius:2px}
 #systemFeed{max-height:180px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px}
 
@@ -120,48 +125,54 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
   <div class="layout">
     <!-- LEFT -->
     <div>
+      <!-- YOUTUBE (Collapsible) -->
       <div class="panel">
-        <div class="small">PLAYLIST</div>
-        <div class="yt-wrap" style="margin-top:8px">
-          <iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen></iframe>
+        <div class="panel-title" onclick="togglePanel(this)">
+          <div class="title">PLAYLIST</div>
+          <div class="toggle-btn">−</div>
+        </div>
+        <div class="panel-body" id="ytBody">
+          <div class="yt-wrap" style="margin:8px">
+            <iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen></iframe>
+          </div>
         </div>
       </div>
 
-      <!-- YAHOO CHAT -->
-      <div class="chat-win">
-        <div class="chat-title">
-          <div style="display:flex;gap:12px;align-items:center">
-            <span id="winChannelLabel">//EXURO</span>
-            <span class="small" id="userCountSmall">0 users</span>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center">
-            <label class="small" for="doorToggle" style="color:#fff">SOUND</label>
-            <input type="checkbox" id="doorToggle" checked>
-            <button id="closeChatBtn" style="background:#fff;color:#c00;padding:2px 6px;border-radius:4px">X</button>
-          </div>
+      <!-- CHAT (Collapsible) -->
+      <div class="panel">
+        <div class="panel-title" onclick="togglePanel(this)">
+          <div class="title" id="winChannelLabel">//EXURO <span class="small" id="userCountSmall">0 users</span></div>
+          <div class="toggle-btn">−</div>
         </div>
-        <div class="chat-main">
-          <div class="chat-messages" id="chatMessages"></div>
-          <div class="chat-users">
-            <div class="small" style="margin-bottom:4px">USERS ONLINE</div>
-            <div id="activeUsersList"></div>
+        <div class="panel-body chat-win" id="chatBody">
+          <div class="chat-main">
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-users">
+              <div class="small" style="margin-bottom:4px">USERS ONLINE</div>
+              <div id="activeUsersList"></div>
+            </div>
           </div>
-        </div>
-        <div class="chat-controls">
-          <input id="chatInput" placeholder="Say something..." maxlength="500">
-          <button id="sendBtn">SEND</button>
+          <div class="chat-controls">
+            <input id="chatInput" placeholder="Say something..." maxlength="500">
+            <button id="sendBtn">SEND</button>
+          </div>
         </div>
       </div>
 
-      <!-- MESSAGE BOARD -->
-      <div class="panel" style="margin-top:12px">
-        <div class="board-header">MESSAGE BOARD</div>
-        <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
-        <div id="boardList" style="max-height:340px;overflow:auto"></div>
-        <div style="margin-top:8px">
-          <input id="boardName" placeholder="Name (max 100)" style="width:180px;padding:4px">
-          <textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:70px;margin-top:4px"></textarea>
-          <button id="postBoardBtn" style="margin-top:4px">POST</button>
+      <!-- MESSAGE BOARD (Collapsible) -->
+      <div class="panel">
+        <div class="panel-title" onclick="togglePanel(this)">
+          <div class="title">MESSAGE BOARD</div>
+          <div class="toggle-btn">−</div>
+        </div>
+        <div class="panel-body" id="boardBody">
+          <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
+          <div id="boardList" style="max-height:340px;overflow:auto;margin:8px 0"></div>
+          <div style="margin:8px">
+            <input id="boardName" placeholder="Name (max 100)" style="width:180px;padding:4px" value="">
+            <textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:70px;margin-top:4px"></textarea>
+            <button id="postBoardBtn" style="margin-top:4px">POST</button>
+          </div>
         </div>
       </div>
     </div>
@@ -188,7 +199,7 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
         <button id="ortegaBtn">Project ://ORTEGA</button>
       </div>
 
-      <!-- SERVER TRACKING – USERS UNDER EACH SERVER -->
+      <!-- SERVER TRACKING – YAHOO TREE STYLE -->
       <div class="panel" id="serverTrackingPanel">
         <div class="small">SERVER TRACKING</div>
         <div id="serverTrackingList"></div>
@@ -234,7 +245,6 @@ const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
 const channelSelect = document.getElementById('channelSelect');
 const serverConfirm = document.getElementById('serverConfirm');
-const closeChatBtn = document.getElementById('closeChatBtn');
 const userCountSmall = document.getElementById('userCountSmall');
 const activeUsersList = document.getElementById('activeUsersList');
 const serverTrackingList = document.getElementById('serverTrackingList');
@@ -248,6 +258,21 @@ const ortegaBtn = document.getElementById('ortegaBtn');
 const soundMsg = document.getElementById('soundMsg');
 
 let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null, channelListeners = {};
+
+/* COLLAPSIBLE PANELS */
+function togglePanel(title) {
+  const body = title.parentElement.querySelector('.panel-body');
+  const btn = title.querySelector('.toggle-btn');
+  if (body.classList.contains('collapsed')) {
+    body.classList.remove('collapsed');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    btn.textContent = '−';
+  } else {
+    body.classList.add('collapsed');
+    body.style.maxHeight = '0';
+    btn.textContent = '+';
+  }
+}
 
 /* BOOT */
 const bootLines = ["INITIALIZING BEFORE US UNIVERSE...","Loading kernel.............[OK]","Mounting network...........[OK]","Checking Firebase link.....[OK]","Ready for authentication..."];
@@ -273,6 +298,7 @@ bootBtn.addEventListener('click', async ()=>{
   if(!ok) return bootStatus.textContent = "Handle taken";
   myHandle = raw;
   localStorage.setItem('buu-handle',myHandle);
+  boardName.value = myHandle; // Auto-fill board name
   await set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()});
   setPresence(myHandle,currentChannel);
   finishBoot();
@@ -299,31 +325,29 @@ function setPresence(h,ch){
   set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid}).then(()=>onDisconnect(presenceRef).remove());
 }
 
-/* SERVER TRACKING – USERS UNDER EACH SERVER */
+/* SERVER TRACKING – YAHOO TREE */
 function renderServerTracking(data){
   serverTrackingList.innerHTML = '';
   const channels = ['exuro','sam','nero','nora','loktal'];
   channels.forEach(ch => {
     const users = data[ch] || {};
-    const count = Object.keys(users).length;
-    const block = document.createElement('div');
-    block.className = `server-block ${ch === currentChannel ? 'current-server' : ''}`;
-    block.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count})</div><div class="user-list"></div>`;
-    const userList = block.querySelector('.user-list');
+    const branch = document.createElement('div');
+    branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
+    branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()}</div><div class="user-list"></div>`;
+    const userList = branch.querySelector('.user-list');
     Object.values(users).forEach(u => {
       const div = document.createElement('div');
       div.textContent = u.name;
       div.onclick = () => openDM(u.uid, u.name);
-      div.style.cursor = 'pointer';
       userList.appendChild(div);
     });
-    if(count === 0) {
+    if(Object.keys(users).length === 0){
       const div = document.createElement('div');
       div.textContent = '—';
       div.style.opacity = '0.5';
       userList.appendChild(div);
     }
-    serverTrackingList.appendChild(block);
+    serverTrackingList.appendChild(branch);
   });
 }
 
@@ -425,7 +449,7 @@ function makeDraggable(el,bar){
 function listenChannel(ch){
   for(const c in channelListeners) off(channelListeners[c].ref);
   currentChannel=ch;
-  document.getElementById('winChannelLabel').textContent='//'+ch.toUpperCase();
+  document.getElementById('winChannelLabel').innerHTML=`//${ch.toUpperCase()} <span class="small" id="userCountSmall">0 users</span>`;
   chatMessages.innerHTML='';
   const r=ref(db,`chat/${ch}`);
   const fn=snap=>{
@@ -455,7 +479,7 @@ async function postMessage(ch,name,msg){
   set(ref(db,`online/${ch}/${uid}`),{name,ts:Date.now(),channel:ch,uid});
 }
 
-/* BOARD */
+/* BOARD – USES HANDLE */
 function listenBoard(){
   onChildAdded(ref(db,'board'),snap=>{
     const p=snap.val();
@@ -469,13 +493,13 @@ function listenBoard(){
 sendBtn.onclick=()=>{ if(!myHandle) return alert('Login first'); postMessage(currentChannel,myHandle,chatInput.value); chatInput.value=''; soundMsg.play().catch(()=>{}); };
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
 postBoardBtn.onclick=async()=>{
-  const n=boardName.value.trim(), m=boardMsg.value.trim();
-  if(!n||!m||n.length>100||m.length>1000) return alert('Invalid');
+  const n = myHandle || 'Anonymous';
+  const m=boardMsg.value.trim();
+  if(!m||m.length>1000) return alert('Invalid');
   const r=push(ref(db,'board'));
   await set(r,{name:n,msg:m,ts:Date.now(),uid});
-  boardName.value='';boardMsg.value='';
+  boardMsg.value='';
 };
-closeChatBtn.onclick=()=>{document.querySelector('.chat-win').style.display='none';};
 serverConfirm.onclick=()=>{
   const newCh = channelSelect.value;
   if(newCh !== currentChannel){
