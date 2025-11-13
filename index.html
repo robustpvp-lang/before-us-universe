@@ -157,6 +157,10 @@ input:checked + .slider:before { transform: translateX(20px); }
     <button class="link-btn" onclick="window.open('https://tokillamockinggoblin.boards.net/','_blank')">To Kill a Mocking Goblin</button>
     <button class="link-btn" onclick="window.open('https://youtube.com/@Patrickauthor','_blank')">Melphia’s Game (YT)</button>
     <button class="link-btn" onclick="window.open('https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview','_blank')">Book 1</button>
+    <button class="link-btn" onclick="window.open('https://neocities.org/','_blank')">NeoCities</button>
+    <button class="link-btn" onclick="window.open('https://spacehey.com/','_blank')">SpaceHey</button>
+    <button class="link-btn" onclick="window.open('https://www.forumotion.com/','_blank')">Forumotion</button>
+    <button class="link-btn" onclick="window.open('https://www.phpbb.com/','_blank')">phpBB</button>
     <div class="theme-switch-wrapper">
       <label class="theme-switch" for="checkbox">
         <input type="checkbox" id="checkbox" />
@@ -164,10 +168,8 @@ input:checked + .slider:before { transform: translateX(20px); }
       </label>
       <em>Toggle Theme</em>
       <select id="themeSelect">
-        <option value="cyber">Cyber</option>
         <option value="dark">Dark</option>
         <option value="light">Light</option>
-        <option value="matrix">Matrix Green</option>
       </select>
     </div>
     <button id="enableNotifications">Enable Notifications</button>
@@ -505,43 +507,58 @@ function makeDraggable(el,bar){
   document.onmouseup=()=>{drag=false;};
 }
 function listenChannel(ch){
-  if (channelListeners[currentChannel]) off(channelListeners[currentChannel].ref);
+  if (channelListeners[currentChannel]) {
+    off(channelListeners[currentChannel].ref);
+    delete channelListeners[currentChannel];
+  }
   currentChannel=ch;
   chatMessages.innerHTML='';
   const r=ref(db,`chat/${ch}`);
+  // Load existing messages
+  get(r).then(snap => {
+    const data = snap.val() || {};
+    Object.entries(data).sort((a, b) => a[1].ts - b[1].ts).forEach(([id, o]) => {
+      if (!o || o.deleted) return;
+      renderChatMessage(o, id);
+    });
+  }).catch(e => appendSystem('Chat load error: ' + e.message));
+  // Listen for new
   const fn=snap=>{
     const o=snap.val(); if(!o || o.deleted) return;
-    const row=document.createElement('div');row.className='chat-row';
-    const av=document.createElement('div');av.className='chat-avatar';av.textContent=(o.name||'?').slice(0,2).toUpperCase();
-    const bub=document.createElement('div');bub.className='chat-bubble';
-    if(o.uid===uid) bub.classList.add('me');
-    bub.innerHTML=`<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
-    if (o.uid === uid) {
-      const editBtn = document.createElement('span'); editBtn.className = 'edit-btn'; editBtn.textContent = '[Edit]';
-      editBtn.onclick = async () => {
-        const newMsg = prompt('Edit message:', o.msg);
-        if (newMsg && newMsg !== o.msg) {
-          const ts = Date.now();
-          const h = await hash(`${currentChannel}|${o.name}|${newMsg}|${uid}|${Math.floor(ts/1000)}`);
-          update(ref(db, `chat/${currentChannel}/${snap.key}`), {msg: newMsg, ts, hash: h}).catch(e => appendSystem('Edit error: ' + e.message));
-          update(ref(db, `/msgHashes/${h}`), {channel: currentChannel, key: snap.key, ts, uid}).catch(e => appendSystem('Hash update error: ' + e.message));
-        }
-      };
-      const deleteBtn = document.createElement('span'); deleteBtn.className = 'delete-btn'; deleteBtn.textContent = '[Delete]';
-      deleteBtn.onclick = () => {
-        update(ref(db, `chat/${currentChannel}/${snap.key}`), {deleted: true}).catch(e => appendSystem('Delete error: ' + e.message));
-      };
-      bub.append(editBtn, deleteBtn);
-    }
-    row.append(av,bub);
-    chatMessages.appendChild(row);
-    chatMessages.scrollTop=chatMessages.scrollHeight;
-    if (Notification.permission === 'granted' && document.hidden) {
-      new Notification(`New message from ${o.name}`, { body: o.msg });
-    }
+    renderChatMessage(o, snap.key);
   };
   onChildAdded(r,fn, (error) => appendSystem('Chat listen error: ' + error.message));
   channelListeners[ch]={ref:r,fn};
+}
+function renderChatMessage(o, key) {
+  const row=document.createElement('div');row.className='chat-row';
+  const av=document.createElement('div');av.className='chat-avatar';av.textContent=(o.name||'?').slice(0,2).toUpperCase();
+  const bub=document.createElement('div');bub.className='chat-bubble';
+  if(o.uid===uid) bub.classList.add('me');
+  bub.innerHTML=`<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+  if (o.uid === uid) {
+    const editBtn = document.createElement('span'); editBtn.className = 'edit-btn'; editBtn.textContent = '[Edit]';
+    editBtn.onclick = async () => {
+      const newMsg = prompt('Edit message:', o.msg);
+      if (newMsg && newMsg !== o.msg) {
+        const ts = Date.now();
+        const h = await hash(`${currentChannel}|${o.name}|${newMsg}|${uid}|${Math.floor(ts/1000)}`);
+        update(ref(db, `chat/${currentChannel}/${key}`), {msg: newMsg, ts, hash: h}).catch(e => appendSystem('Edit error: ' + e.message));
+        update(ref(db, `/msgHashes/${h}`), {channel: currentChannel, key, ts, uid}).catch(e => appendSystem('Hash update error: ' + e.message));
+      }
+    };
+    const deleteBtn = document.createElement('span'); deleteBtn.className = 'delete-btn'; deleteBtn.textContent = '[Delete]';
+    deleteBtn.onclick = () => {
+      update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => appendSystem('Delete error: ' + e.message));
+    };
+    bub.append(editBtn, deleteBtn);
+  }
+  row.append(av,bub);
+  chatMessages.appendChild(row);
+  chatMessages.scrollTop=chatMessages.scrollHeight;
+  if (Notification.permission === 'granted' && document.hidden) {
+    new Notification(`New message from ${o.name}`, { body: o.msg });
+  }
 }
 async function postMessage(ch,name,msg){
   const m=msg.trim();
@@ -557,21 +574,16 @@ async function postMessage(ch,name,msg){
   await set(ref(db, `users/${uid}/lastPost`), Date.now()).catch(e => appendSystem('Last post error: ' + e.message));
 }
 function listenBoard(){
-  if (boardListener) off(boardListener.ref);
   const r = ref(db, 'board');
-  const fn = snap => {
+  onValue(r, snap => {
     boardList.innerHTML = '';
-    get(ref(db, 'board')).then(snap => {
-      const posts = snap.val() || {};
-      Object.entries(posts).sort((a, b) => b[1].ts - a[1].ts).forEach(([id, p]) => {
-        const el=document.createElement('div');el.className='board-thread';
-        el.innerHTML=`<strong>${esc(p.name)}</strong><br>${esc(p.msg)}<div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div><div class="board-replies">Replies: 0</div><div class="board-views">Views: 0</div>`;
-        boardList.appendChild(el);
-      });
-    }).catch(e => appendSystem('Board get error: ' + e.message));
-  };
-  onChildAdded(r, fn);
-  boardListener = {ref: r, fn};
+    const posts = snap.val() || {};
+    Object.entries(posts).sort((a, b) => b[1].ts - a[1].ts).forEach(([id, p]) => {
+      const el=document.createElement('div');el.className='board-thread';
+      el.innerHTML=`<strong>${esc(p.name)}</strong><br>${esc(p.msg)}<div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div><div class="board-replies">Replies: 0</div><div class="board-views">Views: 0</div><div class="board-date">Last Post: ${new Date(p.ts).toLocaleDateString()}</div>`;
+      boardList.appendChild(el);
+    });
+  }, (error) => appendSystem('Board listen error: ' + error.message));
 }
 sendBtn.onclick=()=>{ if(!myHandle) return alert('Login first'); postMessage(currentChannel,myHandle,chatInput.value); chatInput.value=''; soundMsg.play().catch(()=>{}); };
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
@@ -583,7 +595,6 @@ postBoardBtn.onclick=async()=>{
   await set(r,{name:n,msg:m,ts:Date.now(),uid}).catch(e => appendSystem('Board post error: ' + e.message));
   await set(ref(db, `users/${uid}/lastBoardPost`), Date.now()).catch(e => appendSystem('Last board post error: ' + e.message));
   boardMsg.value='';
-  listenBoard(); // Refresh board
 };
 serverConfirm.onclick=()=>{
   const newCh = channelSelect.value;
