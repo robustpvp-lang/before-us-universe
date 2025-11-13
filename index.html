@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Before Us Universe — BUU</title>
+<title>The Before Us Universe — BUU</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Arial:wght@400;700&display=swap" rel="stylesheet">
@@ -13,46 +13,22 @@
   --proboards-blue:#1e73be; --proboards-dark:#0066cc; --proboards-gray:#f5f5f5; --proboards-border:#ccc; --proboards-muted:#666; --proboards-text:#444;
   --yahoo-blue:#1e73be; --yahoo-dark:#0961a6; --online:#00ff9d; --muted:#00aaaa;
   --text-gray:#444;
-  --theme-name: 'cyber'; /* Default theme */
 }
-
-/* Dark Theme */
-[data-theme="dark"] {
-  --bg: #161625; --fg: #e1e1ff; --accent: #9A97F3; --border: #818cab;
-  --panel-bg: #25253a; --proboards-blue: #818cab; --proboards-dark: #536390;
-  --proboards-gray: #292922; --proboards-border: #424242; --proboards-muted: #424242; --proboards-text: #e1e1ff;
-  --yahoo-blue: #818cab; --yahoo-dark: #536390; --online: #66bb6a; --muted: #536390;
-  --text-gray: #e1e1ff;
-}
-
-/* Light Theme */
-[data-theme="light"] {
-  --bg: #fff; --fg: #424242; --accent: #302AE6; --border: #536390;
-  --panel-bg: #f5f5f5; --proboards-blue: #1e73be; --proboards-dark: #0066cc;
-  --proboards-gray: #f5f5f5; --proboards-border: #ccc; --proboards-muted: #666; --proboards-text: #444;
-  --yahoo-blue: #1e73be; --yahoo-dark: #0961a6; --online: #00ff9d; --muted: #00aaaa;
-  --text-gray: #444;
-}
-
-/* Matrix Green Theme */
-[data-theme="matrix"] {
-  --bg: #000; --fg: #00ff00; --accent: #00cc00; --border: #008800;
-  --panel-bg: #001100; --proboards-blue: #00aa00; --proboards-dark: #008800;
-  --proboards-gray: #002200; --proboards-border: #004400; --proboards-muted: #006600; --proboards-text: #00ff00;
-  --yahoo-blue: #00aa00; --yahoo-dark: #008800; --online: #00ff00; --muted: #00aa00;
-  --text-gray: #00ff00;
-}
-
 html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:hidden}
-body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
+body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat;padding-top:40px}
 #crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06) 2px,transparent 2px,transparent 4px);pointer-events:none;z-index:999}
+/* FIXED MARQUEE */
+#marquee{position:fixed;top:0;left:0;right:0;height:40px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;z-index:10000;overflow:hidden;display:flex;align-items:center;border-bottom:2px solid var(--border)}
+#marqueeContent{display:inline-block;white-space:nowrap;animation:scroll 30s linear infinite;padding-left:100%;font-weight:bold}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 #bootOverlay{position:fixed;inset:0;background:#000;color:var(--fg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Press Start 2P'}
 #bootPanel{width:90%;max-width:800px;background:var(--panel-bg);border:4px solid var(--border);padding:20px;box-shadow:0 0 30px #00cccc}
 #bootLog{line-height:1.6;white-space:pre-wrap;margin-bottom:20px;font-size:14px}
 #bootPrompt{color:var(--accent)}
 #bootInput{background:var(--panel-bg);border:2px solid var(--border);color:var(--fg);padding:6px;width:70%;max-width:300px}
+#bootServerSelect{background:var(--panel-bg);border:2px solid var(--border);color:var(--fg);padding:8px;margin:10px 0;font-size:14px;width:70%;max-width:300px}
 #bootBtn{background:var(--panel-bg);border:2px solid var(--border);color:var(--accent);padding:6px 12px;cursor:pointer}
-#app{display:none;height:100%;padding:8px;box-sizing:border-box;overflow-y:auto}
+#app{display:none;height:calc(100% - 40px);padding:8px;box-sizing:border-box;overflow-y:auto}
 .title-bar{display:flex;gap:12px;flex-wrap:wrap;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center}
 .title-bar .logo{font-weight:700;letter-spacing:1px}
 .link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4px;font-weight:700;cursor:pointer;border:2px solid #000;margin:2px;font-size:11px}
@@ -83,15 +59,15 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .board-thread{background:var(--proboards-gray);border:1px solid var(--proboards-border);padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:var(--text-gray)}
 .board-thread strong{color:var(--proboards-dark);font-size:14px}
 .board-thread .small{color:var(--proboards-muted);font-style:italic;margin-top:4px;display:block}
-.board-thread .board-date { font-size: 10px; color: #666; }
-.board-thread .board-views { font-size: 10px; color: #666; }
-.board-thread .board-replies { font-size: 10px; color: #666; }
+.board-thread .board-date{font-size:10px;color:#666}
+.board-thread .board-views{font-size:10px;color:#666}
+.board-thread .board-replies{font-size:10px;color:#666}
 #serverSelectPanel{margin-bottom:12px}
 #serverSelectPanel .controls{display:flex;gap:6px;align-items:center}
-#serverSelectPanel select{flex:1;padding:6px;background:var(--panel-bg);border:2px solid var(--border);color:var(--fg)}
-#serverConfirm{background:var(--accent);color:#000;padding:6px;border:2px solid #000;cursor:pointer;font-weight:700}
-#ortegaPanel{margin-bottom:12px}
-#ortegaBtn{width:100%;background:var(--accent);color:#000;padding:10px;border:2px solid #000;border-radius:4px;font-weight:700;cursor:pointer;font-size:14px}
+#serverSelectPanel select{flex:1;padding:10px;background:var(--panel-bg);border:3px solid var(--border);color:var(--fg);font-size:16px;font-weight:bold}
+#serverConfirm{background:var(--accent);color:#000;padding:10px;border:2px solid #000;cursor:pointer;font-weight:700;font-size:14px}
+#ortegaPanel{margin-bottom:12px;border:4px solid var(--accent);background:linear-gradient(135deg,#332200,#554400);box-shadow:0 0 20px var(--accent)}
+#ortegaBtn{width:100%;background:var(--accent);color:#000;padding:12px;border:3px solid #000;border-radius:4px;font-weight:700;cursor:pointer;font-size:16px}
 #serverTrackingPanel{margin-bottom:12px}
 #serverTrackingPanel .server-branch{margin-bottom:12px}
 #serverTrackingPanel .server-title{font-weight:700;color:var(--accent);font-size:13px;cursor:pointer}
@@ -103,49 +79,33 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .dm-title{background:linear-gradient(180deg,#fddc6b,#f2c200);padding:6px;border-radius:4px;font-weight:700;cursor:move;font-family:'Press Start 2P';font-size:11px}
 .dm-msg{background:#fff7d6;padding:6px;border-radius:6px;margin:4px 0;max-width:90%}
 #particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:0}
-
-/* Mobile Optimization for DMs */
-@media (max-width: 600px) {
-  .dm-window {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  .layout {
-    grid-template-columns: 1fr;
-  }
+@media (max-width:600px){
+  .dm-window{position:relative!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;width:100%;margin-bottom:10px}
+  .layout{grid-template-columns:1fr}
 }
-
-/* Typing Indicator */
-.typing-indicator { font-size: 11px; color: var(--muted); padding: 4px; font-style: italic; }
-
-/* Theme Switcher Styles */
-.theme-switch-wrapper { display: flex; align-items: center; margin-left: auto; }
-.theme-switch { display: inline-block; height: 20px; position: relative; width: 40px; }
-.theme-switch input { display: none; }
-.slider { background-color: var(--border); bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 20px; }
-.slider:before { background-color: var(--fg); bottom: 4px; content: ""; height: 12px; left: 4px; position: absolute; transition: .4s; width: 12px; border-radius: 50%; }
-input:checked + .slider { background-color: var(--accent); }
-input:checked + .slider:before { transform: translateX(20px); }
-
-/* Edit/Delete Buttons */
-.edit-btn, .delete-btn { font-size: 10px; margin-left: 5px; cursor: pointer; color: var(--accent); }
-
-/* Users Online Color */
-.chat-users .small { color: red; }
+.typing-indicator{font-size:11px;color:var(--muted);padding:4px;font-style:italic}
+.edit-btn,.delete-btn{font-size:10px;margin-left:5px;cursor:pointer;color:var(--accent)}
+.chat-users .small{color:red}
 </style>
 </head>
 <body>
 <div id="crt"></div>
+<div id="marquee">
+  <div id="marqueeContent">✨ Welcome to The Before Us Universe ✨ Timeline stability: 87%..ish ✨</div>
+</div>
 <div id="bootOverlay">
   <div id="bootPanel">
     <div id="bootLog" class="small"></div>
     <div id="bootPrompt">> ENTER HANDLE:</div>
     <input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle">
+    <div id="bootPrompt" style="margin-top:10px">> SELECT SERVER:</div>
+    <select id="bootServerSelect">
+      <option value="exuro">//EXURO</option>
+      <option value="sam">//SAM</option>
+      <option value="nero">//NERO</option>
+      <option value="nora">//NORA</option>
+      <option value="loktal">//LOKTAL</option>
+    </select>
     <button id="bootBtn">AUTHENTICATE</button>
     <div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
   </div>
@@ -155,30 +115,18 @@ input:checked + .slider:before { transform: translateX(20px); }
   <div class="title-bar">
     <div class="logo">BUU</div>
     <button class="link-btn" onclick="window.open('https://tokillamockinggoblin.boards.net/','_blank')">To Kill a Mocking Goblin</button>
-    <button class="link-btn" onclick="window.open('https://youtube.com/@Patrickauthor','_blank')">Melphia’s Game (YT)</button>
+    <button class="link-btn" onclick="window.open('https://youtube.com/@Patrickauthor','_blank')">Melphia's Game (YT)</button>
     <button class="link-btn" onclick="window.open('https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview','_blank')">Book 1</button>
     <button class="link-btn" onclick="window.open('https://neocities.org/','_blank')">NeoCities</button>
     <button class="link-btn" onclick="window.open('https://spacehey.com/','_blank')">SpaceHey</button>
     <button class="link-btn" onclick="window.open('https://www.forumotion.com/','_blank')">Forumotion</button>
     <button class="link-btn" onclick="window.open('https://www.phpbb.com/','_blank')">phpBB</button>
-    <div class="theme-switch-wrapper">
-      <label class="theme-switch" for="checkbox">
-        <input type="checkbox" id="checkbox" />
-        <div class="slider round"></div>
-      </label>
-      <em>Toggle Theme</em>
-      <select id="themeSelect">
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-      </select>
-    </div>
-    <button id="enableNotifications">Enable Notifications</button>
   </div>
   <div class="layout">
     <div>
       <div class="panel">
         <div class="panel-title">
-          <div class="title">PLAYLIST</div>
+          <div class="title">SAM's PLAYLIST</div>
         </div>
         <div class="panel-body" id="ytBody">
           <div class="yt-wrap" style="margin:8px">
@@ -213,7 +161,6 @@ input:checked + .slider:before { transform: translateX(20px); }
           <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
           <div id="boardList" style="max-height:340px;overflow:auto;margin:8px 0"></div>
           <div style="margin:8px">
-            <input id="boardName" placeholder="Name (max 100)" style="width:180px;padding:4px" value="">
             <textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:70px;margin-top:4px"></textarea>
             <button id="postBoardBtn" style="margin-top:4px">POST</button>
           </div>
@@ -231,11 +178,11 @@ input:checked + .slider:before { transform: translateX(20px); }
             <option value="nora">//Nora</option>
             <option value="loktal">//Loktal</option>
           </select>
-          <button id="serverConfirm">Switch Server</button>
+          <button id="serverConfirm">GO</button>
         </div>
       </div>
       <div class="panel" id="ortegaPanel">
-        <button id="ortegaBtn">Project ://ORTEGA</button>
+        <button id="ortegaBtn">🔬 Project ://ORTEGA</button>
       </div>
       <div class="panel" id="serverTrackingPanel">
         <div class="small">SERVER TRACKING</div>
@@ -267,6 +214,7 @@ const bootLog = document.getElementById('bootLog');
 const bootInput = document.getElementById('bootInput');
 const bootBtn = document.getElementById('bootBtn');
 const bootStatus = document.getElementById('bootStatus');
+const bootServerSelect = document.getElementById('bootServerSelect');
 const appRoot = document.getElementById('app');
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
@@ -277,7 +225,6 @@ const userCountSmall = document.getElementById('userCountSmall');
 const activeUsersList = document.getElementById('activeUsersList');
 const serverTrackingList = document.getElementById('serverTrackingList');
 const boardList = document.getElementById('boardList');
-const boardName = document.getElementById('boardName');
 const boardMsg = document.getElementById('boardMsg');
 const postBoardBtn = document.getElementById('postBoardBtn');
 const systemFeed = document.getElementById('systemFeed');
@@ -285,6 +232,7 @@ const dmList = document.getElementById('dmList');
 const ortegaBtn = document.getElementById('ortegaBtn');
 const soundMsg = document.getElementById('soundMsg');
 const chatTitle = document.getElementById('chatTitle');
+const marqueeContent = document.getElementById('marqueeContent');
 let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null, channelListeners = {}, boardListener = null;
 function initializePanels() {
   document.querySelectorAll('.panel .panel-body').forEach(body => {
@@ -307,18 +255,14 @@ bootBtn.addEventListener('click', async ()=>{
   const raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
   if(!raw) return bootStatus.textContent = "Invalid handle";
   if(!uid) return bootStatus.textContent = "Auth not ready…";
-  if (['neo','nero'].includes(raw.toLowerCase())) {
-    const lore = {
-      neo: "Neo: The One who glitches the code. Your signal is too loud. Try a quieter alias.",
-      nero: "Nero: The ghost in the machine. This handle is sealed in the archives. Choose another."
-    };
+  currentChannel = bootServerSelect.value;
+  channelSelect.value = currentChannel;
     bootStatus.textContent = lore[raw.toLowerCase()];
     bootStatus.style.color = '#ff5555';
     setTimeout(() => {
       bootStatus.textContent = '';
       bootStatus.style.color = 'var(--accent)';
       myHandle = raw;
-      boardName.value = myHandle;
       set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()}).catch(e => appendSystem('Profile error: ' + e.message));
       setPresence(myHandle,currentChannel);
       finishBoot();
@@ -327,7 +271,6 @@ bootBtn.addEventListener('click', async ()=>{
   }
   bootStatus.textContent = "Authenticating…";
   myHandle = raw;
-  boardName.value = myHandle;
   await set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()}).catch(e => appendSystem('Profile error: ' + e.message));
   setPresence(myHandle,currentChannel);
   finishBoot();
@@ -338,7 +281,7 @@ function finishBoot(){
     bootOverlay.style.display='none';
     appRoot.style.display='block';
     initializePanels();
-    appendSystem('System ready');
+    appendSystem('Systems ready and online');
   },1200);
 }
 function appendSystem(t){
@@ -347,6 +290,17 @@ function appendSystem(t){
   d.style.fontSize = '11px';
   systemFeed.prepend(d);
   systemFeed.scrollTop = systemFeed.scrollHeight;
+  updateMarquee();
+}
+function updateMarquee(){
+  const items = [];
+  const feedItems = systemFeed.querySelectorAll('div');
+  feedItems.forEach((item,i)=>{
+    if(i<5) items.push(item.textContent);
+  });
+  if(items.length>0){
+    marqueeContent.textContent = items.join(' ✨ ') + ' ✨';
+  }
 }
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 async function hash(str){
@@ -514,7 +468,6 @@ function listenChannel(ch){
   currentChannel=ch;
   chatMessages.innerHTML='';
   const r=ref(db,`chat/${ch}`);
-  // Load existing messages
   get(r).then(snap => {
     const data = snap.val() || {};
     Object.entries(data).sort((a, b) => a[1].ts - b[1].ts).forEach(([id, o]) => {
@@ -522,7 +475,6 @@ function listenChannel(ch){
       renderChatMessage(o, id);
     });
   }).catch(e => appendSystem('Chat load error: ' + e.message));
-  // Listen for new
   const fn=snap=>{
     const o=snap.val(); if(!o || o.deleted) return;
     renderChatMessage(o, snap.key);
@@ -638,27 +590,6 @@ setInterval(async()=>{
   }
 },60*60*1000);
 
-// Theme Switcher
-const themeSelect = document.getElementById('themeSelect');
-themeSelect.addEventListener('change', (e) => {
-  const theme = e.target.value;
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('theme', theme);
-});
-const currentTheme = localStorage.getItem('theme') || 'cyber';
-document.documentElement.setAttribute('data-theme', currentTheme);
-themeSelect.value = currentTheme;
-
-// Notifications
-const enableNotifications = document.getElementById('enableNotifications');
-enableNotifications.addEventListener('click', () => {
-  if (!("Notification" in window)) return alert('Notifications not supported');
-  Notification.requestPermission().then(permission => {
-    if (permission === 'granted') enableNotifications.style.display = 'none';
-  });
-});
-
-// Typing Indicators
 let typingTimeout;
 chatInput.addEventListener('input', () => {
   if (chatInput.value.trim()) {
