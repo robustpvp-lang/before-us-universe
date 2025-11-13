@@ -248,7 +248,7 @@ bootBtn.addEventListener('click', async ()=>{
   const raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
   if(!raw) return bootStatus.textContent = "Invalid handle";
   if(!uid) return bootStatus.textContent = "Auth not ready…";
-  // Easter-egg for Neo & Nero – friendly message + auto-clear
+  // Easter-egg for Neo & Nero – friendly message + auto-accept
   if (['neo','nero'].includes(raw.toLowerCase())) {
     const lore = {
       neo: "Neo: The One who glitches the code. Your signal is too loud. Try a quieter alias.",
@@ -259,18 +259,20 @@ bootBtn.addEventListener('click', async ()=>{
     setTimeout(() => {
       bootStatus.textContent = '';
       bootStatus.style.color = 'var(--accent)';
-      bootInput.value = '';
-      bootInput.focus();
+      // Auto-accept the handle after easter egg
+      myHandle = raw;
+      boardName.value = myHandle;
+      set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()}).catch(console.error);
+      setPresence(myHandle,currentChannel);
+      finishBoot();
     }, 4000);
     return;
   }
-  bootStatus.textContent = "Reserving…";
-  const ok = await set(ref(db,`handles/${raw}`),{uid,joined:Date.now()}).then(()=>true).catch(()=>false);
-  if(!ok) return bootStatus.textContent = "Handle taken";
+  // No reservation check - direct accept
+  bootStatus.textContent = "Authenticating…";
   myHandle = raw;
-  localStorage.setItem('buu-handle',myHandle);
   boardName.value = myHandle;
-  await set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()});
+  await set(ref(db,`users/${uid}/profile`),{name:myHandle,uid,firstSeen:Date.now()}).catch(console.error);
   setPresence(myHandle,currentChannel);
   finishBoot();
 });
