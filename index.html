@@ -83,6 +83,9 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .board-thread{background:var(--proboards-gray);border:1px solid var(--proboards-border);padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:var(--text-gray)}
 .board-thread strong{color:var(--proboards-dark);font-size:14px}
 .board-thread .small{color:var(--proboards-muted);font-style:italic;margin-top:4px;display:block}
+.board-thread .board-date { font-size: 10px; color: #666; }
+.board-thread .board-views { font-size: 10px; color: #666; }
+.board-thread .board-replies { font-size: 10px; color: #666; }
 #serverSelectPanel{margin-bottom:12px}
 #serverSelectPanel .controls{display:flex;gap:6px;align-items:center}
 #serverSelectPanel select{flex:1;padding:6px;background:var(--panel-bg);border:2px solid var(--border);color:var(--fg)}
@@ -250,10 +253,10 @@ input:checked + .slider:before { transform: translateX(20px); }
 </div>
 <audio id="soundMsg" src="https://assets.mixkit.co/sfx/download/mixkit-positive-alert-600.wav" preload="auto"></audio>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-app.js";
-import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-database.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.0/firebase-auth.js";
-const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"4771034632228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
@@ -280,7 +283,7 @@ const dmList = document.getElementById('dmList');
 const ortegaBtn = document.getElementById('ortegaBtn');
 const soundMsg = document.getElementById('soundMsg');
 const chatTitle = document.getElementById('chatTitle');
-let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null, channelListeners = {};
+let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null, channelListeners = {}, boardListener = null;
 function initializePanels() {
   document.querySelectorAll('.panel .panel-body').forEach(body => {
     body.style.maxHeight = 'none';
@@ -502,7 +505,7 @@ function makeDraggable(el,bar){
   document.onmouseup=()=>{drag=false;};
 }
 function listenChannel(ch){
-  for(const c in channelListeners) off(channelListeners[c].ref);
+  if (channelListeners[currentChannel]) off(channelListeners[currentChannel].ref);
   currentChannel=ch;
   chatMessages.innerHTML='';
   const r=ref(db,`chat/${ch}`);
@@ -554,12 +557,21 @@ async function postMessage(ch,name,msg){
   await set(ref(db, `users/${uid}/lastPost`), Date.now()).catch(e => appendSystem('Last post error: ' + e.message));
 }
 function listenBoard(){
-  onChildAdded(ref(db,'board'),snap=>{
-    const p=snap.val();
-    const el=document.createElement('div');el.className='board-thread';
-    el.innerHTML=`<strong>${esc(p.name)}</strong><br>${esc(p.msg)}<div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
-    boardList.prepend(el);
-  }, (error) => appendSystem('Board listen error: ' + error.message));
+  if (boardListener) off(boardListener.ref);
+  const r = ref(db, 'board');
+  const fn = snap => {
+    boardList.innerHTML = '';
+    get(ref(db, 'board')).then(snap => {
+      const posts = snap.val() || {};
+      Object.entries(posts).sort((a, b) => b[1].ts - a[1].ts).forEach(([id, p]) => {
+        const el=document.createElement('div');el.className='board-thread';
+        el.innerHTML=`<strong>${esc(p.name)}</strong><br>${esc(p.msg)}<div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div><div class="board-replies">Replies: 0</div><div class="board-views">Views: 0</div>`;
+        boardList.appendChild(el);
+      });
+    }).catch(e => appendSystem('Board get error: ' + e.message));
+  };
+  onChildAdded(r, fn);
+  boardListener = {ref: r, fn};
 }
 sendBtn.onclick=()=>{ if(!myHandle) return alert('Login first'); postMessage(currentChannel,myHandle,chatInput.value); chatInput.value=''; soundMsg.play().catch(()=>{}); };
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
@@ -571,6 +583,7 @@ postBoardBtn.onclick=async()=>{
   await set(r,{name:n,msg:m,ts:Date.now(),uid}).catch(e => appendSystem('Board post error: ' + e.message));
   await set(ref(db, `users/${uid}/lastBoardPost`), Date.now()).catch(e => appendSystem('Last board post error: ' + e.message));
   boardMsg.value='';
+  listenBoard(); // Refresh board
 };
 serverConfirm.onclick=()=>{
   const newCh = channelSelect.value;
