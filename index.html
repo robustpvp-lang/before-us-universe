@@ -13,36 +13,10 @@
   --proboards-blue:#1e73be; --proboards-dark:#0066cc; --proboards-gray:#f5f5f5; --proboards-border:#ccc; --proboards-muted:#666; --proboards-text:#444;
   --yahoo-blue:#1e73be; --yahoo-dark:#0961a6; --online:#00ff9d; --muted:#00aaaa;
   --text-gray:#444;
-  --theme-name: 'cyber'; /* Default theme */
+  --theme-name: 'cyber';
 }
 
-/* Dark Theme */
-[data-theme="dark"] {
-  --bg: #161625; --fg: #e1e1ff; --accent: #9A97F3; --border: #818cab;
-  --panel-bg: #25253a; --proboards-blue: #818cab; --proboards-dark: #536390;
-  --proboards-gray: #292922; --proboards-border: #424242; --proboards-muted: #424242; --proboards-text: #e1e1ff;
-  --yahoo-blue: #818cab; --yahoo-dark: #536390; --online: #66bb6a; --muted: #536390;
-  --text-gray: #e1e1ff;
-}
-
-/* Light Theme */
-[data-theme="light"] {
-  --bg: #fff; --fg: #424242; --accent: #302AE6; --border: #536390;
-  --panel-bg: #f5f5f5; --proboards-blue: #1e73be; --proboards-dark: #0066cc;
-  --proboards-gray: #f5f5f5; --proboards-border: #ccc; --proboards-muted: #666; --proboards-text: #444;
-  --yahoo-blue: #1e73be; --yahoo-dark: #0961a6; --online: #00ff9d; --muted: #00aaaa;
-  --text-gray: #444;
-}
-
-/* Matrix Green Theme */
-[data-theme="matrix"] {
-  --bg: #000; --fg: #00ff00; --accent: #00cc00; --border: #008800;
-  --panel-bg: #001100; --proboards-blue: #00aa00; --proboards-dark: #008800;
-  --proboards-gray: #002200; --proboards-border: #004400; --proboards-muted: #006600; --proboards-text: #00ff00;
-  --yahoo-blue: #00aa00; --yahoo-dark: #008800; --online: #00ff00; --muted: #00aa00;
-  --text-gray: #00ff00;
-}
-
+/* Basic layout and theme (single fixed theme - no toggles) */
 html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:hidden}
 body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
 #crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06) 2px,transparent 2px,transparent 4px);pointer-events:none;z-index:999}
@@ -52,12 +26,34 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 #bootPrompt{color:var(--accent)}
 #bootInput{background:var(--panel-bg);border:2px solid var(--border);color:var(--fg);padding:6px;width:70%;max-width:300px}
 #bootBtn{background:var(--panel-bg);border:2px solid var(--border);color:var(--accent);padding:6px 12px;cursor:pointer}
-#app{display:none;height:100%;padding:8px;box-sizing:border-box;overflow-y:auto}
-.title-bar{display:flex;gap:12px;flex-wrap:wrap;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center}
+#app{display:none;height:100%;padding:8px;box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column}
+.title-bar{display:flex;gap:12px;flex-wrap:nowrap;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center;flex-shrink:0}
 .title-bar .logo{font-weight:700;letter-spacing:1px}
+.title-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
 .link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4px;font-weight:700;cursor:pointer;border:2px solid #000;margin:2px;font-size:11px}
-.layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
-@media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+/* marquee */
+#marqueeWrap{background:#00121a;border-top:3px solid rgba(255,204,0,0.08);border-bottom:3px solid rgba(255,204,0,0.08);overflow:hidden;white-space:nowrap;padding:6px 10px;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:var(--fg)}
+.marquee-content{display:inline-block;padding-left:100%;animation:marquee 18s linear infinite}
+@keyframes marquee{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-100%);}
+}
+
+/* Main layout with left sidebar */
+.app-body{display:grid;grid-template-columns:260px 1fr;gap:12px;flex:1;overflow:hidden;margin-top:8px}
+@media(max-width:980px){.app-body{grid-template-columns:1fr;grid-auto-rows:auto}}
+
+/* Sidebar */
+#sidebar{background:var(--panel-bg);border:3px solid var(--border);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);padding:8px;overflow:auto;height:100%}
+.side-logo{font-family:'Press Start 2P';font-size:12px;margin-bottom:10px;color:#fff}
+.side-section{margin-bottom:12px}
+.side-nav{display:flex;flex-direction:column;gap:6px}
+.side-nav button{background:transparent;color:var(--fg);padding:8px;border-radius:4px;border:2px solid rgba(0,0,0,0.2);text-align:left;cursor:pointer;font-family:Arial;font-weight:700}
+.side-nav button.active{background:var(--accent);color:#000;border-color:#000}
+
+/* Main content (where panels live) */
+.main-area{height:100%;overflow:auto;padding:8px;box-sizing:border-box}
 .panel{background:var(--panel-bg);border:3px solid var(--border);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.3);margin-bottom:12px;overflow:hidden}
 .panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .panel-title .title{font-weight:700}
@@ -86,12 +82,14 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .board-thread .board-date { font-size: 10px; color: #666; }
 .board-thread .board-views { font-size: 10px; color: #666; }
 .board-thread .board-replies { font-size: 10px; color: #666; }
+
+/* server select and small panels */
 #serverSelectPanel{margin-bottom:12px}
 #serverSelectPanel .controls{display:flex;gap:6px;align-items:center}
 #serverSelectPanel select{flex:1;padding:6px;background:var(--panel-bg);border:2px solid var(--border);color:var(--fg)}
 #serverConfirm{background:var(--accent);color:#000;padding:6px;border:2px solid #000;cursor:pointer;font-weight:700}
-#ortegaPanel{margin-bottom:12px}
-#ortegaBtn{width:100%;background:var(--accent);color:#000;padding:10px;border:2px solid #000;border-radius:4px;font-weight:700;cursor:pointer;font-size:14px}
+
+/* server tracking / system feed */
 #serverTrackingPanel{margin-bottom:12px}
 #serverTrackingPanel .server-branch{margin-bottom:12px}
 #serverTrackingPanel .server-title{font-weight:700;color:var(--accent);font-size:13px;cursor:pointer}
@@ -104,7 +102,16 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .dm-msg{background:#fff7d6;padding:6px;border-radius:6px;margin:4px 0;max-width:90%}
 #particleCanvas{position:fixed;inset:0;pointer-events:none;z-index:0}
 
-/* Mobile Optimization for DMs */
+/* Typing Indicator */
+.typing-indicator { font-size: 11px; color: var(--muted); padding: 4px; font-style: italic; }
+
+/* Edit/Delete Buttons */
+.edit-btn, .delete-btn { font-size: 10px; margin-left: 5px; cursor: pointer; color: var(--accent); }
+
+/* Users Online Color */
+.chat-users .small { color: red; }
+
+/* Mobile DM window tweak */
 @media (max-width: 600px) {
   .dm-window {
     position: relative !important;
@@ -115,28 +122,7 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
     width: 100%;
     margin-bottom: 10px;
   }
-  .layout {
-    grid-template-columns: 1fr;
-  }
 }
-
-/* Typing Indicator */
-.typing-indicator { font-size: 11px; color: var(--muted); padding: 4px; font-style: italic; }
-
-/* Theme Switcher Styles */
-.theme-switch-wrapper { display: flex; align-items: center; margin-left: auto; }
-.theme-switch { display: inline-block; height: 20px; position: relative; width: 40px; }
-.theme-switch input { display: none; }
-.slider { background-color: var(--border); bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 20px; }
-.slider:before { background-color: var(--fg); bottom: 4px; content: ""; height: 12px; left: 4px; position: absolute; transition: .4s; width: 12px; border-radius: 50%; }
-input:checked + .slider { background-color: var(--accent); }
-input:checked + .slider:before { transform: translateX(20px); }
-
-/* Edit/Delete Buttons */
-.edit-btn, .delete-btn { font-size: 10px; margin-left: 5px; cursor: pointer; color: var(--accent); }
-
-/* Users Online Color */
-.chat-users .small { color: red; }
 </style>
 </head>
 <body>
@@ -150,43 +136,82 @@ input:checked + .slider:before { transform: translateX(20px); }
     <div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
   </div>
 </div>
+
 <canvas id="particleCanvas"></canvas>
+
 <div id="app">
   <div class="title-bar">
     <div class="logo">BUU</div>
-    <button class="link-btn" onclick="window.open('https://tokillamockinggoblin.boards.net/','_blank')">To Kill a Mocking Goblin</button>
-    <button class="link-btn" onclick="window.open('https://youtube.com/@Patrickauthor','_blank')">Melphia’s Game (YT)</button>
-    <button class="link-btn" onclick="window.open('https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview','_blank')">Book 1</button>
-    <button class="link-btn" onclick="window.open('https://neocities.org/','_blank')">NeoCities</button>
-    <button class="link-btn" onclick="window.open('https://spacehey.com/','_blank')">SpaceHey</button>
-    <button class="link-btn" onclick="window.open('https://www.forumotion.com/','_blank')">Forumotion</button>
-    <button class="link-btn" onclick="window.open('https://www.phpbb.com/','_blank')">phpBB</button>
-    <div class="theme-switch-wrapper">
-      <label class="theme-switch" for="checkbox">
-        <input type="checkbox" id="checkbox" />
-        <div class="slider round"></div>
-      </label>
-      <em>Toggle Theme</em>
-      <select id="themeSelect">
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-      </select>
+    <div class="title-actions">
+      <button class="link-btn" onclick="window.open('https://tokillamockinggoblin.boards.net/','_blank')">To Kill a Mocking Goblin</button>
+      <button class="link-btn" onclick="window.open('https://youtube.com/@Patrickauthor','_blank')">Melphia’s Game (YT)</button>
+      <button class="link-btn" onclick="window.open('https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview','_blank')">Book 1</button>
+      <button class="link-btn" onclick="window.open('https://neocities.org/','_blank')">NeoCities</button>
+      <button class="link-btn" onclick="window.open('https://spacehey.com/','_blank')">SpaceHey</button>
+      <button class="link-btn" onclick="window.open('https://www.forumotion.com/','_blank')">Forumotion</button>
+      <button class="link-btn" onclick="window.open('https://www.phpbb.com/','_blank')">phpBB</button>
+      <button id="enableNotifications" class="link-btn">Enable Notifications</button>
     </div>
-    <button id="enableNotifications">Enable Notifications</button>
   </div>
-  <div class="layout">
-    <div>
-      <div class="panel">
-        <div class="panel-title">
-          <div class="title">PLAYLIST</div>
-        </div>
-        <div class="panel-body" id="ytBody">
-          <div class="yt-wrap" style="margin:8px">
-            <iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen></iframe>
-          </div>
+
+  <!-- Marquee fed by system feed -->
+  <div id="marqueeWrap"><div id="marquee" class="marquee-content">Welcome to Before Us Universe — authenticating…</div></div>
+
+  <div class="app-body">
+    <!-- Sidebar (persistent, vertical nav) -->
+    <aside id="sidebar" role="navigation" aria-label="Primary">
+      <div class="side-logo">BUU NAV</div>
+      <div class="side-section">
+        <div class="side-nav">
+          <button id="nav-chat" class="active">Chatrooms</button>
+          <button id="nav-board">Message Board</button>
+          <button id="nav-feed">System Feed</button>
+          <button id="nav-servers">Servers</button>
+          <button id="nav-ortega">Project ://ORTEGA</button>
+          <button id="nav-tracking">Server Tracking</button>
+          <button id="nav-dm">Direct Messages</button>
         </div>
       </div>
-      <div class="panel">
+
+      <div class="side-section" id="serverSelectPanel">
+        <div class="small">SELECT SERVER</div>
+        <div class="controls" style="display:flex;gap:6px;align-items:center;margin-top:6px">
+          <select id="channelSelect">
+            <option value="exuro">//Exuro</option>
+            <option value="sam">//Sam</option>
+            <option value="nero">//Nero</option>
+            <option value="nora">//Nora</option>
+            <option value="loktal">//Loktal</option>
+          </select>
+          <button id="serverConfirm">Switch</button>
+        </div>
+      </div>
+
+      <div class="side-section" id="ortegaPanel">
+        <button id="ortegaBtn" style="width:100%;background:var(--panel-bg);color:var(--fg);padding:8px;border:2px solid var(--border);border-radius:4px;font-weight:700;cursor:pointer">Project ://ORTEGA</button>
+      </div>
+
+      <div class="side-section" id="serverTrackingPanel">
+        <div class="small">SERVER TRACKING</div>
+        <div id="serverTrackingList" style="margin-top:6px"></div>
+      </div>
+
+      <div class="side-section">
+        <div class="small">DIRECT MESSAGES</div>
+        <div id="dmList" style="margin-top:8px"></div>
+        <div class="small" style="margin-top:4px">Click a name to open DM</div>
+      </div>
+
+      <div class="side-section">
+        <div class="small">SYSTEM FEED</div>
+        <div id="systemFeed" style="margin-top:6px"></div>
+      </div>
+
+    </aside>
+
+    <!-- Main area (panels switchable by sidebar) -->
+    <main class="main-area" id="mainArea">
+      <div id="panel-chat" class="panel">
         <div class="panel-title">
           <div class="title" id="chatTitle">//EXURO <span class="small" id="userCountSmall">0 users</span></div>
         </div>
@@ -205,7 +230,8 @@ input:checked + .slider:before { transform: translateX(20px); }
           </div>
         </div>
       </div>
-      <div class="panel">
+
+      <div id="panel-board" class="panel" style="display:none">
         <div class="panel-title">
           <div class="title">MESSAGE BOARD</div>
         </div>
@@ -219,49 +245,45 @@ input:checked + .slider:before { transform: translateX(20px); }
           </div>
         </div>
       </div>
-    </div>
-    <div>
-      <div class="panel" id="serverSelectPanel">
-        <div class="small">SELECT SERVER</div>
-        <div class="controls">
-          <select id="channelSelect">
-            <option value="exuro">//Exuro</option>
-            <option value="sam">//Sam</option>
-            <option value="nero">//Nero</option>
-            <option value="nora">//Nora</option>
-            <option value="loktal">//Loktal</option>
-          </select>
-          <button id="serverConfirm">Switch Server</button>
+
+      <div id="panel-feed" class="panel" style="display:none">
+        <div class="panel-title"><div class="title">SYSTEM FEED</div></div>
+        <div class="panel-body" style="padding:8px">
+          <div id="feedList" style="max-height:600px;overflow:auto"></div>
         </div>
       </div>
-      <div class="panel" id="ortegaPanel">
-        <button id="ortegaBtn">Project ://ORTEGA</button>
+
+      <div id="panel-ortega" class="panel" style="display:none">
+        <div class="panel-title"><div class="title">Project ://ORTEGA</div></div>
+        <div class="panel-body" style="padding:8px">
+          <div class="small">RAG-LM and notebook integration area (placeholder)</div>
+        </div>
       </div>
-      <div class="panel" id="serverTrackingPanel">
-        <div class="small">SERVER TRACKING</div>
-        <div id="serverTrackingList"></div>
+
+      <div id="panel-tracking" class="panel" style="display:none">
+        <div class="panel-title"><div class="title">SERVER TRACKING</div></div>
+        <div class="panel-body" style="padding:8px">
+          <div id="trackingPanelContent"></div>
+        </div>
       </div>
-      <div class="panel">
-        <div class="small">SYSTEM FEED</div>
-        <div id="systemFeed"></div>
-      </div>
-      <div class="panel" style="margin-top:12px">
-        <div class="small">DIRECT MESSAGES</div>
-        <div id="dmList" style="margin-top:8px"></div>
-        <div class="small" style="margin-top:4px">Click a name to open DM</div>
-      </div>
-    </div>
+
+    </main>
   </div>
 </div>
+
 <audio id="soundMsg" src="https://assets.mixkit.co/sfx/download/mixkit-positive-alert-600.wav" preload="auto"></audio>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+
+/* DOM refs */
 const bootOverlay = document.getElementById('bootOverlay');
 const bootLog = document.getElementById('bootLog');
 const bootInput = document.getElementById('bootInput');
@@ -285,12 +307,34 @@ const dmList = document.getElementById('dmList');
 const ortegaBtn = document.getElementById('ortegaBtn');
 const soundMsg = document.getElementById('soundMsg');
 const chatTitle = document.getElementById('chatTitle');
+const marqueeEl = document.getElementById('marquee');
+const feedList = document.getElementById('feedList');
+
 let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null, channelListeners = {}, boardListener = null;
-function initializePanels() {
-  document.querySelectorAll('.panel .panel-body').forEach(body => {
-    body.style.maxHeight = 'none';
-  });
+
+/* Initialize panels visible state using sidebar nav */
+function showPanel(id){
+  const panels = ['panel-chat','panel-board','panel-feed','panel-ortega','panel-tracking'];
+  panels.forEach(p => { const el = document.getElementById(p); if(el) el.style.display = (p === id ? '' : 'none'); });
+  document.querySelectorAll('#sidebar .side-nav button').forEach(btn => btn.classList.remove('active'));
+  // set active button
+  switch(id){
+    case 'panel-chat': document.getElementById('nav-chat').classList.add('active'); break;
+    case 'panel-board': document.getElementById('nav-board').classList.add('active'); break;
+    case 'panel-feed': document.getElementById('nav-feed').classList.add('active'); break;
+    case 'panel-ortega': document.getElementById('nav-ortega').classList.add('active'); break;
+    case 'panel-tracking': document.getElementById('nav-tracking').classList.add('active'); break;
+  }
 }
+document.getElementById('nav-chat').onclick = ()=> showPanel('panel-chat');
+document.getElementById('nav-board').onclick = ()=> showPanel('panel-board');
+document.getElementById('nav-feed').onclick = ()=> showPanel('panel-feed');
+document.getElementById('nav-servers').onclick = ()=> showPanel('panel-tracking');
+document.getElementById('nav-ortega').onclick = ()=> showPanel('panel-ortega');
+document.getElementById('nav-tracking').onclick = ()=> showPanel('panel-tracking');
+document.getElementById('nav-dm').onclick = ()=> { showPanel('panel-chat'); /* open DM list visually */ };
+
+/* Boot splash typing effect */
 const bootLines = ["INITIALIZING BEFORE US UNIVERSE...","Loading kernel.............[OK]","Mounting network...........[OK]","Checking Firebase link.....[OK]","Ready for authentication..."];
 let lineIdx = 0;
 function typeBootLine(){
@@ -301,8 +345,12 @@ function typeBootLine(){
   }
 }
 typeBootLine();
+
+/* Auth */
 signInAnonymously(auth).catch(e=>bootStatus.textContent="Auth error: "+e.message);
 onAuthStateChanged(auth, u=>{ if(u) uid = u.uid; });
+
+/* Boot button flow */
 bootBtn.addEventListener('click', async ()=>{
   const raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
   if(!raw) return bootStatus.textContent = "Invalid handle";
@@ -341,24 +389,63 @@ function finishBoot(){
     appendSystem('System ready');
   },1200);
 }
+
+/* Append to system feed and marquee */
 function appendSystem(t){
   const d=document.createElement('div');
   d.textContent=`[${new Date().toLocaleTimeString()}] ${t}`;
   d.style.fontSize = '11px';
   systemFeed.prepend(d);
   systemFeed.scrollTop = systemFeed.scrollHeight;
+
+  // Also add to feedList (panel view)
+  const fd = document.createElement('div');
+  fd.textContent = d.textContent;
+  fd.style.padding = '6px';
+  fd.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+  feedList.prepend(fd);
+
+  // Update marquee text (display the newest message in the rolling marquee)
+  updateMarquee(t);
 }
+
+/* Marquee message queue and update */
+let marqueeTimeout = null;
+function updateMarquee(msg){
+  // create a new marquee content span and replace the existing animated element to restart the animation
+  const wrap = document.getElementById('marqueeWrap');
+  const newSpan = document.createElement('div');
+  newSpan.className = 'marquee-content';
+  newSpan.textContent = `⚑ ${msg} `;
+  // replace node
+  if(marqueeEl && marqueeEl.parentNode){
+    marqueeEl.parentNode.replaceChild(newSpan, marqueeEl);
+    marqueeEl = newSpan;
+  } else {
+    document.getElementById('marqueeWrap').innerHTML = '';
+    document.getElementById('marqueeWrap').appendChild(newSpan);
+    marqueeEl = newSpan;
+  }
+}
+
+/* Utility escape */
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* SHA-256 hash util (used by messages) */
 async function hash(str){
   const e=new TextEncoder().encode(str);
   const b=await crypto.subtle.digest('SHA-256',e);
   return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
 }
+
+/* Presence */
 function setPresence(h,ch){
   if(presenceRef) remove(presenceRef).catch(e => appendSystem('Presence remove error: ' + e.message));
   presenceRef = ref(db,`online/${ch}/${uid}`);
   set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid}).then(()=>onDisconnect(presenceRef).remove()).catch(e => appendSystem('Presence set error: ' + e.message));
 }
+
+/* Render server tracking */
 function renderServerTracking(data){
   serverTrackingList.innerHTML = '';
   const channels = ['exuro','sam','nero','nora','loktal'];
@@ -385,6 +472,8 @@ function renderServerTracking(data){
     serverTrackingList.appendChild(branch);
   });
 }
+
+/* Presence watches: online list, active users, dm list, typing indicator */
 function watchOnline(){
   onValue(ref(db,'online'),snap=>{
     const data = snap.val()||{};
@@ -394,6 +483,7 @@ function watchOnline(){
     rebuildDMList(data);
     updateTypingIndicator(data[currentChannel] || {});
   }, (error) => { appendSystem('Online watch error: ' + error.message); });
+
   setTimeout(() => {
     get(ref(db, 'online')).then(snap => {
       const data = snap.val() || {};
@@ -405,6 +495,7 @@ function watchOnline(){
     }).catch(e => appendSystem('Online get error: ' + e.message));
   }, 1000);
 }
+
 function renderActiveUsers(usersObj){
   activeUsersList.innerHTML = '';
   const users = Object.values(usersObj || {});
@@ -440,6 +531,8 @@ function rebuildDMList(data){
     }
   }
 }
+
+/* Presence event logs */
 function watchPresenceEvents() {
   const channels = ['exuro','sam','nero','nora','loktal'];
   channels.forEach(ch => {
@@ -457,6 +550,8 @@ function watchPresenceEvents() {
     });
   });
 }
+
+/* DM handling */
 async function registerDMPair(tuid){
   const pid=[uid,tuid].sort().join('_');
   const updates={};
@@ -500,12 +595,16 @@ function openDM(tuid,tname){
   };
   close.onclick=()=>{off(dmRef);win.remove();};
 }
+
+/* make draggable DM */
 function makeDraggable(el,bar){
   let ox=0,oy=0,drag=false;
   bar.onmousedown=e=>{drag=true;ox=e.clientX-el.getBoundingClientRect().left;oy=e.clientY-el.getBoundingClientRect().top;};
   document.onmousemove=e=>{if(drag){el.style.left=(e.clientX-ox)+'px';el.style.top=(e.clientY-oy)+'px';}};
   document.onmouseup=()=>{drag=false;};
 }
+
+/* Chat listening and rendering */
 function listenChannel(ch){
   if (channelListeners[currentChannel]) {
     off(channelListeners[currentChannel].ref);
@@ -530,6 +629,7 @@ function listenChannel(ch){
   onChildAdded(r,fn, (error) => appendSystem('Chat listen error: ' + error.message));
   channelListeners[ch]={ref:r,fn};
 }
+
 function renderChatMessage(o, key) {
   const row=document.createElement('div');row.className='chat-row';
   const av=document.createElement('div');av.className='chat-avatar';av.textContent=(o.name||'?').slice(0,2).toUpperCase();
@@ -560,6 +660,8 @@ function renderChatMessage(o, key) {
     new Notification(`New message from ${o.name}`, { body: o.msg });
   }
 }
+
+/* Posting messages */
 async function postMessage(ch,name,msg){
   const m=msg.trim();
   if(!m||m.length>500) return;
@@ -573,6 +675,8 @@ async function postMessage(ch,name,msg){
   set(ref(db,`online/${ch}/${uid}`),{name,ts:Date.now(),channel:ch,uid}).catch(e => appendSystem('Presence update error: ' + e.message));
   await set(ref(db, `users/${uid}/lastPost`), Date.now()).catch(e => appendSystem('Last post error: ' + e.message));
 }
+
+/* Board listen */
 function listenBoard(){
   const r = ref(db, 'board');
   onValue(r, snap => {
@@ -585,6 +689,8 @@ function listenBoard(){
     });
   }, (error) => appendSystem('Board listen error: ' + error.message));
 }
+
+/* Event handlers */
 sendBtn.onclick=()=>{ if(!myHandle) return alert('Login first'); postMessage(currentChannel,myHandle,chatInput.value); chatInput.value=''; soundMsg.play().catch(()=>{}); };
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
 postBoardBtn.onclick=async()=>{
@@ -606,10 +712,14 @@ serverConfirm.onclick=()=>{
     }
   }
 };
-ortegaBtn.onclick=()=>{alert('Project ://ORTEGA – RAG-LM genie coming soon');};
+ortegaBtn.onclick=()=>{ appendSystem('Project ://ORTEGA – RAG-LM genie coming soon'); };
+
+/* Watches and listeners */
 watchOnline();
 watchPresenceEvents();
 listenBoard(); listenChannel(currentChannel); appendSystem('Initializing...');
+
+/* Particle canvas */
 const pc=document.getElementById('particleCanvas'),ctx=pc.getContext('2d');
 function resize(){pc.width=innerWidth;pc.height=innerHeight;} resize(); addEventListener('resize',resize);
 let particles=[];
@@ -626,6 +736,8 @@ function loop(){
   }
   requestAnimationFrame(loop);
 } loop();
+
+/* Chat purge: keep chat messages 24h */
 setInterval(async()=>{
   const snap=await get(ref(db,'chat')).catch(e => appendSystem('Chat purge get error: ' + e.message));
   const data=snap.val()||{};
@@ -638,18 +750,7 @@ setInterval(async()=>{
   }
 },60*60*1000);
 
-// Theme Switcher
-const themeSelect = document.getElementById('themeSelect');
-themeSelect.addEventListener('change', (e) => {
-  const theme = e.target.value;
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('theme', theme);
-});
-const currentTheme = localStorage.getItem('theme') || 'cyber';
-document.documentElement.setAttribute('data-theme', currentTheme);
-themeSelect.value = currentTheme;
-
-// Notifications
+/* Notifications */
 const enableNotifications = document.getElementById('enableNotifications');
 enableNotifications.addEventListener('click', () => {
   if (!("Notification" in window)) return alert('Notifications not supported');
@@ -658,7 +759,7 @@ enableNotifications.addEventListener('click', () => {
   });
 });
 
-// Typing Indicators
+/* Typing Indicators */
 let typingTimeout;
 chatInput.addEventListener('input', () => {
   if (chatInput.value.trim()) {
@@ -671,12 +772,31 @@ chatInput.addEventListener('input', () => {
     set(ref(db, `online/${currentChannel}/${uid}/typing`), false).catch(e => appendSystem('Typing unset error: ' + e.message));
   }
 });
-
 function updateTypingIndicator(usersObj) {
   const typingUsers = Object.values(usersObj).filter(u => u.typing && u.uid !== uid).map(u => u.name);
   const typingIndicator = document.getElementById('typingIndicator');
   typingIndicator.textContent = typingUsers.length > 0 ? `${typingUsers.join(', ')} ${typingUsers.length > 1 ? 'are' : 'is'} typing...` : '';
 }
+
+/* Update server tracking panel content mirror */
+function renderTrackingPanelSnapshot(){
+  get(ref(db,'online')).then(snap=>{
+    const data = snap.val() || {};
+    const el = document.getElementById('trackingPanelContent');
+    el.innerHTML = '';
+    const keys = Object.keys(data);
+    keys.forEach(k => {
+      const div = document.createElement('div');
+      div.textContent = `//${k.toUpperCase()}: ${Object.keys(data[k]||{}).length} users`;
+      el.appendChild(div);
+    });
+  }).catch(e=>{});
+}
+setInterval(renderTrackingPanelSnapshot,5000);
+
+/* Initial panel show */
+showPanel('panel-chat');
+
 </script>
 </body>
 </html>
