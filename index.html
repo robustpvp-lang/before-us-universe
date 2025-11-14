@@ -444,6 +444,7 @@ const data = snap.val() || {};
 Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
 if(o && !o.deleted) renderChatMessage(o, id);
 });
+chatMessages.scrollTop = chatMessages.scrollHeight;
 }).catch(e => appendSystem('Chat load error: ' + e.message));
 const fn = snap => {
 const o = snap.val();
@@ -487,16 +488,25 @@ const key = push(ref(db, `chat/${ch}`)).key;
 const updates = {};
 updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
 updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
-updates[`/users/${uid}/lastPost`] = ts;
 await update(ref(db), updates).catch(e => appendSystem('Chat post error: ' + e.message));
 set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
 }
 function listenBoard(){
 const r = ref(db, 'board');
-onValue(r, snap => {
-boardList.innerHTML = '';
-const posts = snap.val() || {};
-Object.entries(posts).sort((a,b) => b[1].ts - a[1].ts).forEach(([id,p]) => {
+get(r).then(snap => {
+const data = snap.val() || {};
+Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
+renderBoardPost(o, id);
+});
+}).catch(e => appendSystem('Board load error: ' + e.message));
+const fn = snap => {
+const o = snap.val();
+renderBoardPost(o, snap.key);
+boardList.scrollTop = boardList.scrollHeight;
+};
+onChildAdded(r, fn, e => appendSystem('Board listen error: ' + e.message));
+}
+function renderBoardPost(p, id){
 const el = document.createElement('div'); el.className = 'board-thread';
 el.innerHTML = `<strong>${esc(p.name)}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
 const reply = document.createElement('span');
@@ -509,8 +519,6 @@ boardMsg.focus();
 };
 el.appendChild(reply);
 boardList.appendChild(el);
-});
-}, e => appendSystem('Board listen error: ' + e.message));
 }
 sendBtn.onclick = () => {
 if(!myHandle) return;
@@ -528,7 +536,6 @@ if(!m || m.length > 1000) return;
 const r = push(ref(db, 'board'));
 await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
 boardMsg.value = '';
-boardList.scrollTop = boardList.scrollHeight;
 };
 boardMsg.addEventListener('keydown', e => {
 if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
