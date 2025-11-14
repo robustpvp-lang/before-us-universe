@@ -33,7 +33,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 #marqueeLabel{font-family:'Press Start 2P';font-size:12px;color:#fff;margin-right:12px;white-space:nowrap}
 #marquee{flex:1;overflow:hidden;position:relative;height:20px}
 #marqueeInner{position:absolute;white-space:nowrap;will-change:transform;display:inline-block;padding-left:100%}
-#bootOverlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.9),rgba(0,0,0,0.95));color:var(--fg);z-index:99998;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Press Start 2P'}
+#bootOverlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.9),rgba(0,0,0,0.95));color:var(--fg);z-index:99998;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Roboto Mono',monospace}
 #bootPanel{width:92%;max-width:820px;background:var(--panel-bg);border:4px solid var(--border);padding:18px;box-shadow:0 0 30px rgba(0,255,255,0.06)}
 #bootLog{line-height:1.6;white-space:pre-wrap;margin-bottom:12px;font-size:13px;color:var(--text-gray)}
 #bootPrompt{color:var(--accent);margin-bottom:6px;animation:blink 1s step-end infinite;}
@@ -93,13 +93,13 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 body,html{overflow-x:hidden}
 a, button, .user-row{ -webkit-tap-highlight-color: transparent;}
 a:active, button:active, .user-row:active{animation:glitch 0.2s;}
-#revivalSitesPanel .panel-body{overflow-y:auto;max-height:300px;}
+#revivalSitesPanel a {color: #ffffff;}
 </style>
 </head>
 <body>
 <div id="marqueeWrap">
 <div id="marqueeLabel">SYSTEM:</div>
-<div id="marquee" aria-live="polite"><div id="marqueeInner">Welcome to the Before Us Network — awaiting transmission…</div></div>
+<div id="marquee" aria-live="polite"><div id="marqueeInner">Welcome to the Before Us Network — awaiting transmission… SYSTEM OK — MEMORY CHECK PASSED — DISK VERIFIED — NETWORK ACTIVE…</div></div>
 </div>
 <div id="bootOverlay">
 <div id="bootPanel">
@@ -126,7 +126,7 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
 <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer">Read Sam's First Chapter</a>
-<a class="link-btn" href="https://spacehey.com/" target="_blank" rel="noopener noreferrer">SpaceHey</a>
+<a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer">SpaceHey</a>
 <a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
 <div class="controls-right">
 <a class="link-btn" id="samsArt" href="https://robustpvp.wixsite.com/super-parody-funtime" target="_blank" rel="noopener noreferrer">Sam's Art</a>
@@ -213,7 +213,7 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <a href="https://bitview.net/" target="_blank">BitView</a><p>one of several classic YouTube clones, and my personal favourite. Replicates YouTube's 2009 design pretty much perfectly.</p>
 <a href="https://vidlii.com/" target="_blank">VidLii</a><p>another YouTube clone. Doesn't replicate YouTube quite as closely as BitView does, but it supports longer videos and more resolutions/audio bitrates than BitView.</p>
 <a href="https://fulptube.net/" target="_blank">FulpTube</a><p>yet ANOTHER YouTube clone. Unlike the previous two, it's meant to replicate YouTube from 2012/2013. Seems a bit glitchier than the other two. It also has its own replica of YouTube XL, and a mobile site.</p>
-<a href="https://spacehey.com/" target="_blank">SpaceHey</a><p>The site you're on right now. A MySpace replica.</p>
+<a href="https://spacehey.com/profile?id=4317004" target="_blank">SpaceHey</a><p>The site you're on right now. A MySpace replica.</p>
 <a href="https://neocities.org/" target="_blank">NeoCities</a><p>a clone of Yahoo! GeoCities. Lets you host your own website, for free (with extra privileges for donators)!</p>
 <a href="https://oldgoogle.neocities.org/" target="_blank">oldgoogle</a><p>a clone of Google Search, with replicas of pretty much every redesign that Google has gone through, from 1998 to 2014.</p>
 <a href="https://oldyahoo.neocities.org/" target="_blank">oldyahoo</a><p>a clone of Yahoo! Search. Exactly the same as above, but for Yahoo! instead.</p>
@@ -268,12 +268,15 @@ let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null;
 let channelListeners = {};
 let feedCache = [];
 const bootLines = [
-"INITIALIZING BEFORE US UNIVERSE...",
-"Loading kernel.............[ONLINE]",
-"Checking Ra'Norric link...........[ONLINE]",
-"System is .....[ONLINE]",
-"Ready for authentication...",
-"Please type a handle to login"
+"C:\\> INITIALIZING BEFORE US UNIVERSE...",
+"C:\\> Loading kernel.............[ONLINE]",
+"C:\\> Checking Ra'Norric link...........[ONLINE]",
+"C:\\> MEMORY CHECK PASSED",
+"C:\\> DISK VERIFIED",
+"C:\\> NETWORK ACTIVE",
+"C:\\> System is .....[ONLINE]",
+"C:\\> Ready for authentication...",
+"C:\\> Please type a handle to login"
 ];
 let lineIdx = 0;
 function typeBootLine(){
@@ -284,10 +287,6 @@ setTimeout(typeBootLine, 240 + Math.random()*360);
 }
 }
 typeBootLine();
-signInAnonymously(auth).catch(e => {
-bootStatus.textContent = "Auth warning: " + e.message + " (will use offline mode)";
-console.error(e);
-});
 onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
 function prependFeedEntry(text){
 const el = document.createElement('div');
@@ -298,7 +297,7 @@ while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChi
 }
 function updateMarqueeFromCache(){
 if(feedCache.length === 0){
-marqueeInner.textContent = "Welcome to the Before Us Network — system: stable …";
+marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK COMPLETE — NETWORK STABLE …";
 startMarqueeAnimation();
 return;
 }
@@ -605,6 +604,12 @@ bootStatus.textContent = "Please enter a handle.";
 return;
 }
 bootStatus.textContent = "Entering network...";
+try {
+await signInAnonymously(auth);
+} catch(e) {
+bootStatus.textContent = "Auth error: " + e.message;
+return;
+}
 myHandle = raw;
 currentChannel = bootChannel.value || 'exuro';
 if(!uid){
