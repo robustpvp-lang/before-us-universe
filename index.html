@@ -68,7 +68,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .chat-meta{font-size:11px;color:#808080;font-weight:700;margin-bottom:4px}
 .user-row{display:flex;gap:8px;align-items:center;padding:6px;font-size:12px;cursor:pointer}
 .status-dot{width:9px;height:9px;border-radius:50%;background:var(--online)}
-.uname{font-family:'Press Start 2P';color:#cfeef2;font-size:12px}
+.uname{font-family:'Press Start 2P';color:#ff0000;font-size:12px}
 .chat-controls{display:flex;gap:6px;padding:8px;background:#fffacd;border-top:1px solid rgba(0,0,0,0.1)}
 .chat-controls input{flex:1;padding:8px;border:2px inset rgba(0,0,0,0.1);background:#fff;color:#000}
 .chat-controls button{padding:8px;border:2px outset rgba(0,0,0,0.1);background:#add8e6;cursor:pointer;color:#000}
@@ -99,7 +99,7 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <body>
 <div id="marqueeWrap">
 <div id="marqueeLabel">SYSTEM:</div>
-<div id="marquee" aria-live="polite"><div id="marqueeInner">Welcome to the Before Us Network — awaiting transmission… SYSTEM OK — MEMORY CHECK PASSED — DISK VERIFIED — NETWORK ACTIVE…</div></div>
+<div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND…</div></div>
 </div>
 <div id="bootOverlay">
 <div id="bootPanel">
@@ -125,12 +125,13 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <div class="logo">BUU</div>
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
 <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
-<a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer">Read Sam's First Chapter</a>
-<a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer">SpaceHey</a>
+<a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
+<a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
 <a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
+<a class="link-btn" href="https://sora.chatgpt.com/profile/robustpvp" target="_blank" rel="noopener noreferrer">Sora</a>
 <div class="controls-right">
-<a class="link-btn" id="samsArt" href="https://robustpvp.wixsite.com/super-parody-funtime" target="_blank" rel="noopener noreferrer">Sam's Art</a>
 <a class="link-btn" href="#" target="_blank">Donate</a>
+<a class="link-btn" id="samsArt" href="https://robustpvp.wixsite.com/super-parody-funtime" target="_blank" rel="noopener noreferrer" title="pencil drawn on note cards from ref.">Patrick's Art</a>
 </div>
 </div>
 <div class="layout">
@@ -213,7 +214,7 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <a href="https://bitview.net/" target="_blank">BitView</a><p>one of several classic YouTube clones, and my personal favourite. Replicates YouTube's 2009 design pretty much perfectly.</p>
 <a href="https://vidlii.com/" target="_blank">VidLii</a><p>another YouTube clone. Doesn't replicate YouTube quite as closely as BitView does, but it supports longer videos and more resolutions/audio bitrates than BitView.</p>
 <a href="https://fulptube.net/" target="_blank">FulpTube</a><p>yet ANOTHER YouTube clone. Unlike the previous two, it's meant to replicate YouTube from 2012/2013. Seems a bit glitchier than the other two. It also has its own replica of YouTube XL, and a mobile site.</p>
-<a href="https://spacehey.com/profile?id=4317004" target="_blank">SpaceHey</a><p>The site you're on right now. A MySpace replica.</p>
+<a href="https://spacehey.com/" target="_blank">SpaceHey</a><p>The site you're on right now. A MySpace replica.</p>
 <a href="https://neocities.org/" target="_blank">NeoCities</a><p>a clone of Yahoo! GeoCities. Lets you host your own website, for free (with extra privileges for donators)!</p>
 <a href="https://oldgoogle.neocities.org/" target="_blank">oldgoogle</a><p>a clone of Google Search, with replicas of pretty much every redesign that Google has gone through, from 1998 to 2014.</p>
 <a href="https://oldyahoo.neocities.org/" target="_blank">oldyahoo</a><p>a clone of Yahoo! Search. Exactly the same as above, but for Yahoo! instead.</p>
@@ -297,7 +298,7 @@ while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChi
 }
 function updateMarqueeFromCache(){
 if(feedCache.length === 0){
-marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK COMPLETE — NETWORK STABLE …";
+marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND…";
 startMarqueeAnimation();
 return;
 }
@@ -443,12 +444,12 @@ const data = snap.val() || {};
 Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
 if(o && !o.deleted) renderChatMessage(o, id);
 });
-});
+}).catch(e => appendSystem('Chat load error: ' + e.message));
 const fn = snap => {
 const o = snap.val();
 if(o && !o.deleted) renderChatMessage(o, snap.key);
 };
-onChildAdded(r, fn);
+onChildAdded(r, fn, e => appendSystem('Chat listen error: ' + e.message));
 channelListeners[ch] = {ref: r, fn};
 }
 function renderChatMessage(o, key){
@@ -509,7 +510,7 @@ boardMsg.focus();
 el.appendChild(reply);
 boardList.appendChild(el);
 });
-});
+}, e => appendSystem('Board listen error: ' + e.message));
 }
 sendBtn.onclick = () => {
 if(!myHandle) return;
@@ -604,32 +605,28 @@ bootStatus.textContent = "Please enter a handle.";
 return;
 }
 bootStatus.textContent = "Entering network...";
+let credential;
 try {
-await signInAnonymously(auth);
+credential = await signInAnonymously(auth);
+uid = credential.user.uid;
 } catch(e) {
 bootStatus.textContent = "Auth error: " + e.message;
+appendSystem('Authentication failed: ' + e.message);
 return;
 }
 myHandle = raw;
 currentChannel = bootChannel.value || 'exuro';
-if(!uid){
-uid = 'offline_' + Math.random().toString(36).substring(2);
-appendSystem('Offline mode enabled (no persistence)');
-console.warn('Running in offline mode');
-}
 // Try DB in background - never block load
 setTimeout(() => {
-if(!uid.startsWith('offline_')){
-set(ref(db, `users/${uid}/profile`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
+set(ref(db, `users/${uid}`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
 appendSystem('Profile save failed: ' + e.message);
 });
-}
 setPresence(myHandle, currentChannel);
 }, 500);
 finishBoot();
 });
 function finishBoot(){
-bootStatus.textContent = `Welcome, ${myHandle}! ${uid.startsWith('offline_') ? '(Offline mode)' : ''}`;
+bootStatus.textContent = `Welcome, ${myHandle}!`;
 setTimeout(() => {
 bootOverlay.style.display = 'none';
 appRoot.style.display = 'block';
