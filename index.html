@@ -129,6 +129,8 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
 <a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
 <a class="link-btn" href="https://sora.chatgpt.com/profile/robustpvp" target="_blank" rel="noopener noreferrer">Sora</a>
+<a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
+<a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
 <div class="controls-right">
 <a class="link-btn" href="#" target="_blank">Donate</a>
 <a class="link-btn" id="samsArt" href="https://robustpvp.wixsite.com/super-parody-funtime" target="_blank" rel="noopener noreferrer" title="pencil drawn on note cards from ref.">Patrick's Art</a>
@@ -141,6 +143,14 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <div class="panel-body" id="ytBody">
 <div class="yt-wrap" style="margin:8px">
 <iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen loading="lazy"></iframe>
+</div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title"><div class="title">SORA AI VIDEOS</div></div>
+<div class="panel-body" id="soraBody">
+<div class="yt-wrap" style="margin:8px">
+<!-- Reserved for Sora AI videos -->
 </div>
 </div>
 </div>
@@ -206,7 +216,7 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 </div>
 <div class="panel collapsible collapsed" id="revivalSitesPanel">
 <div class="panel-title"><div class="small">REVIVAL SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body">
+<div class="panel-body" style="max-height:300px;overflow:auto">
 <a href="https://escargot.chat/" target="_blank">escargot.chat</a><p>a revival of Microsoft's MSN Messenger/Windows Live Messenger service. Works with all MSN/WLM clients from 1.0 to 9.0.</p>
 <a href="https://escargot.live/" target="_blank">escargot.live</a><p>a revival of Windows Live Spaces and Windows Live Profiles, run by the same team as escargot.chat. It will launch this summer.</p>
 <a href="#" target="_blank">NINA</a><p>a revival of the old AOL Desktop clients. It also hasn't launched yet, and there's no ETA, but rest assured it'll be here someday :D</p>
@@ -358,7 +368,6 @@ const data = snap.val() || {};
 renderServerTracking(data);
 renderActiveUsers(data[currentChannel] || {});
 updateUserCount(data);
-rebuildDMList(data);
 updateTypingIndicator(data[currentChannel] || {});
 });
 }
@@ -401,22 +410,6 @@ function updateUserCount(data){
 const count = Object.keys(data[currentChannel] || {}).length;
 userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
 chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
-}
-function rebuildDMList(data){
-dmList.innerHTML = '';
-const seen = new Set();
-for(const ch in data){
-for(const id in data[ch]){
-const u = data[ch][id];
-if(id === uid || seen.has(id)) continue;
-seen.add(id);
-const b = document.createElement('div');
-b.textContent = u.name;
-b.style.cssText = 'padding:6px;border:1px solid rgba(255,255,255,0.03);margin:4px 0;cursor:pointer;background:#021212;border-radius:4px';
-b.onclick = () => openDMInline(id, u.name);
-dmList.appendChild(b);
-}
-}
 }
 function watchPresenceEvents() {
 const channels = ['sam','exuro','nero','nora','loktal'];
