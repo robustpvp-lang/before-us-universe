@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -8,8 +7,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23001a1a'/><path d='M20 25h60v10h-60zM20 45h60v10h-60zM20 65h60v10h-60z' fill='%2300ffff'/><circle cx='50' cy='50' r='8' fill='%23ffcc00'/></svg>" type="image/svg+xml">
 <style>
 :root{
-  --bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
-  --text-gray:#e6f7f7; --muted:#00aaaa; --online:#00ff9d; --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
+--bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
+--text-gray:#e6f7f7; --muted:#00aaaa; --online:#00ff9d; --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
 }
 html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:hidden}
 body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
@@ -55,6 +54,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .title-bar button#helpBtn{background:var(--accent);color:#000;padding:4px 8px;border:2px solid #000;cursor:pointer;}
 .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
 @media(max-width:980px){.layout{grid-template-columns:1fr}}
+@media (max-width:600px){.title-bar{flex-direction:column;align-items:flex-start;gap:4px;}.controls-right{margin-left:0;}}
 .panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
 .panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .panel-body{padding:8px;color:var(--text-gray)}
@@ -100,124 +100,122 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 </style>
 </head>
 <body>
-  <div id="marqueeWrap">
-    <div id="marqueeLabel">SYSTEM:</div>
-    <div id="marquee" aria-live="polite"><div id="marqueeInner">Welcome to the Before Us Network — awaiting transmission…</div></div>
-  </div>
-  <div id="bootOverlay">
-    <div id="bootPanel">
-      <div id="bootLog" class="small"></div>
-      <div id="bootPrompt">> ENTER HANDLE & SELECT SERVER</div>
-      <div id="bootInputs">
-        <input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (or leave blank for Guest)" aria-label="Enter your handle">
-        <select id="bootChannel" aria-label="Select server">
-          <option value="sam">//Sam</option>
-          <option value="exuro">//Exuro</option>
-          <option value="nero">//Nero</option>
-          <option value="nora">//Nora</option>
-          <option value="loktal">//Loktal</option>
-        </select>
-        <button id="bootBtn" aria-label="Enter Network">ENTER NETWORK</button>
-      </div>
-      <div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
-      <div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Timeline stability.. 84%</span></div>
-    </div>
-  </div>
-  <div id="helpOverlay">
-    <div id="helpPanel">
-      <h3>Keyboard Shortcuts</h3>
-      <p>Ctrl + Enter: Post on Message Board</p>
-      <p>Enter: Send chat message</p>
-      <button id="helpClose">CLOSE</button>
-    </div>
-  </div>
-  <div id="app">
-    <div class="title-bar">
-      <div class="logo">BUU</div>
-      <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer">To Kill a Mocking Goblin</a>
-      <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s Game (YT)</a>
-      <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer">Book 1</a>
-      <a class="link-btn" href="https://spacehey.com/" target="_blank" rel="noopener noreferrer">SpaceHey</a>
-      <a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
-      <div class="controls-right">
-        <a class="link-btn" id="samsArt" href="https://robustpvp.wixsite.com/super-parody-funtime" target="_blank" rel="noopener noreferrer">Super Parody Funtime (Portfolio)</a>
-        <button id="helpBtn">?</button>
-      </div>
-    </div>
-    <div class="layout">
-      <div>
-        <div class="panel">
-          <div class="panel-title"><div class="title">PLAYLIST //SAM</div></div>
-          <div class="panel-body" id="ytBody">
-            <div class="yt-wrap" style="margin:8px">
-              <iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen loading="lazy"></iframe>
-            </div>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
-          <div class="panel-body chat-win" id="chatBody">
-            <div class="chat-main">
-              <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
-              <div class="chat-users">
-                <div class="small" style="margin-bottom:6px">USERS ONLINE</div>
-                <div id="activeUsersList"></div>
-              </div>
-            </div>
-            <div id="typingIndicator" class="typing-indicator"></div>
-            <div class="chat-controls">
-              <input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
-              <button id="sendBtn" aria-label="Send message">SEND</button>
-            </div>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-title"><div class="title">MESSAGE BOARD</div></div>
-          <div class="panel-body" id="boardBody">
-            <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
-            <input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
-            <div id="boardList" style="max-height:340px;overflow:auto;margin:8px 0"></div>
-            <div style="margin:8px">
-              <textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
-              <button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="panel" id="serverSelectPanel">
-          <div class="small">SELECT SERVER</div>
-          <div class="controls">
-            <select id="channelSelect" aria-label="Choose server">
-              <option value="sam">//Sam</option>
-              <option value="exuro">//Exuro</option>
-              <option value="nero">//Nero</option>
-              <option value="nora">//Nora</option>
-              <option value="loktal">//Loktal</option>
-            </select>
-            <button id="serverConfirm" aria-label="Switch server">Switch Server</button>
-          </div>
-        </div>
-        <div class="panel" id="ortegaPanel">
-          <button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-        </div>
-        <div class="panel collapsible" id="serverTrackingPanel">
-          <div class="panel-title"><div class="small">SERVER TRACKING</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-          <div class="panel-body" id="serverTrackingList"></div>
-        </div>
-        <div class="panel collapsible" id="systemFeedPanel">
-          <div class="panel-title"><div class="small">SYSTEM FEED</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-          <div class="panel-body" id="systemFeed"></div>
-        </div>
-        <div class="panel">
-          <div class="small">DIRECT MESSAGES</div>
-          <div id="dmList" style="margin-top:8px"></div>
-          <div class="small" style="margin-top:6px">Click a name to DM</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <audio id="soundMsg" src="https://assets.mixkit.co/sfx/download/mixkit-positive-alert-600.wav" preload="auto"></audio>
+<div id="marqueeWrap">
+<div id="marqueeLabel">SYSTEM:</div>
+<div id="marquee" aria-live="polite"><div id="marqueeInner">Welcome to the Before Us Network — awaiting transmission…</div></div>
+</div>
+<div id="bootOverlay">
+<div id="bootPanel">
+<div id="bootLog" class="small"></div>
+<div id="bootPrompt">> ENTER HANDLE & SELECT SERVER</div>
+<div id="bootInputs">
+<input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (required)" aria-label="Enter your handle">
+<select id="bootChannel" aria-label="Select server">
+<option value="sam">//Sam</option>
+<option value="exuro">//Exuro</option>
+<option value="nero">//Nero</option>
+<option value="nora">//Nora</option>
+<option value="loktal">//Loktal</option>
+</select>
+<button id="bootBtn" aria-label="Enter Network">ENTER NETWORK</button>
+</div>
+<div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
+<div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Timeline stability.. 84%</span></div>
+</div>
+</div>
+<div id="helpOverlay">
+<div id="helpPanel">
+<h3>Keyboard Shortcuts</h3>
+<p>Ctrl + Enter: Post on Message Board</p>
+<p>Enter: Send chat message</p>
+<button id="helpClose">CLOSE</button>
+</div>
+</div>
+<div id="app">
+<div class="title-bar">
+<div class="logo">BUU</div>
+<a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer">Join the Journey</a>
+<a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s Game (YT)</a>
+<a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer">Read Sam's First Chapter</a>
+<a class="link-btn" href="https://spacehey.com/" target="_blank" rel="noopener noreferrer">SpaceHey</a>
+<a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
+<div class="controls-right">
+<div id="serverSelectPanel" style="display:inline-block;">
+<div class="controls">
+<select id="channelSelect" aria-label="Choose server">
+<option value="sam">//Sam</option>
+<option value="exuro">//Exuro</option>
+<option value="nero">//Nero</option>
+<option value="nora">//Nora</option>
+<option value="loktal">//Loktal</option>
+</select>
+<button id="serverConfirm" aria-label="Switch server">Switch Server</button>
+</div>
+</div>
+<a class="link-btn" id="samsArt" href="https://robustpvp.wixsite.com/super-parody-funtime" target="_blank" rel="noopener noreferrer">Super Parody Funtime (Portfolio)</a>
+<button id="helpBtn">?</button>
+</div>
+</div>
+<div class="layout">
+<div>
+<div class="panel">
+<div class="panel-title"><div class="title">PLAYLIST //SAM</div></div>
+<div class="panel-body" id="ytBody">
+<div class="yt-wrap" style="margin:8px">
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen loading="lazy"></iframe>
+</div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
+<div class="panel-body chat-win" id="chatBody">
+<div class="chat-main">
+<div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+<div class="chat-users">
+<div class="small" style="margin-bottom:6px">USERS ONLINE</div>
+<div id="activeUsersList"></div>
+</div>
+</div>
+<div id="typingIndicator" class="typing-indicator"></div>
+<div class="chat-controls">
+<input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
+<button id="sendBtn" aria-label="Send message">SEND</button>
+</div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title"><div class="title">MESSAGE BOARD</div></div>
+<div class="panel-body" id="boardBody">
+<div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
+<input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
+<div id="boardList" style="max-height:340px;overflow:auto;margin:8px 0"></div>
+<div style="margin:8px">
+<textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
+<button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
+</div>
+</div>
+</div>
+</div>
+<div>
+<div class="panel" id="ortegaPanel">
+<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
+</div>
+<div class="panel collapsible" id="serverTrackingPanel">
+<div class="panel-title"><div class="small">SERVER TRACKING</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="serverTrackingList"></div>
+</div>
+<div class="panel" id="systemFeedPanel">
+<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
+<div class="panel-body" id="systemFeed"></div>
+</div>
+<div class="panel">
+<div class="small">DIRECT MESSAGES</div>
+<div id="dmList" style="margin-top:8px"></div>
+<div class="small" style="margin-top:6px">Click a name to DM</div>
+</div>
+</div>
+</div>
+</div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -248,7 +246,6 @@ const postBoardBtn = document.getElementById('postBoardBtn');
 const systemFeed = document.getElementById('systemFeed');
 const dmList = document.getElementById('dmList');
 const ortegaBtn = document.getElementById('ortegaBtn');
-const soundMsg = document.getElementById('soundMsg');
 const chatTitle = document.getElementById('chatTitle');
 const marqueeInner = document.getElementById('marqueeInner');
 const marqueeWrap = document.getElementById('marquee');
@@ -260,364 +257,366 @@ let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null;
 let channelListeners = {};
 let feedCache = [];
 const bootLines = [
-  "INITIALIZING BEFORE US UNIVERSE...",
-  "Loading kernel.............[ONLINE]",
-  "Checking Ra'Norric link...........[ONLINE]",
-  "System is .....[ONLINE]",
-  "Ready for authentication...",
-  "Please type a handle to login (or leave blank for Guest mode)"
+"INITIALIZING BEFORE US UNIVERSE...",
+"Loading kernel.............[ONLINE]",
+"Checking Ra'Norric link...........[ONLINE]",
+"System is .....[ONLINE]",
+"Ready for authentication...",
+"Please type a handle to login"
 ];
 let lineIdx = 0;
 function typeBootLine(){
-  if(lineIdx < bootLines.length){
-    bootLog.textContent += bootLines[lineIdx] + "\n";
-    lineIdx++;
-    setTimeout(typeBootLine, 240 + Math.random()*360);
-  } else {
-    finishBoot();  // Auto-load after typing complete
-  }
+if(lineIdx < bootLines.length){
+bootLog.textContent += bootLines[lineIdx] + "\n";
+lineIdx++;
+setTimeout(typeBootLine, 240 + Math.random()*360);
+} else {
+finishBoot(); // Auto-load after typing complete
+}
 }
 typeBootLine();
 signInAnonymously(auth).catch(e => {
-  bootStatus.textContent = "Auth warning: " + e.message + " (will use offline mode)";
-  console.error(e);
+bootStatus.textContent = "Auth warning: " + e.message + " (will use offline mode)";
+console.error(e);
 });
 onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
 function prependFeedEntry(text){
-  const el = document.createElement('div');
-  el.className = 'dm-inline';
-  el.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
-  systemFeed.prepend(el);
-  while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChild);
+const el = document.createElement('div');
+el.className = 'dm-inline';
+el.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+systemFeed.prepend(el);
+while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChild);
 }
 function updateMarqueeFromCache(){
-  if(feedCache.length === 0){
-    marqueeInner.textContent = "Welcome to the Before Us Network — system: stable …";
-    startMarqueeAnimation();
-    return;
-  }
-  const text = feedCache.slice(0,8).map(item => item.text).join(' ✦ ');
-  marqueeInner.textContent = ' ' + text + ' ';
-  startMarqueeAnimation();
+if(feedCache.length === 0){
+marqueeInner.textContent = "Welcome to the Before Us Network — system: stable …";
+startMarqueeAnimation();
+return;
+}
+const text = feedCache.slice(0,8).map(item => item.text).join(' ✦ ');
+marqueeInner.textContent = ' ' + text + ' ';
+startMarqueeAnimation();
 }
 let marqueeAnimId = null;
 function startMarqueeAnimation(){
-  if(marqueeAnimId) cancelAnimationFrame(marqueeAnimId);
-  const inner = marqueeInner;
-  inner.style.transform = 'translateX(0)';
-  const wrapWidth = marquee.offsetWidth;
-  const innerWidth = inner.offsetWidth || wrapWidth * 1.5;
-  const speed = 80;
-  let start = null;
-  function step(ts){
-    if(!start) start = ts;
-    const elapsed = (ts - start) / 1000;
-    const distance = speed * elapsed;
-    inner.style.transform = `translateX(${-distance}px)`;
-    if(distance > innerWidth + wrapWidth) start = ts;
-    marqueeAnimId = requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
+if(marqueeAnimId) cancelAnimationFrame(marqueeAnimId);
+const inner = marqueeInner;
+inner.style.transform = 'translateX(0)';
+const wrapWidth = marquee.offsetWidth;
+const innerWidth = inner.offsetWidth || wrapWidth * 1.5;
+const speed = 80;
+let start = null;
+function step(ts){
+if(!start) start = ts;
+const elapsed = (ts - start) / 1000;
+const distance = speed * elapsed;
+inner.style.transform = `translateX(${-distance}px)`;
+if(distance > innerWidth + wrapWidth) start = ts;
+marqueeAnimId = requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
 }
 const feedRef = ref(db, 'feed');
 onChildAdded(feedRef, snap => {
-  const obj = {key: snap.key, text: snap.val(), ts: Date.now()};
-  feedCache.unshift(obj);
-  if(feedCache.length > 40) feedCache.pop();
-  prependFeedEntry(obj.text);
-  updateMarqueeFromCache();
-  bootBroadcast.textContent = obj.text;
+const obj = {key: snap.key, text: snap.val(), ts: Date.now()};
+feedCache.unshift(obj);
+if(feedCache.length > 40) feedCache.pop();
+prependFeedEntry(obj.text);
+updateMarqueeFromCache();
+bootBroadcast.textContent = obj.text;
 });
 get(feedRef).then(snap => {
-  const data = snap.val() || {};
-  feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
-  updateMarqueeFromCache();
+const data = snap.val() || {};
+feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
+updateMarqueeFromCache();
 });
 function setPresence(h,ch){
-  if(!uid || uid.startsWith('offline_')) return;
-  try {
-    if(presenceRef) remove(presenceRef).catch(()=>{});
-    presenceRef = ref(db, `online/${ch}/${uid}`);
-    set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid, typing:false}).then(()=>{
-      onDisconnect(presenceRef).remove();
-    }).catch(e => appendSystem('Presence error: ' + e.message));
-  } catch(e){
-    appendSystem('Presence failed: ' + e.message);
-  }
+if(!uid || uid.startsWith('offline_')) return;
+try {
+if(presenceRef) remove(presenceRef).catch(()=>{});
+presenceRef = ref(db, `online/${ch}/${uid}`);
+set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid, typing:false}).then(()=>{
+onDisconnect(presenceRef).remove();
+}).catch(e => appendSystem('Presence error: ' + e.message));
+} catch(e){
+appendSystem('Presence failed: ' + e.message);
+}
 }
 let onlineWatchRef = ref(db, 'online');
 function watchOnline(){
-  onValue(onlineWatchRef, snap => {
-    const data = snap.val() || {};
-    renderServerTracking(data);
-    renderActiveUsers(data[currentChannel] || {});
-    updateUserCount(data);
-    rebuildDMList(data);
-    updateTypingIndicator(data[currentChannel] || {});
-  });
+onValue(onlineWatchRef, snap => {
+const data = snap.val() || {};
+renderServerTracking(data);
+renderActiveUsers(data[currentChannel] || {});
+updateUserCount(data);
+rebuildDMList(data);
+updateTypingIndicator(data[currentChannel] || {});
+});
 }
 function renderServerTracking(data){
-  serverTrackingList.innerHTML = '';
-  const channels = ['sam','exuro','nero','nora','loktal'];
-  channels.forEach(ch => {
-    const users = Object.values(data[ch] || {});
-    const count = users.length;
-    const iconColor = count > 0 ? 'lime' : 'red';
-    const branch = document.createElement('div');
-    branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
-    branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon" style="color:${iconColor}">●</span></div><div class="user-list"></div>`;
-    const userList = branch.querySelector('.user-list');
-    if(count === 0){
-      userList.innerHTML = '<div>—</div>';
-    } else {
-      users.forEach(u => {
-        const div = document.createElement('div');
-        div.textContent = u.name + (u.typing ? ' (typing...)' : '');
-        div.onclick = () => openDMInline(u.uid, u.name);
-        userList.appendChild(div);
-      });
-    }
-    serverTrackingList.appendChild(branch);
-  });
+serverTrackingList.innerHTML = '';
+const channels = ['sam','exuro','nero','nora','loktal'];
+channels.forEach(ch => {
+const users = Object.values(data[ch] || {});
+const count = users.length;
+const iconColor = count > 0 ? 'lime' : 'red';
+const branch = document.createElement('div');
+branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
+branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon" style="color:${iconColor}">●</span></div><div class="user-list"></div>`;
+const userList = branch.querySelector('.user-list');
+if(count === 0){
+userList.innerHTML = '<div>—</div>';
+} else {
+users.forEach(u => {
+const div = document.createElement('div');
+div.textContent = u.name + (u.typing ? ' (typing...)' : '');
+div.onclick = () => openDMInline(u.uid, u.name);
+userList.appendChild(div);
+});
+}
+serverTrackingList.appendChild(branch);
+});
 }
 function renderActiveUsers(obj){
-  activeUsersList.innerHTML = '';
-  Object.values(obj || {}).forEach(u => {
-    const row = document.createElement('div'); row.className = 'user-row';
-    const dot = document.createElement('div'); dot.className = 'status-dot';
-    const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name;
-    name.onclick = () => openDMInline(u.uid, u.name);
-    row.append(dot, name);
-    activeUsersList.appendChild(row);
-  });
+activeUsersList.innerHTML = '';
+Object.values(obj || {}).forEach(u => {
+const row = document.createElement('div'); row.className = 'user-row';
+const dot = document.createElement('div'); dot.className = 'status-dot';
+const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name;
+name.onclick = () => openDMInline(u.uid, u.name);
+row.append(dot, name);
+activeUsersList.appendChild(row);
+});
 }
 function updateUserCount(data){
-  const count = Object.keys(data[currentChannel] || {}).length;
-  userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
-  chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
+const count = Object.keys(data[currentChannel] || {}).length;
+userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
+chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
 }
 function rebuildDMList(data){
-  dmList.innerHTML = '';
-  const seen = new Set();
-  for(const ch in data){
-    for(const id in data[ch]){
-      const u = data[ch][id];
-      if(id === uid || seen.has(id)) continue;
-      seen.add(id);
-      const b = document.createElement('div');
-      b.textContent = u.name;
-      b.style.cssText = 'padding:6px;border:1px solid rgba(255,255,255,0.03);margin:4px 0;cursor:pointer;background:#021212;border-radius:4px';
-      b.onclick = () => openDMInline(id, u.name);
-      dmList.appendChild(b);
-    }
-  }
+dmList.innerHTML = '';
+const seen = new Set();
+for(const ch in data){
+for(const id in data[ch]){
+const u = data[ch][id];
+if(id === uid || seen.has(id)) continue;
+seen.add(id);
+const b = document.createElement('div');
+b.textContent = u.name;
+b.style.cssText = 'padding:6px;border:1px solid rgba(255,255,255,0.03);margin:4px 0;cursor:pointer;background:#021212;border-radius:4px';
+b.onclick = () => openDMInline(id, u.name);
+dmList.appendChild(b);
+}
+}
 }
 function watchPresenceEvents() {
-  const channels = ['sam','exuro','nero','nora','loktal'];
-  channels.forEach(ch => {
-    onChildAdded(ref(db, `online/${ch}`), snap => {
-      const u = snap.val();
-      if (u && u.uid !== uid) appendSystem(`User '${u.name}' joined //${ch.toUpperCase()}`);
-    });
-    onChildRemoved(ref(db, `online/${ch}`), snap => {
-      const u = snap.val();
-      if (u && u.uid !== uid) appendSystem(`User '${u.name}' left //${ch.toUpperCase()}`);
-    });
-  });
+const channels = ['sam','exuro','nero','nora','loktal'];
+channels.forEach(ch => {
+onChildAdded(ref(db, `online/${ch}`), snap => {
+const u = snap.val();
+if (u && u.uid !== uid) appendSystem(`User '${u.name}' joined //${ch.toUpperCase()}`);
+});
+onChildRemoved(ref(db, `online/${ch}`), snap => {
+const u = snap.val();
+if (u && u.uid !== uid) appendSystem(`User '${u.name}' left //${ch.toUpperCase()}`);
+});
+});
 }
 function listenChannel(ch){
-  for(const k in channelListeners){
-    if(channelListeners[k].ref) off(channelListeners[k].ref);
-  }
-  channelListeners = {};
-  currentChannel = ch;
-  chatMessages.innerHTML = '';
-  const r = ref(db, `chat/${ch}`);
-  get(r).then(snap => {
-    const data = snap.val() || {};
-    Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
-      if(o && !o.deleted) renderChatMessage(o, id);
-    });
-  });
-  const fn = snap => {
-    const o = snap.val();
-    if(o && !o.deleted) renderChatMessage(o, snap.key);
-  };
-  onChildAdded(r, fn);
-  channelListeners[ch] = {ref: r, fn};
+for(const k in channelListeners){
+if(channelListeners[k].ref) off(channelListeners[k].ref);
+}
+channelListeners = {};
+currentChannel = ch;
+chatMessages.innerHTML = '';
+const r = ref(db, `chat/${ch}`);
+get(r).then(snap => {
+const data = snap.val() || {};
+Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
+if(o && !o.deleted) renderChatMessage(o, id);
+});
+});
+const fn = snap => {
+const o = snap.val();
+if(o && !o.deleted) renderChatMessage(o, snap.key);
+};
+onChildAdded(r, fn);
+channelListeners[ch] = {ref: r, fn};
 }
 function renderChatMessage(o, key){
-  const row = document.createElement('div'); row.className = 'chat-row';
-  const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
-  const bub = document.createElement('div'); bub.className = 'chat-bubble';
-  if(o.uid === uid) bub.classList.add('me');
-  bub.innerHTML = `<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
-  if(o.uid === uid){
-    const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
-    edit.onclick = () => { /* edit logic */ };
-    const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
-    del.onclick = () => {
-      update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => appendSystem('Delete failed: ' + e.message));
-      row.style.display = 'none';  // Immediate local hide
-    };
-    bub.append(edit, del);
-  }
-  row.append(av, bub);
-  chatMessages.appendChild(row);
-  if(chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 200) chatMessages.scrollTop = chatMessages.scrollHeight;
-  if(document.hidden && o.uid !== uid) soundMsg.play().catch(()=>{});
+const row = document.createElement('div'); row.className = 'chat-row';
+const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
+const bub = document.createElement('div'); bub.className = 'chat-bubble';
+if(o.uid === uid) bub.classList.add('me');
+bub.innerHTML = `<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+if(o.uid === uid){
+const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
+edit.onclick = () => { /* edit logic */ };
+const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
+del.onclick = () => {
+update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => appendSystem('Delete failed: ' + e.message));
+row.style.display = 'none'; // Immediate local hide
+};
+bub.append(edit, del);
+}
+row.append(av, bub);
+chatMessages.appendChild(row);
+if(chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 200) chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 async function hash(str){
-  const e = new TextEncoder().encode(str);
-  const b = await crypto.subtle.digest('SHA-256', e);
-  return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
+const e = new TextEncoder().encode(str);
+const b = await crypto.subtle.digest('SHA-256', e);
+return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
 }
 async function postMessage(ch, name, msg){
-  if(uid.startsWith('offline_')) return alert('Offline mode - cannot post to chat');
-  const m = msg.trim();
-  if(!m || m.length > 500) return;
-  const ts = Date.now();
-  const h = await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
-  const key = push(ref(db, `chat/${ch}`)).key;
-  const updates = {};
-  updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
-  updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
-  updates[`/users/${uid}/lastPost`] = ts;
-  await update(ref(db), updates).catch(e => appendSystem('Chat post error: ' + e.message));
-  set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
+if(uid.startsWith('offline_')) return alert('Offline mode - cannot post to chat');
+const m = msg.trim();
+if(!m || m.length > 500) return;
+const ts = Date.now();
+const h = await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
+const key = push(ref(db, `chat/${ch}`)).key;
+const updates = {};
+updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
+updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
+updates[`/users/${uid}/lastPost`] = ts;
+await update(ref(db), updates).catch(e => appendSystem('Chat post error: ' + e.message));
+set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
 }
 function listenBoard(){
-  const r = ref(db, 'board');
-  onValue(r, snap => {
-    boardList.innerHTML = '';
-    const posts = snap.val() || {};
-    Object.entries(posts).sort((a,b) => b[1].ts - a[1].ts).forEach(([id,p]) => {
-      const el = document.createElement('div'); el.className = 'board-thread';
-      el.innerHTML = `<strong>${esc(p.name)}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
-      boardList.appendChild(el);
-    });
-  });
+const r = ref(db, 'board');
+onValue(r, snap => {
+boardList.innerHTML = '';
+const posts = snap.val() || {};
+Object.entries(posts).sort((a,b) => b[1].ts - a[1].ts).forEach(([id,p]) => {
+const el = document.createElement('div'); el.className = 'board-thread';
+el.innerHTML = `<strong>${esc(p.name)}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
+boardList.appendChild(el);
+});
+});
 }
 sendBtn.onclick = () => {
-  if(!myHandle) return;
-  postMessage(currentChannel, myHandle, chatInput.value);
-  chatInput.value = '';
+if(!myHandle) return;
+postMessage(currentChannel, myHandle, chatInput.value);
+chatInput.value = '';
 };
 chatInput.addEventListener('keydown', e => {
-  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
+if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
 });
 postBoardBtn.onclick = async () => {
-  if(!myHandle) return;
-  if(uid.startsWith('offline_')) return alert('Offline mode - cannot post to board');
-  const m = boardMsg.value.trim();
-  if(!m || m.length > 1000) return;
-  const r = push(ref(db, 'board'));
-  await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
-  boardMsg.value = '';
+if(!myHandle) return;
+if(uid.startsWith('offline_')) return alert('Offline mode - cannot post to board');
+const m = boardMsg.value.trim();
+if(!m || m.length > 1000) return;
+const r = push(ref(db, 'board'));
+await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
+boardMsg.value = '';
 };
 boardMsg.addEventListener('keydown', e => {
-  if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
+if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
 });
 serverConfirm.onclick = () => {
-  const newCh = channelSelect.value;
-  if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
-    listenChannel(newCh);
-    setPresence(myHandle, newCh);
-    currentChannel = newCh;
-  }
+const newCh = channelSelect.value;
+if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
+listenChannel(newCh);
+setPresence(myHandle, newCh);
+currentChannel = newCh;
+}
 };
 ortegaBtn.onclick = () => appendSystem('Project ORTEGA is currently [DOWN].');
 async function registerDMPair(tuid){
-  if(uid.startsWith('offline_')) return;
-  const pid = [uid, tuid].sort().join('_');
-  const updates = {};
-  updates[`dmPairs/${pid}/users/${uid}`] = true;
-  updates[`dmPairs/${pid}/users/${tuid}`] = true;
-  await update(ref(db), updates).catch(() => {});
+if(uid.startsWith('offline_')) return;
+const pid = [uid, tuid].sort().join('_');
+const updates = {};
+updates[`dmPairs/${pid}/users/${uid}`] = true;
+updates[`dmPairs/${pid}/users/${tuid}`] = true;
+await update(ref(db), updates).catch(() => {});
 }
 function openDMInline(tuid, tname){
-  if(tuid === uid) return;
-  registerDMPair(tuid);
-  const pid = [uid, tuid].sort().join('_');
-  if(document.querySelector(`[data-dmid="${pid}"]`)) return;
-  const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
-  const header = document.createElement('div'); header.textContent = `DM: ${tname}`; header.style.fontWeight = '700';
-  const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
-  const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
-  const send = document.createElement('button'); send.textContent = 'Send'; send.style.marginTop = '6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
-  container.append(header, msgs, inp, send);
-  dmList.prepend(container);
-  const dmRef = ref(db, `dm/${pid}`);
-  onChildAdded(dmRef, snap => {
-    const o = snap.val();
-    const el = document.createElement('div'); el.style.margin = '6px 0';
-    el.textContent = `${o.fromName}: ${o.msg}`;
-    msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
-  });
-  send.onclick = async () => {
-    const txt = inp.value.trim();
-    if(!txt) return;
-    const ts = Date.now();
-    const key = push(ref(db, `dm/${pid}`)).key;
-    const updates = {};
-    updates[`/dm/${pid}/${key}`] = {from: uid, to: tuid, fromName: myHandle, toName: tname, msg: txt, ts};
-    await update(ref(db), updates).catch(() => {});
-    inp.value = '';
-  };
+if(tuid === uid) return;
+registerDMPair(tuid);
+const pid = [uid, tuid].sort().join('_');
+if(document.querySelector(`[data-dmid="${pid}"]`)) return;
+const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
+const header = document.createElement('div'); header.textContent = `DM: ${tname}`; header.style.fontWeight = '700';
+const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
+const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
+const send = document.createElement('button'); send.textContent = 'Send'; send.style.marginTop = '6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
+container.append(header, msgs, inp, send);
+dmList.prepend(container);
+const dmRef = ref(db, `dm/${pid}`);
+onChildAdded(dmRef, snap => {
+const o = snap.val();
+const el = document.createElement('div'); el.style.margin = '6px 0';
+el.textContent = `${o.fromName}: ${o.msg}`;
+msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
+});
+send.onclick = async () => {
+const txt = inp.value.trim();
+if(!txt) return;
+const ts = Date.now();
+const key = push(ref(db, `dm/${pid}`)).key;
+const updates = {};
+updates[`/dm/${pid}/${key}`] = {from: uid, to: tuid, fromName: myHandle, toName: tname, msg: txt, ts};
+await update(ref(db), updates).catch(() => {});
+inp.value = '';
+};
 }
 let typingTimeout = null;
 chatInput.addEventListener('input', () => {
-  if(!uid || uid.startsWith('offline_')) return;
-  const isTyping = chatInput.value.trim().length > 0;
-  set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
-  clearTimeout(typingTimeout);
-  typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
+if(!uid || uid.startsWith('offline_')) return;
+const isTyping = chatInput.value.trim().length > 0;
+set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
+clearTimeout(typingTimeout);
+typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
 });
 function updateTypingIndicator(obj){
-  const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name);
-  document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
+const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name);
+document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
 }
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function appendSystem(t){
-  const d = document.createElement('div');
-  d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
-  d.style.fontSize = '12px';
-  systemFeed.prepend(d);
+const d = document.createElement('div');
+d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
+d.style.fontSize = '12px';
+systemFeed.prepend(d);
 }
 bootBtn.addEventListener('click', async () => {
-  let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
-  if(!raw) raw = 'Guest' + Math.floor(Math.random()*9999);
-  bootStatus.textContent = "Entering network...";
-  myHandle = raw;
-  currentChannel = bootChannel.value || 'exuro';
-  if(!uid){
-    uid = 'offline_' + Math.random().toString(36).substring(2);
-    appendSystem('Offline mode enabled (no persistence)');
-    console.warn('Running in offline mode');
-  }
-  // Try DB in background - never block load
-  setTimeout(() => {
-    if(!uid.startsWith('offline_')){
-      set(ref(db, `users/${uid}/profile`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
-        appendSystem('Profile save failed: ' + e.message);
-      });
-    }
-    setPresence(myHandle, currentChannel);
-  }, 500);
-  finishBoot();
+let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
+if(!raw){
+bootStatus.textContent = "Please enter a handle.";
+return;
+}
+bootStatus.textContent = "Entering network...";
+myHandle = raw;
+currentChannel = bootChannel.value || 'exuro';
+if(!uid){
+uid = 'offline_' + Math.random().toString(36).substring(2);
+appendSystem('Offline mode enabled (no persistence)');
+console.warn('Running in offline mode');
+}
+// Try DB in background - never block load
+setTimeout(() => {
+if(!uid.startsWith('offline_')){
+set(ref(db, `users/${uid}/profile`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
+appendSystem('Profile save failed: ' + e.message);
+});
+}
+setPresence(myHandle, currentChannel);
+}, 500);
+finishBoot();
 });
 function finishBoot(){
-  bootStatus.textContent = `Welcome, ${myHandle}! ${uid.startsWith('offline_') ? '(Offline mode)' : ''}`;
-  setTimeout(() => {
-    bootOverlay.style.display = 'none';
-    appRoot.style.display = 'block';
-    channelSelect.value = currentChannel;
-    initializePanels();
-    appendSystem('System ready');
-  }, 900);
+bootStatus.textContent = `Welcome, ${myHandle}! ${uid.startsWith('offline_') ? '(Offline mode)' : ''}`;
+setTimeout(() => {
+bootOverlay.style.display = 'none';
+appRoot.style.display = 'block';
+channelSelect.value = currentChannel;
+initializePanels();
+appendSystem('System ready');
+}, 900);
 }
 function initializePanels(){
-  document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
+document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
 }
 watchOnline();
 watchPresenceEvents();
@@ -626,47 +625,47 @@ listenChannel(currentChannel);
 appendSystem('Initializing...');
 setTimeout(() => updateMarqueeFromCache(), 800);
 setInterval(() => {
-  const p = 80 + Math.floor(Math.random() * 11);
-  bootBroadcast.textContent = `Timeline stability.. ${p}%`;
-  bootBroadcast.classList.add('glitch-update');
-  setTimeout(() => bootBroadcast.classList.remove('glitch-update'), 500);
+const p = 80 + Math.floor(Math.random() * 11);
+bootBroadcast.textContent = `Timeline stability.. ${p}%`;
+bootBroadcast.classList.add('glitch-update');
+setTimeout(() => bootBroadcast.classList.remove('glitch-update'), 500);
 }, 5000);
 for(let i=0; i<8; i++){
-  const p = document.createElement('div'); p.className = 'particle';
-  p.style.left = Math.random()*100 + '%';
-  p.style.animationDelay = Math.random()*5 + 's';
-  marqueeWrap.appendChild(p);
+const p = document.createElement('div'); p.className = 'particle';
+p.style.left = Math.random()*100 + '%';
+p.style.animationDelay = Math.random()*5 + 's';
+marqueeWrap.appendChild(p);
 }
 document.querySelectorAll('.collapsible .toggle-btn').forEach(btn => {
-  btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
+btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
 });
 boardSearch.addEventListener('input', () => {
-  const term = boardSearch.value.toLowerCase();
-  Array.from(boardList.children).forEach(el => {
-    el.style.display = el.textContent.toLowerCase().includes(term) ? '' : 'none';
-  });
+const term = boardSearch.value.toLowerCase();
+Array.from(boardList.children).forEach(el => {
+el.style.display = el.textContent.toLowerCase().includes(term) ? '' : 'none';
+});
 });
 helpBtn.onclick = () => helpOverlay.style.display = 'flex';
 helpClose.onclick = () => helpOverlay.style.display = 'none';
 setInterval(() => {
-  activeUsersList.classList.add('glitch-update');
-  setTimeout(() => activeUsersList.classList.remove('glitch-update'), 500);
+activeUsersList.classList.add('glitch-update');
+setTimeout(() => activeUsersList.classList.remove('glitch-update'), 500);
 }, 30000);
 window.addEventListener('beforeunload', () => {
-  if(presenceRef) remove(presenceRef);
+if(presenceRef) remove(presenceRef);
 });
 setInterval(async () => {
-  try {
-    const snap = await get(ref(db,'chat'));
-    const data = snap.val()||{};
-    for(const ch in data){
-      for(const id in data[ch]){
-        if(data[ch][id].ts && Date.now() - data[ch][id].ts > 24*60*60*1000){
-          await remove(ref(db, `chat/${ch}/${id}`));
-        }
-      }
-    }
-  } catch(e){ appendSystem('Purge error'); }
+try {
+const snap = await get(ref(db,'chat'));
+const data = snap.val()||{};
+for(const ch in data){
+for(const id in data[ch]){
+if(data[ch][id].ts && Date.now() - data[ch][id].ts > 24*60*60*1000){
+await remove(ref(db, `chat/${ch}/${id}`));
+}
+}
+}
+} catch(e){ appendSystem('Purge error'); }
 }, 60*60*1000);
 </script>
 </body>
