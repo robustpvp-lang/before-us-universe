@@ -219,7 +219,7 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <a href="https://oldgoogle.neocities.org/" target="_blank">oldgoogle</a><p>a clone of Google Search, with replicas of pretty much every redesign that Google has gone through, from 1998 to 2014.</p>
 <a href="https://oldyahoo.neocities.org/" target="_blank">oldyahoo</a><p>a clone of Yahoo! Search. Exactly the same as above, but for Yahoo! instead.</p>
 <a href="http://bwitter.me/" target="_blank">Bwitter</a><p>a clone of Twitter from 2007. Warning - this site doesn't support HTTPS, so you might want to use a different password from your other accounts.</p>
-<a href="#" target="_blank">Goodblox (RIP)</a><p>a revival of several old Roblox clients. Currently shut down :( It may come back later, but considering how long it's been "temporarily" closed, don't count on it...</p>
+<a href="#" target="_blank">Goodblox (RIP</p>
 <a href="https://discord.gg/rverse" target="_blank">rverse</a><p>a Miiverse revival, compatible with Wii U and 3DS. Doesn't have its own website, so I've provided a link to their Discord server.</p>
 <a href="https://rc24.xyz/" target="_blank">RiiConnect24</a><p>a revival for pretty much every single WiiConnect24-dependent Wii channel, such as the Check Mii Out Channel, the Weather Channel, the News Channel, and the Everybody Votes Channel.</p>
 <a href="https://sudomemo.net/" target="_blank">Sudomemo</a><p>a revival for Flipnote Hatena, the animation/art-sharing service for the Nintendo DS app Flipnote Studio.</p>
@@ -470,7 +470,7 @@ bub.append(edit, del);
 }
 row.append(av, bub);
 chatMessages.appendChild(row);
-if(chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 200) chatMessages.scrollTop = chatMessages.scrollHeight;
+chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 async function hash(str){
 const e = new TextEncoder().encode(str);
@@ -478,7 +478,7 @@ const b = await crypto.subtle.digest('SHA-256', e);
 return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
 }
 async function postMessage(ch, name, msg){
-if(uid.startsWith('offline_')) return alert('Offline mode - cannot post to chat');
+if(!uid) return appendSystem('No UID - cannot post');
 const m = msg.trim();
 if(!m || m.length > 500) return;
 const ts = Date.now();
@@ -522,12 +522,13 @@ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
 });
 postBoardBtn.onclick = async () => {
 if(!myHandle) return;
-if(uid.startsWith('offline_')) return alert('Offline mode - cannot post to board');
+if(!uid) return appendSystem('No UID - cannot post to board');
 const m = boardMsg.value.trim();
 if(!m || m.length > 1000) return;
 const r = push(ref(db, 'board'));
 await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
 boardMsg.value = '';
+boardList.scrollTop = boardList.scrollHeight;
 };
 boardMsg.addEventListener('keydown', e => {
 if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
