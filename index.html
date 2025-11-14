@@ -93,6 +93,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 body,html{overflow-x:hidden}
 a, button, .user-row{ -webkit-tap-highlight-color: transparent;}
 a:active, button:active, .user-row:active{animation:glitch 0.2s;}
+#revivalSitesPanel .panel-body{overflow-y:auto;max-height:300px;}
 </style>
 </head>
 <body>
@@ -186,6 +187,10 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <button id="serverConfirm" aria-label="Switch server">Switch Server</button>
 </div>
 </div>
+<div class="panel" id="systemFeedPanel">
+<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
+<div class="panel-body" id="systemFeed"></div>
+</div>
 <div class="panel" id="ortegaPanel">
 <button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
 </div>
@@ -193,16 +198,12 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <div class="panel-title"><div class="small">SERVER TRACKING</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="serverTrackingList"></div>
 </div>
-<div class="panel" id="systemFeedPanel">
-<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
-<div class="panel-body" id="systemFeed"></div>
-</div>
 <div class="panel">
 <div class="small">DIRECT MESSAGES</div>
 <div id="dmList" style="margin-top:8px"></div>
 <div class="small" style="margin-top:6px">Click a name to DM</div>
 </div>
-<div class="panel collapsible" id="revivalSitesPanel">
+<div class="panel collapsible collapsed" id="revivalSitesPanel">
 <div class="panel-title"><div class="small">REVIVAL SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body">
 <a href="https://escargot.chat/" target="_blank">escargot.chat</a><p>a revival of Microsoft's MSN Messenger/Windows Live Messenger service. Works with all MSN/WLM clients from 1.0 to 9.0.</p>
@@ -280,8 +281,6 @@ if(lineIdx < bootLines.length){
 bootLog.textContent += bootLines[lineIdx] + "\n";
 lineIdx++;
 setTimeout(typeBootLine, 240 + Math.random()*360);
-} else {
-finishBoot(); // Auto-load after typing complete
 }
 }
 typeBootLine();
