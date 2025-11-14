@@ -29,9 +29,6 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .panel-body{display:block;}
 .collapsed .panel-body{display:none;}
 #boardSearch{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;width:100%;font-family:monospace;margin-bottom:8px;}
-#helpOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);color:var(--fg);z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;font-family:'Press Start 2P';}
-#helpPanel{background:var(--panel-bg);border:4px solid var(--border);padding:20px;max-width:600px;}
-#helpClose{background:var(--accent);color:#000;padding:8px;cursor:pointer;}
 #marqueeWrap{position:fixed;left:0;right:0;top:0;height:38px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));z-index:99999;display:flex;align-items:center;padding:6px 12px;box-sizing:border-box}
 #marqueeLabel{font-family:'Press Start 2P';font-size:12px;color:#fff;margin-right:12px;white-space:nowrap}
 #marquee{flex:1;overflow:hidden;position:relative;height:20px}
@@ -48,13 +45,12 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 #bootBanner{margin-top:10px;background:rgba(0,0,0,0.35);padding:8px;border-radius:4px;color:var(--fg);font-size:12px}
 #bootBroadcast{animation:glitch 3s infinite alternate;}
 #app{display:none;padding:56px 12px 12px 12px;box-sizing:border-box;height:100%;overflow:auto}
-.title-bar{display:flex;gap:8px;flex-wrap:wrap;padding:8px;background:transparent;color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center;justify-content:flex-start}
+.title-bar{display:flex;gap:8px;flex-wrap:nowrap;padding:8px;background:transparent;color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center;justify-content:flex-start;overflow-x:auto}
 .title-bar .logo{font-weight:700;letter-spacing:1px}
 .controls-right{margin-left:auto;display:flex;gap:8px;align-items:center}
-.title-bar button#helpBtn{background:var(--accent);color:#000;padding:4px 8px;border:2px solid #000;cursor:pointer;}
 .layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
 @media(max-width:980px){.layout{grid-template-columns:1fr}}
-@media (max-width:600px){.title-bar{flex-direction:column;align-items:flex-start;gap:4px;}.controls-right{margin-left:0;}}
+@media (max-width:600px){.title-bar{flex-wrap:nowrap;overflow-x:auto;}}
 .panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
 .panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .panel-body{padding:8px;color:var(--text-gray)}
@@ -82,7 +78,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 #serverSelectPanel{margin-bottom:12px;padding:8px}
 #serverSelectPanel .controls{display:flex;gap:8px;align-items:center}
 #serverSelectPanel select{flex:1;padding:12px;background:#001f1f;border:3px solid var(--border);color:var(--fg);font-weight:700;font-size:14px;border-radius:6px}
-#serverConfirm{background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px}
+#serverConfirm{background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;box-shadow:0 0 10px var(--accent)}
 #ortegaPanel button{width:100%;background:var(--accent);color:#000;padding:12px;border:3px solid #000;border-radius:6px;font-weight:900;cursor:pointer;font-size:14px}
 #serverTrackingPanel .server-branch{margin-bottom:12px}
 #serverTrackingPanel .server-title{font-weight:700;color:var(--accent);font-size:13px;cursor:pointer}
@@ -97,6 +93,12 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 body,html{overflow-x:hidden}
 a, button, .user-row{ -webkit-tap-highlight-color: transparent;}
 a:active, button:active, .user-row:active{animation:glitch 0.2s;}
+.dropdown {position: relative;display: inline-block;}
+.dropdown-content {display: none;position: absolute;background-color: var(--panel-bg);min-width: 300px;border: 1px solid var(--border);z-index: 1;max-height: 400px;overflow-y: auto;padding: 10px;}
+.dropdown-content a {color: var(--fg);padding: 8px 12px;text-decoration: none;display: block;}
+.dropdown-content p {color: var(--text-gray);margin: 4px 0;font-size: 12px;}
+.dropdown:hover .dropdown-content {display: block;}
+.dropdown-btn {background:var(--accent);color:#000;padding:6px 12px;border-radius:4px;font-weight:700;cursor:pointer;border:2px solid #000;margin:2px;font-size:11px;}
 </style>
 </head>
 <body>
@@ -123,14 +125,6 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Timeline stability.. 84%</span></div>
 </div>
 </div>
-<div id="helpOverlay">
-<div id="helpPanel">
-<h3>Keyboard Shortcuts</h3>
-<p>Ctrl + Enter: Post on Message Board</p>
-<p>Enter: Send chat message</p>
-<button id="helpClose">CLOSE</button>
-</div>
-</div>
 <div id="app">
 <div class="title-bar">
 <div class="logo">BUU</div>
@@ -139,6 +133,30 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer">Read Sam's First Chapter</a>
 <a class="link-btn" href="https://spacehey.com/" target="_blank" rel="noopener noreferrer">SpaceHey</a>
 <a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
+<div class="dropdown">
+<div class="dropdown-btn">Revival Sites</div>
+<div class="dropdown-content">
+<a href="https://escargot.chat/" target="_blank">escargot.chat</a><p>a revival of Microsoft's MSN Messenger/Windows Live Messenger service. Works with all MSN/WLM clients from 1.0 to 9.0.</p>
+<a href="https://escargot.live/" target="_blank">escargot.live</a><p>a revival of Windows Live Spaces and Windows Live Profiles, run by the same team as escargot.chat. It will launch this summer.</p>
+<a href="#" target="_blank">NINA</a><p>a revival of the old AOL Desktop clients. It also hasn't launched yet, and there's no ETA, but rest assured it'll be here someday :D</p>
+<a href="https://phoenix-im.org/" target="_blank">Phoenix</a><p>a revival of AOL Instant Messenger. Works with all clients from 1.0 to 6.0, though 6.0 is kinda bugged. Also supports Yahoo! Messenger and ICQ.</p>
+<a href="https://bitview.net/" target="_blank">BitView</a><p>one of several classic YouTube clones, and my personal favourite. Replicates YouTube's 2009 design pretty much perfectly.</p>
+<a href="https://vidlii.com/" target="_blank">VidLii</a><p>another YouTube clone. Doesn't replicate YouTube quite as closely as BitView does, but it supports longer videos and more resolutions/audio bitrates than BitView.</p>
+<a href="https://fulptube.net/" target="_blank">FulpTube</a><p>yet ANOTHER YouTube clone. Unlike the previous two, it's meant to replicate YouTube from 2012/2013. Seems a bit glitchier than the other two. It also has its own replica of YouTube XL, and a mobile site.</p>
+<a href="https://spacehey.com/" target="_blank">SpaceHey</a><p>The site you're on right now. A MySpace replica.</p>
+<a href="https://neocities.org/" target="_blank">NeoCities</a><p>a clone of Yahoo! GeoCities. Lets you host your own website, for free (with extra privileges for donators)!</p>
+<a href="https://oldgoogle.neocities.org/" target="_blank">oldgoogle</a><p>a clone of Google Search, with replicas of pretty much every redesign that Google has gone through, from 1998 to 2014.</p>
+<a href="https://oldyahoo.neocities.org/" target="_blank">oldyahoo</a><p>a clone of Yahoo! Search. Exactly the same as above, but for Yahoo! instead.</p>
+<a href="http://bwitter.me/" target="_blank">Bwitter</a><p>a clone of Twitter from 2007. Warning - this site doesn't support HTTPS, so you might want to use a different password from your other accounts.</p>
+<a href="#" target="_blank">Goodblox (RIP)</a><p>a revival of several old Roblox clients. Currently shut down :( It may come back later, but considering how long it's been "temporarily" closed, don't count on it...</p>
+<a href="https://discord.gg/rverse" target="_blank">rverse</a><p>a Miiverse revival, compatible with Wii U and 3DS. Doesn't have its own website, so I've provided a link to their Discord server.</p>
+<a href="https://rc24.xyz/" target="_blank">RiiConnect24</a><p>a revival for pretty much every single WiiConnect24-dependent Wii channel, such as the Check Mii Out Channel, the Weather Channel, the News Channel, and the Everybody Votes Channel.</p>
+<a href="https://sudomemo.net/" target="_blank">Sudomemo</a><p>a revival for Flipnote Hatena, the animation/art-sharing service for the Nintendo DS app Flipnote Studio.</p>
+<a href="https://wiimmfi.de/" target="_blank">Wiimmfi</a><p>a revival of the Nintendo Wi-Fi Connection service. Similar to RiiConnect24, but for multiplayer games instead of just Wii channels.</p>
+<a href="https://bluemaxima.org/flashpoint/" target="_blank">Flashpoint</a><p>not sure if this quite fits the description of an "old web" revival service, but I'll include it anyway. Flashpoint is a MASSIVE archive for online games using plugins like Adobe Flash, Silverlight, and even really obscure ones like the PopCap Plugin and ActiveX Controls.</p>
+<a href="https://ruffle.rs/" target="_blank">ruffle.rs</a><p>an Adobe Flash emulator, similar to Flashpoint. Unlike Flashpoint, it is available as a browser extension too.</p>
+</div>
+</div>
 <div class="controls-right">
 <div id="serverSelectPanel" style="display:inline-block;">
 <div class="controls">
@@ -153,7 +171,7 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 </div>
 </div>
 <a class="link-btn" id="samsArt" href="https://robustpvp.wixsite.com/super-parody-funtime" target="_blank" rel="noopener noreferrer">Super Parody Funtime (Portfolio)</a>
-<button id="helpBtn">?</button>
+<a class="link-btn" href="#" target="_blank">Donate</a>
 </div>
 </div>
 <div class="layout">
@@ -250,9 +268,6 @@ const chatTitle = document.getElementById('chatTitle');
 const marqueeInner = document.getElementById('marqueeInner');
 const marqueeWrap = document.getElementById('marquee');
 const boardSearch = document.getElementById('boardSearch');
-const helpOverlay = document.getElementById('helpOverlay');
-const helpBtn = document.getElementById('helpBtn');
-const helpClose = document.getElementById('helpClose');
 let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null;
 let channelListeners = {};
 let feedCache = [];
@@ -645,8 +660,6 @@ Array.from(boardList.children).forEach(el => {
 el.style.display = el.textContent.toLowerCase().includes(term) ? '' : 'none';
 });
 });
-helpBtn.onclick = () => helpOverlay.style.display = 'flex';
-helpClose.onclick = () => helpOverlay.style.display = 'none';
 setInterval(() => {
 activeUsersList.classList.add('glitch-update');
 setTimeout(() => activeUsersList.classList.remove('glitch-update'), 500);
