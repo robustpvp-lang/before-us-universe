@@ -81,6 +81,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .chat-controls input{flex:1;padding:8px;border:2px inset rgba(0,0,0,0.1);background:#fff;color:#000}
 .chat-controls button{padding:8px;border:2px outset rgba(0,0,0,0.1);background:#add8e6;cursor:pointer;color:#000}
 .board-thread{background:#f0f8ff;border:1px solid #ccc;padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:#000;white-space:pre-wrap;}
+.board-thread:nth-child(even) {background: #f0f0f0;}
 .board-thread strong{color:#000080;font-size:14px}
 .board-thread .small{color:#808080;font-style:italic;margin-top:4px;display:block}
 #serverSelectPanel{margin-bottom:12px;padding:8px}
@@ -186,7 +187,7 @@ body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 </div>
 </div>
 <div class="panel">
-<div class="panel-title"><div class="title">MESSAGE BOARD</div></div>
+<div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div></div>
 <div class="panel-body" id="boardBody">
 <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
 <input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
@@ -325,6 +326,7 @@ const systemFeed = document.getElementById('systemFeed');
 const dmList = document.getElementById('dmList');
 const ortegaBtn = document.getElementById('ortegaBtn');
 const chatTitle = document.getElementById('chatTitle');
+const boardTitle = document.getElementById('boardTitle');
 const marqueeInner = document.getElementById('marqueeInner');
 const marqueeWrap = document.getElementById('marquee');
 const boardSearch = document.getElementById('boardSearch');
@@ -466,6 +468,7 @@ function updateUserCount(data){
 const count = Object.keys(data[currentChannel] || {}).length;
 userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
 chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
+boardTitle.innerHTML = `//${currentChannel.toUpperCase()} MESSAGE BOARD`;
 }
 function watchPresenceEvents() {
 const channels = ['sam','exuro','nero','nora','loktal'];
@@ -598,6 +601,8 @@ setTimeout(() => {
 listenChannel(newCh);
 setPresence(myHandle, newCh);
 currentChannel = newCh;
+chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small" id="userCountSmall">0 users</span>`;
+boardTitle.innerHTML = `//${currentChannel.toUpperCase()} MESSAGE BOARD`;
 document.body.classList.remove('glitch-transition');
 }, 1000);
 }
@@ -697,6 +702,8 @@ initializePanels();
 appendSystem('System ready');
 listenChannel(currentChannel);
 appendSystem(`User '${myHandle}' logged in to //${currentChannel.toUpperCase()}`);
+chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small" id="userCountSmall">0 users</span>`;
+boardTitle.innerHTML = `//${currentChannel.toUpperCase()} MESSAGE BOARD`;
 }, 900);
 }
 function initializePanels(){
