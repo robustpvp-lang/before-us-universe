@@ -200,7 +200,7 @@ body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 <div class="panel">
 <div class="panel-title"><div class="title">ASCII ART GENERATOR</div></div>
 <div class="panel-body">
-<textarea id="asciiArt" placeholder="Type your ASCII art here..." style="width:100%;height:150px;font-family:monospace;background:var(--panel-bg);color:var(--fg);"></textarea>
+<textarea id="asciiArt" placeholder="Type your ASCII art here..." style="width:100%;height:150px;font-family:monospace;background:var(--panel-bg);color:var(--fg);;"></textarea>
 <button id="shareAscii" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer">Share to Board</button>
 </div>
 </div>
@@ -754,10 +754,6 @@ await remove(ref(db, `chat/${ch}/${id}`));
 }
 }
 } catch(e){ appendSystem('Purge error'); }
-}, 60*60*1000);
-</script>
-</body>
-</html>); }
 }, 60*60*1000);
 </script>
 </body>
