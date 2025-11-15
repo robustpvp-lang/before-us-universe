@@ -94,6 +94,9 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 #serverTrackingPanel .user-list div{margin:2px 0;padding:6px;background:#001f1f;border-radius:4px;cursor:pointer}
 #serverTrackingPanel .current-server .server-title{color:#000;background:var(--accent);padding:6px;border-radius:4px}
 .server-title .status-icon{margin-left:5px;font-size:14px;}
+.status-icon.animated{animation:pulse 1s infinite alternate;}
+@keyframes pulse{0%{opacity:1;}100%{opacity:0.5;}}
+.server-title .status-msg{font-style:italic;color:var(--muted);margin-left:8px;}
 #systemFeed{max-height:200px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px;color:var(--text-gray)}
 .dm-inline{border:1px solid rgba(255,255,255,0.03);padding:6px;margin:6px 0;background:#021212;border-radius:4px}
 .small{font-size:11px;color:var(--muted)}
@@ -103,6 +106,9 @@ a, button, .user-row{ -webkit-tap-highlight-color: transparent;}
 a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 #revivalSitesPanel a {color: #ffffff;}
 @media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
+body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
+@keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
+.ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;}
 </style>
 </head>
 <body>
@@ -192,6 +198,13 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 </div>
 </div>
 </div>
+<div class="panel">
+<div class="panel-title"><div class="title">ASCII ART GENERATOR</div></div>
+<div class="panel-body">
+<textarea id="asciiArt" placeholder="Type your ASCII art here..." style="width:100%;height:150px;font-family:monospace;background:var(--panel-bg);color:var(--fg);"></textarea>
+<button id="shareAscii" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer">Share to Board</button>
+</div>
+</div>
 </div>
 <div>
 <div class="panel" id="serverSelectPanel">
@@ -223,6 +236,14 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <div id="dmList" style="margin-top:8px"></div>
 <div class="small" style="margin-top:6px">Click a name to DM</div>
 </div>
+<div class="panel">
+<div class="panel-title"><div class="small">RETRO AD BANNERS</div></div>
+<div class="panel-body">
+<div class="ad-banner">Buy Impossible Teleporter - Only 999 Credits!</div>
+<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
+<div class="ad-banner">Vaporwave Vibes Inc. - Aesthetic Overload Guaranteed</div>
+</div>
+</div>
 <div class="panel collapsible collapsed" id="revivalSitesPanel">
 <div class="panel-title"><div class="small">REVIVAL SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" style="max-height:300px;overflow:auto">
@@ -245,6 +266,30 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 <a href="https://wiimmfi.de/" target="_blank">Wiimmfi</a><p>a revival of the Nintendo Wi-Fi Connection service. Similar to RiiConnect24, but for multiplayer games instead of just Wii channels.</p>
 <a href="https://bluemaxima.org/flashpoint/" target="_blank">Flashpoint</a><p>not sure if this quite fits the description of an "old web" revival service, but I'll include it anyway. Flashpoint is a MASSIVE archive for online games using plugins like Adobe Flash, Silverlight, and even really obscure ones like the PopCap Plugin and ActiveX Controls.</p>
 <a href="https://ruffle.rs/" target="_blank">ruffle.rs</a><p>an Adobe Flash emulator, similar to Flashpoint. Unlike Flashpoint, it is available as a browser extension too.</p>
+<a href="https://erm.m4tt72.com" target="_blank">erm.m4tt72.com</a><p>A terminal-style personal website that mimics command-line interfaces with interactive commands</p>
+<a href="https://www.mysteryfleshpitnationalpark.com/" target="_blank">Mystery Flesh Pit National Park</a><p>An ARG-style website presenting fiction as if it were a real national park</p>
+<a href="https://hypnagogicarchive.neocities.org/" target="_blank">The Hypnagogic Archive</a><p>Another ARG with retro aesthetics to tell mysterious stories</p>
+<a href="https://www.youtube.com/c/LOCAL58TV" target="_blank">Local58</a><p>YouTube-based presents fiction as old TV broadcasts, similar to "network" concept</p>
+<a href="#" target="_blank">Command-UI</a><p>A text-based adventure game with retro terminal CRT aesthetics and spacecraft storyline</p>
+<a href="https://space-bar.neocities.org/home" target="_blank">Space Bar</a><p>Interstellar dive bar</p>
+<a href="https://creaturefeatures.tv/" target="_blank">Creature Feature</a><p>Halloween site with horror & sci-fi movies</p>
+<a href="https://melonland.net/" target="_blank">Melonland Project</a><p>Community celebrating joyful, individual web experiences</p>
+<a href="https://status.cafe/" target="_blank">Status Cafe</a><p>Retro status-sharing platform</p>
+<a href="https://nightfall.city/" target="_blank">Nightfall City</a><p>Online community with vintage aesthetic</p>
+<a href="https://onio.cafe/" target="_blank">Onio.cafe</a><p>Ambient message-leaving site</p>
+<a href="https://netstory.io/" target="_blank">Netstory.io</a><p>Modern interactive fiction combining text adventures with browsers</p>
+<a href="https://itch.io/games/tag-twine" target="_blank">Twine-based stories on itch.io</a><p>Thousands of branching narrative games</p>
+<a href="https://www.ifarchive.org/" target="_blank">Interactive Fiction Archive</a><p>Preserves text adventure history</p>
+<a href="https://talefy.ai/" target="_blank">Talefy</a><p>AI-powered interactive storytelling</p>
+<p>ARG & Mystery Sites:</p>
+<a href="https://www.unfiction.com/history/the-beast/" target="_blank">The Beast (2001, historical)</a><p>First major ARG with terminal aesthetics</p>
+<a href="https://www.ilovebees.com/" target="_blank">I Love Bees</a><p>Halo 2 ARG with mysterious website</p>
+<a href="https://en.wikipedia.org/wiki/Cicada_3301" target="_blank">Cicada 3301</a><p>Cryptic puzzle ARG</p>
+<a href="https://x.com/TheSunVanished" target="_blank">The Sun Vanished (Twitter-based)</a><p>Dark world ARG told through social media</p>
+<a href="https://en.wikipedia.org/wiki/Audiogalaxy" target="_blank">Audiogalaxy/Napster Revivals</a><p>Links to music sharing/discovery services that recreate P2P file sharing culture (legally)</p>
+<a href="https://www.somethingawful.com/" target="_blank">Something Awful</a><p>Classic community still running</p>
+<a href="https://www.fark.com/" target="_blank">Fark</a><p>Classic community still running</p>
+<a href="https://www.phpbb.com/community/" target="_blank">phpBB communities</a><p>Classic vBulletin/phpBB communities still running</p>
 </div>
 </div>
 </div>
@@ -284,6 +329,8 @@ const chatTitle = document.getElementById('chatTitle');
 const marqueeInner = document.getElementById('marqueeInner');
 const marqueeWrap = document.getElementById('marquee');
 const boardSearch = document.getElementById('boardSearch');
+const asciiArt = document.getElementById('asciiArt');
+const shareAscii = document.getElementById('shareAscii');
 let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null;
 let channelListeners = {};
 let feedCache = [];
@@ -380,6 +427,13 @@ updateUserCount(data);
 updateTypingIndicator(data[currentChannel] || {});
 });
 }
+const serverMessages = {
+sam: "Online - Ready for adventure",
+exuro: "Busy - Fighting dragons",
+nero: "Away - In the shadows",
+nora: "Online - Singing songs",
+loktal: "Offline - Resting"
+};
 function renderServerTracking(data){
 serverTrackingList.innerHTML = '';
 const channels = ['sam','exuro','nero','nora','loktal'];
@@ -389,7 +443,7 @@ const count = users.length;
 const iconColor = count > 0 ? 'lime' : 'red';
 const branch = document.createElement('div');
 branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
-branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon" style="color:${iconColor}">●</span></div><div class="user-list"></div>`;
+branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon ${count > 0 ? 'animated' : ''}" style="color:${iconColor}">●</span> <span class="status-msg">${serverMessages[ch] || ''}</span></div><div class="user-list"></div>`;
 const userList = branch.querySelector('.user-list');
 if(count === 0){
 userList.innerHTML = '<div>—</div>';
@@ -533,15 +587,28 @@ const r = push(ref(db, 'board'));
 await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
 boardMsg.value = '';
 };
+postBoardBtn.onclick = async () => {
+if(!myHandle) return;
+if(!uid) return appendSystem('No UID - cannot post to board');
+const m = boardMsg.value.trim();
+if(!m || m.length > 1000) return;
+const r = push(ref(db, 'board'));
+await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
+boardMsg.value = '';
+};
 boardMsg.addEventListener('keydown', e => {
 if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
 });
 serverConfirm.onclick = () => {
 const newCh = channelSelect.value;
 if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
+document.body.classList.add('glitch-transition');
+setTimeout(() => {
 listenChannel(newCh);
 setPresence(myHandle, newCh);
 currentChannel = newCh;
+document.body.classList.remove('glitch-transition');
+}, 1000);
 }
 };
 ortegaBtn.onclick = () => appendSystem('Project ORTEGA is currently [DOWN].');
@@ -644,6 +711,14 @@ appendSystem(`User '${myHandle}' logged in to //${currentChannel.toUpperCase()}`
 function initializePanels(){
 document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
 }
+shareAscii.onclick = () => {
+const art = asciiArt.value.trim();
+if(art){
+boardMsg.value = 'ASCII Art:\n' + art;
+postBoardBtn.click();
+asciiArt.value = '';
+}
+};
 watchOnline();
 watchPresenceEvents();
 listenBoard();
