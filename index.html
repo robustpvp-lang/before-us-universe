@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23001a1a'/><path d='M20 25h60v10h-60zM20 45h60v10h-60zM20 65h60v10h-60z' fill='%2300ffff'/><circle cx='50' cy='50' r='8' fill='%23ffcc00'/></svg>" type="image/svg+xml">
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 <style>
 :root{
 --bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
@@ -222,6 +225,10 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//sora.ai</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body"></div>
+</div>
+<div class="panel collapsible">
+<div class="panel-title"><div class="title">//VIRTUAL PET</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="virtual-pet-root"></div>
 </div>
 </div>
 <div>
@@ -719,6 +726,8 @@ initializePanels();
 appendSystem('System ready');
 listenChannel(currentChannel);
 appendSystem(`User '${myHandle}' logged in to //${currentChannel.toUpperCase()}`);
+const root = ReactDOM.createRoot(document.getElementById('virtual-pet-root'));
+root.render(React.createElement(VirtualPet, { petName: myHandle }));
 }, 900);
 }
 function initializePanels(){
@@ -787,6 +796,402 @@ appendSystem('Idle timeout - returned to boot screen.');
 document.addEventListener('mousemove', resetIdleTimer);
 document.addEventListener('keydown', resetIdleTimer);
 document.addEventListener('touchstart', resetIdleTimer);
+</script>
+<script type="text/babel">
+const initialState = {
+captured: false,
+isOutside: false,
+pos: { x: 20, y: 30 },
+vel: { x: 2, y: 1 },
+hunger: 100,
+happiness: 100,
+bladder: 0,
+needsBathroom: false,
+poops: [],
+message: '',
+collapsed: false,
+isPetting: false,
+isDragging: false,
+isScared: false,
+animFrame: 0,
+petName: ''
+};
+function reducer(state, action) {
+switch (action.type) {
+case 'LOAD_STATE':
+return { ...state, ...action.payload };
+case 'SET_CAPTURED':
+return { ...state, captured: action.payload };
+case 'SET_IS_OUTSIDE':
+return { ...state, isOutside: action.payload };
+case 'SET_POS':
+return { ...state, pos: action.payload };
+case 'SET_VEL':
+return { ...state, vel: action.payload };
+case 'UPDATE_STATS':
+return { ...state, hunger: action.hunger, happiness: action.happiness, bladder: action.bladder };
+case 'SET_NEEDS_BATHROOM':
+return { ...state, needsBathroom: action.payload };
+case 'ADD_POOP':
+return { ...state, poops: [...state.poops, action.payload] };
+case 'REMOVE_POOP':
+return { ...state, poops: state.poops.filter(p => p.id !== action.payload) };
+case 'SET_MESSAGE':
+return { ...state, message: action.payload };
+case 'SET_COLLAPSED':
+return { ...state, collapsed: action.payload };
+case 'SET_IS_PETTING':
+return { ...state, isPetting: action.payload };
+case 'SET_IS_DRAGGING':
+return { ...state, isDragging: action.payload };
+case 'SET_IS_SCARED':
+return { ...state, isScared: action.payload };
+case 'SET_ANIM_FRAME':
+return { ...state, animFrame: action.payload };
+default:
+return state;
+}
+}
+const VirtualPet = ({ petName }) => {
+const [state, dispatch] = React.useReducer(reducer, { ...initialState, petName });
+const lastScrollY = React.useRef(0);
+const dragOffset = React.useRef({ x: 0, y: 0 });
+React.useEffect(() => {
+const storageKey = virtualPet_${petName};
+const saved = JSON.parse(localStorage.getItem(storageKey));
+if (saved) {
+dispatch({ type: 'LOAD_STATE', payload: saved });
+}
+}, [petName]);
+React.useEffect(() => {
+if (state.captured) {
+const storageKey = virtualPet_${petName};
+localStorage.setItem(storageKey, JSON.stringify(state));
+}
+}, [state, petName]);
+React.useEffect(() => {
+const interval = setInterval(() => {
+dispatch({ type: 'SET_ANIM_FRAME', payload: (state.animFrame + 1) % 4 });
+}, 300);
+return () => clearInterval(interval);
+}, [state.animFrame]);
+React.useEffect(() => {
+if (state.captured) return;
+const moveInterval = setInterval(() => {
+dispatch(prevState => {
+let newX = prevState.pos.x + prevState.vel.x;
+let newY = prevState.pos.y + prevState.vel.y;
+let newVelX = prevState.vel.x;
+let newVelY = prevState.vel.y;
+if (newX > 90 || newX < 5) {
+newVelX = -newVelX;
+newX = Math.max(5, Math.min(90, newX));
+}
+if (newY > 80 || newY < 5) {
+newVelY = -newVelY;
+newY = Math.max(5, Math.min(80, newY));
+}
+if (Math.random() < 0.02) {
+newVelX = (Math.random() - 0.5) * 3;
+newVelY = (Math.random() - 0.5) * 3;
+}
+dispatch({ type: 'SET_VEL', payload: { x: newVelX, y: newVelY } });
+return { type: 'SET_POS', payload: { x: newX, y: newY } };
+});
+}, 50);
+return () => clearInterval(moveInterval);
+}, [state.captured]);
+React.useEffect(() => {
+if (state.captured) return;
+const handleMouseMove = (e) => {
+const creatureX = (state.pos.x / 100) * window.innerWidth;
+const creatureY = (state.pos.y / 100) * window.innerHeight;
+const distance = Math.sqrt(
+Math.pow(e.clientX - creatureX, 2) +
+Math.pow(e.clientY - creatureY, 2)
+);
+if (distance < 150) {
+dispatch({ type: 'SET_IS_SCARED', payload: true });
+const angle = Math.atan2(creatureY - e.clientY, creatureX - e.clientX);
+dispatch({ type: 'SET_VEL', payload: {
+x: Math.cos(angle) * 4,
+y: Math.sin(angle) * 4
+} });
+} else {
+dispatch({ type: 'SET_IS_SCARED', payload: false });
+}
+};
+window.addEventListener('mousemove', handleMouseMove);
+return () => window.removeEventListener('mousemove', handleMouseMove);
+}, [state.captured, state.pos]);
+React.useEffect(() => {
+if (!state.captured) return;
+const interval = setInterval(() => {
+let newHunger = Math.max(0, state.hunger - 1);
+let newHappiness = Math.max(0, state.happiness - 0.5);
+let newBladder = Math.min(100, state.bladder + 2);
+if (newHunger === 0) {
+showMessage('Pet is starving! Feed now!');
+newHappiness = Math.max(0, newHappiness - 10);
+}
+if (newHappiness === 0) {
+showMessage('Pet is unhappy! Play with it!');
+}
+if (newBladder >= 80 && !state.needsBathroom && !state.isOutside) {
+dispatch({ type: 'SET_NEEDS_BATHROOM', payload: true });
+showMessage('Need bathroom!');
+}
+dispatch({ type: 'UPDATE_STATS', hunger: newHunger, happiness: newHappiness, bladder: newBladder });
+}, 2000);
+return () => clearInterval(interval);
+}, [state.captured, state.hunger, state.happiness, state.bladder, state.needsBathroom, state.isOutside]);
+React.useEffect(() => {
+if (!state.isOutside) return;
+const handleScroll = () => {
+const currentScroll = window.scrollY;
+const scrollDelta = currentScroll - lastScrollY.current;
+dispatch({ type: 'SET_VEL', payload: { x: state.vel.x, y: state.vel.y + scrollDelta * 0.1 } });
+lastScrollY.current = currentScroll;
+};
+window.addEventListener('scroll', handleScroll);
+return () => window.removeEventListener('scroll', handleScroll);
+}, [state.isOutside]);
+React.useEffect(() => {
+if (!state.isOutside || state.isDragging) return;
+const physics = setInterval(() => {
+dispatch(prevState => {
+let newX = prevState.pos.x;
+let newY = prevState.pos.y;
+let newVelX = prevState.vel.x;
+let newVelY = prevState.vel.y;
+newVelY += 0.3;
+if (Math.random() < 0.3) {
+newVelX += (Math.random() - 0.5) * 0.5;
+newVelY -= Math.random() * 2;
+}
+newX += newVelX;
+newY += newVelY;
+if (newX > 95 || newX < 5) {
+newVelX = -newVelX * 0.7;
+newX = Math.max(5, Math.min(95, newX));
+}
+if (newY > 85 || newY < 10) {
+newVelY = -newVelY * 0.6;
+newY = Math.max(10, Math.min(85, newY));
+}
+newVelX *= 0.95;
+newVelY *= 0.98;
+dispatch({ type: 'SET_VEL', payload: { x: newVelX, y: newVelY } });
+return { type: 'SET_POS', payload: { x: newX, y: newY } };
+});
+}, 50);
+return () => clearInterval(physics);
+}, [state.isOutside, state.vel, state.isDragging]);
+React.useEffect(() => {
+if (!state.captured || !state.isOutside || state.bladder < 80) return;
+const poopTimer = setTimeout(() => {
+const newPoop = { id: Date.now(), x: state.pos.x, y: state.pos.y + 10 };
+dispatch({ type: 'ADD_POOP', payload: newPoop });
+dispatch({ type: 'UPDATE_STATS', bladder: 0 });
+dispatch({ type: 'SET_NEEDS_BATHROOM', payload: false });
+showMessage('Relieved!');
+}, 2000);
+return () => clearTimeout(poopTimer);
+}, [state.captured, state.isOutside, state.bladder, state.pos]);
+React.useEffect(() => {
+if (!state.isDragging) return;
+const handleMove = (e) => {
+const viewportWidth = window.innerWidth;
+const viewportHeight = window.innerHeight;
+const newX = ((e.clientX - dragOffset.current.x) / viewportWidth) * 100;
+const newY = ((e.clientY - dragOffset.current.y) / viewportHeight) * 100;
+dispatch({ type: 'SET_POS', payload: { x: Math.max(5, Math.min(95, newX)), y: Math.max(5, Math.min(95, newY)) } });
+dispatch({ type: 'SET_VEL', payload: { x: 0, y: 0 } });
+};
+const handleUp = () => dispatch({ type: 'SET_IS_DRAGGING', payload: false });
+window.addEventListener('mousemove', handleMove);
+window.addEventListener('mouseup', handleUp);
+window.addEventListener('touchmove', handleMove, { passive: false });
+window.addEventListener('touchend', handleUp);
+return () => {
+window.removeEventListener('mousemove', handleMove);
+window.removeEventListener('mouseup', handleUp);
+window.removeEventListener('touchmove', handleMove);
+window.removeEventListener('touchend', handleUp);
+};
+}, [state.isDragging]);
+const showMessage = React.useCallback((msg) => {
+dispatch({ type: 'SET_MESSAGE', payload: msg });
+setTimeout(() => dispatch({ type: 'SET_MESSAGE', payload: '' }), 3000);
+}, []);
+const captureCreature = () => {
+if (state.captured) return;
+dispatch({ type: 'SET_CAPTURED', payload: true });
+showMessage('Caught!');
+dispatch({ type: 'SET_POS', payload: { x: 50, y: 50 } });
+dispatch({ type: 'SET_VEL', payload: { x: 0, y: 0 } });
+};
+const feed = () => {
+dispatch({ type: 'UPDATE_STATS', hunger: Math.min(100, state.hunger + 30), happiness: Math.min(100, state.happiness + 10) });
+showMessage('Yum!');
+};
+const play = () => {
+dispatch({ type: 'UPDATE_STATS', happiness: Math.min(100, state.happiness + 30), hunger: Math.max(0, state.hunger - 5) });
+showMessage('Fun!');
+};
+const letOut = () => {
+dispatch({ type: 'SET_IS_OUTSIDE', payload: true });
+dispatch({ type: 'SET_POS', payload: { x: 50, y: 50 } });
+dispatch({ type: 'SET_VEL', payload: { x: (Math.random() - 0.5) * 3, y: -2 } });
+showMessage('Outside!');
+};
+const bringBack = () => {
+dispatch({ type: 'SET_IS_OUTSIDE', payload: false });
+dispatch({ type: 'SET_POS', payload: { x: 50, y: 50 } });
+dispatch({ type: 'SET_VEL', payload: { x: 0, y: 0 } });
+showMessage('Home!');
+};
+const cleanPoop = (id) => {
+dispatch({ type: 'REMOVE_POOP', payload: id });
+dispatch({ type: 'UPDATE_STATS', happiness: Math.min(100, state.happiness + 15) });
+showMessage('Clean!');
+};
+const handleCreatureMouseDown = (e) => {
+if (!state.isOutside) return;
+dispatch({ type: 'SET_IS_DRAGGING', payload: true });
+const rect = e.currentTarget.getBoundingClientRect();
+dragOffset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+};
+const petCreature = () => {
+if (state.isDragging) return;
+dispatch({ type: 'SET_IS_PETTING', payload: true });
+dispatch({ type: 'UPDATE_STATS', happiness: Math.min(100, state.happiness + 5) });
+showMessage('Happy!');
+setTimeout(() => dispatch({ type: 'SET_IS_PETTING', payload: false }), 1000);
+};
+const getStatColor = (value) => {
+if (value > 60) return '#4caf50';
+if (value > 30) return '#ff9800';
+return '#f44336';
+};
+return (
+    
+      
+        
+          PIXEL PET
+          {!state.captured ? (
+            
+              A WILD CREATURE!
+              Move cursor near it...
+              Click to catch!
+            
+          ) : (
+            CAPTURED! Care for it below.
+          )}
+          
+        
+        {(!state.captured || state.isOutside) && (
+          
+            {state.isScared && !state.captured ? '😱' : state.isPetting ? '😊' : '👾'}
+          
+        )}
+        {state.poops.map(poop => (
+           cleanPoop(poop.id)} style={{
+            position: 'fixed',
+            left: `${poop.x}%`,
+            top: `${poop.y}%`,
+            fontSize: '40px',
+            cursor: 'pointer',
+            zIndex: 9998
+          }}>
+            💩
+          
+        ))}
+      
+      {state.captured && (
+        
+          
+            {state.petName ? `${state.petName.toUpperCase()}'S PET` : 'MY PET'}
+            <button onclick="{()" &#x3D;=""> dispatch({ type: 'SET_COLLAPSED', payload: !state.collapsed })} style={{
+              background: '#1a252f',
+              border: '2px solid #ecf0f1',
+              color: '#ecf0f1',
+              padding: '5px 10px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}>
+              {state.collapsed ? '▲' : '▼'}
+            </button>
+          
+          {state.message && (
+            
+              {state.message}
+            
+          )}
+          {!state.collapsed && (
+            <>
+              
+                {!state.isOutside ? (
+                  
+                    {state.isPetting ? '😊' : state.animFrame % 2 === 0 ? '👾' : '👻'}
+                  
+                ) : (
+                  
+                    ...
+                    OUTSIDE
+                  
+                )}
+              
+              
+                <statbar label="FOOD" value="{state.hunger}" color="{getStatColor(state.hunger)}">
+                <statbar label="HAPPY" value="{state.happiness}" color="{getStatColor(state.happiness)}">
+                <statbar label="POTTY" value="{state.bladder}" color="{getStatColor(100" -="" state.bladder)}="">
+              </statbar></statbar></statbar>
+              
+                <pixelbutton onclick="{feed}">FEED</pixelbutton>
+                <pixelbutton onclick="{play}">PLAY</pixelbutton>
+                {!state.isOutside ? (
+                  <pixelbutton onclick="{letOut}" danger="{state.needsBathroom}" style="{{" gridcolumn:="" &#x27;1="" -1&#x27;="" }}="">
+                    {state.needsBathroom ? 'POTTY!' : 'OUTSIDE'}
+                  </pixelbutton>
+                ) : (
+                  <pixelbutton onclick="{bringBack}" style="{{" gridcolumn:="" &#x27;1="" -1&#x27;="" }}="">
+                    RETURN
+                  </pixelbutton>
+                )}
+              
+            
+          )}
+        
+      )}
+    
+  );
+};
+const StatBar = ({ label, value, color }) => (
+  
+    
+      {label}
+      {Math.round(value)}%
+    
+    
+      
+    
+  
+);
+const PixelButton = ({ children, onClick, danger, style }) => (
+<button onClick={onClick} style={{
+padding: '12px',
+border: '3px solid #ecf0f1',
+background: danger ? '#e74c3c' : '#27ae60',
+color: '#ecf0f1',
+fontWeight: 'bold',
+cursor: 'pointer',
+fontSize: '0.9em',
+...style
+}}>
+{children}
+</button>
+);
 </script>
 </body>
 </html>
