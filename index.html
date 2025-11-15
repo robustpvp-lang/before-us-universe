@@ -109,6 +109,18 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 @keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
 .ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;}
+body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
+::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+#revivalSitesPanel .panel-body{max-height:100px;overflow:auto;}
+@keyframes flash{0%{opacity:1;}50%{opacity:0.5;}100%{opacity:1;}}
+.flash{animation:flash 1s infinite;}
+#emailPanel{margin-bottom:12px;padding:8px;}
+#emailForm{display:flex;gap:8px;align-items:center;}
+#emailInput{flex:1;padding:8px;background:#001f1f;border:2px solid var(--border);color:var(--fg);font-family:monospace;}
+#emailSubmit{background:var(--accent);color:#000;padding:8px 12px;border:2px solid #000;cursor:pointer;font-weight:700;}
+#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);loading:lazy;}
+@media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
 </style>
 </head>
 <body>
@@ -137,6 +149,7 @@ body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 </div>
 <div id="app">
 <div class="title-bar">
+<a class="link-btn flash" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer" title="Donate via PayPal (pmcdon13) or Venmo (@hisrobustness)">Donate</a>
 <div class="logo">BUU</div>
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
 <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
@@ -147,30 +160,38 @@ body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 <a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
 <a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
 <div class="controls-right">
-<a class="link-btn" href="#" target="_blank">Donate</a>
 <a class="link-btn" id="samsArt" href="https://robustpvp.wixsite.com/super-parody-funtime" target="_blank" rel="noopener noreferrer" title="pencil drawn on note cards from ref.">Patrick's Art</a>
+</div>
+</div>
+<div id="emailPanel" class="panel">
+<div class="panel-title"><div class="title"><span class="flash">Join</span> Our Email List for Updates</div></div>
+<div class="panel-body">
+<form id="emailForm" action="mailto:robust.pvp@gmail.com" method="post" enctype="text/plain">
+<input id="emailInput" type="email" name="email" placeholder="Your email" required aria-label="Enter your email">
+<button id="emailSubmit" type="submit" aria-label="Join email list">Subscribe</button>
+</form>
 </div>
 </div>
 <div class="layout">
 <div>
-<div class="panel">
-<div class="panel-title"><div class="title">PLAYLIST //SAM</div></div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">PLAYLIST //SAM</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="ytBody">
 <div class="yt-wrap" style="margin:8px">
 <iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen loading="lazy"></iframe>
 </div>
 </div>
 </div>
-<div class="panel">
-<div class="panel-title"><div class="title">//Vines</div></div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="soraBody">
-<div class="yt-wrap" style="margin:8px">
-<!-- Reserved for Sora AI videos -->
+<div id="shortstreams-wrap" style="margin:8px">
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen loading="lazy"></iframe>
 </div>
 </div>
 </div>
-<div class="panel">
-<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body chat-win" id="chatBody">
 <div class="chat-main">
 <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
@@ -186,8 +207,8 @@ body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 </div>
 </div>
 </div>
-<div class="panel">
-<div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div></div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="boardBody">
 <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
 <input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
@@ -197,6 +218,10 @@ body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 <button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
 </div>
 </div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//sora.ai</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body"></div>
 </div>
 </div>
 <div>
@@ -220,17 +245,19 @@ body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 <div class="panel" id="ortegaPanel">
 <button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
 </div>
-<div class="panel collapsible" id="serverTrackingPanel">
-<div class="panel-title"><div class="small">SERVER TRACKING</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel" id="serverTrackingPanel">
+<div class="panel-title"><div class="small">SERVER TRACKING</div></div>
 <div class="panel-body" id="serverTrackingList"></div>
 </div>
-<div class="panel">
-<div class="small">DIRECT MESSAGES</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="small">DIRECT MESSAGES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body">
 <div id="dmList" style="margin-top:8px"></div>
 <div class="small" style="margin-top:6px">Click a name to DM</div>
 </div>
-<div class="panel">
-<div class="panel-title"><div class="small">RETRO AD BANNERS</div></div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="small">RETRO AD BANNERS</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body">
 <div class="ad-banner">Buy Impossible Teleporter - Only 999 Credits!</div>
 <div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
@@ -238,8 +265,8 @@ body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 </div>
 </div>
 <div class="panel collapsible collapsed" id="revivalSitesPanel">
-<div class="panel-title"><div class="small">REVIVAL SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" style="max-height:300px;overflow:auto">
+<div class="panel-title flash"><div class="small">REVIVAL SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" style="max-height:100px;overflow:auto">
 <a href="https://escargot.chat/" target="_blank">escargot.chat</a><p>a revival of Microsoft's MSN Messenger/Windows Live Messenger service. Works with all MSN/WLM clients from 1.0 to 9.0.</p>
 <a href="https://escargot.live/" target="_blank">escargot.live</a><p>a revival of Windows Live Spaces and Windows Live Profiles, run by the same team as escargot.chat. It will launch this summer.</p>
 <a href="#" target="_blank">NINA</a><p>a revival of the old AOL Desktop clients. It also hasn't launched yet, and there's no ETA, but rest assured it'll be here someday :D</p>
@@ -435,7 +462,7 @@ userList.innerHTML = '<div>—</div>';
 } else {
 users.forEach(u => {
 const div = document.createElement('div');
-div.textContent = u.name + (u.typing ? ' (typing...)' : '');
+div.textContent = (u.name || 'Anonymous') + (u.typing ? ' (typing...)' : '');
 div.onclick = () => openDMInline(u.uid, u.name);
 userList.appendChild(div);
 });
@@ -448,7 +475,7 @@ activeUsersList.innerHTML = '';
 Object.values(obj || {}).forEach(u => {
 const row = document.createElement('div'); row.className = 'user-row';
 const dot = document.createElement('div'); dot.className = 'status-dot';
-const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name;
+const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name || 'Anonymous';
 name.onclick = () => openDMInline(u.uid, u.name);
 row.append(dot, name);
 activeUsersList.appendChild(row);
@@ -465,11 +492,11 @@ const channels = ['sam','exuro','nero','nora','loktal'];
 channels.forEach(ch => {
 onChildAdded(ref(db, `online/${ch}`), snap => {
 const u = snap.val();
-if (u && u.uid !== uid) appendSystem(`User '${u.name}' joined //${ch.toUpperCase()}`);
+if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
 });
 onChildRemoved(ref(db, `online/${ch}`), snap => {
 const u = snap.val();
-if (u && u.uid !== uid) appendSystem(`User '${u.name}' left //${ch.toUpperCase()}`);
+if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
 });
 });
 }
@@ -495,7 +522,7 @@ const row = document.createElement('div'); row.className = 'chat-row';
 const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
 const bub = document.createElement('div'); bub.className = 'chat-bubble';
 if(o.uid === uid) bub.classList.add('me');
-bub.innerHTML = `<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+bub.innerHTML = `<div class="chat-meta">${o.name || 'Anonymous'} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
 if(o.uid === uid){
 const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
 edit.onclick = () => { /* edit logic */ };
@@ -551,7 +578,7 @@ boardListeners[ch] = {ref: r, fn};
 }
 function renderBoardPost(p, id){
 const el = document.createElement('div'); el.className = 'board-thread';
-el.innerHTML = `<strong>${esc(p.name)}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
+el.innerHTML = `<strong>${esc(p.name || 'Anonymous')}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
 const reply = document.createElement('span');
 reply.textContent = '[Reply]';
 reply.style.cursor = 'pointer';
@@ -610,7 +637,7 @@ registerDMPair(tuid);
 const pid = [uid, tuid].sort().join('_');
 if(document.querySelector(`[data-dmid="${pid}"]`)) return;
 const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
-const header = document.createElement('div'); header.textContent = `DM: ${tname}`; header.style.fontWeight = '700';
+const header = document.createElement('div'); header.textContent = `DM: ${tname || 'Anonymous'}`; header.style.fontWeight = '700';
 const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
 const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
 const send = document.createElement('button'); send.textContent = 'Send'; send.style.marginTop = '6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
@@ -620,7 +647,7 @@ const dmRef = ref(db, `dm/${pid}`);
 onChildAdded(dmRef, snap => {
 const o = snap.val();
 const el = document.createElement('div'); el.style.margin = '6px 0';
-el.textContent = `${o.fromName}: ${o.msg}`;
+el.textContent = `${o.fromName || 'Anonymous'}: ${o.msg}`;
 msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
 });
 send.onclick = async () => {
@@ -641,9 +668,10 @@ const isTyping = chatInput.value.trim().length > 0;
 set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
 clearTimeout(typingTimeout);
 typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
+resetIdleTimer();
 });
 function updateTypingIndicator(obj){
-const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name);
+const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name || 'Anonymous');
 document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
 }
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -679,6 +707,7 @@ appendSystem('Profile save failed: ' + e.message);
 setPresence(myHandle, currentChannel);
 }, 500);
 finishBoot();
+resetIdleTimer();
 });
 function finishBoot(){
 bootStatus.textContent = `Welcome, ${myHandle}!`;
@@ -745,6 +774,19 @@ if (uid && currentChannel) {
 set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
 }
 }, 300000);
+let idleTimer;
+function resetIdleTimer() {
+clearTimeout(idleTimer);
+idleTimer = setTimeout(() => {
+if(presenceRef) remove(presenceRef);
+bootOverlay.style.display = 'flex';
+appRoot.style.display = 'none';
+appendSystem('Idle timeout - returned to boot screen.');
+}, 600000); // 10 minutes
+}
+document.addEventListener('mousemove', resetIdleTimer);
+document.addEventListener('keydown', resetIdleTimer);
+document.addEventListener('touchstart', resetIdleTimer);
 </script>
 </body>
 </html>
