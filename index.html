@@ -124,6 +124,9 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #emailSubmit{background:var(--accent);color:#000;padding:8px 12px;border:2px solid #000;cursor:pointer;font-weight:700;}
 #shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);loading:lazy;}
 @media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
+#vine-wrap iframe{width:360px;height:640px;border:4px solid var(--border);loading:lazy;}
+@media(max-width:600px){#vine-wrap iframe{width:100%;height:560px;}}
+.bottom-section{margin-top:12px;}
 </style>
 </head>
 <body>
@@ -152,8 +155,9 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 <div id="app">
 <div class="title-bar">
-<a class="link-btn flash" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer" title="Donate via PayPal (pmcdon13) or Venmo (@hisrobustness)">Donate</a>
 <div class="logo">BUU</div>
+<a class="link-btn flash" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal</a>
+<a class="link-btn flash" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo</a>
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
 <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
@@ -163,7 +167,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
 <a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
 <div class="controls-right">
-<a class="link-btn" id="samsArt" href="https://robustpvp.wixsite.com/super-parody-funtime" target="_blank" rel="noopener noreferrer" title="pencil drawn on note cards from ref.">Patrick's Art</a>
 </div>
 </div>
 <div id="emailPanel" class="panel">
@@ -224,11 +227,35 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//sora.ai</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body"></div>
+<div class="panel-body" id="vineBody">
+<div id="vine-wrap" style="display:flex; flex-direction:column; gap:10px; margin:8px">
+<iframe src="https://sendvid.com/embed/0c8dl0bv" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/xxixiywf" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/usocjxvk" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/2d59hgkv" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/i2hzp3nt" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/307idtnc" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/jq9sr48s" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/8ew7k1xz" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/2mia7yat" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/0m0vjefo" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/gp6oh3w7" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/pv63vm21" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/iv60r8he" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/pk7zb18c" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/o7djkxku" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/nfccmiqb" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/89nunxww" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/7no2540r" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/weuus52x" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/oqixh9i0" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/x3jo7qhs" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/tbrhbmk2" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/i9to7i9k" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/7z9yljep" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://sendvid.com/embed/vxo3hv19" allowfullscreen loading="lazy"></iframe>
 </div>
-<div class="panel collapsible">
-<div class="panel-title"><div class="title">//TIAMAT BREACH DETECTED!!</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="virtual-pet-root"></div>
+</div>
 </div>
 </div>
 <div>
@@ -260,14 +287,17 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="small" style="margin-top:6px">Click a name to DM</div>
 </div>
 </div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="small">RETRO AD BANNERS</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel glitch">
+<div class="panel-title"><div class="small">RETRO AD BANNERS</div></div>
 <div class="panel-body">
 <div class="ad-banner">Buy Impossible Teleporter - Only 999 Credits!</div>
 <div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
 <div class="ad-banner">Vaporwave Vibes Inc. - Aesthetic Overload Guaranteed</div>
 </div>
 </div>
+</div>
+</div>
+<div class="bottom-section">
 <div class="panel collapsible collapsed" id="revivalSitesPanel">
 <div class="panel-title flash"><div class="small">REVIVAL SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" style="max-height:100px;overflow:auto">
@@ -315,6 +345,35 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <a href="https://www.fark.com/" target="_blank">Fark</a><p>Classic community still running</p>
 <a href="https://www.phpbb.com/community/" target="_blank">phpBB communities</a><p>Classic vBulletin/phpBB communities still running</p>
 </div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body">
+<a href="https://imgbox.com/g/7spAtXSkFi" target="_blank">Gallery 1</a><br>
+<a href="https://imgbox.com/g/0m2TljGOPp" target="_blank">Gallery 2</a><br>
+<a href="https://imgbox.com/g/vag2TToeTw" target="_blank">Gallery 3</a><br>
+<a href="https://imgbox.com/g/MHC5RFn0it" target="_blank">Gallery 4</a><br>
+<a href="https://imgbox.com/g/jaCSMGh4a1" target="_blank">Gallery 5</a><br>
+<a href="https://imgbox.com/g/lQHM6EY0pf" target="_blank">Gallery 6</a><br>
+<a href="https://imgbox.com/g/8sSK8RALYq" target="_blank">Gallery 7</a><br>
+<a href="https://imgbox.com/g/S1MHwynxPs" target="_blank">Gallery 8</a><br>
+<a href="https://imgbox.com/g/lpmSp9KPyW" target="_blank">Gallery 9</a><br>
+<a href="https://imgbox.com/g/YYCtbDyDJq" target="_blank">Gallery 10</a><br>
+<a href="https://imgbox.com/g/sAStLCtCjU" target="_blank">Gallery 11</a><br>
+<a href="https://imgbox.com/g/RU0DGepWyI" target="_blank">Gallery 12</a><br>
+</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//STUMBLE UPON</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body">
+<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;">Feeling Lucky</button>
+<iframe id="stumbleIframe" style="width:100%; height:500px; border:4px solid var(--border); margin-top:12px;" loading="lazy"></iframe>
+</div>
+</div>
+<div class="panel" id="visitorPanel">
+<div class="panel-title"><div class="small">//VISITOR COUNT</div></div>
+<div class="panel-body">
+<div id="visitorCounter">Visitors: Loading...</div>
 </div>
 </div>
 </div>
@@ -723,8 +782,13 @@ initializePanels();
 appendSystem('System ready');
 listenChannel(currentChannel);
 appendSystem(`User '${myHandle}' logged in to //${currentChannel.toUpperCase()}`);
-const root = ReactDOM.createRoot(document.getElementById('virtual-pet-root'));
-root.render(React.createElement(VirtualPet, { petName: myHandle }));
+const visitorsRef = ref(db, 'visitors/count');
+get(visitorsRef).then(snap => {
+let count = snap.val() || 0;
+count++;
+set(visitorsRef, count);
+document.getElementById('visitorCounter').textContent = 'Visitors: ' + count;
+}).catch(() => {document.getElementById('visitorCounter').textContent = 'Visitors: Error';});
 }, 900);
 }
 function initializePanels(){
@@ -793,369 +857,13 @@ appendSystem('Idle timeout - returned to boot screen.');
 document.addEventListener('mousemove', resetIdleTimer);
 document.addEventListener('keydown', resetIdleTimer);
 document.addEventListener('touchstart', resetIdleTimer);
-</script>
-<script type="text/babel">
-const initialState = {
-captured: false,
-isOutside: false,
-pos: { x: 20, y: 30 },
-vel: { x: 2, y: 1 },
-hunger: 100,
-happiness: 100,
-bladder: 0,
-needsBathroom: false,
-poops: [],
-message: '',
-collapsed: false,
-isPetting: false,
-isDragging: false,
-isScared: false,
-animFrame: 0,
+const revivalLinks = Array.from(document.querySelectorAll('#revivalSitesPanel .panel-body a'))
+.map(a => a.href)
+.filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com'));
+document.getElementById('stumbleBtn').onclick = () => {
+const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)];
+document.getElementById('stumbleIframe').src = randomLink;
 };
-const VirtualPet = ({ petName }) => {
-const [captured, setCaptured] = React.useState(false);
-const [isOutside, setIsOutside] = React.useState(false);
-const [pos, setPos] = React.useState({ x: 20, y: 30 });
-const [vel, setVel] = React.useState({ x: 2, y: 1 });
-const [hunger, setHunger] = React.useState(100);
-const [happiness, setHappiness] = React.useState(100);
-const [bladder, setBladder] = React.useState(0);
-const [needsBathroom, setNeedsBathroom] = React.useState(false);
-const [poops, setPoops] = React.useState([]);
-const [message, setMessage] = React.useState('');
-const [collapsed, setCollapsed] = React.useState(false);
-const [isPetting, setIsPetting] = React.useState(false);
-const [isDragging, setIsDragging] = React.useState(false);
-const [isScared, setIsScared] = React.useState(false);
-const [animFrame, setAnimFrame] = React.useState(0);
-const lastScrollY = React.useRef(0);
-const dragOffset = React.useRef({ x: 0, y: 0 });
-React.useEffect(() => {
-const interval = setInterval(() => {
-setAnimFrame(prev => (prev + 1) % 4);
-}, 300);
-return () => clearInterval(interval);
-}, []);
-React.useEffect(() => {
-if (captured) return;
-const moveInterval = setInterval(() => {
-setPos(prev => {
-let newX = prev.x + vel.x;
-let newY = prev.y + vel.y;
-let newVelX = vel.x;
-let newVelY = vel.y;
-if (newX > 90 || newX < 5) {
-newVelX = -newVelX;
-newX = Math.max(5, Math.min(90, newX));
-}
-if (newY > 80 || newY < 5) {
-newVelY = -newVelY;
-newY = Math.max(5, Math.min(80, newY));
-}
-if (Math.random() < 0.02) {
-newVelX = (Math.random() - 0.5) * 3;
-newVelY = (Math.random() - 0.5) * 3;
-}
-setVel({ x: newVelX, y: newVelY });
-return { x: newX, y: newY };
-});
-}, 50);
-return () => clearInterval(moveInterval);
-}, [captured, vel]);
-React.useEffect(() => {
-if (captured) return;
-const handleMouseMove = (e) => {
-const creatureX = (pos.x / 100) * window.innerWidth;
-const creatureY = (pos.y / 100) * window.innerHeight;
-const distance = Math.sqrt(
-Math.pow(e.clientX - creatureX, 2) +
-Math.pow(e.clientY - creatureY, 2)
-);
-if (distance < 150) {
-setIsScared(true);
-const angle = Math.atan2(creatureY - e.clientY, creatureX - e.clientX);
-setVel({
-x: Math.cos(angle) * 4,
-y: Math.sin(angle) * 4
-});
-} else {
-setIsScared(false);
-}
-};
-window.addEventListener('mousemove', handleMouseMove);
-return () => window.removeEventListener('mousemove', handleMouseMove);
-}, [captured, pos]);
-React.useEffect(() => {
-if (!captured) return;
-const interval = setInterval(() => {
-setHunger(prev => Math.max(0, prev - 1));
-setHappiness(prev => Math.max(0, prev - 0.5));
-setBladder(prev => {
-const newVal = Math.min(100, prev + 2);
-if (newVal >= 80 && !needsBathroom && !isOutside) {
-setNeedsBathroom(true);
-showMessage('Chaos Overflow!');
-}
-return newVal;
-});
-}, 2000);
-return () => clearInterval(interval);
-}, [captured, needsBathroom, isOutside]);
-React.useEffect(() => {
-if (!isOutside) return;
-const handleScroll = () => {
-const currentScroll = window.scrollY;
-const scrollDelta = currentScroll - lastScrollY.current;
-setVel(prev => ({ x: prev.x, y: prev.y + scrollDelta * 0.1 }));
-lastScrollY.current = currentScroll;
-};
-window.addEventListener('scroll', handleScroll);
-return () => window.removeEventListener('scroll', handleScroll);
-}, [isOutside]);
-React.useEffect(() => {
-if (!isOutside || isDragging) return;
-const physics = setInterval(() => {
-setPos(prev => {
-let newX = prev.x;
-let newY = prev.y;
-let newVelX = vel.x;
-let newVelY = vel.y;
-newVelY += 0.3;
-if (Math.random() < 0.3) {
-newVelX += (Math.random() - 0.5) * 0.5;
-newVelY -= Math.random() * 2;
-}
-newX += newVelX;
-newY += newVelY;
-if (newX > 95 || newX < 5) {
-newVelX = -newVelX * 0.7;
-newX = Math.max(5, Math.min(95, newX));
-}
-if (newY > 85 || newY < 10) {
-newVelY = -newVelY * 0.6;
-newY = Math.max(10, Math.min(85, newY));
-}
-newVelX *= 0.95;
-newVelY *= 0.98;
-setVel({ x: newVelX, y: newVelY });
-return { x: newX, y: newY };
-});
-}, 50);
-return () => clearInterval(physics);
-}, [isOutside, vel, isDragging]);
-React.useEffect(() => {
-if (!captured || !isOutside || bladder < 80) return;
-const poopTimer = setTimeout(() => {
-const newPoop = { id: Date.now(), x: pos.x, y: pos.y + 10 };
-setPoops(prev => [...prev, newPoop]);
-setBladder(0);
-setNeedsBathroom(false);
-showMessage('Chaos Released!');
-}, 2000);
-return () => clearTimeout(poopTimer);
-}, [captured, isOutside, bladder, pos.x, pos.y]);
-React.useEffect(() => {
-if (!isDragging) return;
-const handleMove = (e) => {
-const viewportWidth = window.innerWidth;
-const viewportHeight = window.innerHeight;
-const newX = ((e.clientX - dragOffset.current.x) / viewportWidth) * 100;
-const newY = ((e.clientY - dragOffset.current.y) / viewportHeight) * 100;
-setPos({ x: Math.max(5, Math.min(95, newX)), y: Math.max(5, Math.min(95, newY)) });
-setVel({ x: 0, y: 0 });
-};
-const handleUp = () => setIsDragging(false);
-window.addEventListener('mousemove', handleMove);
-window.addEventListener('mouseup', handleUp);
-return () => {
-window.removeEventListener('mousemove', handleMove);
-window.removeEventListener('mouseup', handleUp);
-};
-}, [isDragging]);
-const showMessage = (msg) => {
-setMessage(msg);
-setTimeout(() => setMessage(''), 3000);
-};
-const captureCreature = () => {
-if (captured) return;
-setCaptured(true);
-showMessage('Breach Contained!');
-setPos({ x: 50, y: 50 });
-setVel({ x: 0, y: 0 });
-};
-const feed = () => {
-setHunger(Math.min(100, hunger + 30));
-setHappiness(Math.min(100, happiness + 10));
-showMessage('Chaos Absorbed!');
-};
-const play = () => {
-setHappiness(Math.min(100, happiness + 30));
-setHunger(Math.max(0, hunger - 5));
-showMessage('Chaos Unleashed!');
-};
-const letOut = () => {
-setIsOutside(true);
-setPos({ x: 50, y: 50 });
-setVel({ x: (Math.random() - 0.5) * 3, y: -2 });
-showMessage('Breach Expanded!');
-};
-const bringBack = () => {
-setIsOutside(false);
-setPos({ x: 50, y: 50 });
-setVel({ x: 0, y: 0 });
-showMessage('Breach Sealed!');
-};
-const cleanPoop = (id) => {
-setPoops(prev => prev.filter(p => p.id !== id));
-setHappiness(Math.min(100, happiness + 15));
-showMessage('Chaos Cleansed!');
-};
-const handleCreatureMouseDown = (e) => {
-if (!isOutside) return;
-setIsDragging(true);
-const rect = e.currentTarget.getBoundingClientRect();
-dragOffset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-};
-const petCreature = () => {
-if (isDragging) return;
-setIsPetting(true);
-setHappiness(Math.min(100, happiness + 5));
-showMessage('Harmony Restored!');
-setTimeout(() => setIsPetting(false), 1000);
-};
-const getStatColor = (value) => {
-if (value > 60) return '#4caf50';
-if (value > 30) return '#ff9800';
-return '#f44336';
-};
-return (
-<div style={{ position: 'relative', height: '300px', border: '2px solid #ecf0f1', background: '#1a252f', padding: '20px', color: '#ecf0f1' }}>
-<h3>TIAMAT BREACH DETECTED!!</h3>
-{!captured ? (
-<div style={{ textAlign: 'center' }}>
-<p>A CHAOS ENTITY!</p>
-<p>Move cursor near it...</p>
-<button onClick={captureCreature} style={{ padding: '10px', background: '#e74c3c', color: '#ecf0f1', border: '2px solid #ecf0f1', cursor: 'pointer' }}>
-CONTAIN BREACH!
-</button>
-</div>
-) : (
-<p>CONTAINED! Stabilize below.</p>
-)}
-{(!captured || isOutside) && (
-<div onMouseDown={handleCreatureMouseDown} style={{
-position: 'fixed',
-left: `${pos.x}%`,
-top: `${pos.y}%`,
-fontSize: '60px',
-zIndex: 9999,
-cursor: isOutside ? 'grab' : 'default',
-transform: isScared ? 'scale(1.2)' : 'none',
-transition: 'transform 0.2s'
-}}>
-{isScared && !captured ? '😱' : isPetting ? '😊' : '🐉'}
-</div>
-)}
-{poops.map(poop => (
-<div key={poop.id} onClick={() => cleanPoop(poop.id)} style={{
-position: 'fixed',
-left: `${poop.x}%`,
-top: `${poop.y}%`,
-fontSize: '40px',
-cursor: 'pointer',
-zIndex: 9998
-}}>
-💩
-</div>
-))}
-{captured && (
-<div style={{ marginTop: '20px', padding: '15px', background: '#2c3e50', border: '2px solid #ecf0f1', borderRadius: '5px' }}>
-<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-<h4>MY ENTITY</h4>
-<button onClick={() => setCollapsed(!collapsed)} style={{
-background: '#1a252f',
-border: '2px solid #ecf0f1',
-color: '#ecf0f1',
-padding: '5px 10px',
-cursor: 'pointer',
-fontWeight: 'bold'
-}}>
-{collapsed ? '▲' : '▼'}
-</button>
-</div>
-{message && (
-<div style={{ marginTop: '10px', padding: '8px', background: '#e67e22', borderRadius: '4px', textAlign: 'center' }}>
-{message}
-</div>
-)}
-{!collapsed && (
-<>
-<div style={{ textAlign: 'center', margin: '15px 0' }}>
-{!isOutside ? (
-<div onMouseDown={handleCreatureMouseDown} onClick={petCreature} style={{
-fontSize: '80px',
-cursor: 'pointer',
-animation: isPetting ? 'pulse 1s' : 'none'
-}}>
-{isPetting ? '😊' : animFrame % 2 === 0 ? '🐉' : '🦕'}
-</div>
-) : (
-<p style={{ fontSize: '1.2em', color: '#e74c3c' }}>
-...
-BREACH ACTIVE
-</p>
-)}
-</div>
-<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-<StatBar label="ENERGY" value={hunger} color={getStatColor(hunger)} />
-<StatBar label="STABILITY" value={happiness} color={getStatColor(happiness)} />
-<StatBar label="OVERFLOW" value={bladder} color={getStatColor(100 - bladder)} />
-</div>
-<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '15px' }}>
-<PixelButton onClick={feed}>INFUSE</PixelButton>
-<PixelButton onClick={play}>DISRUPT</PixelButton>
-{!isOutside ? (
-<PixelButton onClick={letOut} danger={needsBathroom} style={{ gridColumn: '1 / -1' }}>
-{needsBathroom ? 'RELEASE!' : 'EXPAND'}
-</PixelButton>
-) : (
-<PixelButton onClick={bringBack} style={{ gridColumn: '1 / -1' }}>
-SEAL
-</PixelButton>
-)}
-</div>
-</>
-)}
-</div>
-)}
-</div>
-);
-};
-const StatBar = ({ label, value, color }) => (
-<div style={{ margin: '8px 0' }}>
-<div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9em' }}>
-<span>{label}</span>
-<span>{Math.round(value)}%</span>
-</div>
-<div style={{ height: '8px', background: '#34495e', borderRadius: '4px' }}>
-<div style={{ width: `${value}%`, height: '100%', background: color, borderRadius: '4px' }}></div>
-</div>
-</div>
-);
-const PixelButton = ({ children, onClick, danger, style }) => (
-<button onClick={onClick} style={{
-padding: '12px',
-border: '3px solid #ecf0f1',
-background: danger ? '#e74c3c' : '#27ae60',
-color: '#ecf0f1',
-fontWeight: 'bold',
-cursor: 'pointer',
-fontSize: '0.9em',
-...style
-}}>
-{children}
-</button>
-);
 </script>
 </body>
 </html>
