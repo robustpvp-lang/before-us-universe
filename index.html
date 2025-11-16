@@ -177,23 +177,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 <div class="layout">
 <div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">PLAYLIST //SAM</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="ytBody">
-<div class="yt-wrap" style="margin:8px">
-<iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen loading="lazy"></iframe>
-</div>
-</div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="soraBody">
-<div id="shortstreams-wrap" style="margin:8px">
-<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen loading="lazy"></iframe>
-</div>
-</div>
-</div>
-<div class="panel collapsible collapsed">
+<div class="panel collapsible">
 <div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body chat-win" id="chatBody">
 <div class="chat-main">
@@ -207,6 +191,22 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="chat-controls">
 <input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
 <button id="sendBtn" aria-label="Send message">SEND</button>
+</div>
+</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">PLAYLIST //SAM</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="ytBody">
+<div class="yt-wrap" style="margin:8px">
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen loading="lazy"></iframe>
+</div>
+</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="soraBody">
+<div id="shortstreams-wrap" style="margin:8px">
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen loading="lazy"></iframe>
 </div>
 </div>
 </div>
@@ -227,7 +227,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel-body"></div>
 </div>
 <div class="panel collapsible">
-<div class="panel-title"><div class="title">//VIRTUAL PET</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-title"><div class="title">//TIAMAT BREACH DETECTED!!</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="virtual-pet-root"></div>
 </div>
 </div>
@@ -249,12 +249,9 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel-title"><div class="small">SYSTEM FEED</div></div>
 <div class="panel-body" id="systemFeed"></div>
 </div>
-<div class="panel" id="ortegaPanel">
-<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-</div>
 <div class="panel" id="serverTrackingPanel">
 <div class="panel-title"><div class="small">SERVER TRACKING</div></div>
-<div class="panel-body" id="serverTrackingList"></div>
+<div class="panel-body" id="serverTrackingList"><button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button></div>
 </div>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="small">DIRECT MESSAGES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -816,30 +813,30 @@ isScared: false,
 animFrame: 0,
 };
 const VirtualPet = ({ petName }) => {
-const [captured, setCaptured] = useState(false);
-const [isOutside, setIsOutside] = useState(false);
-const [pos, setPos] = useState({ x: 20, y: 30 });
-const [vel, setVel] = useState({ x: 2, y: 1 });
-const [hunger, setHunger] = useState(100);
-const [happiness, setHappiness] = useState(100);
-const [bladder, setBladder] = useState(0);
-const [needsBathroom, setNeedsBathroom] = useState(false);
-const [poops, setPoops] = useState([]);
-const [message, setMessage] = useState('');
-const [collapsed, setCollapsed] = useState(false);
-const [isPetting, setIsPetting] = useState(false);
-const [isDragging, setIsDragging] = useState(false);
-const [isScared, setIsScared] = useState(false);
-const [animFrame, setAnimFrame] = useState(0);
-const lastScrollY = useRef(0);
-const dragOffset = useRef({ x: 0, y: 0 });
-useEffect(() => {
+const [captured, setCaptured] = React.useState(false);
+const [isOutside, setIsOutside] = React.useState(false);
+const [pos, setPos] = React.useState({ x: 20, y: 30 });
+const [vel, setVel] = React.useState({ x: 2, y: 1 });
+const [hunger, setHunger] = React.useState(100);
+const [happiness, setHappiness] = React.useState(100);
+const [bladder, setBladder] = React.useState(0);
+const [needsBathroom, setNeedsBathroom] = React.useState(false);
+const [poops, setPoops] = React.useState([]);
+const [message, setMessage] = React.useState('');
+const [collapsed, setCollapsed] = React.useState(false);
+const [isPetting, setIsPetting] = React.useState(false);
+const [isDragging, setIsDragging] = React.useState(false);
+const [isScared, setIsScared] = React.useState(false);
+const [animFrame, setAnimFrame] = React.useState(0);
+const lastScrollY = React.useRef(0);
+const dragOffset = React.useRef({ x: 0, y: 0 });
+React.useEffect(() => {
 const interval = setInterval(() => {
 setAnimFrame(prev => (prev + 1) % 4);
 }, 300);
 return () => clearInterval(interval);
 }, []);
-useEffect(() => {
+React.useEffect(() => {
 if (captured) return;
 const moveInterval = setInterval(() => {
 setPos(prev => {
@@ -865,7 +862,7 @@ return { x: newX, y: newY };
 }, 50);
 return () => clearInterval(moveInterval);
 }, [captured, vel]);
-useEffect(() => {
+React.useEffect(() => {
 if (captured) return;
 const handleMouseMove = (e) => {
 const creatureX = (pos.x / 100) * window.innerWidth;
@@ -888,7 +885,7 @@ setIsScared(false);
 window.addEventListener('mousemove', handleMouseMove);
 return () => window.removeEventListener('mousemove', handleMouseMove);
 }, [captured, pos]);
-useEffect(() => {
+React.useEffect(() => {
 if (!captured) return;
 const interval = setInterval(() => {
 setHunger(prev => Math.max(0, prev - 1));
@@ -897,14 +894,14 @@ setBladder(prev => {
 const newVal = Math.min(100, prev + 2);
 if (newVal >= 80 && !needsBathroom && !isOutside) {
 setNeedsBathroom(true);
-showMessage('Need bathroom!');
+showMessage('Chaos Overflow!');
 }
 return newVal;
 });
 }, 2000);
 return () => clearInterval(interval);
 }, [captured, needsBathroom, isOutside]);
-useEffect(() => {
+React.useEffect(() => {
 if (!isOutside) return;
 const handleScroll = () => {
 const currentScroll = window.scrollY;
@@ -915,7 +912,7 @@ lastScrollY.current = currentScroll;
 window.addEventListener('scroll', handleScroll);
 return () => window.removeEventListener('scroll', handleScroll);
 }, [isOutside]);
-useEffect(() => {
+React.useEffect(() => {
 if (!isOutside || isDragging) return;
 const physics = setInterval(() => {
 setPos(prev => {
@@ -946,18 +943,18 @@ return { x: newX, y: newY };
 }, 50);
 return () => clearInterval(physics);
 }, [isOutside, vel, isDragging]);
-useEffect(() => {
+React.useEffect(() => {
 if (!captured || !isOutside || bladder < 80) return;
 const poopTimer = setTimeout(() => {
 const newPoop = { id: Date.now(), x: pos.x, y: pos.y + 10 };
 setPoops(prev => [...prev, newPoop]);
 setBladder(0);
 setNeedsBathroom(false);
-showMessage('Relieved!');
+showMessage('Chaos Released!');
 }, 2000);
 return () => clearTimeout(poopTimer);
 }, [captured, isOutside, bladder, pos.x, pos.y]);
-useEffect(() => {
+React.useEffect(() => {
 if (!isDragging) return;
 const handleMove = (e) => {
 const viewportWidth = window.innerWidth;
@@ -982,36 +979,36 @@ setTimeout(() => setMessage(''), 3000);
 const captureCreature = () => {
 if (captured) return;
 setCaptured(true);
-showMessage('Caught!');
+showMessage('Breach Contained!');
 setPos({ x: 50, y: 50 });
 setVel({ x: 0, y: 0 });
 };
 const feed = () => {
 setHunger(Math.min(100, hunger + 30));
 setHappiness(Math.min(100, happiness + 10));
-showMessage('Yum!');
+showMessage('Chaos Absorbed!');
 };
 const play = () => {
 setHappiness(Math.min(100, happiness + 30));
 setHunger(Math.max(0, hunger - 5));
-showMessage('Fun!');
+showMessage('Chaos Unleashed!');
 };
 const letOut = () => {
 setIsOutside(true);
 setPos({ x: 50, y: 50 });
 setVel({ x: (Math.random() - 0.5) * 3, y: -2 });
-showMessage('Outside!');
+showMessage('Breach Expanded!');
 };
 const bringBack = () => {
 setIsOutside(false);
 setPos({ x: 50, y: 50 });
 setVel({ x: 0, y: 0 });
-showMessage('Home!');
+showMessage('Breach Sealed!');
 };
 const cleanPoop = (id) => {
 setPoops(prev => prev.filter(p => p.id !== id));
 setHappiness(Math.min(100, happiness + 15));
-showMessage('Clean!');
+showMessage('Chaos Cleansed!');
 };
 const handleCreatureMouseDown = (e) => {
 if (!isOutside) return;
@@ -1023,7 +1020,7 @@ const petCreature = () => {
 if (isDragging) return;
 setIsPetting(true);
 setHappiness(Math.min(100, happiness + 5));
-showMessage('Happy!');
+showMessage('Harmony Restored!');
 setTimeout(() => setIsPetting(false), 1000);
 };
 const getStatColor = (value) => {
@@ -1032,108 +1029,118 @@ if (value > 30) return '#ff9800';
 return '#f44336';
 };
 return (
-    
-      
-        
-          PIXEL PET
-          {!captured ? (
-            
-              A WILD CREATURE!
-              Move cursor near it...
-              Click to catch!
-            
-          ) : (
-            CAPTURED! Care for it below.
-          )}
-          
-        
-        {(!captured || isOutside) && (
-          
-            {isScared && !captured ? '😱' : isPetting ? '😊' : '👾'}
-          
-        )}
-        {poops.map(poop => (
-           cleanPoop(poop.id)} style={{
-            position: 'fixed',
-            left: `${poop.x}%`,
-            top: `${poop.y}%`,
-            fontSize: '40px',
-            cursor: 'pointer',
-            zIndex: 9998
-          }}>
-            💩
-          
-        ))}
-      
-      {captured && (
-        
-          
-            MY PET
-            <button onclick="{()" &#x3D;=""> setCollapsed(!collapsed)} style={{
-              background: '#1a252f',
-              border: '2px solid #ecf0f1',
-              color: '#ecf0f1',
-              padding: '5px 10px',
-              cursor: 'pointer',
-              fontWeight: 'bold'
-            }}>
-              {collapsed ? '▲' : '▼'}
-            </button>
-          
-          {message && (
-            
-              {message}
-            
-          )}
-          {!collapsed && (
-            <>
-              
-                {!isOutside ? (
-                  
-                    {isPetting ? '😊' : animFrame % 2 === 0 ? '👾' : '👻'}
-                  
-                ) : (
-                  
-                    ...
-                    OUTSIDE
-                  
-                )}
-              
-              
-                <statbar label="FOOD" value="{hunger}" color="{getStatColor(hunger)}">
-                <statbar label="HAPPY" value="{happiness}" color="{getStatColor(happiness)}">
-                <statbar label="POTTY" value="{bladder}" color="{getStatColor(100" -="" bladder)}="">
-              </statbar></statbar></statbar>
-              
-                <pixelbutton onclick="{feed}">FEED</pixelbutton>
-                <pixelbutton onclick="{play}">PLAY</pixelbutton>
-                {!isOutside ? (
-                  <pixelbutton onclick="{letOut}" danger="{needsBathroom}" style="{{" gridcolumn:="" &#x27;1="" -1&#x27;="" }}="">
-                    {needsBathroom ? 'POTTY!' : 'OUTSIDE'}
-                  </pixelbutton>
-                ) : (
-                  <pixelbutton onclick="{bringBack}" style="{{" gridcolumn:="" &#x27;1="" -1&#x27;="" }}="">
-                    RETURN
-                  </pixelbutton>
-                )}
-              
-            
-          )}
-        
-      )}
-    
-  );
+<div style={{ position: 'relative', height: '300px', border: '2px solid #ecf0f1', background: '#1a252f', padding: '20px', color: '#ecf0f1' }}>
+<h3>TIAMAT BREACH DETECTED!!</h3>
+{!captured ? (
+<div style={{ textAlign: 'center' }}>
+<p>A CHAOS ENTITY!</p>
+<p>Move cursor near it...</p>
+<button onClick={captureCreature} style={{ padding: '10px', background: '#e74c3c', color: '#ecf0f1', border: '2px solid #ecf0f1', cursor: 'pointer' }}>
+CONTAIN BREACH!
+</button>
+</div>
+) : (
+<p>CONTAINED! Stabilize below.</p>
+)}
+{(!captured || isOutside) && (
+<div onMouseDown={handleCreatureMouseDown} style={{
+position: 'fixed',
+left: `${pos.x}%`,
+top: `${pos.y}%`,
+fontSize: '60px',
+zIndex: 9999,
+cursor: isOutside ? 'grab' : 'default',
+transform: isScared ? 'scale(1.2)' : 'none',
+transition: 'transform 0.2s'
+}}>
+{isScared && !captured ? '😱' : isPetting ? '😊' : '🐉'}
+</div>
+)}
+{poops.map(poop => (
+<div key={poop.id} onClick={() => cleanPoop(poop.id)} style={{
+position: 'fixed',
+left: `${poop.x}%`,
+top: `${poop.y}%`,
+fontSize: '40px',
+cursor: 'pointer',
+zIndex: 9998
+}}>
+💩
+</div>
+))}
+{captured && (
+<div style={{ marginTop: '20px', padding: '15px', background: '#2c3e50', border: '2px solid #ecf0f1', borderRadius: '5px' }}>
+<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+<h4>MY ENTITY</h4>
+<button onClick={() => setCollapsed(!collapsed)} style={{
+background: '#1a252f',
+border: '2px solid #ecf0f1',
+color: '#ecf0f1',
+padding: '5px 10px',
+cursor: 'pointer',
+fontWeight: 'bold'
+}}>
+{collapsed ? '▲' : '▼'}
+</button>
+</div>
+{message && (
+<div style={{ marginTop: '10px', padding: '8px', background: '#e67e22', borderRadius: '4px', textAlign: 'center' }}>
+{message}
+</div>
+)}
+{!collapsed && (
+<>
+<div style={{ textAlign: 'center', margin: '15px 0' }}>
+{!isOutside ? (
+<div onMouseDown={handleCreatureMouseDown} onClick={petCreature} style={{
+fontSize: '80px',
+cursor: 'pointer',
+animation: isPetting ? 'pulse 1s' : 'none'
+}}>
+{isPetting ? '😊' : animFrame % 2 === 0 ? '🐉' : '🦕'}
+</div>
+) : (
+<p style={{ fontSize: '1.2em', color: '#e74c3c' }}>
+...
+BREACH ACTIVE
+</p>
+)}
+</div>
+<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+<StatBar label="ENERGY" value={hunger} color={getStatColor(hunger)} />
+<StatBar label="STABILITY" value={happiness} color={getStatColor(happiness)} />
+<StatBar label="OVERFLOW" value={bladder} color={getStatColor(100 - bladder)} />
+</div>
+<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '15px' }}>
+<PixelButton onClick={feed}>INFUSE</PixelButton>
+<PixelButton onClick={play}>DISRUPT</PixelButton>
+{!isOutside ? (
+<PixelButton onClick={letOut} danger={needsBathroom} style={{ gridColumn: '1 / -1' }}>
+{needsBathroom ? 'RELEASE!' : 'EXPAND'}
+</PixelButton>
+) : (
+<PixelButton onClick={bringBack} style={{ gridColumn: '1 / -1' }}>
+SEAL
+</PixelButton>
+)}
+</div>
+</>
+)}
+</div>
+)}
+</div>
+);
 };
 const StatBar = ({ label, value, color }) => (
-  
-    
-      {label}
-      {Math.round(value)}%
-    
-    
-      
-    
-  
+<div style={{ margin: '8px 0' }}>
+<div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9em' }}>
+<span>{label}</span>
+<span>{Math.round(value)}%</span>
+</div>
+<div style={{ height: '8px', background: '#34495e', borderRadius: '4px' }}>
+<div style={{ width: `${value}%`, height: '100%', background: color, borderRadius: '4px' }}></div>
+</div>
+</div>
 );
 const PixelButton = ({ children, onClick, danger, style }) => (
 <button onClick={onClick} style={{
