@@ -178,16 +178,14 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <a class="link-btn" href="https://sora.chatgpt.com/profile/robustpvp" target="_blank" rel="noopener noreferrer">Sora</a>
 <a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
 <a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
+<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:6px 12px;border:2px solid #000;cursor:pointer;font-weight:700;border-radius:4px;font-size:11px;margin:2px;">Stumble</button>
 <div class="controls-right">
 </div>
 </div>
 <div id="emailPanel" class="panel">
 <div class="panel-title"><div class="title">Join Our Email List for Updates</div></div>
 <div class="panel-body">
-<form id="emailForm" action="mailto:robust.pvp@gmail.com" method="post" enctype="text/plain">
-<input id="emailInput" type="email" name="email" placeholder="Your email" required aria-label="Enter your email">
-<button id="emailSubmit" type="submit" aria-label="Join email list">Subscribe</button>
-</form>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe_example_form_id/viewform?embedded=true" width="100%" height="300" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 </div>
 </div>
 <div class="layout">
@@ -212,8 +210,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//STUMBLE UPON</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body">
-<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;">Stumble</button>
-<iframe id="stumbleIframe" style="width:100%; height:500px; border:4px solid var(--border); margin-top:12px;"></iframe>
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
@@ -230,7 +226,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="soraBody">
 <div id="shortstreams-wrap">
-<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen></iframe>
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen allow="autoplay; fullscreen"></iframe>
 </div>
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
@@ -249,7 +245,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//ENTITY</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-title"><div class="title">//ENTITY (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="entityBody">
 <!-- Virtual pet entity will be housed here -->
 </div>
@@ -357,7 +353,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//comets</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-title"><div class="title">//comets (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body">
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
@@ -366,7 +362,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel-title"><div class="title">//sora.ai (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="vineBody">
 <div id="slideshow-container">
-<iframe id="slideshow-iframe" src="" allowfullscreen style="width:100%;height:100%;"></iframe>
+<iframe id="slideshow-iframe" src="" allowfullscreen allow="autoplay; fullscreen" style="width:100%;height:100%;"></iframe>
 </div>
 <div id="slideshow-controls">
 <button id="prevVid">Prev</button>
@@ -807,6 +803,8 @@ count++;
 set(visitorsRef, count);
 document.getElementById('visitorCounter').textContent = 'Visitors: ' + count;
 }).catch(() => {document.getElementById('visitorCounter').textContent = 'Visitors: Error';});
+const logRef = push(ref(db, 'visitors/logs'));
+set(logRef, {ts: Date.now(), handle: myHandle || 'anonymous'});
 }).catch(e => appendSystem('Anonymous auth failed: ' + e.message));
 bootBtn.addEventListener('click', async () => {
 let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
@@ -907,7 +905,6 @@ let idleTimer;
 function resetIdleTimer() {
 clearTimeout(idleTimer);
 idleTimer = setTimeout(() => {
-if(presenceRef) remove(presenceRef);
 bootOverlay.style.display = 'flex';
 appRoot.style.display = 'none';
 appendSystem('Idle timeout - returned to boot screen.');
