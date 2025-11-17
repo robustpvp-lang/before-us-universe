@@ -111,18 +111,18 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 @media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
 body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 @keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
-.ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;animation:flash 1s infinite;}
+.ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;animation:flash 2s infinite;}
+@keyframes flash{0%{opacity:1;}50%{opacity:0.8;}100%{opacity:1;}}
 body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 ::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
 ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
 #revivalSitesPanel .panel-body{max-height:100px;overflow:auto;}
-@keyframes flash{0%{opacity:1;}50%{opacity:0.5;}100%{opacity:1;}}
 #emailPanel{margin-bottom:12px;padding:8px;}
 #emailForm{display:flex;gap:8px;align-items:center;}
 #emailInput{flex:1;padding:8px;background:#001f1f;border:2px solid var(--border);color:var(--fg);font-family:monospace;}
 #emailSubmit{background:var(--accent);color:#000;padding:8px 12px;border:2px solid #000;cursor:pointer;font-weight:700;}
-#shortstreams-wrap iframe{width:100%;height:auto;border:4px solid var(--border);}
-@media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:auto;}}
+#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);}
+@media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
 #vine-wrap{display:flex;justify-content:center;align-items:center;flex-direction:column;}
 #slideshow-container{width:360px;height:640px;border:4px solid var(--border);margin:8px auto;}
 @media(max-width:600px){#slideshow-container{width:100%;height:560px;}}
@@ -130,12 +130,13 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #slideshow-controls button{background:var(--accent);color:#000;padding:6px 12px;border:2px solid #000;cursor:pointer;}
 .sub-gallery .panel-title{font-size:11px;}
 .sub-gallery .panel-body{height:400px;}
-.ticker{background:none;border:none;color:var(--fg);font-size:12px;text-align:center;padding:8px;}
+.ticker{background:var(--accent);border:2px solid #000;color:#000;font-size:12px;text-align:center;padding:8px;cursor:pointer;border-radius:4px;}
 .toggle-btn{margin-left:auto;}
 #emailPanel .panel-body{height:auto;padding:4px;}
 #ytBody .panel-body{height:auto;}
 #soraBody .panel-body{height:auto;}
 #stumbleBtn{display:block;margin:0 auto 12px;}
+#boardBody{height:600px;}
 </style>
 </head>
 <body>
@@ -236,7 +237,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel-body" id="boardBody">
 <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
 <input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
-<div id="boardList" style="max-height:340px;overflow:auto;margin:8px 0"></div>
+<div id="boardList" style="max-height:500px;overflow:auto;margin:8px 0"></div>
 <div style="margin:8px">
 <textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
 <button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
@@ -245,10 +246,10 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//sora.ai</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-title"><div class="title">//sora.ai (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="vineBody">
 <div id="slideshow-container">
-<iframe id="slideshow-iframe" src="" allowfullscreen></iframe>
+<iframe id="slideshow-iframe" src="" allowfullscreen style="width:100%;height:100%;"></iframe>
 </div>
 <div id="slideshow-controls">
 <button id="prevVid">Prev</button>
@@ -285,9 +286,9 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div id="ortegaPanel">
 <button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
 </div>
-<div class="ad-banner">Buy Impossible Teleporter - Only 999 Credits!</div>
+<div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
 <div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
-<div class="ad-banner">Vaporwave Vibes Inc. - Aesthetic Overload Guaranteed</div>
+<div class="ad-banner">Do you need more arms? Try Hexapro!</div>
 <div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
 </div>
 </div>
@@ -296,62 +297,62 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body">
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Pronker Wronkers</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//pronkerwronkers</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/7spAtXSkFi" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 2</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//othertoons</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/0m2TljGOPp" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 3</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//oldertoons</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/vag2TToeTw" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 4</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//my little horse</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/MHC5RFn0it" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 5</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//HannahBananaH</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/jaCSMGh4a1" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 6</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//invaderzurm</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/lQHM6EY0pf" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 7</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//farkyoddpurents</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/8sSK8RALYq" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 8</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//futurobama</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/S1MHwynxPs" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 9</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//frapjack</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/lpmSp9KPyW" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 10</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//furmly guy</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/YYCtbDyDJq" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 11</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//ahhkindareal</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/sAStLCtCjU" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">Gallery 12</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//aquacrap</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/RU0DGepWyI" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
@@ -597,9 +598,11 @@ const channels = ['sam','exuro','nero','nora','loktal'];
 channels.forEach(ch => {
 onChildAdded(ref(db, `online/${ch}`), snap => {
 const u = snap.val();
+if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
 });
 onChildRemoved(ref(db, `online/${ch}`), snap => {
 const u = snap.val();
+if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
 });
 });
 }
