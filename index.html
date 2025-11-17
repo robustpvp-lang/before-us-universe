@@ -29,7 +29,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 @keyframes float{0%{transform:translate(0,0);}100%{transform:translate(20px,-20px);opacity:0;}}
 .toggle-btn{background:var(--accent);color:#000;border:2px solid #000;padding:4px 8px;cursor:pointer;font-size:10px;margin-left:auto;animation:flicker 0.5s infinite alternate;}
 @keyframes flicker{0%{opacity:1;}100%{opacity:0.7;}}
-.panel-body{display:block; height:520px; overflow:auto;}
+.panel-body{display:block;}
 .collapsed .panel-body{display:none;}
 #boardSearch{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;width:100%;font-family:monospace;margin-bottom:8px;}
 #marqueeWrap{position:fixed;left:0;right:0;top:0;height:38px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));z-index:99999;display:flex;align-items:center;padding:6px 12px;box-sizing:border-box}
@@ -100,7 +100,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .server-title .status-icon{margin-left:5px;font-size:14px;}
 .status-icon.animated{animation:pulse 1s infinite alternate;}
 @keyframes pulse{0%{opacity:1;}100%{opacity:0.5;}}
-#systemFeed{max-height:200px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px;color:var(--text-gray)}
+#systemFeed{max-height:100px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px;color:var(--text-gray)}
 .dm-inline{border:1px solid rgba(255,255,255,0.03);padding:6px;margin:6px 0;background:#021212;border-radius:4px}
 .small{font-size:11px;color:var(--muted)}
 .typing-indicator { font-size: 12px; color: var(--muted); padding: 6px; font-style: italic; }
@@ -111,19 +111,18 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 @media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
 body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 @keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
-.ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;}
+.ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;animation:flash 1s infinite;}
 body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 ::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
 ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
 #revivalSitesPanel .panel-body{max-height:100px;overflow:auto;}
 @keyframes flash{0%{opacity:1;}50%{opacity:0.5;}100%{opacity:1;}}
-.flash{animation:flash 1s infinite;}
 #emailPanel{margin-bottom:12px;padding:8px;}
 #emailForm{display:flex;gap:8px;align-items:center;}
 #emailInput{flex:1;padding:8px;background:#001f1f;border:2px solid var(--border);color:var(--fg);font-family:monospace;}
 #emailSubmit{background:var(--accent);color:#000;padding:8px 12px;border:2px solid #000;cursor:pointer;font-weight:700;}
-#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);}
-@media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
+#shortstreams-wrap iframe{width:100%;height:auto;border:4px solid var(--border);}
+@media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:auto;}}
 #vine-wrap{display:flex;justify-content:center;align-items:center;flex-direction:column;}
 #slideshow-container{width:360px;height:640px;border:4px solid var(--border);margin:8px auto;}
 @media(max-width:600px){#slideshow-container{width:100%;height:560px;}}
@@ -132,13 +131,17 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 .sub-gallery .panel-title{font-size:11px;}
 .sub-gallery .panel-body{height:400px;}
 .ticker{background:none;border:none;color:var(--fg);font-size:12px;text-align:center;padding:8px;}
-.bottom-toggle{margin-top:10px;margin-left:0;}
+.toggle-btn{margin-left:auto;}
+#emailPanel .panel-body{height:auto;padding:4px;}
+#ytBody .panel-body{height:auto;}
+#soraBody .panel-body{height:auto;}
+#stumbleBtn{display:block;margin:0 auto 12px;}
 </style>
 </head>
 <body>
 <div id="marqueeWrap">
 <div id="marqueeLabel">SYSTEM:</div>
-<div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — Site Under Construction —</div></div>
+<div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — — Site Under Construction —</div></div>
 </div>
 <div id="bootOverlay">
 <div id="bootPanel">
@@ -162,8 +165,8 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div id="app">
 <div class="title-bar">
 <div class="logo">BUU</div>
-<a class="link-btn flash" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal</a>
-<a class="link-btn flash" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo</a>
+<a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal</a>
+<a class="link-btn" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo</a>
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
 <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
@@ -176,19 +179,18 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 </div>
 <div id="emailPanel" class="panel">
-<div class="panel-title"><div class="title"><span class="flash">Join</span> Our Email List for Updates</div></div>
+<div class="panel-title"><div class="title">Join Our Email List for Updates</div></div>
 <div class="panel-body">
 <form id="emailForm" action="mailto:robust.pvp@gmail.com" method="post" enctype="text/plain">
 <input id="emailInput" type="email" name="email" placeholder="Your email" required aria-label="Enter your email">
 <button id="emailSubmit" type="submit" aria-label="Join email list">Subscribe</button>
 </form>
 </div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="layout">
 <div>
-<div class="panel collapsible">
-<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel">
+<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
 <div class="panel-body chat-win" id="chatBody">
 <div class="chat-main">
 <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
@@ -203,7 +205,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <button id="sendBtn" aria-label="Send message">SEND</button>
 </div>
 </div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//ENTITY</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -274,11 +275,10 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel" id="systemFeedPanel">
 <div class="panel-title"><div class="small">SYSTEM FEED</div></div>
 <div class="panel-body" id="systemFeed"></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel" id="serverTrackingPanel">
-<div class="panel-title"><div class="small">BUDDY LIST & SERVER TRACKING</div></div>
-<div class="panel-body" id="serverTrackingList"></div>
+<div class="panel-title"><div class="small">SERVER LIST</div></div>
+<div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
 <div id="dmList" style="margin-top:8px"></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
@@ -288,6 +288,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="ad-banner">Buy Impossible Teleporter - Only 999 Credits!</div>
 <div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
 <div class="ad-banner">Vaporwave Vibes Inc. - Aesthetic Overload Guaranteed</div>
+<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
 </div>
 </div>
 <div class="bottom-section">
@@ -417,7 +418,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="ticker" id="visitorPanel">
 <div id="visitorCounter">Visitors: Loading...</div>
 </div>
-<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
 </div>
 </div>
 <script type="module">
