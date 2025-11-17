@@ -133,6 +133,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 .sub-gallery .panel-body{height:400px;}
 .ticker{background:var(--accent);border:2px solid #000;color:#000;font-size:12px;text-align:center;padding:8px;cursor:pointer;border-radius:4px;}
 .toggle-btn{margin-left:auto;}
+.toggle-btn.bottom-toggle{margin-left:auto;}
 #emailPanel .panel-body{height:auto;padding:4px;}
 #ytBody .panel-body{height:auto;}
 #soraBody .panel-body{height:auto;}
@@ -411,12 +412,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <p>ARG & Mystery Sites:</p>
 <a href="https://www.unfiction.com/history/the-beast/" target="_blank">The Beast (2001, historical)</a><p>Pioneering ARG using command-line motifs.</p>
 <a href="https://www.ilovebees.com/" target="_blank">I Love Bees</a><p>Halo 2 promotional ARG with cryptic web elements.</p>
-<a href="https://en.wikipedia.org/wiki/Cicada_3301" target="_blank">Cicada 3301</a><p>Complex riddle-solving ARG.</p>
 <a href="https://x.com/TheSunVanished" target="_blank">The Sun Vanished (Twitter-based)</a><p>Dystopian narrative unfolded via posts.</p>
-<a href="https://en.wikipedia.org/wiki/Audiogalaxy" target="_blank">Audiogalaxy/Napster Revivals</a><p>Modern takes on classic file-sharing communities (legal).</p>
-<a href="https://www.somethingawful.com/" target="_blank">Something Awful</a><p>Enduring internet forum with humor focus.</p>
-<a href="https://www.fark.com/" target="_blank">Fark</a><p>News and discussion site still active.</p>
-<a href="https://www.phpbb.com/community/" target="_blank">phpBB communities</a><p>Various forums powered by phpBB software.</p>
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
@@ -803,6 +799,15 @@ d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
 d.style.fontSize = '12px';
 systemFeed.prepend(d);
 }
+signInAnonymously(auth).then(() => {
+const visitorsRef = ref(db, 'visitors/count');
+get(visitorsRef).then(snap => {
+let count = snap.val() || 0;
+count++;
+set(visitorsRef, count);
+document.getElementById('visitorCounter').textContent = 'Visitors: ' + count;
+}).catch(() => {document.getElementById('visitorCounter').textContent = 'Visitors: Error';});
+}).catch(e => appendSystem('Anonymous auth failed: ' + e.message));
 bootBtn.addEventListener('click', async () => {
 let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
 if(!raw){
@@ -840,13 +845,6 @@ channelSelect.value = currentChannel;
 initializePanels();
 appendSystem('System ready');
 listenChannel(currentChannel);
-const visitorsRef = ref(db, 'visitors/count');
-get(visitorsRef).then(snap => {
-let count = snap.val() || 0;
-count++;
-set(visitorsRef, count);
-document.getElementById('visitorCounter').textContent = 'Visitors: ' + count;
-}).catch(() => {document.getElementById('visitorCounter').textContent = 'Visitors: Error';});
 }, 900);
 }
 function initializePanels(){
@@ -935,7 +933,7 @@ revivalLinks.push(...toolbarLinks);
 document.getElementById('stumbleBtn').onclick = () => {
 const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)];
 const timestamp = Date.now();
-document.getElementById('stumbleIframe').src = `${randomLink}?t=${timestamp}`;
+window.open(`${randomLink}?t=${timestamp}`, '_blank');
 };
 const videoUrls = [
 "https://sendvid.com/embed/0c8dl0bv",
