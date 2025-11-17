@@ -29,6 +29,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 @keyframes float{0%{transform:translate(0,0);}100%{transform:translate(20px,-20px);opacity:0;}}
 .toggle-btn{background:var(--accent);color:#000;border:2px solid #000;padding:4px 8px;cursor:pointer;font-size:10px;margin-left:auto;animation:flicker 0.5s infinite alternate;}
 @keyframes flicker{0%{opacity:1;}100%{opacity:0.7;}}
+.collapsed .bottom-toggle{transform:rotate(180deg);}
 .panel-body{display:block;}
 .collapsed .panel-body{display:none;}
 #boardSearch{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;width:100%;font-family:monospace;margin-bottom:8px;}
@@ -158,8 +159,8 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div id="app">
 <div class="title-bar">
 <div class="logo">BUU</div>
-<a class="link-btn flash" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal</a>
-<a class="link-btn flash" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo</a>
+<a class="link-btn flash" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">Donate via PayPal</a>
+<a class="link-btn flash" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Donate via Venmo</a>
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
 <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
@@ -329,7 +330,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel-title"><div class="title">//STUMBLE UPON</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body">
 <button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;">Stumble</button>
-<iframe id="stumbleIframe" style="width:100%; height:500px; border:4px solid var(--border); margin-top:12px;" loading="lazy"></iframe>
+<iframe id="stumbleIframe" style="width:100%; height:500px; border:4px solid var(--border); margin-top:12px;" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▼</div>
 </div>
 </div>
@@ -394,7 +395,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
 const app = initializeApp(firebaseConfig);
@@ -606,7 +607,7 @@ edit.onclick = () => { /* edit logic */ };
 const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
 del.onclick = () => {
 update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => appendSystem('Delete failed: ' + e.message));
-row.style.display = 'none';
+row.style.display = 'none'; 
 };
 bub.append(edit, del);
 }
@@ -796,26 +797,30 @@ initializePanels();
 appendSystem('System ready');
 listenChannel(currentChannel);
 appendSystem(`User '${myHandle}' logged in to //${currentChannel.toUpperCase()}`);
-const visitorsRef = ref(db, 'visitors/count');
-get(visitorsRef).then(snap => {
-const count = (snap.val() || 0) + 1;
-set(visitorsRef, count);
-document.getElementById('visitorCount').textContent = count;
-}).catch(() => {document.getElementById('visitorCount').textContent = 'Error';});
+set(push(feedRef), `User ${myHandle} has logged in to //${currentChannel.toUpperCase()}`).catch(() => {});
+incrementVisitorCount();
 const vineIframes = document.querySelectorAll('#vine-wrap iframe');
 if(vineIframes.length) {
-vineIframes[0].style.display = 'block';
-let idx = 0;
-setInterval(() => {
-vineIframes[idx].style.display = 'none';
-idx = (idx + 1) % vineIframes.length;
-vineIframes[idx].style.display = 'block';
-}, 30000);
+  vineIframes[0].style.display = 'block';
+  let idx = 0;
+  setInterval(() => {
+    vineIframes[idx].style.display = 'none';
+    idx = (idx + 1) % vineIframes.length;
+    vineIframes[idx].style.display = 'block';
+  }, 30000);
 }
 document.getElementById('runHtml').onclick = () => {
-document.getElementById('htmlOutput').innerHTML = document.getElementById('htmlPen').value;
+  document.getElementById('htmlOutput').innerHTML = document.getElementById('htmlPen').value;
 };
 }, 900);
+}
+function incrementVisitorCount() {
+  const visitorsRef = ref(db, 'visitors/count');
+  runTransaction(visitorsRef, (current) => (current || 0) + 1).then((result) => {
+    document.getElementById('visitorCount').textContent = result.snapshot.val();
+  }).catch(() => {
+    document.getElementById('visitorCount').textContent = 'Error';
+  });
 }
 function initializePanels(){
 document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
@@ -891,10 +896,10 @@ const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)]
 document.getElementById('stumbleIframe').src = randomLink;
 };
 window.loadGallery = function(url) {
-const viewer = document.getElementById('galleryViewer');
-viewer.style.display = 'block';
-document.getElementById('galleryIframe').src = url;
-viewer.scrollIntoView({behavior: 'smooth'});
+  const viewer = document.getElementById('galleryViewer');
+  viewer.style.display = 'block';
+  document.getElementById('galleryIframe').src = url;
+  viewer.scrollIntoView({behavior: 'smooth'});
 };
 </script>
 </body>
