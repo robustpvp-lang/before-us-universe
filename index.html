@@ -137,7 +137,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #emailPanel .panel-body{height:auto;padding:4px;}
 #ytBody .panel-body{height:auto;}
 #soraBody .panel-body{height:auto;}
-#stumbleBtn{display:block;margin:0 auto 12px;}
 #boardBody{height:600px;}
 </style>
 </head>
@@ -178,14 +177,27 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <a class="link-btn" href="https://sora.chatgpt.com/profile/robustpvp" target="_blank" rel="noopener noreferrer">Sora</a>
 <a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
 <a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
-<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:6px 12px;border:2px solid #000;cursor:pointer;font-weight:700;border-radius:4px;font-size:11px;margin:2px;">Stumble</button>
 <div class="controls-right">
 </div>
 </div>
 <div id="emailPanel" class="panel">
 <div class="panel-title"><div class="title">Join Our Email List for Updates</div></div>
 <div class="panel-body">
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe_example_form_id/viewform?embedded=true" width="100%" height="300" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf_valid_form_id_here/viewform?embedded=true" width="100%" height="300" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+</div>
+</div>
+<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:block;margin:12px auto;">Stumble</button>
+<div class="panel" id="serverSelectPanel">
+<div class="small">SELECT SERVER</div>
+<div class="controls">
+<select id="channelSelect" aria-label="Choose server">
+<option value="sam">//Sam</option>
+<option value="exuro">//Exuro</option>
+<option value="nero">//Nero</option>
+<option value="nora">//Nora</option>
+<option value="loktal">//Loktal</option>
+</select>
+<button id="serverConfirm" aria-label="Switch server">Switch Server</button>
 </div>
 </div>
 <div class="layout">
@@ -206,12 +218,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <button id="sendBtn" aria-label="Send message">SEND</button>
 </div>
 </div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//STUMBLE UPON</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body">
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">PLAYLIST //SAM</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -253,19 +259,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 </div>
 <div>
-<div class="panel" id="serverSelectPanel">
-<div class="small">SELECT SERVER</div>
-<div class="controls">
-<select id="channelSelect" aria-label="Choose server">
-<option value="sam">//Sam</option>
-<option value="exuro">//Exuro</option>
-<option value="nero">//Nero</option>
-<option value="nora">//Nora</option>
-<option value="loktal">//Loktal</option>
-</select>
-<button id="serverConfirm" aria-label="Switch server">Switch Server</button>
-</div>
-</div>
 <div class="panel" id="systemFeedPanel">
 <div class="panel-title"><div class="small">SYSTEM FEED</div></div>
 <div class="panel-body" id="systemFeed"></div>
