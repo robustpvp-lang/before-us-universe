@@ -29,7 +29,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 @keyframes float{0%{transform:translate(0,0);}100%{transform:translate(20px,-20px);opacity:0;}}
 .toggle-btn{background:var(--accent);color:#000;border:2px solid #000;padding:4px 8px;cursor:pointer;font-size:10px;margin-left:auto;animation:flicker 0.5s infinite alternate;}
 @keyframes flicker{0%{opacity:1;}100%{opacity:0.7;}}
-.panel-body{display:block;}
+.panel-body{display:block; height:520px; overflow:auto;}
 .collapsed .panel-body{display:none;}
 #boardSearch{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;width:100%;font-family:monospace;margin-bottom:8px;}
 #marqueeWrap{position:fixed;left:0;right:0;top:0;height:38px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));z-index:99999;display:flex;align-items:center;padding:6px 12px;box-sizing:border-box}
@@ -59,10 +59,10 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
 .panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .panel-body{padding:8px;color:var(--text-gray)}
-.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border);loading:lazy;}
+.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border);}
 @media(max-width:600px){.yt-wrap iframe{height:200px;}}
 .chat-win{display:flex;flex-direction:column;height:520px}
-@media(max-width:600px){.chat-win{height:300px;}}
+@media(max-width:600px){.chat-win{height:400px;}}
 .chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .chat-main{display:flex;flex:1;overflow:hidden}
 .chat-messages{flex:1;overflow:auto;background:#e6e6fa;border-right:1px solid rgba(0,0,0,0.1);padding:8px;color:#000}
@@ -122,17 +122,23 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #emailForm{display:flex;gap:8px;align-items:center;}
 #emailInput{flex:1;padding:8px;background:#001f1f;border:2px solid var(--border);color:var(--fg);font-family:monospace;}
 #emailSubmit{background:var(--accent);color:#000;padding:8px 12px;border:2px solid #000;cursor:pointer;font-weight:700;}
-#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);loading:lazy;}
+#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);}
 @media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
-#vine-wrap iframe{width:360px;height:640px;border:4px solid var(--border);loading:lazy;}
-@media(max-width:600px){#vine-wrap iframe{width:100%;height:560px;}}
-.bottom-section{margin-top:12px;}
+#vine-wrap{display:flex;justify-content:center;align-items:center;flex-direction:column;}
+#slideshow-container{width:360px;height:640px;border:4px solid var(--border);margin:8px auto;}
+@media(max-width:600px){#slideshow-container{width:100%;height:560px;}}
+#slideshow-controls{display:flex;gap:8px;justify-content:center;margin-top:8px;}
+#slideshow-controls button{background:var(--accent);color:#000;padding:6px 12px;border:2px solid #000;cursor:pointer;}
+.sub-gallery .panel-title{font-size:11px;}
+.sub-gallery .panel-body{height:400px;}
+.ticker{background:none;border:none;color:var(--fg);font-size:12px;text-align:center;padding:8px;}
+.bottom-toggle{margin-top:10px;margin-left:0;}
 </style>
 </head>
 <body>
 <div id="marqueeWrap">
 <div id="marqueeLabel">SYSTEM:</div>
-<div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND…</div></div>
+<div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — Site Under Construction —</div></div>
 </div>
 <div id="bootOverlay">
 <div id="bootPanel">
@@ -177,6 +183,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <button id="emailSubmit" type="submit" aria-label="Join email list">Subscribe</button>
 </form>
 </div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="layout">
 <div>
@@ -196,22 +203,32 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <button id="sendBtn" aria-label="Send message">SEND</button>
 </div>
 </div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//ENTITY</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="entityBody">
+<!-- Virtual pet entity will be housed here -->
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">PLAYLIST //SAM</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="ytBody">
 <div class="yt-wrap" style="margin:8px">
-<iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen></iframe>
 </div>
 </div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="soraBody">
 <div id="shortstreams-wrap" style="margin:8px">
-<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen loading="lazy"></iframe>
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen></iframe>
 </div>
 </div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -224,38 +241,20 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
 </div>
 </div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//sora.ai</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="vineBody">
-<div id="vine-wrap" style="display:flex; flex-direction:column; gap:10px; margin:8px">
-<iframe src="https://sendvid.com/embed/0c8dl0bv" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/xxixiywf" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/usocjxvk" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/2d59hgkv" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/i2hzp3nt" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/307idtnc" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/jq9sr48s" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/8ew7k1xz" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/2mia7yat" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/0m0vjefo" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/gp6oh3w7" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/pv63vm21" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/iv60r8he" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/pk7zb18c" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/o7djkxku" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/nfccmiqb" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/89nunxww" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/7no2540r" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/weuus52x" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/oqixh9i0" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/x3jo7qhs" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/tbrhbmk2" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/i9to7i9k" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/7z9yljep" allowfullscreen loading="lazy"></iframe>
-<iframe src="https://sendvid.com/embed/vxo3hv19" allowfullscreen loading="lazy"></iframe>
+<div id="slideshow-container">
+<iframe id="slideshow-iframe" src="" allowfullscreen></iframe>
+</div>
+<div id="slideshow-controls">
+<button id="prevVid">Prev</button>
+<button id="nextVid">Next</button>
 </div>
 </div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 </div>
 <div>
@@ -275,107 +274,150 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel" id="systemFeedPanel">
 <div class="panel-title"><div class="small">SYSTEM FEED</div></div>
 <div class="panel-body" id="systemFeed"></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel" id="serverTrackingPanel">
-<div class="panel-title"><div class="small">SERVER TRACKING</div></div>
-<div class="panel-body" id="serverTrackingList"><button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button></div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="small">DIRECT MESSAGES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body">
+<div class="panel-title"><div class="small">BUDDY LIST & SERVER TRACKING</div></div>
+<div class="panel-body" id="serverTrackingList"></div>
 <div id="dmList" style="margin-top:8px"></div>
-<div class="small" style="margin-top:6px">Click a name to DM</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+<div id="ortegaPanel">
+<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
 </div>
-<div class="panel glitch">
-<div class="panel-title"><div class="small">RETRO AD BANNERS</div></div>
-<div class="panel-body">
 <div class="ad-banner">Buy Impossible Teleporter - Only 999 Credits!</div>
 <div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
 <div class="ad-banner">Vaporwave Vibes Inc. - Aesthetic Overload Guaranteed</div>
 </div>
 </div>
-</div>
-</div>
 <div class="bottom-section">
-<div class="panel collapsible collapsed" id="revivalSitesPanel">
-<div class="panel-title flash"><div class="small">REVIVAL SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" style="max-height:100px;overflow:auto">
-<a href="https://escargot.chat/" target="_blank">escargot.chat</a><p>a revival of Microsoft's MSN Messenger/Windows Live Messenger service. Works with all MSN/WLM clients from 1.0 to 9.0.</p>
-<a href="https://escargot.live/" target="_blank">escargot.live</a><p>a revival of Windows Live Spaces and Windows Live Profiles, run by the same team as escargot.chat. It will launch this summer.</p>
-<a href="#" target="_blank">NINA</a><p>a revival of the old AOL Desktop clients. It also hasn't launched yet, and there's no ETA, but rest assured it'll be here someday :D</p>
-<a href="https://phoenix-im.org/" target="_blank">Phoenix</a><p>a revival of AOL Instant Messenger. Works with all clients from 1.0 to 6.0, though 6.0 is kinda bugged. Also supports Yahoo! Messenger and ICQ.</p>
-<a href="https://bitview.net/" target="_blank">BitView</a><p>one of several classic YouTube clones, and my personal favourite. Replicates YouTube's 2009 design pretty much perfectly.</p>
-<a href="https://vidlii.com/" target="_blank">VidLii</a><p>another YouTube clone. Doesn't replicate YouTube quite as closely as BitView does, but it supports longer videos and more resolutions/audio bitrates than BitView.</p>
-<a href="https://fulptube.net/" target="_blank">FulpTube</a><p>yet ANOTHER YouTube clone. Unlike the previous two, it's meant to replicate YouTube from 2012/2013. Seems a bit glitchier than the other two. It also has its own replica of YouTube XL, and a mobile site.</p>
-<a href="https://spacehey.com/" target="_blank">SpaceHey</a><p>The site you're on right now. A MySpace replica.</p>
-<a href="https://neocities.org/" target="_blank">NeoCities</a><p>a clone of Yahoo! GeoCities. Lets you host your own website, for free (with extra privileges for donators)!</p>
-<a href="https://oldgoogle.neocities.org/" target="_blank">oldgoogle</a><p>a clone of Google Search, with replicas of pretty much every redesign that Google has gone through, from 1998 to 2014.</p>
-<a href="https://oldyahoo.neocities.org/" target="_blank">oldyahoo</a><p>a clone of Yahoo! Search. Exactly the same as above, but for Yahoo! instead.</p>
-<a href="http://bwitter.me/" target="_blank">Bwitter</a><p>a clone of Twitter from 2007. Warning - this site doesn't support HTTPS, so you might want to use a different password from your other accounts.</p>
-<a href="#" target="_blank">Goodblox (RIP</p>
-<a href="https://discord.gg/rverse" target="_blank">rverse</a><p>a Miiverse revival, compatible with Wii U and 3DS. Doesn't have its own website, so I've provided a link to their Discord server.</p>
-<a href="https://rc24.xyz/" target="_blank">RiiConnect24</a><p>a revival for pretty much every single WiiConnect24-dependent Wii channel, such as the Check Mii Out Channel, the Weather Channel, the News Channel, and the Everybody Votes Channel.</p>
-<a href="https://sudomemo.net/" target="_blank">Sudomemo</a><p>a revival for Flipnote Hatena, the animation/art-sharing service for the Nintendo DS app Flipnote Studio.</p>
-<a href="https://wiimmfi.de/" target="_blank">Wiimmfi</a><p>a revival of the Nintendo Wi-Fi Connection service. Similar to RiiConnect24, but for multiplayer games instead of just Wii channels.</p>
-<a href="https://bluemaxima.org/flashpoint/" target="_blank">Flashpoint</a><p>not sure if this quite fits the description of an "old web" revival service, but I'll include it anyway. Flashpoint is a MASSIVE archive for online games using plugins like Adobe Flash, Silverlight, and even really obscure ones like the PopCap Plugin and ActiveX Controls.</p>
-<a href="https://ruffle.rs/" target="_blank">ruffle.rs</a><p>an Adobe Flash emulator, similar to Flashpoint. Unlike Flashpoint, it is available as a browser extension too.</p>
-<a href="https://erm.m4tt72.com" target="_blank">erm.m4tt72.com</a><p>A terminal-style personal website that mimics command-line interfaces with interactive commands</p>
-<a href="https://www.mysteryfleshpitnationalpark.com/" target="_blank">Mystery Flesh Pit National Park</a><p>An ARG-style website presenting fiction as if it were a real national park</p>
-<a href="https://hypnagogicarchive.neocities.org/" target="_blank">The Hypnagogic Archive</a><p>Another ARG with retro aesthetics to tell mysterious stories</p>
-<a href="https://www.youtube.com/c/LOCAL58TV" target="_blank">Local58</a><p>YouTube-based presents fiction as old TV broadcasts, similar to "network" concept</p>
-<a href="#" target="_blank">Command-UI</a><p>A text-based adventure game with retro terminal CRT aesthetics and spacecraft storyline</p>
-<a href="https://space-bar.neocities.org/home" target="_blank">Space Bar</a><p>Interstellar dive bar</p>
-<a href="https://creaturefeatures.tv/" target="_blank">Creature Feature</a><p>Halloween site with horror & sci-fi movies</p>
-<a href="https://melonland.net/" target="_blank">Melonland Project</a><p>Community celebrating joyful, individual web experiences</p>
-<a href="https://status.cafe/" target="_blank">Status Cafe</a><p>Retro status-sharing platform</p>
-<a href="https://nightfall.city/" target="_blank">Nightfall City</a><p>Online community with vintage aesthetic</p>
-<a href="https://onio.cafe/" target="_blank">Onio.cafe</a><p>Ambient message-leaving site</p>
-<a href="https://netstory.io/" target="_blank">Netstory.io</a><p>Modern interactive fiction combining text adventures with browsers</p>
-<a href="https://itch.io/games/tag-twine" target="_blank">Twine-based stories on itch.io</a><p>Thousands of branching narrative games</p>
-<a href="https://www.ifarchive.org/" target="_blank">Interactive Fiction Archive</a><p>Preserves text adventure history</p>
-<a href="https://talefy.ai/" target="_blank">Talefy</a><p>AI-powered interactive storytelling</p>
-<p>ARG & Mystery Sites:</p>
-<a href="https://www.unfiction.com/history/the-beast/" target="_blank">The Beast (2001, historical)</a><p>First major ARG with terminal aesthetics</p>
-<a href="https://www.ilovebees.com/" target="_blank">I Love Bees</a><p>Halo 2 ARG with mysterious website</p>
-<a href="https://en.wikipedia.org/wiki/Cicada_3301" target="_blank">Cicada 3301</a><p>Cryptic puzzle ARG</p>
-<a href="https://x.com/TheSunVanished" target="_blank">The Sun Vanished (Twitter-based)</a><p>Dark world ARG told through social media</p>
-<a href="https://en.wikipedia.org/wiki/Audiogalaxy" target="_blank">Audiogalaxy/Napster Revivals</a><p>Links to music sharing/discovery services that recreate P2P file sharing culture (legally)</p>
-<a href="https://www.somethingawful.com/" target="_blank">Something Awful</a><p>Classic community still running</p>
-<a href="https://www.fark.com/" target="_blank">Fark</a><p>Classic community still running</p>
-<a href="https://www.phpbb.com/community/" target="_blank">phpBB communities</a><p>Classic vBulletin/phpBB communities still running</p>
-</div>
-</div>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body">
-<a href="https://imgbox.com/g/7spAtXSkFi" target="_blank">Gallery 1</a><br>
-<a href="https://imgbox.com/g/0m2TljGOPp" target="_blank">Gallery 2</a><br>
-<a href="https://imgbox.com/g/vag2TToeTw" target="_blank">Gallery 3</a><br>
-<a href="https://imgbox.com/g/MHC5RFn0it" target="_blank">Gallery 4</a><br>
-<a href="https://imgbox.com/g/jaCSMGh4a1" target="_blank">Gallery 5</a><br>
-<a href="https://imgbox.com/g/lQHM6EY0pf" target="_blank">Gallery 6</a><br>
-<a href="https://imgbox.com/g/8sSK8RALYq" target="_blank">Gallery 7</a><br>
-<a href="https://imgbox.com/g/S1MHwynxPs" target="_blank">Gallery 8</a><br>
-<a href="https://imgbox.com/g/lpmSp9KPyW" target="_blank">Gallery 9</a><br>
-<a href="https://imgbox.com/g/YYCtbDyDJq" target="_blank">Gallery 10</a><br>
-<a href="https://imgbox.com/g/sAStLCtCjU" target="_blank">Gallery 11</a><br>
-<a href="https://imgbox.com/g/RU0DGepWyI" target="_blank">Gallery 12</a><br>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Pronker Wronkers</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/7spAtXSkFi" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 2</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/0m2TljGOPp" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 3</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/vag2TToeTw" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 4</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/MHC5RFn0it" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 5</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/jaCSMGh4a1" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 6</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/lQHM6EY0pf" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 7</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/8sSK8RALYq" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 8</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/S1MHwynxPs" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 9</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/lpmSp9KPyW" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 10</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/YYCtbDyDJq" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 11</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/sAStLCtCjU" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">Gallery 12</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/RU0DGepWyI" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//STUMBLE UPON</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body">
-<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;">Feeling Lucky</button>
-<iframe id="stumbleIframe" style="width:100%; height:500px; border:4px solid var(--border); margin-top:12px;" loading="lazy"></iframe>
+<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;">Stumble</button>
+<iframe id="stumbleIframe" style="width:100%; height:500px; border:4px solid var(--border); margin-top:12px;"></iframe>
 </div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<div class="panel" id="visitorPanel">
-<div class="panel-title"><div class="small">//VISITOR COUNT</div></div>
-<div class="panel-body">
+<div class="panel collapsible collapsed" id="revivalSitesPanel">
+<div class="panel-title"><div class="small">REVIVAL SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" style="max-height:100px;overflow:auto">
+<a href="https://escargot.chat/" target="_blank">escargot.chat</a><p>Revived version of Microsoft's classic MSN Messenger service, compatible with clients from 1.0 to 9.0.</p>
+<a href="https://escargot.live/" target="_blank">escargot.live</a><p>Upcoming revival of Windows Live Spaces and Profiles by the escargot team, launching soon.</p>
+<a href="#" target="_blank">NINA</a><p>Planned revival of vintage AOL Desktop clients, no release date yet but in development.</p>
+<a href="https://phoenix-im.org/" target="_blank">Phoenix</a><p>Revival of AOL Instant Messenger supporting clients 1.0 to 6.0 (with some bugs in 6.0), plus Yahoo! Messenger and ICQ.</p>
+<a href="https://bitview.net/" target="_blank">BitView</a><p>Accurate clone of YouTube's 2009 interface for video sharing.</p>
+<a href="https://vidlii.com/" target="_blank">VidLii</a><p>YouTube-inspired platform with support for extended video lengths and multiple quality options.</p>
+<a href="https://fulptube.net/" target="_blank">FulpTube</a><p>Replica of YouTube circa 2012-2013, including big-screen and mobile variants, though with some glitches.</p>
+<a href="https://spacehey.com/" target="_blank">SpaceHey</a><p>MySpace-like social site for custom profiles and networking.</p>
+<a href="https://neocities.org/" target="_blank">NeoCities</a><p>Free hosting platform echoing the spirit of GeoCities for personal websites.</p>
+<a href="https://oldgoogle.neocities.org/" target="_blank">oldgoogle</a><p>Re-creations of Google Search interfaces from 1998 through 2014.</p>
+<a href="https://oldyahoo.neocities.org/" target="_blank">oldyahoo</a><p>Replicas of classic Yahoo! Search designs over the years.</p>
+<a href="http://bwitter.me/" target="_blank">Bwitter</a><p>2007-era Twitter clone (note: lacks HTTPS, use unique password).</p>
+<a href="#" target="_blank">Goodblox (RIP</a><p>Defunct revival of early Roblox.</p>
+<a href="https://discord.gg/rverse" target="_blank">rverse</a><p>Miiverse clone compatible with Wii U and 3DS consoles.</p>
+<a href="https://rc24.xyz/" target="_blank">RiiConnect24</a><p>Restored Wii channels including Check Mii Out, Weather, News, and Everybody Votes.</p>
+<a href="https://sudomemo.net/" target="_blank">Sudomemo</a><p>Revival of Flipnote Hatena for sharing DS animations.</p>
+<a href="https://wiimmfi.de/" target="_blank">Wiimmfi</a><p>Replacement for Nintendo Wi-Fi Connection, enabling Wii online multiplayer.</p>
+<a href="https://bluemaxima.org/flashpoint/" target="_blank">Flashpoint</a><p>Extensive archive of web games using plugins like Flash, Silverlight, and more obscure tech.</p>
+<a href="https://ruffle.rs/" target="_blank">ruffle.rs</a><p>Open-source Flash player emulator, installable as a browser add-on.</p>
+<a href="https://erm.m4tt72.com" target="_blank">erm.m4tt72.com</a><p>Command-line inspired personal site with interactive features.</p>
+<a href="https://www.mysteryfleshpitnationalpark.com/" target="_blank">Mystery Flesh Pit National Park</a><p>ARG-style site portraying a fictional bizarre national park.</p>
+<a href="https://hypnagogicarchive.neocities.org/" target="_blank">The Hypnagogic Archive</a><p>Retro-themed ARG exploring enigmatic stories.</p>
+<a href="https://www.youtube.com/c/LOCAL58TV" target="_blank">Local58</a><p>YouTube series mimicking vintage TV with eerie content.</p>
+<a href="#" target="_blank">Command-UI</a><p>Retro terminal-based adventure game set in space.</p>
+<a href="https://space-bar.neocities.org/home" target="_blank">Space Bar</a><p>Simulated cosmic bar hangout.</p>
+<a href="https://creaturefeatures.tv/" target="_blank">Creature Feature</a><p>Spooky site hosting horror and sci-fi movies.</p>
+<a href="https://melonland.net/" target="_blank">Melonland Project</a><p>Group celebrating unique, fun web creations.</p>
+<a href="https://status.cafe/" target="_blank">Status Cafe</a><p>Vintage-style status update sharing service.</p>
+<a href="https://nightfall.city/" target="_blank">Nightfall City</a><p>Community with old-school web vibes.</p>
+<a href="https://onio.cafe/" target="_blank">Onio.cafe</a><p>Place for posting subtle, atmospheric notes.</p>
+<a href="https://netstory.io/" target="_blank">Netstory.io</a><p>Web-enhanced text adventure platform.</p>
+<a href="https://itch.io/games/tag-twine" target="_blank">Twine-based stories on itch.io</a><p>Vast array of choose-your-own-adventure games.</p>
+<a href="https://www.ifarchive.org/" target="_blank">Interactive Fiction Archive</a><p>Collection preserving text-based game history.</p>
+<a href="https://talefy.ai/" target="_blank">Talefy</a><p>AI-driven tool for creating interactive tales.</p>
+<p>ARG & Mystery Sites:</p>
+<a href="https://www.unfiction.com/history/the-beast/" target="_blank">The Beast (2001, historical)</a><p>Pioneering ARG using command-line motifs.</p>
+<a href="https://www.ilovebees.com/" target="_blank">I Love Bees</a><p>Halo 2 promotional ARG with cryptic web elements.</p>
+<a href="https://en.wikipedia.org/wiki/Cicada_3301" target="_blank">Cicada 3301</a><p>Complex riddle-solving ARG.</p>
+<a href="https://x.com/TheSunVanished" target="_blank">The Sun Vanished (Twitter-based)</a><p>Dystopian narrative unfolded via posts.</p>
+<a href="https://en.wikipedia.org/wiki/Audiogalaxy" target="_blank">Audiogalaxy/Napster Revivals</a><p>Modern takes on classic file-sharing communities (legal).</p>
+<a href="https://www.somethingawful.com/" target="_blank">Something Awful</a><p>Enduring internet forum with humor focus.</p>
+<a href="https://www.fark.com/" target="_blank">Fark</a><p>News and discussion site still active.</p>
+<a href="https://www.phpbb.com/community/" target="_blank">phpBB communities</a><p>Various forums powered by phpBB software.</p>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="ticker" id="visitorPanel">
 <div id="visitorCounter">Visitors: Loading...</div>
 </div>
-</div>
+<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
 </div>
 </div>
 <script type="module">
@@ -446,7 +488,7 @@ while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChi
 }
 function updateMarqueeFromCache(){
 if(feedCache.length === 0){
-marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND…";
+marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — Site Under Construction —";
 startMarqueeAnimation();
 return;
 }
@@ -555,11 +597,9 @@ const channels = ['sam','exuro','nero','nora','loktal'];
 channels.forEach(ch => {
 onChildAdded(ref(db, `online/${ch}`), snap => {
 const u = snap.val();
-if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
 });
 onChildRemoved(ref(db, `online/${ch}`), snap => {
 const u = snap.val();
-if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
 });
 });
 }
@@ -592,7 +632,7 @@ edit.onclick = () => { /* edit logic */ };
 const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
 del.onclick = () => {
 update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => appendSystem('Delete failed: ' + e.message));
-row.style.display = 'none'; // Immediate local hide
+row.style.display = 'none';
 };
 bub.append(edit, del);
 }
@@ -655,7 +695,16 @@ boardList.appendChild(el);
 }
 sendBtn.onclick = () => {
 if(!myHandle) return;
-postMessage(currentChannel, myHandle, chatInput.value);
+const val = chatInput.value.trim();
+if(val.startsWith('/d6')){
+const roll = Math.floor(Math.random() * 6) + 1;
+postMessage(currentChannel, myHandle, `rolled d6: ${roll}`);
+} else if(val.startsWith('/d20')){
+const roll = Math.floor(Math.random() * 20) + 1;
+postMessage(currentChannel, myHandle, `rolled d20: ${roll}`);
+} else {
+postMessage(currentChannel, myHandle, val);
+}
 chatInput.value = '';
 };
 chatInput.addEventListener('keydown', e => {
@@ -712,6 +761,9 @@ const o = snap.val();
 const el = document.createElement('div'); el.style.margin = '6px 0';
 el.textContent = `${o.fromName || 'Anonymous'}: ${o.msg}`;
 msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
+if(o.from !== uid){
+appendSystem(`New DM from ${o.fromName || 'Anonymous'}`);
+}
 });
 send.onclick = async () => {
 const txt = inp.value.trim();
@@ -781,7 +833,6 @@ channelSelect.value = currentChannel;
 initializePanels();
 appendSystem('System ready');
 listenChannel(currentChannel);
-appendSystem(`User '${myHandle}' logged in to //${currentChannel.toUpperCase()}`);
 const visitorsRef = ref(db, 'visitors/count');
 get(visitorsRef).then(snap => {
 let count = snap.val() || 0;
@@ -793,6 +844,9 @@ document.getElementById('visitorCounter').textContent = 'Visitors: ' + count;
 }
 function initializePanels(){
 document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
+document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
+btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
+});
 }
 watchOnline();
 watchPresenceEvents();
@@ -810,7 +864,7 @@ p.style.left = Math.random()*100 + '%';
 p.style.animationDelay = Math.random()*5 + 's';
 marqueeWrap.appendChild(p);
 }
-document.querySelectorAll('.collapsible .toggle-btn').forEach(btn => {
+document.querySelectorAll('.collapsible .toggle-btn:not(.bottom-toggle)').forEach(btn => {
 btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
 });
 boardSearch.addEventListener('input', () => {
@@ -860,10 +914,63 @@ document.addEventListener('touchstart', resetIdleTimer);
 const revivalLinks = Array.from(document.querySelectorAll('#revivalSitesPanel .panel-body a'))
 .map(a => a.href)
 .filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com'));
+const toolbarLinks = [
+'https://tokillamockinggoblin.boards.net/',
+'https://youtube.com/@Patrickauthor',
+'https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview',
+'https://spacehey.com/profile?id=4317004',
+'https://www.phpbb.com/',
+'https://sora.chatgpt.com/profile/robustpvp',
+'https://web.archive.org/',
+'https://www.oldversion.com/'
+];
+revivalLinks.push(...toolbarLinks);
 document.getElementById('stumbleBtn').onclick = () => {
 const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)];
-document.getElementById('stumbleIframe').src = randomLink;
+const timestamp = Date.now();
+document.getElementById('stumbleIframe').src = `${randomLink}?t=${timestamp}`;
 };
+const videoUrls = [
+"https://sendvid.com/embed/0c8dl0bv",
+"https://sendvid.com/embed/xxixiywf",
+"https://sendvid.com/embed/usocjxvk",
+"https://sendvid.com/embed/2d59hgkv",
+"https://sendvid.com/embed/i2hzp3nt",
+"https://sendvid.com/embed/307idtnc",
+"https://sendvid.com/embed/jq9sr48s",
+"https://sendvid.com/embed/8ew7k1xz",
+"https://sendvid.com/embed/2mia7yat",
+"https://sendvid.com/embed/0m0vjefo",
+"https://sendvid.com/embed/gp6oh3w7",
+"https://sendvid.com/embed/pv63vm21",
+"https://sendvid.com/embed/iv60r8he",
+"https://sendvid.com/embed/pk7zb18c",
+"https://sendvid.com/embed/o7djkxku",
+"https://sendvid.com/embed/nfccmiqb",
+"https://sendvid.com/embed/89nunxww",
+"https://sendvid.com/embed/7no2540r",
+"https://sendvid.com/embed/weuus52x",
+"https://sendvid.com/embed/oqixh9i0",
+"https://sendvid.com/embed/x3jo7qhs",
+"https://sendvid.com/embed/tbrhbmk2",
+"https://sendvid.com/embed/i9to7i9k",
+"https://sendvid.com/embed/7z9yljep",
+"https://sendvid.com/embed/vxo3hv19"
+];
+let currentVideoIndex = 0;
+const slideshowIframe = document.getElementById('slideshow-iframe');
+function updateVideo() {
+slideshowIframe.src = videoUrls[currentVideoIndex];
+}
+document.getElementById('nextVid').onclick = () => {
+currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
+updateVideo();
+};
+document.getElementById('prevVid').onclick = () => {
+currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.length;
+updateVideo();
+};
+updateVideo();
 </script>
 </body>
 </html>
