@@ -121,6 +121,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #emailForm{display:flex;gap:8px;align-items:center;}
 #emailInput{flex:1;padding:8px;background:#001f1f;border:2px solid var(--border);color:var(--fg);font-family:monospace;}
 #emailSubmit{background:var(--accent);color:#000;padding:8px 12px;border:2px solid #000;cursor:pointer;font-weight:700;}
+#shortstreams-wrap{display:flex;justify-content:center;margin:8px auto;}
 #shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);}
 @media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
 #vine-wrap{display:flex;justify-content:center;align-items:center;flex-direction:column;}
@@ -208,9 +209,10 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//ENTITY</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="entityBody">
-<!-- Virtual pet entity will be housed here -->
+<div class="panel-title"><div class="title">//STUMBLE UPON</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body">
+<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;">Stumble</button>
+<iframe id="stumbleIframe" style="width:100%; height:500px; border:4px solid var(--border); margin-top:12px;"></iframe>
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
@@ -226,7 +228,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="soraBody">
-<div id="shortstreams-wrap" style="margin:8px">
+<div id="shortstreams-wrap">
 <iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen></iframe>
 </div>
 </div>
@@ -237,7 +239,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel-body" id="boardBody">
 <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
 <input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
-<div id="boardList" style="max-height:500px;overflow:auto;margin:8px 0"></div>
+<div id="boardList" style="overflow:auto;margin:8px 0"></div>
 <div style="margin:8px">
 <textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
 <button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
@@ -246,15 +248,9 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//sora.ai (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="vineBody">
-<div id="slideshow-container">
-<iframe id="slideshow-iframe" src="" allowfullscreen style="width:100%;height:100%;"></iframe>
-</div>
-<div id="slideshow-controls">
-<button id="prevVid">Prev</button>
-<button id="nextVid">Next</button>
-</div>
+<div class="panel-title"><div class="title">//ENTITY</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="entityBody">
+<!-- Virtual pet entity will be housed here -->
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
@@ -360,10 +356,21 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//STUMBLE UPON</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-title"><div class="title">//comets</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body">
-<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;">Stumble</button>
-<iframe id="stumbleIframe" style="width:100%; height:500px; border:4px solid var(--border); margin-top:12px;"></iframe>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//sora.ai (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="vineBody">
+<div id="slideshow-container">
+<iframe id="slideshow-iframe" src="" allowfullscreen style="width:100%;height:100%;"></iframe>
+</div>
+<div id="slideshow-controls">
+<button id="prevVid">Prev</button>
+<button id="nextVid">Next</button>
+</div>
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
@@ -372,7 +379,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel-body" style="max-height:100px;overflow:auto">
 <a href="https://escargot.chat/" target="_blank">escargot.chat</a><p>Revived version of Microsoft's classic MSN Messenger service, compatible with clients from 1.0 to 9.0.</p>
 <a href="https://escargot.live/" target="_blank">escargot.live</a><p>Upcoming revival of Windows Live Spaces and Profiles by the escargot team, launching soon.</p>
-<a href="#" target="_blank">NINA</a><p>Planned revival of vintage AOL Desktop clients, no release date yet but in development.</p>
 <a href="https://phoenix-im.org/" target="_blank">Phoenix</a><p>Revival of AOL Instant Messenger supporting clients 1.0 to 6.0 (with some bugs in 6.0), plus Yahoo! Messenger and ICQ.</p>
 <a href="https://bitview.net/" target="_blank">BitView</a><p>Accurate clone of YouTube's 2009 interface for video sharing.</p>
 <a href="https://vidlii.com/" target="_blank">VidLii</a><p>YouTube-inspired platform with support for extended video lengths and multiple quality options.</p>
@@ -381,8 +387,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <a href="https://neocities.org/" target="_blank">NeoCities</a><p>Free hosting platform echoing the spirit of GeoCities for personal websites.</p>
 <a href="https://oldgoogle.neocities.org/" target="_blank">oldgoogle</a><p>Re-creations of Google Search interfaces from 1998 through 2014.</p>
 <a href="https://oldyahoo.neocities.org/" target="_blank">oldyahoo</a><p>Replicas of classic Yahoo! Search designs over the years.</p>
-<a href="http://bwitter.me/" target="_blank">Bwitter</a><p>2007-era Twitter clone (note: lacks HTTPS, use unique password).</p>
-<a href="#" target="_blank">Goodblox (RIP</a><p>Defunct revival of early Roblox.</p>
+<a href="https://bwitter.me/" target="_blank">Bwitter</a><p>2007-era Twitter clone (note: lacks HTTPS, use unique password).</p>
 <a href="https://discord.gg/rverse" target="_blank">rverse</a><p>Miiverse clone compatible with Wii U and 3DS consoles.</p>
 <a href="https://rc24.xyz/" target="_blank">RiiConnect24</a><p>Restored Wii channels including Check Mii Out, Weather, News, and Everybody Votes.</p>
 <a href="https://sudomemo.net/" target="_blank">Sudomemo</a><p>Revival of Flipnote Hatena for sharing DS animations.</p>
@@ -393,7 +398,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <a href="https://www.mysteryfleshpitnationalpark.com/" target="_blank">Mystery Flesh Pit National Park</a><p>ARG-style site portraying a fictional bizarre national park.</p>
 <a href="https://hypnagogicarchive.neocities.org/" target="_blank">The Hypnagogic Archive</a><p>Retro-themed ARG exploring enigmatic stories.</p>
 <a href="https://www.youtube.com/c/LOCAL58TV" target="_blank">Local58</a><p>YouTube series mimicking vintage TV with eerie content.</p>
-<a href="#" target="_blank">Command-UI</a><p>Retro terminal-based adventure game set in space.</p>
 <a href="https://space-bar.neocities.org/home" target="_blank">Space Bar</a><p>Simulated cosmic bar hangout.</p>
 <a href="https://creaturefeatures.tv/" target="_blank">Creature Feature</a><p>Spooky site hosting horror and sci-fi movies.</p>
 <a href="https://melonland.net/" target="_blank">Melonland Project</a><p>Group celebrating unique, fun web creations.</p>
@@ -737,7 +741,7 @@ document.body.classList.remove('glitch-transition');
 }, 1000);
 }
 };
-ortegaBtn.onclick = () => appendSystem('Project ORTEGA is currently [DOWN].');
+ortegaBtn.onclick = () => {};
 async function registerDMPair(tuid){
 if(uid.startsWith('offline_')) return;
 const pid = [uid, tuid].sort().join('_');
@@ -916,7 +920,7 @@ document.addEventListener('keydown', resetIdleTimer);
 document.addEventListener('touchstart', resetIdleTimer);
 const revivalLinks = Array.from(document.querySelectorAll('#revivalSitesPanel .panel-body a'))
 .map(a => a.href)
-.filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com'));
+.filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com') && !href.includes('robustpvp-lang.github.io'));
 const toolbarLinks = [
 'https://tokillamockinggoblin.boards.net/',
 'https://youtube.com/@Patrickauthor',
