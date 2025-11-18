@@ -86,6 +86,324 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .board-thread:nth-child(even) {background: #f0f0f0;}
 .board-thread strong{color:#000080;font-size:14px}
 .board-thread .small{color:#808080;font-style:italic;margin-top:4px;display:block}
+#serverSelectPanel{margin-bottom:12px;padding:4px;display:inline-flex;align-items:center;gap:4px;}
+#serverSelectPanel .small{font-size:10px;margin-right:4px;}
+#serverSelectPanel .controls{display:flex;gap:4px;align-items:center}
+#serverSelectPanel select{padding:6px;background:#001f1f;border:2px solid var(--border);color:var(--fg);font-weight:700;font-size:12px;border-radius:4px}
+#serverConfirm{background:var(--accent);color:#000;padding:6px;border:2px solid #000;cursor:pointer;font-weight:700;border-radius:4px;font-size:12px;box-shadow:0 0 5px var(--accent)}
+#ortegaPanel button{width:100%;background:var(--accent);color:#000;padding:12px;border:3px solid #000;border-radius:6px;font-weight:900;cursor:pointer;font-size:14px}
+#serverTrackingPanel .server-branch{margin-bottom:12px}
+#serverTrackingPanel .server-title{font-weight:700;color:var(--accent);font-size:13px;cursor:pointer}
+#serverTrackingPanel .user-list{margin-left:12px;margin-top:4px;font-size:12px}
+#serverTrackingPanel .user-list div{margin:2px 0;padding:6px;background:#001f1f;border-radius:4px;cursor:pointer}
+#serverTrackingPanel .current-server .server-title{color:#000;background:var(--accent);padding:6px;border-radius:4px}
+.server-title .status-icon{margin-left:5px;font-size:14px;}
+.status-icon.animated{animation:pulse 1s infinite alternate;}
+@keyframes pulse{0%{opacity:1;}100%{opacity:0.5;}}
+#systemFeed{max-height:100px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px;color:var(--text-gray)}
+#systemFeed img { image-rendering: pixelated; }
+.dm-inline{border:1px solid rgba(255,255,255,0.03);padding:6px;margin:6px 0;background:#021212;border-radius:4px}
+.small{font-size:11px;color:var(--muted)}
+.typing-indicator { font-size: 12px; color: var(--muted); padding: 6px; font-style: italic; }
+body,html{overflow-x:hidden}
+a, button, .user-row{ -webkit-tap-highlight-color: transparent;}
+a:active, button:active, .user-row:active{animation:glitch 0.2s;}
+#revivalSitesPanel a {color: #ffffff;}
+@media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
+body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
+@keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
+.ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;animation:flash 2s infinite;}
+@keyframes flash{0%{opacity:1;}50%{opacity:0.8;}100%{opacity:1;}}
+body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
+::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+#revivalSitesPanel .panel-body{max-height:100px;overflow:auto;}
+#shortstreams-wrap{display:flex;justify-content:center;margin:8px auto;}
+#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);}
+@media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
+#vine-wrap{display:flex;justify-content:center;align-items:center;flex-direction:column;}
+#slideshow-container{width:360px;height:640px;border:4px solid var(--border);margin:8px auto;}
+@media(max-width:600px){#slideshow-container{width:100%;height:560px;}}
+#slideshow-controls{display:flex;gap:8px;justify-content:center;margin-top:8px;}
+#slideshow-controls button{background:var(--accent);color:#000;padding:6px 12px;border:2px solid #000;cursor:pointer;}
+.sub-gallery .panel-title{font-size:11px;}
+.sub-gallery .panel-body{height:400px;}
+.ticker{background:var(--accent);border:2px solid #000;color:#000;font-size:12px;text-align:center;padding:8px;cursor:pointer;border-radius:4px;}
+.toggle-btn{margin-left:auto;}
+.toggle-btn.bottom-toggle{margin-left:auto;}
+#ytBody .panel-body{height:auto;}
+#soraBody .panel-body{height:auto;}
+#boardBody{height:600px;}
+#stumbleBtn{width:200px;}
+#fleetcommandBody{height:80vh;}
+@media(max-width:600px){#fleetcommandBody{height:70vh;}}
+@media (min-width: 601px) {
+#startScreen h1 {font-size: 48px;}
+.mode-btn {padding: 20px 40px; font-size: 20px;}
+#hud {font-size: 16px;}
+#controls {font-size: 14px;}
+.ship-btn {padding: 10px 15px; font-size: 14px;}
+}
+#button-row {display: flex; justify-content: center; align-items: center; gap: 12px; margin: 12px auto;}
+#footer {text-align: center; padding: 8px; background: var(--panel-bg); border-top: 2px solid var(--border); font-size: 12px; color: var(--muted);}
+#footer img {image-rendering: pixelated;}
+</style>
+</head>
+<body>
+<div id="marqueeWrap">
+<div id="marqueeLabel">SYSTEM:</div>
+<div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — — Site Under Construction —</div></div>
+</div>
+<div id="bootOverlay">
+<div id="bootPanel">
+<div id="bootLog" class="small"></div>
+<div id="bootPrompt">> ENTER HANDLE & SELECT SERVER</div>
+<div id="bootInputs">
+<input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (required)" aria-label="Enter your handle">
+<select id="bootChannel" aria-label="Select server">
+<option value="sam">//Sam</option>
+<option value="exuro">//Exuro</option>
+<option value="nero">//Nero</option>
+<option value="nora">//Nora</option>
+<option value="loktal">//Loktal</option>
+</select>
+<button id="bootBtn" aria-label="Enter Network">ENTER NETWORK</button>
+</div>
+<div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
+<div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Timeline stability.. 84%</span></div>
+</div>
+</div>
+<div id="app">
+<div class="title-bar">
+<div class="logo">C//:BUU</div>
+<a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal</a>
+<a class="link-btn" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo</a>
+<a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
+<a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
+<a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
+<a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
+<a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
+<a class="link-btn" href="https://sora.chatgpt.com/profile/robustpvp" target="_blank" rel="noopener noreferrer">Sora</a>
+<a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
+<a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
+<div class="controls-right">
+</div>
+</div>
+<div id="button-row">
+<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;width:200px;">Stumble</button>
+<div class="panel" id="serverSelectPanel">
+<div class="small">SELECT SERVER</div>
+<div class="controls">
+<select id="channelSelect" aria-label="Choose server">
+<option value="sam">//Sam</option>
+<option value="exuro">//Exuro</option>
+<option value="nero">//Nero</option>
+<option value="nora">//Nora</option>
+<option value="loktal">//Loktal</option>
+</select>
+<button id="serverConfirm" aria-label="Switch server">Switch</button>
+</div>
+</div>
+</div>
+<div class="layout">
+<div>
+<div class="panel">
+<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
+<div class="panel-body chat-win" id="chatBody">
+<div class="chat-main">
+<div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+<div class="chat-users">
+<div class="small" style="margin-bottom:6px">USERS ONLINE</div>
+<div id="activeUsersList"></div>
+</div>
+</div>
+<div id="typingIndicator" class="typing-indicator"></div>
+<div class="chat-controls">
+<input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
+<button id="sendBtn" aria-label="Send message">SEND</button>
+</div>
+</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//PLAYLIST.SAM</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="ytBody">
+<div class="yt-wrap" style="margin:8px">
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen></iframe>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="soraBody">
+<div id="shortstreams-wrap">
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen allow="autoplay; fullscreen"></iframe>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="boardBody">
+<div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
+<input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
+<div id="boardList" style="overflow:auto;margin:8px 0"></div>
+<div style="margin:8px">
+<textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
+<button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//ENTITY (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="entityBody">
+<!-- Virtual pet entity will be housed here -->
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="fleetcommandBody">
+<iframe src="fleetcommand.html" style="width:100%; height:100%; border:none;"></iframe>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+</div>
+<div>
+<div class="panel" id="systemFeedPanel">
+<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
+<div class="panel-body" id="systemFeed"></div>
+</div>
+<div class="panel" id="serverTrackingPanel">
+<div class="panel-title"><div class="small">SERVER LIST</div></div>
+<div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
+<div id="dmList" style="margin-top:8px"></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div id="ortegaPanel">
+<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
+</div>
+<div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
+<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
+<div class="ad-banner">Do you need more arms? Try Hexapro!</div>
+<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
+</div>
+</div>
+<div class="bottom-section">
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body">
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//pronkerwronkers</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/7spAtXSkFi" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+</div>
+<div id="footer">
+Hits: <img src="https://counter-img.com/counter/beforeusuniverse" alt="Hit Counter" border="0">
+</div>
+</div>
+<script>
+// Boot functions
+document.addEventListener('DOMContentLoaded', () => {
+  const bootBtn = document.getElementById('bootBtn');
+  const bootInput = document.getElementById('bootInput');
+  const bootStatus = document.getElementById('bootStatus');
+  const bootOverlay = document.getElementById('bootOverlay');
+  const app = document.getElementById('app');
+
+  bootBtn.addEventListener('click', () => {
+    if (bootInput.value.trim() === '') {
+      bootStatus.textContent = 'Error: Handle required.';
+      return;
+    }
+    bootStatus.textContent = 'Entering network...';
+    setTimeout(() => {
+      bootOverlay.style.display = 'none';
+      app.style.display = 'block';
+    }, 1000);
+  });
+});
+
+// System feed functions (dummy logs; expand with real data)
+const systemFeed = document.getElementById('systemFeed');
+function logToFeed(message) {
+  const logEntry = document.createElement('div');
+  logEntry.textContent = new Date().toLocaleTimeString() + ': ' + message;
+  systemFeed.appendChild(logEntry);
+  systemFeed.scrollTop = systemFeed.scrollHeight;
+}
+
+// Track errors
+const originalError = console.error;
+console.error = function(...args) {
+  logToFeed('Error: ' + args.join(' '));
+  originalError.apply(console, args);
+};
+
+// Example user/server tracking (dummy)
+setTimeout(() => {
+  logToFeed('User joined //Sam');
+  logToFeed('Server //Exuro online: 2 users');
+}, 2000);
+</script>
+</body>
+</html>#marqueeInner{position:absolute;white-space:nowrap;will-change:transform;display:inline-block;padding-left:100%}
+#bootOverlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.9),rgba(0,0,0,0.95));color:var(--fg);z-index:99998;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Roboto Mono',monospace}
+#bootPanel{width:92%;max-width:820px;background:var(--panel-bg);border:4px solid var(--border);padding:18px;box-shadow:0 0 30px rgba(0,255,255,0.06)}
+#bootLog{line-height:1.6;white-space:pre-wrap;margin-bottom:12px;font-size:13px;color:var(--text-gray)}
+#bootPrompt{color:var(--accent);margin-bottom:6px;animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+#bootInputs{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#bootInput{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;width:48%;min-width:160px;font-family:monospace}
+#bootChannel{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;font-family:monospace;width:48%;min-width:160px}
+#bootBtn{background:var(--accent);border:2px solid #000;color:#000;padding:8px 14px;cursor:pointer;font-weight:700}
+#bootBanner{margin-top:10px;background:rgba(0,0,0,0.35);padding:8px;border-radius:4px;color:var(--fg);font-size:12px}
+#bootBroadcast{animation:glitch 3s infinite alternate;}
+#app{display:none;padding:56px 12px 12px 12px;box-sizing:border-box;height:100%;overflow:auto}
+.title-bar{display:flex;gap:8px;flex-wrap:nowrap;padding:8px;background:transparent;color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center;justify-content:flex-start;overflow-x:auto}
+.title-bar::-webkit-scrollbar{height:12px;background:var(--panel-bg);border:1px solid var(--border);}
+.title-bar::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+.title-bar .logo{font-weight:700;letter-spacing:1px}
+.controls-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.layout > div:last-child{order:-1;}}
+@media (max-width:600px){.title-bar{flex-wrap:nowrap;overflow-x:auto;}.title-bar{font-size:11px;}}
+.panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
+.panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
+.panel-body{padding:8px;color:var(--text-gray)}
+.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border);}
+@media(max-width:600px){.yt-wrap iframe{height:200px;}}
+.chat-win{display:flex;flex-direction:column;height:520px}
+@media(max-width:600px){.chat-win{height:400px;}}
+.chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
+.chat-main{display:flex;flex:1;overflow:hidden}
+.chat-messages{flex:1;overflow:auto;background:#e6e6fa;border-right:1px solid rgba(0,0,0,0.1);padding:8px;color:#000}
+.chat-users{background:#fffacd;border-left:1px solid rgba(0,0,0,0.1);padding:8px;overflow:auto;width:200px}
+@media(max-width:700px){.chat-main{flex-direction:column}.chat-users{width:auto;border-left:0;border-top:1px solid rgba(0,0,0,0.1)}}
+.chat-row{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
+.chat-avatar{width:36px;height:36px;border-radius:50%;background:#add8e6;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#001a1a}
+@media(max-width:600px){.chat-avatar{width:24px;height:24px;font-size:10px;}}
+.chat-bubble{max-width:78%;padding:10px;border-radius:8px;background:#e6e6fa;border:1px solid rgba(0,0,0,0.1);font-family:Arial;color:#000}
+.chat-bubble.me{background:#fffacd;border:1px solid #f0d280;text-align:right;color:#222}
+.chat-meta{font-size:11px;color:#808080;font-weight:700;margin-bottom:4px}
+@media(max-width:600px){.chat-meta{font-size:9px;}}
+.user-row{display:flex;gap:8px;align-items:center;padding:6px;font-size:12px;cursor:pointer}
+@media(max-width:600px){.user-row{font-size:10px;}}
+.status-dot{width:9px;height:9px;border-radius:50%;background:var(--online)}
+.uname{font-family:'Press Start 2P';color:#ff0000;font-size:12px}
+@media(max-width:600px){.uname{font-size:10px;}}
+.chat-controls{display:flex;gap:6px;padding:8px;background:#fffacd;border-top:1px solid rgba(0,0,0,0.1)}
+.chat-controls input{flex:1;padding:8px;border:2px inset rgba(0,0,0,0.1);background:#fff;color:#000}
+.chat-controls button{padding:8px;border:2px outset rgba(0,0,0,0.1);background:#add8e6;cursor:pointer;color:#000}
+.board-thread{background:#f0f8ff;border:1px solid #ccc;padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:#000;white-space:pre-wrap;}
+.board-thread:nth-child(even) {background: #f0f0f0;}
+.board-thread strong{color:#000080;font-size:14px}
+.board-thread .small{color:#808080;font-style:italic;margin-top:4px;display:block}
 #serverSelectPanel{margin-bottom:12px;padding:8px}
 #serverSelectPanel .controls{display:flex;gap:8px;align-items:center}
 #serverSelectPanel select{flex:1;padding:12px;background:#001f1f;border:3px solid var(--border);color:var(--fg);font-weight:700;font-size:14px;border-radius:6px}
