@@ -349,10 +349,10 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body">
 <iframe srcdoc='<!DOCTYPE html>
-<html lang=&quot;en&quot;>
+<html lang="en">
 <head>
-<meta charset=&quot;UTF-8&quot;>
-<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, user-scalable=no&quot;>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Fleet Command: Asteroids</title>
 <style>
 * {
@@ -511,29 +511,29 @@ display: none;
 </style>
 </head>
 <body>
-<div id=&quot;startScreen&quot;>
+<div id="startScreen">
 <h1>FLEET COMMAND</h1>
-<p style=&quot;font-size: 12px; margin-bottom: 10px; color: #0f0; text-shadow: 0 0 5px #0f0;&quot;>Created by Patrick McDonald and Claude</p>
+<p style="font-size: 12px; margin-bottom: 10px; color: #0f0; text-shadow: 0 0 5px #0f0;">Created by Patrick McDonald and Claude</p>
 <p>Choose your control mode:</p>
-<button class=&quot;mode-btn&quot; onclick=&quot;startGame(&#x27;mobile&#x27;)&quot;>MOBILE (Touch)</button>
-<button class=&quot;mode-btn&quot; onclick=&quot;startGame(&#x27;desktop&#x27;)&quot;>DESKTOP (Keyboard)</button>
+<button class="mode-btn" onclick="startGame(&#x27;mobile&#x27;)">MOBILE (Touch)</button>
+<button class="mode-btn" onclick="startGame(&#x27;desktop&#x27;)">DESKTOP (Keyboard)</button>
 </div>
-<canvas id=&quot;gameCanvas&quot;></canvas>
-<canvas id=&quot;minimap&quot;></canvas>
+<canvas id="gameCanvas"></canvas>
+<canvas id="minimap"></canvas>
   
     SCORE: 0
     SHIP: FIGHTER
     HULL: 100%
   
   
-    <button class="&#x22;ship-btn" active&#x26;quot;="" data-ship="&#x22;fighter&#x22;">FIGHTER</button>
-    <button class="&#x22;ship-btn&#x22;" data-ship="&#x22;carrier&#x22;">CARRIER</button>
-    <button class="&#x22;ship-btn&#x22;" data-ship="&#x22;brute&#x22;">BRUTE</button>
+    <button class="ship-btn active" data-ship="fighter">FIGHTER</button>
+    <button class="ship-btn" data-ship="carrier">CARRIER</button>
+    <button class="ship-btn" data-ship="brute">BRUTE</button>
   
   
     
   
-<button id=&quot;fireBtn&quot;>FIRE</button>
+<button id="fireBtn">FIRE</button>
   WASD: Move | SPACE: Fire (Fighter/Brute) or Boost (Carrier) | 1/2/3: Switch Ship
   <script>
     const canvas = document.getElementById('gameCanvas');
