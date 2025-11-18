@@ -86,6 +86,1118 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .board-thread:nth-child(even) {background: #f0f0f0;}
 .board-thread strong{color:#000080;font-size:14px}
 .board-thread .small{color:#808080;font-style:italic;margin-top:4px;display:block}
+#serverSelectPanel{margin-bottom:12px;padding:8px}
+#serverSelectPanel .controls{display:flex;gap:8px;align-items:center}
+#serverSelectPanel select{flex:1;padding:12px;background:#001f1f;border:3px solid var(--border);color:var(--fg);font-weight:700;font-size:14px;border-radius:6px}
+#serverConfirm{background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;box-shadow:0 0 10px var(--accent)}
+#ortegaPanel button{width:100%;background:var(--accent);color:#000;padding:12px;border:3px solid #000;border-radius:6px;font-weight:900;cursor:pointer;font-size:14px}
+#serverTrackingPanel .server-branch{margin-bottom:12px}
+#serverTrackingPanel .server-title{font-weight:700;color:var(--accent);font-size:13px;cursor:pointer}
+#serverTrackingPanel .user-list{margin-left:12px;margin-top:4px;font-size:12px}
+#serverTrackingPanel .user-list div{margin:2px 0;padding:6px;background:#001f1f;border-radius:4px;cursor:pointer}
+#serverTrackingPanel .current-server .server-title{color:#000;background:var(--accent);padding:6px;border-radius:4px}
+.server-title .status-icon{margin-left:5px;font-size:14px;}
+.status-icon.animated{animation:pulse 1s infinite alternate;}
+@keyframes pulse{0%{opacity:1;}100%{opacity:0.5;}}
+#systemFeed{max-height:100px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px;color:var(--text-gray)}
+#systemFeed img { image-rendering: pixelated; }
+.dm-inline{border:1px solid rgba(255,255,255,0.03);padding:6px;margin:6px 0;background:#021212;border-radius:4px}
+.small{font-size:11px;color:var(--muted)}
+.typing-indicator { font-size: 12px; color: var(--muted); padding: 6px; font-style: italic; }
+body,html{overflow-x:hidden}
+a, button, .user-row{ -webkit-tap-highlight-color: transparent;}
+a:active, button:active, .user-row:active{animation:glitch 0.2s;}
+#revivalSitesPanel a {color: #ffffff;}
+@media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
+body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
+@keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
+.ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;animation:flash 2s infinite;}
+@keyframes flash{0%{opacity:1;}50%{opacity:0.8;}100%{opacity:1;}}
+body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
+::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+#revivalSitesPanel .panel-body{max-height:100px;overflow:auto;}
+#emailPanel{margin-bottom:12px;padding:8px;}
+#emailForm{display:flex;gap:8px;align-items:center;}
+#emailInput{flex:1;padding:8px;background:#001f1f;border:2px solid var(--border);color:var(--fg);font-family:monospace;}
+#emailSubmit{background:var(--accent);color:#000;padding:8px 12px;border:2px solid #000;cursor:pointer;font-weight:700;}
+#shortstreams-wrap{display:flex;justify-content:center;margin:8px auto;}
+#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);}
+@media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
+#vine-wrap{display:flex;justify-content:center;align-items:center;flex-direction:column;}
+#slideshow-container{width:360px;height:640px;border:4px solid var(--border);margin:8px auto;}
+@media(max-width:600px){#slideshow-container{width:100%;height:560px;}}
+#slideshow-controls{display:flex;gap:8px;justify-content:center;margin-top:8px;}
+#slideshow-controls button{background:var(--accent);color:#000;padding:6px 12px;border:2px solid #000;cursor:pointer;}
+.sub-gallery .panel-title{font-size:11px;}
+.sub-gallery .panel-body{height:400px;}
+.ticker{background:var(--accent);border:2px solid #000;color:#000;font-size:12px;text-align:center;padding:8px;cursor:pointer;border-radius:4px;}
+.toggle-btn{margin-left:auto;}
+.toggle-btn.bottom-toggle{margin-left:auto;}
+#emailPanel .panel-body{height:auto;padding:4px;}
+#ytBody .panel-body{height:auto;}
+#soraBody .panel-body{height:auto;}
+#boardBody{height:600px;}
+#emailPanel iframe{height:200px;}
+#stumbleBtn{width:200px;}
+#fleetcommandBody{height:80vh;}
+@media(max-width:600px){#fleetcommandBody{height:70vh;}}
+@media (min-width: 601px) {
+#startScreen h1 {font-size: 48px;}
+.mode-btn {padding: 20px 40px; font-size: 20px;}
+#hud {font-size: 16px;}
+#controls {font-size: 14px;}
+.ship-btn {padding: 10px 15px; font-size: 14px;}
+}
+</style>
+</head>
+<body>
+<div id="marqueeWrap">
+<div id="marqueeLabel">SYSTEM:</div>
+<div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — — Site Under Construction —</div></div>
+</div>
+<div id="bootOverlay">
+<div id="bootPanel">
+<div id="bootLog" class="small"></div>
+<div id="bootPrompt">> ENTER HANDLE & SELECT SERVER</div>
+<div id="bootInputs">
+<input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (required)" aria-label="Enter your handle">
+<select id="bootChannel" aria-label="Select server">
+<option value="sam">//Sam</option>
+<option value="exuro">//Exuro</option>
+<option value="nero">//Nero</option>
+<option value="nora">//Nora</option>
+<option value="loktal">//Loktal</option>
+</select>
+<button id="bootBtn" aria-label="Enter Network">ENTER NETWORK</button>
+</div>
+<div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
+<div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Timeline stability.. 84%</span></div>
+</div>
+</div>
+<div id="app">
+<div class="title-bar">
+<div class="logo">C//:BUU</div>
+<a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal</a>
+<a class="link-btn" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo</a>
+<a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
+<a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
+<a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
+<a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
+<a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
+<a class="link-btn" href="https://sora.chatgpt.com/profile/robustpvp" target="_blank" rel="noopener noreferrer">Sora</a>
+<a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
+<a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
+<div class="controls-right">
+</div>
+</div>
+<div id="emailPanel" class="panel">
+<div class="panel-title"><div class="title">Join Our Email List for Updates</div></div>
+<div class="panel-body">
+<a href="https://forms.gle/LBAkMsnVT7xrraYT8" target="_blank" rel="noopener noreferrer" class="link-btn">Join Email List</a>
+</div>
+</div>
+<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:block;margin:12px auto;width:200px;">Stumble</button>
+<div class="panel" id="serverSelectPanel">
+<div class="small">SELECT SERVER</div>
+<div class="controls">
+<select id="channelSelect" aria-label="Choose server">
+<option value="sam">//Sam</option>
+<option value="exuro">//Exuro</option>
+<option value="nero">//Nero</option>
+<option value="nora">//Nora</option>
+<option value="loktal">//Loktal</option>
+</select>
+<button id="serverConfirm" aria-label="Switch server">Switch Server</button>
+</div>
+</div>
+<div class="layout">
+<div>
+<div class="panel">
+<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
+<div class="panel-body chat-win" id="chatBody">
+<div class="chat-main">
+<div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+<div class="chat-users">
+<div class="small" style="margin-bottom:6px">USERS ONLINE</div>
+<div id="activeUsersList"></div>
+</div>
+</div>
+<div id="typingIndicator" class="typing-indicator"></div>
+<div class="chat-controls">
+<input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
+<button id="sendBtn" aria-label="Send message">SEND</button>
+</div>
+</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//PLAYLIST.SAM</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="ytBody">
+<div class="yt-wrap" style="margin:8px">
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen></iframe>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="soraBody">
+<div id="shortstreams-wrap">
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen allow="autoplay; fullscreen"></iframe>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="boardBody">
+<div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
+<input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
+<div id="boardList" style="overflow:auto;margin:8px 0"></div>
+<div style="margin:8px">
+<textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
+<button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//ENTITY (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="entityBody">
+<!-- Virtual pet entity will be housed here -->
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible">
+<div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="fleetcommandBody">
+<iframe srcdoc='<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Fleet Command: Invaders</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: &#x27;Courier New&#x27;, monospace;
+      touch-action: none;
+    }
+    #gameCanvas {
+      display: block;
+      background: #000;
+      touch-action: none;
+      width: 100%;
+      height: 100%;
+    }
+    #startScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      color: #0f0;
+    }
+    #startScreen h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #0f0;
+    }
+    #startScreen p {
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    .mode-btn {
+      background: rgba(0, 255, 0, 0.2);
+      border: 2px solid #0f0;
+      color: #0f0;
+      padding: 15px 30px;
+      margin: 10px;
+      cursor: pointer;
+      font-family: &#x27;Courier New&#x27;, monospace;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .mode-btn:hover {
+      background: rgba(0, 255, 0, 0.4);
+    }
+    #hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #0f0;
+      font-size: 12px;
+      text-shadow: 0 0 5px #0f0;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #minimap {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 100px;
+      border: 2px solid #0f0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 10;
+    }
+    .ship-select {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      z-index: 10;
+    }
+    .ship-btn {
+      background: rgba(0, 255, 0, 0.2);
+      border: 1px solid #0f0;
+      color: #0f0;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-family: &#x27;Courier New&#x27;, monospace;
+      font-size: 11px;
+      touch-action: manipulation;
+    }
+    .ship-btn.active {
+      background: rgba(0, 255, 0, 0.6);
+    }
+    #joystick {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 120px;
+      height: 120px;
+      background: rgba(0, 255, 0, 0.1);
+      border: 2px solid rgba(0, 255, 0, 0.3);
+      border-radius: 50%;
+      z-index: 10;
+      display: none;
+    }
+    #joystick-knob {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 255, 0, 0.5);
+      border: 2px solid #0f0;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    #fireBtn {
+      position: absolute;
+      bottom: 20px;
+      right: 5px;
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 0, 0, 0.3);
+      border: 2px solid #f00;
+      border-radius: 50%;
+      color: #f00;
+      font-size: 12px;
+      font-weight: bold;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      touch-action: manipulation;
+    }
+    #fireBtn.active {
+      background: rgba(255, 0, 0, 0.6);
+    }
+    #controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      color: #0f0;
+      font-size: 11px;
+      text-shadow: 0 0 5px #0f0;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="startScreen">
+    <h1>FLEET COMMAND: INVADERS</h1>
+    <p style="font-size: 12px; margin-bottom: 10px; color: #0f0; text-shadow: 0 0 5px #0f0;">Created by Patrick McDonald and Claude</p>
+    <p>Choose your control mode:</p>
+    <button class="mode-btn" onclick="startGame(&#x27;mobile&#x27;)">MOBILE (Touch)</button>
+    <button class="mode-btn" onclick="startGame(&#x27;desktop&#x27;)">DESKTOP (Keyboard)</button>
+  </div>
+  <canvas id="gameCanvas"></canvas>
+  <canvas id="minimap"></canvas>
+  
+  <div id="hud">
+    <div>SCORE: <span id="score">0</span></div>
+    <div>SHIP: <span id="shipType">FIGHTER</span></div>
+    <div>HULL: <span id="health">100</span>%</div>
+  </div>
+  
+  <div class="ship-select">
+    <button class="ship-btn active" data-ship="fighter">FIGHTER</button>
+    <button class="ship-btn" data-ship="carrier">CARRIER</button>
+    <button class="ship-btn" data-ship="brute">BRUTE</button>
+  </div>
+  <div id="joystick">
+    <div id="joystick-knob"></div>
+  </div>
+  
+  <button id="fireBtn">FIRE</button>
+  
+  <div id="controls">WASD: Move | SPACE: Fire (Fighter/Brute) or Boost (Carrier) | 1/2/3: Switch Ship</div>
+  <script>
+    const canvas = document.getElementById(&#x27;gameCanvas&#x27;);
+    const ctx = canvas.getContext(&#x27;2d&#x27;);
+    const minimap = document.getElementById(&#x27;minimap&#x27;);
+    const minimapCtx = minimap.getContext(&#x27;2d&#x27;);
+    
+    function resizeCanvas() {
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+    }
+    resizeCanvas();
+    window.addEventListener(&#x27;resize&#x27;, resizeCanvas);
+    const WORLD_SIZE = 4000;
+    const INVADER_COUNT = 80;
+    let score = 0;
+    let gameTime = 0;
+    let joystickActive = false;
+    let joystickDir = {x: 0, y: 0};
+    let firing = false;
+    let controlMode = null;
+    let keys = {};
+    let invaders = [];
+    let invaderBullets = []; // NEW: Array for enemy projectiles
+    let ship = null;
+    let gameStarted = false;
+    class Vector {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+      add(v) { return new Vector(this.x + v.x, this.y + v.y); }
+      mult(s) { return new Vector(this.x * s, this.y * s); }
+      mag() { return Math.sqrt(this.x * this.x + this.y * this.y); }
+      normalize() { const m = this.mag(); return m > 0 ? this.mult(1/m) : new Vector(0, 0); }
+    }
+    class Ship {
+      constructor(x, y, type) {
+        this.pos = new Vector(x, y);
+        this.vel = new Vector(0, 0);
+        this.angle = 0;
+        this.type = type;
+        this.bullets = [];
+        this.drones = [];
+        
+        if (type === &#x27;fighter&#x27;) {
+          this.maxSpeed = 6;
+          this.accel = 0.25;
+          this.health = 100;
+          this.maxHealth = 100;
+          this.fireRate = 5;
+          this.size = 12;
+          this.hitRadius = 10;
+        } else if (type === &#x27;carrier&#x27;) {
+          this.maxSpeed = 3;
+          this.accel = 0.12;
+          this.health = 250;
+          this.maxHealth = 250;
+          this.fireRate = 320;
+          this.size = 22;
+          this.hitRadius = 20;
+          this.boostPower = 0.5;
+          this.maxBoostSpeed = 7;
+        } else if (type === &#x27;brute&#x27;) {
+          this.maxSpeed = 5;
+          this.accel = 0.2;
+          this.health = 150;
+          this.maxHealth = 150;
+          this.fireRate = 53;
+          this.size = 14;
+          this.hitRadius = 12;
+        }
+        
+        this.lastFire = 0;
+      }
+      update() {
+        if (controlMode === &#x27;mobile&#x27;) {
+          if (joystickDir.x !== 0 || joystickDir.y !== 0) {
+            const dir = new Vector(joystickDir.x, joystickDir.y).normalize();
+            this.angle = Math.atan2(dir.y, dir.x);
+            this.vel = this.vel.add(dir.mult(this.accel));
+          }
+        } else {
+          const dir = new Vector(0, 0);
+          if (keys[&#x27;w&#x27;] || keys[&#x27;W&#x27;]) dir.y -= 1;
+          if (keys[&#x27;s&#x27;] || keys[&#x27;S&#x27;]) dir.y += 1;
+          if (keys[&#x27;a&#x27;] || keys[&#x27;A&#x27;]) dir.x -= 1;
+          if (keys[&#x27;d&#x27;] || keys[&#x27;D&#x27;]) dir.x += 1;
+          if (dir.mag() > 0) {
+            this.angle = Math.atan2(dir.y, dir.x);
+            const force = dir.normalize().mult(this.accel);
+            this.vel = this.vel.add(force);
+          }
+        }
+        // Boost for carrier (desktop/mobile)
+        if (this.type === &#x27;carrier&#x27; && ((controlMode === &#x27;desktop&#x27; && keys[&#x27; &#x27;]) || (controlMode === &#x27;mobile&#x27; && firing))) {
+          const boostDir = new Vector(Math.cos(this.angle), Math.sin(this.angle));
+          this.vel = this.vel.add(boostDir.mult(this.boostPower));
+          
+          if (this.vel.mag() > this.maxBoostSpeed) {
+            this.vel = this.vel.normalize().mult(this.maxBoostSpeed);
+          }
+        } else {
+          // Normal speed limit
+          if (this.vel.mag() > this.maxSpeed) {
+            this.vel = this.vel.normalize().mult(this.maxSpeed);
+          }
+        }
+        this.vel = this.vel.mult(0.97);
+        this.pos = this.pos.add(this.vel);
+        // Wrap around world limits
+        if (this.pos.x < 0) this.pos.x = WORLD_SIZE;
+        if (this.pos.x > WORLD_SIZE) this.pos.x = 0;
+        if (this.pos.y < 0) this.pos.y = WORLD_SIZE;
+        if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
+        // Fire logic (Desktop or Mobile manual fire)
+        const shouldFire = (controlMode === &#x27;desktop&#x27; && this.type !== &#x27;carrier&#x27; && keys[&#x27; &#x27;]) ||
+                         (controlMode === &#x27;mobile&#x27; && this.type !== &#x27;carrier&#x27; && firing);
+        
+        if (shouldFire && gameTime - this.lastFire > this.fireRate) {
+          this.fire();
+          this.lastFire = gameTime;
+        }
+        this.bullets = this.bullets.filter(b => {
+          b.update();
+          return b.life > 0;
+        });
+        this.drones = this.drones.filter(d => {
+          d.update(this.pos);
+          return d.life > 0;
+        });
+        if (this.type === &#x27;carrier&#x27; && this.drones.length < 3 && gameTime % 150 === 0) {
+          this.drones.push(new Drone(this.pos.x, this.pos.y));
+        }
+      }
+      fire() {
+        const speed = 12;
+        const shipVel = this.vel;
+        
+        if (this.type === &#x27;fighter&#x27;) {
+          const vx = Math.cos(this.angle) * speed + shipVel.x;
+          const vy = Math.sin(this.angle) * speed + shipVel.y;
+          this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, &#x27;#00ff00&#x27;));
+        } else if (this.type === &#x27;brute&#x27;) {
+          for (let i = -2; i <= 2; i++) {
+            const angle = this.angle + i * 0.2;
+            const vx = Math.cos(angle) * speed + shipVel.x;
+            const vy = Math.sin(angle) * speed + shipVel.y;
+            this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, &#x27;#ff4400&#x27;));
+          }
+        }
+      }
+      findNearestInvader() {
+        let nearest = null;
+        let minDist = Infinity;
+        invaders.forEach(inv => {
+          const dx = inv.pos.x - this.pos.x;
+          const dy = inv.pos.y - this.pos.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < minDist) {
+            minDist = dist;
+            nearest = { invader: inv, dist: dist };
+          }
+        });
+        return nearest;
+      }
+      draw(offsetX, offsetY) {
+        ctx.save();
+        ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
+        ctx.rotate(this.angle);
+        
+        if (this.type === &#x27;fighter&#x27;) {
+          ctx.fillStyle = &#x27;#00ff00&#x27;;
+          ctx.beginPath();
+          ctx.moveTo(this.size, 0);
+          ctx.lineTo(-this.size, this.size/2);
+          ctx.lineTo(-this.size/2, 0);
+          ctx.lineTo(-this.size, -this.size/2);
+          ctx.closePath();
+          ctx.fill();
+        } else if (this.type === &#x27;carrier&#x27;) {
+          ctx.fillStyle = &#x27;#0088ff&#x27;;
+          ctx.fillRect(-this.size, -this.size/2, this.size*2, this.size);
+          ctx.fillStyle = &#x27;#00aaff&#x27;;
+          ctx.fillRect(-this.size/2, -this.size, this.size, this.size/2);
+        } else if (this.type === &#x27;brute&#x27;) {
+          ctx.fillStyle = &#x27;#ff4400&#x27;;
+          ctx.beginPath();
+          ctx.moveTo(this.size, 0);
+          ctx.lineTo(-this.size, this.size);
+          ctx.lineTo(-this.size, -this.size);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = &#x27;#ff6622&#x27;;
+          ctx.fillRect(-this.size * 0.7, -this.size * 0.5, this.size * 1.4, this.size);
+        }
+        
+        ctx.restore();
+        this.bullets.forEach(b => b.draw(offsetX, offsetY));
+        this.drones.forEach(d => d.draw(offsetX, offsetY));
+      }
+    }
+    class Bullet {
+      constructor(x, y, vx, vy, color = &#x27;#ffff00&#x27;) {
+        this.pos = new Vector(x, y);
+        this.vel = new Vector(vx, vy);
+        this.life = 100;
+        this.color = color;
+        this.radius = 3;
+      }
+      update() {
+        this.pos = this.pos.add(this.vel);
+        this.life--;
+      }
+      draw(offsetX, offsetY) {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.pos.x - offsetX, this.pos.y - offsetY, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    // NEW: Invader Bullet Class
+    class InvaderBullet extends Bullet {
+      constructor(x, y, vx, vy) {
+        super(x, y, vx, vy, &#x27;#ff00ff&#x27;); // Purple/pink hostile color
+        this.radius = 4;
+        this.damage = 5; // Damage per hit
+      }
+    }
+    class Drone {
+      constructor(x, y) {
+        this.pos = new Vector(x, y);
+        this.vel = new Vector(0, 0);
+        this.life = 400;
+        this.orbitAngle = Math.random() * Math.PI * 2;
+        this.bullets = [];
+        this.lastFire = 0;
+        this.radius = 6;
+      }
+      update(parentPos) {
+        this.orbitAngle += 0.04;
+        const targetX = parentPos.x + Math.cos(this.orbitAngle) * 50;
+        const targetY = parentPos.y + Math.sin(this.orbitAngle) * 50;
+        
+        this.vel.x += (targetX - this.pos.x) * 0.02;
+        this.vel.y += (targetY - this.pos.y) * 0.02;
+        this.vel = this.vel.mult(0.88);
+        this.pos = this.pos.add(this.vel);
+        this.life--;
+        // Auto-fire at invaders
+        if (gameTime - this.lastFire > 50) {
+          const nearest = this.findNearestInvader();
+          if (nearest && nearest.dist < 250) {
+            this.fireAt(nearest.invader);
+            this.lastFire = gameTime;
+          }
+        }
+        this.bullets = this.bullets.filter(b => {
+          b.update();
+          return b.life > 0;
+        });
+      }
+      findNearestInvader() {
+        let nearest = null;
+        let minDist = Infinity;
+        invaders.forEach(inv => {
+          const dx = inv.pos.x - this.pos.x;
+          const dy = inv.pos.y - this.pos.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < minDist) {
+            minDist = dist;
+            nearest = { invader: inv, dist: dist };
+          }
+        });
+        return nearest;
+      }
+      fireAt(invader) {
+        const dx = invader.pos.x - this.pos.x;
+        const dy = invader.pos.y - this.pos.y;
+        const angle = Math.atan2(dy, dx);
+        const speed = 9;
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+        this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, &#x27;#00ffff&#x27;));
+      }
+      draw(offsetX, offsetY) {
+        const x = this.pos.x - offsetX;
+        const y = this.pos.y - offsetY;
+        ctx.fillStyle = &#x27;#00ffff&#x27;;
+        ctx.strokeStyle = &#x27;#00ffff&#x27;;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        this.bullets.forEach(b => b.draw(offsetX, offsetY));
+      }
+    }
+    class Invader {
+      constructor(x, y, size) {
+        this.pos = new Vector(x, y);
+        this.vel = new Vector((Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5);
+        this.size = size;
+        this.angle = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.08;
+        this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+        // NEW: Firing properties
+        this.fireRate = 200 + Math.random() * 100; // Slow fire: roughly every 3-5 seconds (60 FPS * 3.5 sec)
+        this.lastFire = gameTime + Math.random() * this.fireRate;
+      }
+      update() {
+        this.pos = this.pos.add(this.vel);
+        this.angle += this.rotSpeed;
+        // Wrap around world limits
+        if (this.pos.x < 0) this.pos.x = WORLD_SIZE;
+        if (this.pos.x > WORLD_SIZE) this.pos.x = 0;
+        if (this.pos.y < 0) this.pos.y = WORLD_SIZE;
+        if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
+        // NEW: Firing logic
+        if (gameTime - this.lastFire > this.fireRate) {
+          this.fire();
+          this.lastFire = gameTime;
+        }
+      }
+      fire() {
+        const dx = ship.pos.x - this.pos.x;
+        const dy = ship.pos.y - this.pos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        // Only fire if the ship is somewhat close (e.g., within 800 units)
+        if (dist < 800) {
+          const angle = Math.atan2(dy, dx);
+          const speed = 7;
+          const vx = Math.cos(angle) * speed;
+          const vy = Math.sin(angle) * speed;
+          invaderBullets.push(new InvaderBullet(this.pos.x, this.pos.y, vx, vy));
+        }
+      }
+      draw(offsetX, offsetY) {
+        ctx.save();
+        ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
+        ctx.rotate(this.angle);
+        
+        ctx.fillStyle = this.color;
+        ctx.strokeStyle = &#x27;#fff&#x27;;
+        ctx.lineWidth = 1;
+        const s = this.size;
+        // 1. Octopus Body (Square/Dome)
+        ctx.beginPath();
+        ctx.rect(-s/2, -s/2, s, s/2);
+        ctx.fill();
+        // 2. Head Dome
+        ctx.beginPath();
+        ctx.arc(0, -s/2, s/2, Math.PI, 2 * Math.PI);
+        ctx.fill();
+        // 3. Tentacles (simple lines/rects)
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2;
+        const tentacleCount = 4;
+        for(let i = 0; i < tentacleCount; i++) {
+          const xOffset = (i - tentacleCount/2 + 0.5) * s/4;
+          ctx.beginPath();
+          ctx.moveTo(xOffset, s/2);
+          ctx.lineTo(xOffset, s/2 + s/3);
+          ctx.stroke();
+        }
+        // 4. Eyes (small white dots)
+        ctx.fillStyle = &#x27;#fff&#x27;;
+        ctx.beginPath();
+        ctx.arc(-s/4, -s/4, s/8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(s/4, -s/4, s/8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      split() {
+        if (this.size > 15) {
+          return [
+            new Invader(this.pos.x + Math.random() * 10 - 5, this.pos.y + Math.random() * 10 - 5, this.size / 2),
+            new Invader(this.pos.x + Math.random() * 10 - 5, this.pos.y + Math.random() * 10 - 5, this.size / 2)
+          ];
+        }
+        return [];
+      }
+    }
+    function startGame(mode) {
+      controlMode = mode;
+      document.getElementById(&#x27;startScreen&#x27;).style.display = &#x27;none&#x27;;
+      
+      if (mode === &#x27;mobile&#x27;) {
+        document.getElementById(&#x27;joystick&#x27;).style.display = &#x27;block&#x27;;
+        document.getElementById(&#x27;fireBtn&#x27;).style.display = &#x27;flex&#x27;;
+        setupTouchControls();
+      } else {
+        document.getElementById(&#x27;controls&#x27;).style.display = &#x27;block&#x27;;
+        setupKeyboardControls();
+      }
+      ship = new Ship(WORLD_SIZE / 2, WORLD_SIZE / 2, &#x27;fighter&#x27;);
+      
+      for (let i = 0; i < INVADER_COUNT; i++) {
+        const x = Math.random() * WORLD_SIZE;
+        const y = Math.random() * WORLD_SIZE;
+        const size = 20 + Math.random() * 25;
+        invaders.push(new Invader(x, y, size));
+      }
+      gameStarted = true;
+      gameLoop();
+    }
+    function setupTouchControls() {
+      const joystick = document.getElementById(&#x27;joystick&#x27;);
+      const knob = document.getElementById(&#x27;joystick-knob&#x27;);
+      
+      joystick.addEventListener(&#x27;touchstart&#x27;, handleJoystickStart);
+      joystick.addEventListener(&#x27;touchmove&#x27;, handleJoystickMove);
+      joystick.addEventListener(&#x27;touchend&#x27;, handleJoystickEnd);
+      function handleJoystickStart(e) {
+        e.preventDefault();
+        joystickActive = true;
+        handleJoystickMove(e);
+      }
+      function handleJoystickMove(e) {
+        if (!joystickActive) return;
+        e.preventDefault();
+        
+        const rect = joystick.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const touch = e.touches[0];
+        const x = touch.clientX - rect.left - centerX;
+        const y = touch.clientY - rect.top - centerY;
+        
+        const distance = Math.sqrt(x * x + y * y);
+        const maxDistance = 35;
+        
+        if (distance > maxDistance) {
+          joystickDir.x = (x / distance);
+          joystickDir.y = (y / distance);
+          knob.style.transform = `translate(${(x / distance) * maxDistance}px, ${(y / distance) * maxDistance}px)`;
+        } else {
+          joystickDir.x = x / maxDistance;
+          joystickDir.y = y / maxDistance;
+          knob.style.transform = `translate(${x}px, ${y}px)`;
+        }
+      }
+      function handleJoystickEnd(e) {
+        e.preventDefault();
+        joystickActive = false;
+        joystickDir = {x: 0, y: 0};
+        knob.style.transform = &#x27;translate(0, 0)&#x27;;
+      }
+      const fireBtn = document.getElementById(&#x27;fireBtn&#x27;);
+      fireBtn.addEventListener(&#x27;touchstart&#x27;, (e) => {
+        e.preventDefault();
+        firing = true;
+        fireBtn.classList.add(&#x27;active&#x27;);
+      });
+      fireBtn.addEventListener(&#x27;touchend&#x27;, (e) => {
+        e.preventDefault();
+        firing = false;
+        fireBtn.classList.remove(&#x27;active&#x27;);
+      });
+      function updateFireButtonText() {
+        if (ship && ship.type === &#x27;carrier&#x27;) {
+          fireBtn.textContent = &#x27;BOOST&#x27;;
+        } else {
+          fireBtn.textContent = &#x27;FIRE&#x27;;
+        }
+      }
+      updateFireButtonText();
+      window.updateFireButtonText = updateFireButtonText;
+    }
+    function setupKeyboardControls() {
+      window.addEventListener(&#x27;keydown&#x27;, e => {
+        keys[e.key] = true;
+        if (e.key === &#x27;1&#x27;) switchShip(&#x27;fighter&#x27;);
+        if (e.key === &#x27;2&#x27;) switchShip(&#x27;carrier&#x27;);
+        if (e.key === &#x27;3&#x27;) switchShip(&#x27;brute&#x27;);
+      });
+      
+      window.addEventListener(&#x27;keyup&#x27;, e => keys[e.key] = false);
+    }
+    document.querySelectorAll(&#x27;.ship-btn&#x27;).forEach(btn => {
+      btn.addEventListener(&#x27;click&#x27;, (e) => {
+        e.preventDefault();
+        switchShip(btn.dataset.ship);
+      });
+    });
+    function switchShip(type) {
+      if (!ship) return;
+      const oldPos = ship.pos;
+      const oldVel = ship.vel;
+      ship = new Ship(oldPos.x, oldPos.y, type);
+      ship.vel = oldVel;
+      document.querySelectorAll(&#x27;.ship-btn&#x27;).forEach(b => b.classList.remove(&#x27;active&#x27;));
+      document.querySelector(`[data-ship="${type}"]`).classList.add(&#x27;active&#x27;);
+      
+      if (controlMode === &#x27;mobile&#x27; && window.updateFireButtonText) {
+        window.updateFireButtonText();
+      }
+    }
+    function checkCollisions() {
+      // Remove dead bullets
+      invaderBullets = invaderBullets.filter(b => b.life > 0);
+      // --- 1. Friendly Bullets vs Invaders ---
+      ship.bullets = ship.bullets.filter(bullet => {
+        let hit = false;
+        invaders = invaders.filter(inv => {
+          const dx = bullet.pos.x - inv.pos.x;
+          const dy = bullet.pos.y - inv.pos.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < inv.size + bullet.radius) {
+            hit = true;
+            const newInvs = inv.split();
+            invaders.push(...newInvs);
+            score += 10;
+            if (Math.random() < 0.2) {
+              invaders.push(new Invader(Math.random() * WORLD_SIZE, Math.random() * WORLD_SIZE, 25));
+            }
+            return false; // Remove the hit invader
+          }
+          return true; // Keep the invader
+        });
+        return !hit; // Remove the bullet if it hit something
+      });
+      // --- 2. Drone Bullets vs Invaders ---
+      ship.drones.forEach(drone => {
+        drone.bullets = drone.bullets.filter(bullet => {
+          let hit = false;
+          invaders = invaders.filter(inv => {
+            const dx = bullet.pos.x - inv.pos.x;
+            const dy = bullet.pos.y - inv.pos.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < inv.size + bullet.radius) {
+              hit = true;
+              const newInvs = inv.split();
+              invaders.push(...newInvs);
+              score += 5;
+              return false;
+            }
+            return true;
+          });
+          return !hit;
+        });
+        // Drone collision with invaders
+        invaders.forEach((inv, idx) => {
+          const dx = drone.pos.x - inv.pos.x;
+          const dy = drone.pos.y - inv.pos.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < inv.size + drone.radius) {
+            invaders.splice(idx, 1);
+            invaders.push(...inv.split());
+            drone.life -= 50;
+            score += 3;
+          }
+        });
+      });
+      // --- 3. Invader Bullets vs Ship and Drones (NEW) ---
+      invaderBullets = invaderBullets.filter(ib => {
+        // Ship collision
+        const shipDx = ib.pos.x - ship.pos.x;
+        const shipDy = ib.pos.y - ship.pos.y;
+        const shipDist = Math.sqrt(shipDx * shipDx + shipDy * shipDy);
+        if (shipDist < ship.hitRadius + ib.radius) {
+          ship.health -= ib.damage;
+          if (ship.health < 0) ship.health = 0;
+          return false; // Remove invader bullet
+        }
+        // Drone collision
+        for (let i = 0; i < ship.drones.length; i++) {
+          const drone = ship.drones[i];
+          const droneDx = ib.pos.x - drone.pos.x;
+          const droneDy = ib.pos.y - drone.pos.y;
+          const droneDist = Math.sqrt(droneDx * droneDx + droneDy * droneDy);
+          if (droneDist < drone.radius + ib.radius) {
+            drone.life -= 20; // Drones take less damage
+            return false; // Remove invader bullet
+          }
+        }
+        return true; // Keep invader bullet
+      });
+      // --- 4. Ship collision with invaders (Contact Damage) ---
+      invaders.forEach(inv => {
+        const dx = ship.pos.x - inv.pos.x;
+        const dy = ship.pos.y - inv.pos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < inv.size + ship.hitRadius) {
+          ship.health -= 0.5;
+          if (ship.health < 0) ship.health = 0;
+        }
+      });
+    }
+    function drawMinimap() {
+      minimapCtx.fillStyle = &#x27;#000&#x27;;
+      minimapCtx.fillRect(0, 0, 100, 100);
+      
+      const scale = 100 / WORLD_SIZE;
+      
+      // Draw Invaders
+      minimapCtx.fillStyle = &#x27;#f0f&#x27;;
+      invaders.forEach(inv => {
+        minimapCtx.fillRect(inv.pos.x * scale - 1, inv.pos.y * scale - 1, 2, 2);
+      });
+      
+      // Draw Player Ship
+      minimapCtx.fillStyle = &#x27;#0f0&#x27;;
+      minimapCtx.fillRect(ship.pos.x * scale - 2, ship.pos.y * scale - 2, 4, 4);
+    }
+    function gameLoop() {
+      if (!gameStarted) return;
+      
+      gameTime++;
+      
+      ship.update();
+      invaders.forEach(inv => inv.update());
+      invaderBullets.forEach(ib => ib.update()); // Update invader bullets
+      checkCollisions();
+      const offsetX = ship.pos.x - canvas.width / 2;
+      const offsetY = ship.pos.y - canvas.height / 2;
+      ctx.fillStyle = &#x27;#000&#x27;;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw everything
+      invaders.forEach(inv => inv.draw(offsetX, offsetY));
+      invaderBullets.forEach(ib => ib.draw(offsetX, offsetY)); // Draw invader bullets
+      ship.draw(offsetX, offsetY);
+      document.getElementById(&#x27;score&#x27;).textContent = score;
+      document.getElementById(&#x27;shipType&#x27;).textContent = ship.type.toUpperCase();
+      document.getElementById(&#x27;health&#x27;).textContent = Math.round(ship.health);
+      drawMinimap();
+      requestAnimationFrame(gameLoop);
+    }
+    // Auto-start game based on device
+    if (&#x27;ontouchstart&#x27; in window) {
+      startGame(&#x27;mobile&#x27;);
+    } else {
+      startGame(&#x27;desktop&#x27;);
+    }
+  </script>
+</body>
+</html>' style="width:100%; height:100%; border:none;"></iframe>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+</div>
+<div>
+<div class="panel" id="systemFeedPanel">
+<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
+<div class="panel-body" id="systemFeed">
+<div>Hits: <img src="https://www.reliablecounter.com/count.php?page=before-us-universe.com&digit=style/plain/1/&reloads=1" alt="Hit Counter" border="0" ></div>
+</div>
+</div>
+<div class="panel" id="serverTrackingPanel">
+<div class="panel-title"><div class="small">SERVER LIST</div></div>
+<div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
+<div id="dmList" style="margin-top:8px"></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div id="ortegaPanel">
+<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
+</div>
+<div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
+<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
+<div class="ad-banner">Do you need more arms? Try Hexapro!</div>
+<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
+</div>
+</div>
+<div class="bottom-section">
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body">
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//pronkerwronkers</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/7spAtXSkFi" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+</div>
+</div>
+</body>
+</html>#marqueeInner{position:absolute;white-space:nowrap;will-change:transform;display:inline-block;padding-left:100%}
+#bootOverlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.9),rgba(0,0,0,0.95));color:var(--fg);z-index:99998;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Roboto Mono',monospace}
+#bootPanel{width:92%;max-width:820px;background:var(--panel-bg);border:4px solid var(--border);padding:18px;box-shadow:0 0 30px rgba(0,255,255,0.06)}
+#bootLog{line-height:1.6;white-space:pre-wrap;margin-bottom:12px;font-size:13px;color:var(--text-gray)}
+#bootPrompt{color:var(--accent);margin-bottom:6px;animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+#bootInputs{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#bootInput{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;width:48%;min-width:160px;font-family:monospace}
+#bootChannel{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;font-family:monospace;width:48%;min-width:160px}
+#bootBtn{background:var(--accent);border:2px solid #000;color:#000;padding:8px 14px;cursor:pointer;font-weight:700}
+#bootBanner{margin-top:10px;background:rgba(0,0,0,0.35);padding:8px;border-radius:4px;color:var(--fg);font-size:12px}
+#bootBroadcast{animation:glitch 3s infinite alternate;}
+#app{display:none;padding:56px 12px 12px 12px;box-sizing:border-box;height:100%;overflow:auto}
+.title-bar{display:flex;gap:8px;flex-wrap:nowrap;padding:8px;background:transparent;color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center;justify-content:flex-start;overflow-x:auto}
+.title-bar::-webkit-scrollbar{height:12px;background:var(--panel-bg);border:1px solid var(--border);}
+.title-bar::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+.title-bar .logo{font-weight:700;letter-spacing:1px}
+.controls-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.layout > div:last-child{order:-1;}}
+@media (max-width:600px){.title-bar{flex-wrap:nowrap;overflow-x:auto;}.title-bar{font-size:11px;}}
+.panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
+.panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
+.panel-body{padding:8px;color:var(--text-gray)}
+.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border);}
+@media(max-width:600px){.yt-wrap iframe{height:200px;}}
+.chat-win{display:flex;flex-direction:column;height:520px}
+@media(max-width:600px){.chat-win{height:400px;}}
+.chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
+.chat-main{display:flex;flex:1;overflow:hidden}
+.chat-messages{flex:1;overflow:auto;background:#e6e6fa;border-right:1px solid rgba(0,0,0,0.1);padding:8px;color:#000}
+.chat-users{background:#fffacd;border-left:1px solid rgba(0,0,0,0.1);padding:8px;overflow:auto;width:200px}
+@media(max-width:700px){.chat-main{flex-direction:column}.chat-users{width:auto;border-left:0;border-top:1px solid rgba(0,0,0,0.1)}}
+.chat-row{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
+.chat-avatar{width:36px;height:36px;border-radius:50%;background:#add8e6;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#001a1a}
+@media(max-width:600px){.chat-avatar{width:24px;height:24px;font-size:10px;}}
+.chat-bubble{max-width:78%;padding:10px;border-radius:8px;background:#e6e6fa;border:1px solid rgba(0,0,0,0.1);font-family:Arial;color:#000}
+.chat-bubble.me{background:#fffacd;border:1px solid #f0d280;text-align:right;color:#222}
+.chat-meta{font-size:11px;color:#808080;font-weight:700;margin-bottom:4px}
+@media(max-width:600px){.chat-meta{font-size:9px;}}
+.user-row{display:flex;gap:8px;align-items:center;padding:6px;font-size:12px;cursor:pointer}
+@media(max-width:600px){.user-row{font-size:10px;}}
+.status-dot{width:9px;height:9px;border-radius:50%;background:var(--online)}
+.uname{font-family:'Press Start 2P';color:#ff0000;font-size:12px}
+@media(max-width:600px){.uname{font-size:10px;}}
+.chat-controls{display:flex;gap:6px;padding:8px;background:#fffacd;border-top:1px solid rgba(0,0,0,0.1)}
+.chat-controls input{flex:1;padding:8px;border:2px inset rgba(0,0,0,0.1);background:#fff;color:#000}
+.chat-controls button{padding:8px;border:2px outset rgba(0,0,0,0.1);background:#add8e6;cursor:pointer;color:#000}
+.board-thread{background:#f0f8ff;border:1px solid #ccc;padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:#000;white-space:pre-wrap;}
+.board-thread:nth-child(even) {background: #f0f0f0;}
+.board-thread strong{color:#000080;font-size:14px}
+.board-thread .small{color:#808080;font-style:italic;margin-top:4px;display:block}
 #serverSelectPanel{margin-bottom:12px;padding:4px;display:inline-flex;align-items:center;gap:4px;}
 #serverSelectPanel .small{font-size:10px;margin-right:4px;}
 #serverSelectPanel .controls{display:flex;gap:4px;align-items:center}
