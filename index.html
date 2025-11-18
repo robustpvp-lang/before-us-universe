@@ -142,13 +142,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #stumbleBtn{width:200px;}
 #fleetcommandBody{height:80vh;}
 @media(max-width:600px){#fleetcommandBody{height:70vh;}}
-@media (min-width: 601px) {
-#startScreen h1 {font-size: 48px;}
-.mode-btn {padding: 20px 40px; font-size: 20px;}
-#hud {font-size: 16px;}
-#controls {font-size: 14px;}
-.ship-btn {padding: 10px 15px; font-size: 14px;}
-}
 </style>
 </head>
 <body>
@@ -269,221 +262,77 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="fleetcommandBody">
-<iframe srcdoc='<!DOCTYPE html>
+<div class="panel-title">
+<div class="title">//fleetcommand</div>
+<div class="toggle-btn" aria-label="Toggle">▼</div>
+</div>
+<div class="panel-body" id="fleetcommandBody" style="height:85vh; max-height:1000px; padding:8px; background:#000;">
+<iframe id="fleetCommandIframe" style="width:100%; height:100%; border:none; border-radius:6px;"
+srcdoc='<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Fleet Command: Asteroids</title>
 <style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
--webkit-touch-callout: none;
--webkit-user-select: none;
-user-select: none;
+* { margin:0; padding:0; box-sizing:border-box; -webkit-touch-callout:none; user-select:none; }
+body { overflow:hidden; background:#000; font-family:"Courier New",monospace; touch-action:none; image-rendering:pixelated; }
+#gameCanvas { display:block; width:100%; height:100%; background:#000; touch-action:none; }
+#startScreen { position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; color:#0f0; text-align:center; padding:20px; }
+#startScreen h1 { font-size:5vw; min-font-size:28px; margin-bottom:20px; text-shadow:0 0 15px #0f0; }
+.mode-btn { background:rgba(0,255,0,0.2); border:3px solid #0f0; color:#0f0; padding:16px 32px; margin:12px; cursor:pointer; font-size:18px; font-weight:bold; text-transform:uppercase; border-radius:6px; }
+.mode-btn:hover { background:rgba(0,255,0,0.4); }
+#hud { position:absolute; top:12px; left:12px; color:#0f0; font-size:16px; text-shadow:0 0 8px #0f0; pointer-events:none; z-index:10; line-height:1.4; }
+#minimap { position:absolute; top:12px; left:50%; transform:translateX(-50%); width:140px; height:140px; border:3px solid #0f0; background:rgba(0,0,0,0.8); z-index:10; }
+.ship-select { position:absolute; top:12px; right:12px; display:flex; flex-direction:column; gap:8px; z-index:10; }
+.ship-btn { background:rgba(0,255,0,0.25); border:2px solid #0f0; color:#0f0; padding:10px 16px; cursor:pointer; font-size:14px; font-weight:bold; }
+.ship-btn.active { background:rgba(0,255,0,0.7); }
+#joystick { position:absolute; bottom:30px; left:30px; width:140px; height:140px; background:rgba(0,255,0,0.15); border:3px solid rgba(0,255,0,0.4); border-radius:50%; z-index:10; display:none; }
+#joystick-knob { position:absolute; width:60px; height:60px; background:rgba(0,255,0,0.6); border:3px solid #0f0; border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); }
+#fireBtn { position:absolute; bottom:30px; right:30px; width:100px; height:100px; background:rgba(255,0,0,0.4); border:4px solid #f00; border-radius:50%; color:#f00; font-size:16px; font-weight:bold; display:none; align-items:center; justify-content:center; z-index:10; }
+#fireBtn.active { background:rgba(255,0,0,0.7); }
+#controls { position:absolute; bottom:16px; left:16px; color:#0f0; font-size:14px; text-shadow:0 0 6px #0f0; display:none; background:rgba(0,0,0,0.6); padding:8px; border-radius:4px; }
+@media (max-width:768px) {
+#startScreen h1 { font-size:36px; }
+#hud { font-size:14px; }
+.mode-btn { padding:14px 28px; font-size:16px; }
 }
-body {
-overflow: hidden;
-background: #000;
-font-family: &#x27;Courier New&#x27;, monospace;
-touch-action: none;
-}
-#gameCanvas {
-display: block;
-background: #000;
-touch-action: none;
-width: 100%;
-height: 100%;
-}
-#startScreen {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: #000;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-z-index: 1000;
-color: #0f0;
-}
-#startScreen h1 {
-font-size: 32px;
-margin-bottom: 20px;
-text-shadow: 0 0 10px #0f0;
-}
-#startScreen p {
-margin-bottom: 30px;
-font-size: 14px;
-}
-.mode-btn {
-background: rgba(0, 255, 0, 0.2);
-border: 2px solid #0f0;
-color: #0f0;
-padding: 15px 30px;
-margin: 10px;
-cursor: pointer;
-font-family: &#x27;Courier New&#x27;, monospace;
-font-size: 16px;
-font-weight: bold;
-text-transform: uppercase;
-}
-.mode-btn:hover {
-background: rgba(0, 255, 0, 0.4);
-}
-#hud {
-position: absolute;
-top: 10px;
-left: 10px;
-color: #0f0;
-font-size: 12px;
-text-shadow: 0 0 5px #0f0;
-pointer-events: none;
-z-index: 10;
-}
-#minimap {
-position: absolute;
-top: 10px;
-left: 50%;
-transform: translateX(-50%);
-width: 100px;
-height: 100px;
-border: 2px solid #0f0;
-background: rgba(0, 0, 0, 0.7);
-z-index: 10;
-}
-.ship-select {
-position: absolute;
-top: 10px;
-right: 10px;
-display: flex;
-flex-direction: column;
-gap: 5px;
-z-index: 10;
-}
-.ship-btn {
-background: rgba(0, 255, 0, 0.2);
-border: 1px solid #0f0;
-color: #0f0;
-padding: 8px 12px;
-cursor: pointer;
-font-family: &#x27;Courier New&#x27;, monospace;
-font-size: 11px;
-touch-action: manipulation;
-}
-.ship-btn.active {
-background: rgba(0, 255, 0, 0.6);
-}
-#joystick {
-position: absolute;
-bottom: 20px;
-left: 20px;
-width: 120px;
-height: 120px;
-background: rgba(0, 255, 0, 0.1);
-border: 2px solid rgba(0, 255, 0, 0.3);
-border-radius: 50%;
-z-index: 10;
-display: none;
-}
-#joystick-knob {
-position: absolute;
-width: 50px;
-height: 50px;
-background: rgba(0, 255, 0, 0.5);
-border: 2px solid #0f0;
-border-radius: 50%;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-}
-#fireBtn {
-position: absolute;
-bottom: 20px;
-right: 5px;
-width: 80px;
-height: 80px;
-background: rgba(255, 0, 0, 0.3);
-border: 2px solid #f00;
-border-radius: 50%;
-color: #f00;
-font-size: 12px;
-font-weight: bold;
-display: none;
-align-items: center;
-justify-content: center;
-z-index: 10;
-touch-action: manipulation;
-}
-#fireBtn.active {
-background: rgba(255, 0, 0, 0.6);
-}
-#controls {
-position: absolute;
-bottom: 10px;
-left: 10px;
-color: #0f0;
-font-size: 11px;
-text-shadow: 0 0 5px #0f0;
-display: none;
-}
-@media (min-width: 601px) {
-#startScreen h1 {
-font-size: 48px;
-}
-.mode-btn {
-padding: 20px 40px;
-font-size: 20px;
-}
-#hud {
-font-size: 16px;
-}
-#controls {
-font-size: 14px;
-}
-.ship-btn {
-padding: 10px 15px;
-font-size: 14px;
-}
+@media (min-width:1024px) {
+#startScreen h1 { font-size:52px; }
+#hud { font-size:18px; }
+.ship-btn { font-size:16px; padding:12px 20px; }
+#controls { font-size:16px; }
 }
 </style>
 </head>
 <body>
 <div id="startScreen">
 <h1>FLEET COMMAND</h1>
-<p style="font-size: 12px; margin-bottom: 10px; color: #0f0; text-shadow: 0 0 5px #0f0;">Created by Patrick McDonald and Claude</p>
-<p>Choose your control mode:</p>
+<p style="color:#0f9; margin-bottom:20px;">Created by Patrick McDonald & Claude</p>
+<p>Choose control mode:</p>
 <button class="mode-btn" onclick="startGame('mobile')">MOBILE (Touch)</button>
 <button class="mode-btn" onclick="startGame('desktop')">DESKTOP (Keyboard)</button>
 </div>
 <canvas id="gameCanvas"></canvas>
 <canvas id="minimap"></canvas>
-&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;SCORE: 0
-&nbsp;&nbsp;&nbsp;&nbsp;SHIP: FIGHTER
-&nbsp;&nbsp;&nbsp;&nbsp;HULL: 100%
-&nbsp;
-&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;<button class="ship-btn active" data-ship="fighter">FIGHTER</button>
-&nbsp;&nbsp;&nbsp;&nbsp;<button class="ship-btn" data-ship="carrier">CARRIER</button>
-&nbsp;&nbsp;&nbsp;&nbsp;<button class="ship-btn" data-ship="brute">BRUTE</button>
-&nbsp;
-&nbsp;
-&nbsp;&nbsp;&nbsp;
-&nbsp;
+<div id="hud">
+SCORE: <span id="score">0</span><br>
+SHIP: <span id="shipType">FIGHTER</span><br>
+HULL: <span id="health">100%</span>
+</div>
+<div class="ship-select">
+<button class="ship-btn active" data-ship="fighter">FIGHTER</button>
+<button class="ship-btn" data-ship="carrier">CARRIER</button>
+<button class="ship-btn" data-ship="brute">BRUTE</button>
+</div>
+<div id="joystick"><div id="joystick-knob"></div></div>
 <button id="fireBtn">FIRE</button>
-&nbsp;&nbsp;WASD: Move | SPACE: Fire (Fighter/Brute) or Boost (Carrier) | 1/2/3: Switch Ship
-&nbsp;&nbsp;<script>
-&nbsp;&nbsp;&nbsp;&nbsp;const canvas = document.getElementById('gameCanvas');
-&nbsp;&nbsp;&nbsp;&nbsp;const ctx = canvas.getContext('2d');
-&nbsp;&nbsp;&nbsp;&nbsp;const minimap = document.getElementById('minimap');
-&nbsp;&nbsp;&nbsp;&nbsp;const minimapCtx = minimap.getContext('2d');
+<div id="controls">WASD: Move | SPACE: Fire (Fighter/Brute) or Boost (Carrier) | 1/2/3: Switch Ship</div>
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const minimap = document.getElementById('minimap');
+const minimapCtx = minimap.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const WORLD_SIZE = 4000;
@@ -499,625 +348,537 @@ let asteroids = [];
 let ship = null;
 let gameStarted = false;
 class Vector {
-constructor(x, y) {
-this.x = x;
-this.y = y;
-}
-add(v) { return new Vector(this.x + v.x, this.y + v.y); }
-mult(s) { return new Vector(this.x * s, this.y * s); }
-mag() { return Math.sqrt(this.x * this.x + this.y * this.y); }
-normalize() { const m = this.mag(); return m > 0 ? this.mult(1/m) : new Vector(0, 0); }
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+  add(v) { return new Vector(this.x + v.x, this.y + v.y); }
+  mult(s) { return new Vector(this.x * s, this.y * s); }
+  mag() { return Math.sqrt(this.x * this.x + this.y * this.y); }
+  normalize() { const m = this.mag(); return m > 0 ? this.mult(1/m) : new Vector(0, 0); }
 }
 class Ship {
-constructor(x, y, type) {
-this.pos = new Vector(x, y);
-this.vel = new Vector(0, 0);
-this.angle = 0;
-this.type = type;
-this.bullets = [];
-this.drones = [];
-if (type === 'fighter') {
-this.maxSpeed = 6;
-this.accel = 0.25;
-this.health = 100;
-this.maxHealth = 100;
-this.fireRate = 5; // Continuous fire - every 5 frames
-this.size = 12;
-this.hitRadius = 10;
-} else if (type === 'carrier') {
-this.maxSpeed = 3;
-this.accel = 0.12;
-this.health = 250;
-this.maxHealth = 250;
-this.fireRate = 320; // 20% faster
-this.size = 22;
-this.hitRadius = 20;
-this.boostPower = 0.5;
-this.maxBoostSpeed = 7;
-} else if (type === 'brute') {
-this.maxSpeed = 5;
-this.accel = 0.2;
-this.health = 150;
-this.maxHealth = 150;
-this.fireRate = 53; // 3x faster (160 / 3)
-this.size = 14;
-this.hitRadius = 12;
-}
-this.lastFire = 0;
-}
-update() {
-if (controlMode === 'mobile') {
-if (joystickDir.x !== 0 || joystickDir.y !== 0) {
-const dir = new Vector(joystickDir.x, joystickDir.y).normalize();
-this.angle = Math.atan2(dir.y, dir.x);
-this.vel = this.vel.add(dir.mult(this.accel));
-}
-} else {
-const dir = new Vector(0, 0);
-if (keys['w'] || keys['W']) dir.y -= 1;
-if (keys['s'] || keys['S']) dir.y += 1;
-if (keys['a'] || keys['A']) dir.x -= 1;
-if (keys['d'] || keys['D']) dir.x += 1;
-if (dir.mag() > 0) {
-this.angle = Math.atan2(dir.y, dir.x);
-const force = dir.normalize().mult(this.accel);
-this.vel = this.vel.add(force);
-}
-}
-// Boost for carrier (desktop)
-if (controlMode === 'desktop' && this.type === 'carrier' && keys[' ']) {
-const boostDir = new Vector(Math.cos(this.angle), Math.sin(this.angle));
-this.vel = this.vel.add(boostDir.mult(this.boostPower));
-if (this.vel.mag() > this.maxBoostSpeed) {
-this.vel = this.vel.normalize().mult(this.maxBoostSpeed);
-}
-} else {
-// Normal speed limit
-if (this.vel.mag() > this.maxSpeed) {
-this.vel = this.vel.normalize().mult(this.maxSpeed);
-}
-}
-this.vel = this.vel.mult(0.97);
-this.pos = this.pos.add(this.vel);
-if (this.pos.x < 0) this.pos.x = 0;
-if (this.pos.x > WORLD_SIZE) this.pos.x = WORLD_SIZE;
-if (this.pos.y < 0) this.pos.y = 0;
-if (this.pos.y > WORLD_SIZE) this.pos.y = WORLD_SIZE;
-// Desktop firing (not for carrier)
-if (controlMode === 'desktop' && this.type !== 'carrier' && keys[' '] && gameTime - this.lastFire > this.fireRate) {
-this.fire();
-this.lastFire = gameTime;
-}
-// Boost for carrier (mobile)
-if (controlMode === 'mobile' && this.type === 'carrier' && firing) {
-const boostDir = new Vector(Math.cos(this.angle), Math.sin(this.angle));
-this.vel = this.vel.add(boostDir.mult(this.boostPower));
-if (this.vel.mag() > this.maxBoostSpeed) {
-this.vel = this.vel.normalize().mult(this.maxBoostSpeed);
-}
-}
-// Manual fire for mobile mode (not carrier)
-if (controlMode === 'mobile' && this.type !== 'carrier' && firing && gameTime - this.lastFire > this.fireRate) {
-this.fire();
-this.lastFire = gameTime;
-}
-this.bullets = this.bullets.filter(b => {
-b.update();
-return b.life > 0;
-});
-this.drones = this.drones.filter(d => {
-d.update(this.pos);
-return d.life > 0;
-});
-if (this.type === 'carrier' && this.drones.length < 3 && gameTime % 150 === 0) {
-this.drones.push(new Drone(this.pos.x, this.pos.y));
-}
-}
-fire() {
-const speed = 12;
-const shipVel = this.vel; // Inherit ship velocity
-if (this.type === 'fighter') {
-// Fast repeating fire
-const vx = Math.cos(this.angle) * speed + shipVel.x;
-const vy = Math.sin(this.angle) * speed + shipVel.y;
-this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ff00'));
-} else if (this.type === 'carrier') {
-// Carrier doesn't fire - drones do the shooting
-} else if (this.type === 'brute') {
-// 5-shot spread
-for (let i = -2; i <= 2; i++) {
-const angle = this.angle + i * 0.2;
-const vx = Math.cos(angle) * speed + shipVel.x;
-const vy = Math.sin(angle) * speed + shipVel.y;
-this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#ff4400'));
-}
-}
-}
-findNearestAsteroid() {
-let nearest = null;
-let minDist = Infinity;
-asteroids.forEach(ast => {
-const dx = ast.pos.x - this.pos.x;
-const dy = ast.pos.y - this.pos.y;
-const dist = Math.sqrt(dx * dx + dy * dy);
-if (dist < minDist) {
-minDist = dist;
-nearest = { asteroid: ast, dist: dist };
-}
-});
-return nearest;
-}
-draw(offsetX, offsetY) {
-ctx.save();
-ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
-ctx.rotate(this.angle);
-if (this.type === 'fighter') {
-ctx.fillStyle = '#00ff00';
-ctx.beginPath();
-ctx.moveTo(this.size, 0);
-ctx.lineTo(-this.size, this.size/2);
-ctx.lineTo(-this.size/2, 0);
-ctx.lineTo(-this.size, -this.size/2);
-ctx.closePath();
-ctx.fill();
-} else if (this.type === 'carrier') {
-ctx.fillStyle = '#0088ff';
-ctx.fillRect(-this.size, -this.size/2, this.size*2, this.size);
-ctx.fillStyle = '#00aaff';
-ctx.fillRect(-this.size/2, -this.size, this.size, this.size/2);
-} else {
-ctx.fillStyle = '#ff4400';
-ctx.beginPath();
-ctx.moveTo(this.size, 0);
-ctx.lineTo(-this.size, this.size);
-ctx.lineTo(-this.size, -this.size);
-ctx.closePath();
-ctx.fill();
-// Add bulk to brute
-ctx.fillStyle = '#ff6622';
-ctx.fillRect(-this.size * 0.7, -this.size * 0.5, this.size * 1.4, this.size);
-}
-ctx.restore();
-this.bullets.forEach(b => b.draw(offsetX, offsetY));
-this.drones.forEach(d => d.draw(offsetX, offsetY));
-}
+  constructor(x, y, type) {
+    this.pos = new Vector(x, y);
+    this.vel = new Vector(0, 0);
+    this.angle = 0;
+    this.type = type;
+    this.bullets = [];
+    this.drones = [];
+    if (type === 'fighter') {
+      this.maxSpeed = 6;
+      this.accel = 0.25;
+      this.health = 100;
+      this.maxHealth = 100;
+      this.fireRate = 5; // Continuous fire - every 5 frames
+      this.size = 12;
+      this.hitRadius = 10;
+    } else if (type === 'carrier') {
+      this.maxSpeed = 3;
+      this.accel = 0.12;
+      this.health = 250;
+      this.maxHealth = 250;
+      this.fireRate = 320; // 20% faster
+      this.size = 22;
+      this.hitRadius = 20;
+      this.boostPower = 0.5;
+      this.maxBoostSpeed = 7;
+    } else if (type === 'brute') {
+      this.maxSpeed = 5;
+      this.accel = 0.2;
+      this.health = 150;
+      this.maxHealth = 150;
+      this.fireRate = 53; // 3x faster (160 / 3)
+      this.size = 14;
+      this.hitRadius = 12;
+    }
+    this.lastFire = 0;
+  }
+  update() {
+    if (controlMode === 'mobile') {
+      if (joystickDir.x !== 0 || joystickDir.y !== 0) {
+        const dir = new Vector(joystickDir.x, joystickDir.y).normalize();
+        this.angle = Math.atan2(dir.y, dir.x);
+        this.vel = this.vel.add(dir.mult(this.accel));
+      }
+    } else {
+      const dir = new Vector(0, 0);
+      if (keys['w'] || keys['W']) dir.y -= 1;
+      if (keys['s'] || keys['S']) dir.y += 1;
+      if (keys['a'] || keys['A']) dir.x -= 1;
+      if (keys['d'] || keys['D']) dir.x += 1;
+      if (dir.mag() > 0) {
+        this.angle = Math.atan2(dir.y, dir.x);
+        const force = dir.normalize().mult(this.accel);
+        this.vel = this.vel.add(force);
+      }
+    }
+    // Boost for carrier (desktop)
+    if (controlMode === 'desktop' && this.type === 'carrier' && keys[' ']) {
+      const boostDir = new Vector(Math.cos(this.angle), Math.sin(this.angle));
+      this.vel = this.vel.add(boostDir.mult(this.boostPower));
+      if (this.vel.mag() > this.maxBoostSpeed) {
+        this.vel = this.vel.normalize().mult(this.maxBoostSpeed);
+      }
+    } else {
+      // Normal speed limit
+      if (this.vel.mag() > this.maxSpeed) {
+        this.vel = this.vel.normalize().mult(this.maxSpeed);
+      }
+    }
+    this.vel = this.vel.mult(0.97);
+    this.pos = this.pos.add(this.vel);
+    if (this.pos.x < 0) this.pos.x = 0;
+    if (this.pos.x > WORLD_SIZE) this.pos.x = WORLD_SIZE;
+    if (this.pos.y < 0) this.pos.y = 0;
+    if (this.pos.y > WORLD_SIZE) this.pos.y = WORLD_SIZE;
+    // Desktop firing (not for carrier)
+    if (controlMode === 'desktop' && this.type !== 'carrier' && keys[' '] && gameTime - this.lastFire > this.fireRate) {
+      this.fire();
+      this.lastFire = gameTime;
+    }
+    // Boost for carrier (mobile)
+    if (controlMode === 'mobile' && this.type === 'carrier' && firing) {
+      const boostDir = new Vector(Math.cos(this.angle), Math.sin(this.angle));
+      this.vel = this.vel.add(boostDir.mult(this.boostPower));
+      if (this.vel.mag() > this.maxBoostSpeed) {
+        this.vel = this.vel.normalize().mult(this.maxBoostSpeed);
+      }
+    }
+    // Manual fire for mobile mode (not carrier)
+    if (controlMode === 'mobile' && this.type !== 'carrier' && firing && gameTime - this.lastFire > this.fireRate) {
+      this.fire();
+      this.lastFire = gameTime;
+    }
+    this.bullets = this.bullets.filter(b => {
+      b.update();
+      return b.life > 0;
+    });
+    this.drones = this.drones.filter(d => {
+      d.update(this.pos);
+      return d.life > 0;
+    });
+    if (this.type === 'carrier' && this.drones.length < 3 && gameTime % 150 === 0) {
+      this.drones.push(new Drone(this.pos.x, this.pos.y));
+    }
+  }
+  fire() {
+    const speed = 12;
+    const shipVel = this.vel; // Inherit ship velocity
+    if (this.type === 'fighter') {
+      // Fast repeating fire
+      const vx = Math.cos(this.angle) * speed + shipVel.x;
+      const vy = Math.sin(this.angle) * speed + shipVel.y;
+      this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ff00'));
+    } else if (this.type === 'carrier') {
+      // Carrier doesn't fire - drones do the shooting
+    } else if (this.type === 'brute') {
+      // 5-shot spread
+      for (let i = -2; i <= 2; i++) {
+        const angle = this.angle + i * 0.2;
+        const vx = Math.cos(angle) * speed + shipVel.x;
+        const vy = Math.sin(angle) * speed + shipVel.y;
+        this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#ff4400'));
+      }
+    }
+  }
+  findNearestAsteroid() {
+    let nearest = null;
+    let minDist = Infinity;
+    asteroids.forEach(ast => {
+      const dx = ast.pos.x - this.pos.x;
+      const dy = ast.pos.y - this.pos.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = { asteroid: ast, dist: dist };
+      }
+    });
+    return nearest;
+  }
+  draw(offsetX, offsetY) {
+    ctx.save();
+    ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
+    ctx.rotate(this.angle);
+    if (this.type === 'fighter') {
+      ctx.fillStyle = '#00ff00';
+      ctx.beginPath();
+      ctx.moveTo(this.size, 0);
+      ctx.lineTo(-this.size, this.size/2);
+      ctx.lineTo(-this.size/2, 0);
+      ctx.lineTo(-this.size, -this.size/2);
+      ctx.closePath();
+      ctx.fill();
+    } else if (this.type === 'carrier') {
+      ctx.fillStyle = '#0088ff';
+      ctx.fillRect(-this.size, -this.size/2, this.size*2, this.size);
+      ctx.fillStyle = '#00aaff';
+      ctx.fillRect(-this.size/2, -this.size, this.size, this.size/2);
+    } else {
+      ctx.fillStyle = '#ff4400';
+      ctx.beginPath();
+      ctx.moveTo(this.size, 0);
+      ctx.lineTo(-this.size, this.size);
+      ctx.lineTo(-this.size, -this.size);
+      ctx.closePath();
+      ctx.fill();
+      // Add bulk to brute
+      ctx.fillStyle = '#ff6622';
+      ctx.fillRect(-this.size * 0.7, -this.size * 0.5, this.size * 1.4, this.size);
+    }
+    ctx.restore();
+    this.bullets.forEach(b => b.draw(offsetX, offsetY));
+    this.drones.forEach(d => d.draw(offsetX, offsetY));
+  }
 }
 class Bullet {
-constructor(x, y, vx, vy, color = '#ffff00') {
-this.pos = new Vector(x, y);
-this.vel = new Vector(vx, vy);
-this.life = 100;
-this.color = color;
-this.radius = 3;
-}
-update() {
-this.pos = this.pos.add(this.vel);
-this.life--;
-}
-draw(offsetX, offsetY) {
-ctx.fillStyle = this.color;
-ctx.beginPath();
-ctx.arc(this.pos.x - offsetX, this.pos.y - offsetY, this.radius, 0, Math.PI * 2);
-ctx.fill();
-}
+  constructor(x, y, vx, vy, color = '#ffff00') {
+    this.pos = new Vector(x, y);
+    this.vel = new Vector(vx, vy);
+    this.life = 100;
+    this.color = color;
+    this.radius = 3;
+  }
+  update() {
+    this.pos = this.pos.add(this.vel);
+    this.life--;
+  }
+  draw(offsetX, offsetY) {
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.pos.x - offsetX, this.pos.y - offsetY, this.radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
 }
 class Drone {
-constructor(x, y) {
-this.pos = new Vector(x, y);
-this.vel = new Vector(0, 0);
-this.life = 400;
-this.orbitAngle = Math.random() * Math.PI * 2;
-this.bullets = [];
-this.lastFire = 0;
-this.radius = 6;
-}
-update(parentPos) {
-this.orbitAngle += 0.04;
-const targetX = parentPos.x + Math.cos(this.orbitAngle) * 50;
-const targetY = parentPos.y + Math.sin(this.orbitAngle) * 50;
-this.vel.x += (targetX - this.pos.x) * 0.02;
-this.vel.y += (targetY - this.pos.y) * 0.02;
-this.vel = this.vel.mult(0.88);
-this.pos = this.pos.add(this.vel);
-this.life--;
-// Auto-fire at asteroids
-if (gameTime - this.lastFire > 50) {
-const nearest = this.findNearestAsteroid();
-if (nearest && nearest.dist < 250) {
-this.fireAt(nearest.asteroid);
-this.lastFire = gameTime;
-}
-}
-// Update drone bullets
-this.bullets = this.bullets.filter(b => {
-b.update();
-return b.life > 0;
-});
-}
-findNearestAsteroid() {
-let nearest = null;
-let minDist = Infinity;
-asteroids.forEach(ast => {
-const dx = ast.pos.x - this.pos.x;
-const dy = ast.pos.y - this.pos.y;
-const dist = Math.sqrt(dx * dx + dy * dy);
-if (dist < minDist) {
-minDist = dist;
-nearest = { asteroid: ast, dist: dist };
-}
-});
-return nearest;
-}
-fireAt(asteroid) {
-const dx = asteroid.pos.x - this.pos.x;
-const dy = asteroid.pos.y - this.pos.y;
-const angle = Math.atan2(dy, dx);
-const speed = 9;
-const vx = Math.cos(angle) * speed;
-const vy = Math.sin(angle) * speed;
-this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ffff'));
-}
-draw(offsetX, offsetY) {
-const x = this.pos.x - offsetX;
-const y = this.pos.y - offsetY;
-ctx.fillStyle = '#00ffff';
-ctx.strokeStyle = '#00ffff';
-ctx.lineWidth = 2;
-ctx.beginPath();
-ctx.arc(x, y, this.radius, 0, Math.PI * 2);
-ctx.fill();
-ctx.stroke();
-// Draw drone bullets
-this.bullets.forEach(b => b.draw(offsetX, offsetY));
-}
+  constructor(x, y) {
+    this.pos = new Vector(x, y);
+    this.vel = new Vector(0, 0);
+    this.life = 400;
+    this.orbitAngle = Math.random() * Math.PI * 2;
+    this.bullets = [];
+    this.lastFire = 0;
+    this.radius = 6;
+  }
+  update(parentPos) {
+    this.orbitAngle += 0.04;
+    const targetX = parentPos.x + Math.cos(this.orbitAngle) * 50;
+    const targetY = parentPos.y + Math.sin(this.orbitAngle) * 50;
+    this.vel.x += (targetX - this.pos.x) * 0.02;
+    this.vel.y += (targetY - this.pos.y) * 0.02;
+    this.vel = this.vel.mult(0.88);
+    this.pos = this.pos.add(this.vel);
+    this.life--;
+    // Auto-fire at asteroids
+    if (gameTime - this.lastFire > 50) {
+      const nearest = this.findNearestAsteroid();
+      if (nearest && nearest.dist < 250) {
+        this.fireAt(nearest.asteroid);
+        this.lastFire = gameTime;
+      }
+    }
+    // Update drone bullets
+    this.bullets = this.bullets.filter(b => {
+      b.update();
+      return b.life > 0;
+    });
+  }
+  findNearestAsteroid() {
+    let nearest = null;
+    let minDist = Infinity;
+    asteroids.forEach(ast => {
+      const dx = ast.pos.x - this.pos.x;
+      const dy = ast.pos.y - this.pos.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = { asteroid: ast, dist: dist };
+      }
+    });
+    return nearest;
+  }
+  fireAt(asteroid) {
+    const dx = asteroid.pos.x - this.pos.x;
+    const dy = asteroid.pos.y - this.pos.y;
+    const angle = Math.atan2(dy, dx);
+    const speed = 9;
+    const vx = Math.cos(angle) * speed;
+    const vy = Math.sin(angle) * speed;
+    this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ffff'));
+  }
+  draw(offsetX, offsetY) {
+    const x = this.pos.x - offsetX;
+    const y = this.pos.y - offsetY;
+    ctx.fillStyle = '#00ffff';
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, this.radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // Draw drone bullets
+    this.bullets.forEach(b => b.draw(offsetX, offsetY));
+  }
 }
 class Asteroid {
-constructor(x, y, size) {
-this.pos = new Vector(x, y);
-this.vel = new Vector((Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5);
-this.size = size;
-this.angle = Math.random() * Math.PI * 2;
-this.rotSpeed = (Math.random() - 0.5) * 0.08;
-this.points = [];
-for (let i = 0; i < 7; i++) {
-const angle = (i / 7) * Math.PI * 2;
-const r = size * (0.8 + Math.random() * 0.4);
-this.points.push({
-x: Math.cos(angle) * r,
-y: Math.sin(angle) * r
-});
-}
-}
-update() {
-this.pos = this.pos.add(this.vel);
-this.angle += this.rotSpeed;
-if (this.pos.x < 0) this.pos.x = WORLD_SIZE;
-if (this.pos.x > WORLD_SIZE) this.pos.x = 0;
-if (this.pos.y < 0) this.pos.y = WORLD_SIZE;
-if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
-}
-draw(offsetX, offsetY) {
-ctx.save();
-ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
-ctx.rotate(this.angle);
-ctx.strokeStyle = '#999';
-ctx.lineWidth = 2;
-ctx.beginPath();
-ctx.moveTo(this.points[0].x, this.points[0].y);
-for (let i = 1; i < this.points.length; i++) {
-ctx.lineTo(this.points[i].x, this.points[i].y);
-}
-ctx.closePath();
-ctx.stroke();
-ctx.restore();
-}
-split() {
-if (this.size > 15) {
-return [
-new Asteroid(this.pos.x, this.pos.y, this.size / 2),
-new Asteroid(this.pos.x, this.pos.y, this.size / 2)
-];
-}
-return [];
-}
+  constructor(x, y, size) {
+    this.pos = new Vector(x, y);
+    this.vel = new Vector((Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5);
+    this.size = size;
+    this.angle = Math.random() * Math.PI * 2;
+    this.rotSpeed = (Math.random() - 0.5) * 0.08;
+    this.points = [];
+    for (let i = 0; i < 7; i++) {
+      const angle = (i / 7) * Math.PI * 2;
+      const r = size * (0.8 + Math.random() * 0.4);
+      this.points.push({
+        x: Math.cos(angle) * r,
+        y: Math.sin(angle) * r
+      });
+    }
+  }
+  update() {
+    this.pos = this.pos.add(this.vel);
+    this.angle += this.rotSpeed;
+    if (this.pos.x < 0) this.pos.x = WORLD_SIZE;
+    if (this.pos.x > WORLD_SIZE) this.pos.x = 0;
+    if (this.pos.y < 0) this.pos.y = WORLD_SIZE;
+    if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
+  }
+  draw(offsetX, offsetY) {
+    ctx.save();
+    ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
+    ctx.rotate(this.angle);
+    ctx.strokeStyle = '#999';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(this.points[0].x, this.points[0].y);
+    for (let i = 1; i < this.points.length; i++) {
+      ctx.lineTo(this.points[i].x, this.points[i].y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+  }
+  split() {
+    if (this.size > 15) {
+      return [
+        new Asteroid(this.pos.x, this.pos.y, this.size / 2),
+        new Asteroid(this.pos.x, this.pos.y, this.size / 2)
+      ];
+    }
+    return [];
+  }
 }
 function startGame(mode) {
-controlMode = mode;
-document.getElementById('startScreen').style.display = 'none';
-if (mode === 'mobile') {
-document.getElementById('joystick').style.display = 'block';
-document.getElementById('fireBtn').style.display = 'flex';
-setupTouchControls();
-} else {
-document.getElementById('controls').style.display = 'block';
-setupKeyboardControls();
-}
-ship = new Ship(WORLD_SIZE / 2, WORLD_SIZE / 2, 'fighter');
-for (let i = 0; i < ASTEROID_COUNT; i++) {
-const x = Math.random() * WORLD_SIZE;
-const y = Math.random() * WORLD_SIZE;
-const size = 20 + Math.random() * 25;
-asteroids.push(new Asteroid(x, y, size));
-}
-gameStarted = true;
-gameLoop();
+  controlMode = mode;
+  document.getElementById('startScreen').style.display = 'none';
+  if (mode === 'mobile') {
+    document.getElementById('joystick').style.display = 'block';
+    document.getElementById('fireBtn').style.display = 'flex';
+    setupTouchControls();
+  } else {
+    document.getElementById('controls').style.display = 'block';
+    setupKeyboardControls();
+  }
+  ship = new Ship(WORLD_SIZE / 2, WORLD_SIZE / 2, 'fighter');
+  for (let i = 0; i < ASTEROID_COUNT; i++) {
+    const x = Math.random() * WORLD_SIZE;
+    const y = Math.random() * WORLD_SIZE;
+    const size = 20 + Math.random() * 25;
+    asteroids.push(new Asteroid(x, y, size));
+  }
+  gameStarted = true;
+  gameLoop();
 }
 function setupTouchControls() {
-const joystick = document.getElementById('joystick');
-const knob = document.getElementById('joystick-knob');
-joystick.addEventListener('touchstart', handleJoystickStart);
-joystick.addEventListener('touchmove', handleJoystickMove);
-joystick.addEventListener('touchend', handleJoystickEnd);
-function handleJoystickStart(e) {
-e.preventDefault();
-joystickActive = true;
-handleJoystickMove(e);
-}
-function handleJoystickMove(e) {
-if (!joystickActive) return;
-e.preventDefault();
-const rect = joystick.getBoundingClientRect();
-const centerX = rect.width / 2;
-const centerY = rect.height / 2;
-const touch = e.touches[0];
-const x = touch.clientX - rect.left - centerX;
-const y = touch.clientY - rect.top - centerY;
-const distance = Math.sqrt(x * x + y * y);
-const maxDistance = 35;
-if (distance > maxDistance) {
-joystickDir.x = (x / distance);
-joystickDir.y = (y / distance);
-knob.style.transform = translate(${(x / distance) * maxDistance}px, ${(y / distance) * maxDistance}px);
-} else {
-joystickDir.x = x / maxDistance;
-joystickDir.y = y / maxDistance;
-knob.style.transform = translate(${x}px, ${y}px);
-}
-}
-function handleJoystickEnd(e) {
-e.preventDefault();
-joystickActive = false;
-joystickDir = {x: 0, y: 0};
-knob.style.transform = 'translate(0, 0)';
-}
-const fireBtn = document.getElementById('fireBtn');
-fireBtn.addEventListener('touchstart', (e) => {
-e.preventDefault();
-firing = true;
-fireBtn.classList.add('active');
-});
-fireBtn.addEventListener('touchend', (e) => {
-e.preventDefault();
-firing = false;
-fireBtn.classList.remove('active');
-});
-// Update fire button text based on ship
-function updateFireButtonText() {
-if (ship && ship.type === 'carrier') {
-fireBtn.textContent = 'BOOST';
-} else {
-fireBtn.textContent = 'FIRE';
-}
-}
-updateFireButtonText();
-window.updateFireButtonText = updateFireButtonText;
+  const joystick = document.getElementById('joystick');
+  const knob = document.getElementById('joystick-knob');
+  joystick.addEventListener('touchstart', handleJoystickStart);
+  joystick.addEventListener('touchmove', handleJoystickMove);
+  joystick.addEventListener('touchend', handleJoystickEnd);
+  function handleJoystickStart(e) {
+    e.preventDefault();
+    joystickActive = true;
+    handleJoystickMove(e);
+  }
+  function handleJoystickMove(e) {
+    if (!joystickActive) return;
+    e.preventDefault();
+    const rect = joystick.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left - centerX;
+    const y = touch.clientY - rect.top - centerY;
+    const distance = Math.sqrt(x * x + y * y);
+    const maxDistance = 35;
+    if (distance > maxDistance) {
+      joystickDir.x = (x / distance);
+      joystickDir.y = (y / distance);
+      knob.style.transform = `translate(${(x / distance) * maxDistance}px, ${(y / distance) * maxDistance}px)`;
+    } else {
+      joystickDir.x = x / maxDistance;
+      joystickDir.y = y / maxDistance;
+      knob.style.transform = `translate(${x}px, ${y}px)`;
+    }
+  }
+  function handleJoystickEnd(e) {
+    e.preventDefault();
+    joystickActive = false;
+    joystickDir = {x: 0, y: 0};
+    knob.style.transform = 'translate(0, 0)';
+  }
+  const fireBtn = document.getElementById('fireBtn');
+  fireBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    firing = true;
+    fireBtn.classList.add('active');
+  });
+  fireBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    firing = false;
+    fireBtn.classList.remove('active');
+  });
+  // Update fire button text based on ship
+  function updateFireButtonText() {
+    if (ship && ship.type === 'carrier') {
+      fireBtn.textContent = 'BOOST';
+    } else {
+      fireBtn.textContent = 'FIRE';
+    }
+  }
+  updateFireButtonText();
+  window.updateFireButtonText = updateFireButtonText;
 }
 function setupKeyboardControls() {
-window.addEventListener('keydown', e => {
-keys[e.key] = true;
-if (e.key === '1') switchShip('fighter');
-if (e.key === '2') switchShip('carrier');
-if (e.key === '3') switchShip('brute');
-});
-window.addEventListener('keyup', e => keys[e.key] = false);
+  window.addEventListener('keydown', e => {
+    keys[e.key] = true;
+    if (e.key === '1') switchShip('fighter');
+    if (e.key === '2') switchShip('carrier');
+    if (e.key === '3') switchShip('brute');
+  });
+  window.addEventListener('keyup', e => keys[e.key] = false);
 }
 document.querySelectorAll('.ship-btn').forEach(btn => {
-btn.addEventListener('click', (e) => {
-e.preventDefault();
-switchShip(btn.dataset.ship);
-});
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    switchShip(btn.dataset.ship);
+  });
 });
 function switchShip(type) {
-if (!ship) return;
-const oldPos = ship.pos;
-const oldVel = ship.vel;
-ship = new Ship(oldPos.x, oldPos.y, type);
-ship.vel = oldVel;
-document.querySelectorAll('.ship-btn').forEach(b => b.classList.remove('active'));
-document.querySelector([data-ship="${type}"]).classList.add('active');
-// Update mobile fire button text
-if (controlMode === 'mobile' && window.updateFireButtonText) {
-window.updateFireButtonText();
-}
+  if (!ship) return;
+  const oldPos = ship.pos;
+  const oldVel = ship.vel;
+  ship = new Ship(oldPos.x, oldPos.y, type);
+  ship.vel = oldVel;
+  document.querySelectorAll('.ship-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-ship="${type}"]`).classList.add('active');
+  // Update mobile fire button text
+  if (controlMode === 'mobile' && window.updateFireButtonText) {
+    window.updateFireButtonText();
+  }
 }
 function checkCollisions() {
-// Ship bullets vs asteroids
-ship.bullets.forEach(bullet => {
-asteroids.forEach((ast, idx) => {
-const dx = bullet.pos.x - ast.pos.x;
-const dy = bullet.pos.y - ast.pos.y;
-const dist = Math.sqrt(dx * dx + dy * dy);
-if (dist < ast.size + bullet.radius) {
-bullet.life = 0;
-const newAsts = ast.split();
-asteroids.splice(idx, 1);
-asteroids.push(...newAsts);
-score += 10;
-if (Math.random() < 0.2) {
-asteroids.push(new Asteroid(Math.random() * WORLD_SIZE, Math.random() * WORLD_SIZE, 25));
-}
-}
-});
-});
-// Drone bullets vs asteroids
-ship.drones.forEach(drone => {
-drone.bullets.forEach(bullet => {
-asteroids.forEach((ast, idx) => {
-const dx = bullet.pos.x - ast.pos.x;
-const dy = bullet.pos.y - ast.pos.y;
-const dist = Math.sqrt(dx * dx + dy * dy);
-if (dist < ast.size + bullet.radius) {
-bullet.life = 0;
-const newAsts = ast.split();
-asteroids.splice(idx, 1);
-asteroids.push(...newAsts);
-score += 5;
-}
-});
-});
-// Drone collision with asteroids
-asteroids.forEach((ast, idx) => {
-const dx = drone.pos.x - ast.pos.x;
-const dy = drone.pos.y - ast.pos.y;
-const dist = Math.sqrt(dx * dx + dy * dy);
-if (dist < ast.size + drone.radius) {
-asteroids.splice(idx, 1);
-asteroids.push(...ast.split());
-drone.life -= 50;
-score += 3;
-}
-});
-});
-// Ship collision with asteroids
-asteroids.forEach(ast => {
-const dx = ship.pos.x - ast.pos.x;
-const dy = ship.pos.y - ast.pos.y;
-const dist = Math.sqrt(dx * dx + dy * dy);
-if (dist < ast.size + ship.hitRadius) {
-ship.health -= 0.5;
-if (ship.health < 0) ship.health = 0;
-}
-});
+  // Ship bullets vs asteroids
+  ship.bullets.forEach(bullet => {
+    asteroids.forEach((ast, idx) => {
+      const dx = bullet.pos.x - ast.pos.x;
+      const dy = bullet.pos.y - ast.pos.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < ast.size + bullet.radius) {
+        bullet.life = 0;
+        const newAsts = ast.split();
+        asteroids.splice(idx, 1);
+        asteroids.push(...newAsts);
+        score += 10;
+        if (Math.random() < 0.2) {
+          asteroids.push(new Asteroid(Math.random() * WORLD_SIZE, Math.random() * WORLD_SIZE, 25));
+        }
+      }
+    });
+  });
+  // Drone bullets vs asteroids
+  ship.drones.forEach(drone => {
+    drone.bullets.forEach(bullet => {
+      asteroids.forEach((ast, idx) => {
+        const dx = bullet.pos.x - ast.pos.x;
+        const dy = bullet.pos.y - ast.pos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < ast.size + bullet.radius) {
+          bullet.life = 0;
+          const newAsts = ast.split();
+          asteroids.splice(idx, 1);
+          asteroids.push(...newAsts);
+          score += 5;
+        }
+      });
+    });
+    // Drone collision with asteroids
+    asteroids.forEach((ast, idx) => {
+      const dx = drone.pos.x - ast.pos.x;
+      const dy = drone.pos.y - ast.pos.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < ast.size + drone.radius) {
+        asteroids.splice(idx, 1);
+        asteroids.push(...ast.split());
+        drone.life -= 50;
+        score += 3;
+      }
+    });
+  });
+  // Ship collision with asteroids
+  asteroids.forEach(ast => {
+    const dx = ship.pos.x - ast.pos.x;
+    const dy = ship.pos.y - ast.pos.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < ast.size + ship.hitRadius) {
+      ship.health -= 0.5;
+      if (ship.health < 0) ship.health = 0;
+    }
+  });
 }
 function drawMinimap() {
-minimapCtx.fillStyle = '#000';
-minimapCtx.fillRect(0, 0, 100, 100);
-const scale = 100 / WORLD_SIZE;
-minimapCtx.fillStyle = '#666';
-asteroids.forEach(ast => {
-minimapCtx.fillRect(ast.pos.x * scale - 1, ast.pos.y * scale - 1, 2, 2);
-});
-minimapCtx.fillStyle = '#0f0';
-minimapCtx.fillRect(ship.pos.x * scale - 2, ship.pos.y * scale - 2, 4, 4);
+  minimapCtx.fillStyle = '#000';
+  minimapCtx.fillRect(0, 0, minimap.width, minimap.height);
+  const scale = minimap.width / WORLD_SIZE;
+  minimapCtx.fillStyle = '#666';
+  asteroids.forEach(ast => {
+    minimapCtx.fillRect(ast.pos.x * scale - 1, ast.pos.y * scale - 1, 2, 2);
+  });
+  minimapCtx.fillStyle = '#0f0';
+  minimapCtx.fillRect(ship.pos.x * scale - 2, ship.pos.y * scale - 2, 4, 4);
 }
 function gameLoop() {
-if (!gameStarted) return;
-gameTime++;
-ship.update();
-asteroids.forEach(ast => ast.update());
-checkCollisions();
-const offsetX = ship.pos.x - canvas.width / 2;
-const offsetY = ship.pos.y - canvas.height / 2;
-ctx.fillStyle = '#000';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-asteroids.forEach(ast => ast.draw(offsetX, offsetY));
-ship.draw(offsetX, offsetY);
-document.getElementById('score').textContent = score;
-document.getElementById('shipType').textContent = ship.type.toUpperCase();
-document.getElementById('health').textContent = Math.round(ship.health);
-drawMinimap();
-requestAnimationFrame(gameLoop);
+  if (!gameStarted) return;
+  gameTime++;
+  ship.update();
+  asteroids.forEach(ast => ast.update());
+  checkCollisions();
+  const offsetX = ship.pos.x - canvas.width / 2;
+  const offsetY = ship.pos.y - canvas.height / 2;
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  asteroids.forEach(ast => ast.draw(offsetX, offsetY));
+  ship.draw(offsetX, offsetY);
+  document.getElementById('score').textContent = score;
+  document.getElementById('shipType').textContent = ship.type.toUpperCase();
+  document.getElementById('health').textContent = Math.round(ship.health);
+  drawMinimap();
+  requestAnimationFrame(gameLoop);
 }
 window.addEventListener('resize', () => {
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 });
 function isMobile() {
-return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 'ontouchstart' in window;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 'ontouchstart' in window;
 }
 startGame(isMobile() ? 'mobile' : 'desktop');
 </script>
 </body>
-</html>' style="width:100%; height:100%; border:none;"></iframe>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-</div>
-<div>
-<div class="panel" id="systemFeedPanel">
-<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
-<div class="panel-body" id="systemFeed"></div>
-</div>
-<div class="panel" id="serverTrackingPanel">
-<div class="panel-title"><div class="small">SERVER LIST</div></div>
-<div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
-<div id="dmList" style="margin-top:8px"></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div id="ortegaPanel">
-<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-</div>
-<div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
-<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
-<div class="ad-banner">Do you need more arms? Try Hexapro!</div>
-<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
-</div>
-</div>
-<div class="bottom-section">
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body">
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//pronkerwronkers</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/7spAtXSkFi" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//othertoons</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/0m2TljGOPp" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//oldertoons</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/vag2TToeTw" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//mylittlehorse</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/MHC5RFn0it" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//HannahBananaH</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/jaCSMGh4a1" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//invaderzurm</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/lQHM6EY0pf" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//farkyoddpurents</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/8sSK8RALYq" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//futurobama</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/S1MHwynxPs" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//frapjack</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/lpmSp9KPyW" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//furmly guy</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/YYCtbDyDJq" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//ahhkindareal</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/sAStLCtCjU" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//aquacrap</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/RU0DGepWyI" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-</div>
+</html>'>
+</iframe>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
@@ -1326,7 +1087,7 @@ userList.innerHTML = '<div>—</div>';
 } else {
 users.forEach(u => {
 const div = document.createElement('div');
-div.textContent = (u.name || 'Anonymous') + (u.typing ? ' (typing...)' : '');
+div.textContent = (u.name || 'Anonymous') + (u.typing ? ' (typing...) ' : '');
 div.onclick = () => openDMInline(u.uid, u.name);
 userList.appendChild(div);
 });
@@ -1736,5 +1497,11 @@ updateVideo();
 };
 updateVideo();
 </script>
+<style>
+#serverSelectPanel select { font-size:16px; padding:14px; height:auto; }
+#serverConfirm { font-size:16px; padding:12px 20px; }
+#emailPanel iframe { height:380px !important; } /* Fixed email list thickness */
+#visitorCounter::after { content:' (real count - reload = +1)'; font-size:11px; color:#00ff9d; }
+</style>
 </body>
 </html>
