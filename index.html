@@ -142,13 +142,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #stumbleBtn{width:200px;}
 #fleetcommandBody{height:80vh;}
 @media(max-width:600px){#fleetcommandBody{height:70vh;}}
-@media (min-width: 601px) {
-#startScreen h1 {font-size: 48px;}
-.mode-btn {padding: 20px 40px; font-size: 20px;}
-#hud {font-size: 16px;}
-#controls {font-size: 14px;}
-.ship-btn {padding: 10px 15px; font-size: 14px;}
-}
 </style>
 </head>
 <body>
@@ -269,196 +262,54 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="fleetcommandBody">
-<iframe srcdoc='<!DOCTYPE html>
-<html lang="en">
+<div class="panel-title">
+<div class="title">//fleetcommand</div>
+<div class="toggle-btn" aria-label="Toggle">▼</div>
+</div>
+<div class="panel-body" id="fleetcommandBody" style="height:85vh; max-height:1000px; padding:8px; background:#000;">
+<iframe id="fleetCommandIframe" style="width:100%; height:100%; border:none; border-radius:6px;"
+srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, user-scalable=no&quot;>
 <title>Fleet Command: Asteroids</title>
 <style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
--webkit-touch-callout: none;
--webkit-user-select: none;
-user-select: none;
+* { margin:0; padding:0; box-sizing:border-box; -webkit-touch-callout:none; user-select:none; }
+body { overflow:hidden; background:#000; font-family:'Courier New',monospace; touch-action:none; image-rendering:pixelated; }
+#gameCanvas { display:block; width:100%; height:100%; background:#000; touch-action:none; }
+#startScreen { position:fixed; inset:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; color:#0f0; text-align:center; padding:20px; }
+#startScreen h1 { font-size:5vw; min-font-size:28px; margin-bottom:20px; text-shadow:0 0 15px #0f0; }
+.mode-btn { background:rgba(0,255,0,0.2); border:3px solid #0f0; color:#0f0; padding:16px 32px; margin:12px; cursor:pointer; font-size:18px; font-weight:bold; text-transform:uppercase; border-radius:6px; }
+.mode-btn:hover { background:rgba(0,255,0,0.4); }
+#hud { position:absolute; top:12px; left:12px; color:#0f0; font-size:16px; text-shadow:0 0 8px #0f0; pointer-events:none; z-index:10; line-height:1.4; }
+#minimap { position:absolute; top:12px; left:50%; transform:translateX(-50%); width:140px; height:140px; border:3px solid #0f0; background:rgba(0,0,0,0.8); z-index:10; }
+.ship-select { position:absolute; top:12px; right:12px; display:flex; flex-direction:column; gap:8px; z-index:10; }
+.ship-btn { background:rgba(0,255,0,0.25); border:2px solid #0f0; color:#0f0; padding:10px 16px; cursor:pointer; font-size:14px; font-weight:bold; }
+.ship-btn.active { background:rgba(0,255,0,0.7); }
+#joystick { position:absolute; bottom:30px; left:30px; width:140px; height:140px; background:rgba(0,255,0,0.15); border:3px solid rgba(0,255,0,0.4); border-radius:50%; z-index:10; display:none; }
+#joystick-knob { position:absolute; width:60px; height:60px; background:rgba(0,255,0,0.6); border:3px solid #0f0; border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); }
+#fireBtn { position:absolute; bottom:30px; right:30px; width:100px; height:100px; background:rgba(255,0,0,0.4); border:4px solid #f00; border-radius:50%; color:#f00; font-size:16px; font-weight:bold; display:none; align-items:center; justify-content:center; z-index:10; }
+#fireBtn.active { background:rgba(255,0,0,0.7); }
+#controls { position:absolute; bottom:16px; left:16px; color:#0f0; font-size:14px; text-shadow:0 0 6px #0f0; display:none; background:rgba(0,0,0,0.6); padding:8px; border-radius:4px; }
+@media (max-width:768px) {
+#startScreen h1 { font-size:36px; }
+#hud { font-size:14px; }
+.mode-btn { padding:14px 28px; font-size:16px; }
 }
-body {
-overflow: hidden;
-background: #000;
-font-family: &#x27;Courier New&#x27;, monospace;
-touch-action: none;
-}
-#gameCanvas {
-display: block;
-background: #000;
-touch-action: none;
-width: 100%;
-height: 100%;
-}
-#startScreen {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: #000;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-z-index: 1000;
-color: #0f0;
-}
-#startScreen h1 {
-font-size: 32px;
-margin-bottom: 20px;
-text-shadow: 0 0 10px #0f0;
-}
-#startScreen p {
-margin-bottom: 30px;
-font-size: 14px;
-}
-.mode-btn {
-background: rgba(0, 255, 0, 0.2);
-border: 2px solid #0f0;
-color: #0f0;
-padding: 15px 30px;
-margin: 10px;
-cursor: pointer;
-font-family: &#x27;Courier New&#x27;, monospace;
-font-size: 16px;
-font-weight: bold;
-text-transform: uppercase;
-}
-.mode-btn:hover {
-background: rgba(0, 255, 0, 0.4);
-}
-#hud {
-position: absolute;
-top: 10px;
-left: 10px;
-color: #0f0;
-font-size: 12px;
-text-shadow: 0 0 5px #0f0;
-pointer-events: none;
-z-index: 10;
-}
-#minimap {
-position: absolute;
-top: 10px;
-left: 50%;
-transform: translateX(-50%);
-width: 100px;
-height: 100px;
-border: 2px solid #0f0;
-background: rgba(0, 0, 0, 0.7);
-z-index: 10;
-}
-.ship-select {
-position: absolute;
-top: 10px;
-right: 10px;
-display: flex;
-flex-direction: column;
-gap: 5px;
-z-index: 10;
-}
-.ship-btn {
-background: rgba(0, 255, 0, 0.2);
-border: 1px solid #0f0;
-color: #0f0;
-padding: 8px 12px;
-cursor: pointer;
-font-family: &#x27;Courier New&#x27;, monospace;
-font-size: 11px;
-touch-action: manipulation;
-}
-.ship-btn.active {
-background: rgba(0, 255, 0, 0.6);
-}
-#joystick {
-position: absolute;
-bottom: 20px;
-left: 20px;
-width: 120px;
-height: 120px;
-background: rgba(0, 255, 0, 0.1);
-border: 2px solid rgba(0, 255, 0, 0.3);
-border-radius: 50%;
-z-index: 10;
-display: none;
-}
-#joystick-knob {
-position: absolute;
-width: 50px;
-height: 50px;
-background: rgba(0, 255, 0, 0.5);
-border: 2px solid #0f0;
-border-radius: 50%;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-}
-#fireBtn {
-position: absolute;
-bottom: 20px;
-right: 5px;
-width: 80px;
-height: 80px;
-background: rgba(255, 0, 0, 0.3);
-border: 2px solid #f00;
-border-radius: 50%;
-color: #f00;
-font-size: 12px;
-font-weight: bold;
-display: none;
-align-items: center;
-justify-content: center;
-z-index: 10;
-touch-action: manipulation;
-}
-#fireBtn.active {
-background: rgba(255, 0, 0, 0.6);
-}
-#controls {
-position: absolute;
-bottom: 10px;
-left: 10px;
-color: #0f0;
-font-size: 11px;
-text-shadow: 0 0 5px #0f0;
-display: none;
-}
-@media (min-width: 601px) {
-#startScreen h1 {
-font-size: 48px;
-}
-.mode-btn {
-padding: 20px 40px;
-font-size: 20px;
-}
-#hud {
-font-size: 16px;
-}
-#controls {
-font-size: 14px;
-}
-.ship-btn {
-padding: 10px 15px;
-font-size: 14px;
-}
+@media (min-width:1024px) {
+#startScreen h1 { font-size:52px; }
+#hud { font-size:18px; }
+.ship-btn { font-size:16px; padding:12px 20px; }
+#controls { font-size:16px; }
 }
 </style>
 </head>
 <body>
 <div id="startScreen">
 <h1>FLEET COMMAND</h1>
-<p style="font-size: 12px; margin-bottom: 10px; color: #0f0; text-shadow: 0 0 5px #0f0;">Created by Patrick McDonald and Claude</p>
-<p>Choose your control mode:</p>
+<p style="color:#0f9; margin-bottom:20px;">Created by Patrick McDonald & Claude</p>
+<p>Choose control mode:</p>
 <button class="mode-btn" onclick="startGame('mobile')">MOBILE (Touch)</button>
 <button class="mode-btn" onclick="startGame('desktop')">DESKTOP (Keyboard)</button>
 </div>
@@ -484,38 +335,38 @@ font-size: 14px;
     const ctx = canvas.getContext('2d');
     const minimap = document.getElementById('minimap');
     const minimapCtx = minimap.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const WORLD_SIZE = 4000;
-const ASTEROID_COUNT = 80;
-let score = 0;
-let gameTime = 0;
-let joystickActive = false;
-let joystickDir = {x: 0, y: 0};
-let firing = false;
-let controlMode = null;
-let keys = {};
-let asteroids = [];
-let ship = null;
-let gameStarted = false;
-class Vector {
-constructor(x, y) {
-this.x = x;
-this.y = y;
-}
-add(v) { return new Vector(this.x + v.x, this.y + v.y); }
-mult(s) { return new Vector(this.x * s, this.y * s); }
-mag() { return Math.sqrt(this.x * this.x + this.y * this.y); }
-normalize() { const m = this.mag(); return m > 0 ? this.mult(1/m) : new Vector(0, 0); }
-}
-class Ship {
-constructor(x, y, type) {
-this.pos = new Vector(x, y);
-this.vel = new Vector(0, 0);
-this.angle = 0;
-this.type = type;
-this.bullets = [];
-this.drones = [];
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const WORLD_SIZE = 4000;
+    const ASTEROID_COUNT = 80;
+    let score = 0;
+    let gameTime = 0;
+    let joystickActive = false;
+    let joystickDir = {x: 0, y: 0};
+    let firing = false;
+    let controlMode = null;
+    let keys = {};
+    let asteroids = [];
+    let ship = null;
+    let gameStarted = false;
+    class Vector {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+      add(v) { return new Vector(this.x + v.x, this.y + v.y); }
+      mult(s) { return new Vector(this.x * s, this.y * s); }
+      mag() { return Math.sqrt(this.x * this.x + this.y * this.y); }
+      normalize() { const m = this.mag(); return m > 0 ? this.mult(1/m) : new Vector(0, 0); }
+    }
+    class Ship {
+      constructor(x, y, type) {
+        this.pos = new Vector(x, y);
+        this.vel = new Vector(0, 0);
+        this.angle = 0;
+        this.type = type;
+        this.bullets = [];
+        this.drones = [];
 if (type === 'fighter') {
 this.maxSpeed = 6;
 this.accel = 0.25;
@@ -1022,102 +873,9 @@ window.addEventListener('resize', () => {
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 });
-function isMobile() {
-return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 'ontouchstart' in window;
-}
-startGame(isMobile() ? 'mobile' : 'desktop');
 </script>
 </body>
-</html>' style="width:100%; height:100%; border:none;"></iframe>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-</div>
-<div>
-<div class="panel" id="systemFeedPanel">
-<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
-<div class="panel-body" id="systemFeed"></div>
-</div>
-<div class="panel" id="serverTrackingPanel">
-<div class="panel-title"><div class="small">SERVER LIST</div></div>
-<div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
-<div id="dmList" style="margin-top:8px"></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div id="ortegaPanel">
-<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-</div>
-<div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
-<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
-<div class="ad-banner">Do you need more arms? Try Hexapro!</div>
-<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
-</div>
-</div>
-<div class="bottom-section">
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body">
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//pronkerwronkers</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/7spAtXSkFi" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//othertoons</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/0m2TljGOPp" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//oldertoons</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/vag2TToeTw" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//mylittlehorse</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/MHC5RFn0it" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//HannahBananaH</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/jaCSMGh4a1" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//invaderzurm</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/lQHM6EY0pf" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//farkyoddpurents</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/8sSK8RALYq" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//futurobama</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/S1MHwynxPs" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//frapjack</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/lpmSp9KPyW" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//furmly guy</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/YYCtbDyDJq" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//ahhkindareal</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/sAStLCtCjU" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//aquacrap</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/RU0DGepWyI" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-</div>
+</html>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
@@ -1736,5 +1494,11 @@ updateVideo();
 };
 updateVideo();
 </script>
+<style>
+#serverSelectPanel select { font-size:16px; padding:14px; height:auto; }
+#serverConfirm { font-size:16px; padding:12px 20px; }
+#emailPanel iframe { height:380px !important; } /* Fixed email list thickness */
+#visitorCounter::after { content:' (real count - reload = +1)'; font-size:11px; color:#00ff9d; }
+</style>
 </body>
 </html>
