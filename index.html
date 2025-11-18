@@ -138,6 +138,10 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #ytBody .panel-body{height:auto;}
 #soraBody .panel-body{height:auto;}
 #boardBody{height:600px;}
+#emailPanel iframe{height:250px;}
+#stumbleBtn{width:150px;}
+#fleetcommandBody{height:600px;}
+@media(max-width:600px){#fleetcommandBody{height:400px;}}
 </style>
 </head>
 <body>
@@ -183,10 +187,10 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div id="emailPanel" class="panel">
 <div class="panel-title"><div class="title">Join Our Email List for Updates</div></div>
 <div class="panel-body">
-<iframe src="https://forms.gle/LBAkMsnVT7xrraYT8" width="100%" height="300" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+<iframe src="https://forms.gle/LBAkMsnVT7xrraYT8" width="100%" height="250" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 </div>
 </div>
-<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:block;margin:12px auto;">Stumble</button>
+<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:block;margin:12px auto;width:150px;">Stumble</button>
 <div class="panel" id="serverSelectPanel">
 <div class="small">SELECT SERVER</div>
 <div class="controls">
@@ -251,103 +255,8 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//ENTITY (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="entityBody">
-<!-- Virtual pet entity will be housed here -->
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-</div>
-<div>
-<div class="panel" id="systemFeedPanel">
-<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
-<div class="panel-body" id="systemFeed"></div>
-</div>
-<div class="panel" id="serverTrackingPanel">
-<div class="panel-title"><div class="small">SERVER LIST</div></div>
-<div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
-<div id="dmList" style="margin-top:8px"></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div id="ortegaPanel">
-<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-</div>
-<div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
-<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
-<div class="ad-banner">Do you need more arms? Try Hexapro!</div>
-<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
-</div>
-</div>
-<div class="bottom-section">
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body">
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//pronkerwronkers</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/7spAtXSkFi" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//othertoons</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/0m2TljGOPp" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//oldertoons</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/vag2TToeTw" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//mylittlehorse</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/MHC5RFn0it" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//HannahBananaH</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/jaCSMGh4a1" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//invaderzurm</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/lQHM6EY0pf" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//farkyoddpurents</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/8sSK8RALYq" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//futurobama</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/S1MHwynxPs" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//frapjack</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/lpmSp9KPyW" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//furmly guy</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/YYCtbDyDJq" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//ahhkindareal</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/sAStLCtCjU" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//aquacrap</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/RU0DGepWyI" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body">
+<div class="panel-body" id="fleetcommandBody">
 <iframe srcdoc='<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1080,7 +989,102 @@ canvas.height = window.innerHeight;
 });
 </script>
 </body>
-</html>' style="width:100%; height:500px; border:none;"></iframe>
+</html>' style="width:100%; height:100%; border:none;"></iframe>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+</div>
+<div>
+<div class="panel" id="systemFeedPanel">
+<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
+<div class="panel-body" id="systemFeed"></div>
+</div>
+<div class="panel" id="serverTrackingPanel">
+<div class="panel-title"><div class="small">SERVER LIST</div></div>
+<div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
+<div id="dmList" style="margin-top:8px"></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div id="ortegaPanel">
+<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
+</div>
+<div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
+<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
+<div class="ad-banner">Do you need more arms? Try Hexapro!</div>
+<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
+</div>
+</div>
+<div class="bottom-section">
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body">
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//pronkerwronkers</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/7spAtXSkFi" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//othertoons</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/0m2TljGOPp" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//oldertoons</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/vag2TToeTw" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//mylittlehorse</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/MHC5RFn0it" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//HannahBananaH</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/jaCSMGh4a1" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//invaderzurm</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/lQHM6EY0pf" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//farkyoddpurents</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/8sSK8RALYq" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//futurobama</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/S1MHwynxPs" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//frapjack</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/lpmSp9KPyW" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//furmly guy</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/YYCtbDyDJq" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//ahhkindareal</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/sAStLCtCjU" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//aquacrap</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/RU0DGepWyI" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//ENTITY (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="entityBody">
+<!-- Virtual pet entity will be housed here -->
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
