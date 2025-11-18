@@ -142,6 +142,13 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #stumbleBtn{width:200px;}
 #fleetcommandBody{height:80vh;}
 @media(max-width:600px){#fleetcommandBody{height:70vh;}}
+@media (min-width: 601px) {
+#startScreen h1 {font-size: 48px;}
+.mode-btn {padding: 20px 40px; font-size: 20px;}
+#hud {font-size: 16px;}
+#controls {font-size: 14px;}
+.ship-btn {padding: 10px 15px; font-size: 14px;}
+}
 </style>
 </head>
 <body>
@@ -426,6 +433,25 @@ font-size: 11px;
 text-shadow: 0 0 5px #0f0;
 display: none;
 }
+@media (min-width: 601px) {
+#startScreen h1 {
+font-size: 48px;
+}
+.mode-btn {
+padding: 20px 40px;
+font-size: 20px;
+}
+#hud {
+font-size: 16px;
+}
+#controls {
+font-size: 14px;
+}
+.ship-btn {
+padding: 10px 15px;
+font-size: 14px;
+}
+}
 </style>
 </head>
 <body>
@@ -433,8 +459,8 @@ display: none;
 <h1>FLEET COMMAND</h1>
 <p style="font-size: 12px; margin-bottom: 10px; color: #0f0; text-shadow: 0 0 5px #0f0;">Created by Patrick McDonald and Claude</p>
 <p>Choose your control mode:</p>
-<button class="mode-btn" onclick="startGame(&#x27;mobile&#x27;)">MOBILE (Touch)</button>
-<button class="mode-btn" onclick="startGame(&#x27;desktop&#x27;)">DESKTOP (Keyboard)</button>
+<button class="mode-btn" onclick="startGame('mobile')">MOBILE (Touch)</button>
+<button class="mode-btn" onclick="startGame('desktop')">DESKTOP (Keyboard)</button>
 </div>
 <canvas id="gameCanvas"></canvas>
 <canvas id="minimap"></canvas>
@@ -898,7 +924,7 @@ const oldVel = ship.vel;
 ship = new Ship(oldPos.x, oldPos.y, type);
 ship.vel = oldVel;
 document.querySelectorAll('.ship-btn').forEach(b => b.classList.remove('active'));
-document.querySelector([data-ship=&quot;${type}&quot;]).classList.add('active');
+document.querySelector([data-ship="${type}"]).classList.add('active');
 // Update mobile fire button text
 if (controlMode === 'mobile' && window.updateFireButtonText) {
 window.updateFireButtonText();
@@ -1539,6 +1565,8 @@ count++;
 set(visitorsRef, count);
 document.getElementById('visitorCounter').textContent = 'Visitors: ' + count;
 }).catch(() => {document.getElementById('visitorCounter').textContent = 'Visitors: Error';});
+const logRef = push(ref(db, 'visitors/logs'));
+set(logRef, {ts: Date.now(), handle: myHandle || 'anonymous'});
 }).catch(e => appendSystem('Anonymous auth failed: ' + e.message));
 bootBtn.addEventListener('click', async () => {
 let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
@@ -1567,8 +1595,6 @@ setPresence(myHandle, currentChannel);
 }, 500);
 finishBoot();
 resetIdleTimer();
-const logRef = push(ref(db, 'visitors/logs'));
-set(logRef, {ts: Date.now(), handle: myHandle || 'anonymous'});
 });
 function finishBoot(){
 bootStatus.textContent = `Welcome, ${myHandle}!`;
