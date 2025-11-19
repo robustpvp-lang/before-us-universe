@@ -1,1083 +1,811 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Fleet Command: Invaders</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-    body {
-      overflow: hidden;
-      background: #000;
-      font-family: 'Courier New', monospace;
-      touch-action: pan-y;
-    }
-    #gameCanvas {
-      display: block;
-      background: #000;
-      touch-action: none;
-    }
-    #startScreen, #gameOverScreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      color: #0f0;
-      text-align: center;
-    }
-    /* Title Screen Styling */
-    #startScreen h1 {
-      font-size: 56px;
-      margin-bottom: 20px;
-      color: #ff00ff;
-      text-shadow: 0 0 15px #ff00ff, 0 0 5px #0f0;
-      letter-spacing: 5px;
-      animation: blink 1s step-end infinite;
-    }
-    @keyframes blink { 50% { opacity: 0.8; } }
-    #startScreen h2 {
-      font-size: 24px;
-      color: #00ffff;
-      margin-bottom: 10px;
-      text-shadow: 0 0 5px #00ffff;
-    }
-    #startScreen p {
-      margin-bottom: 30px;
-      font-size: 14px;
-      color: #0f0;
-    }
-    #gameOverScreen h1 {
-      color: #f00;
-      font-size: 48px;
-      text-shadow: 0 0 15px #f00;
-      margin-bottom: 20px;
-    }
-    #finalScore {
-      font-size: 24px;
-      margin-bottom: 30px;
-      color: #0f0;
-    }
-    .mode-btn {
-      background: rgba(0, 255, 0, 0.2);
-      border: 2px solid #0f0;
-      color: #0f0;
-      padding: 15px 30px;
-      margin: 10px;
-      cursor: pointer;
-      font-family: 'Courier New', monospace;
-      font-size: 16px;
-      font-weight: bold;
-      text-transform: uppercase;
-      box-shadow: 0 0 5px #0f0;
-      transition: all 0.1s;
-    }
-    .mode-btn:hover {
-      background: rgba(0, 255, 0, 0.4);
-      box-shadow: 0 0 10px #0f0;
-    }
-    #hud {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      color: #0f0;
-      font-size: 12px;
-      text-shadow: 0 0 5px #0f0;
-      pointer-events: none;
-      z-index: 10;
-    }
-    #minimap {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 100px;
-      height: 100px;
-      border: 2px solid #0f0;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 10;
-      pointer-events: none;
-    }
-    .ship-select {
-      position: absolute;
-      top: 120px; /* Moved down below minimap */
-      right: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      z-index: 10;
-    }
-    .ship-btn {
-      background: rgba(0, 255, 0, 0.2);
-      border: 1px solid #0f0;
-      color: #0f0;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      touch-action: manipulation;
-      pointer-events: all; /* Make buttons clickable */
-    }
-    .ship-btn.active {
-      background: rgba(0, 255, 0, 0.6);
-    }
-    #joystick {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      width: 120px;
-      height: 120px;
-      background: rgba(0, 255, 0, 0.1);
-      border: 2px solid rgba(0, 255, 0, 0.3);
-      border-radius: 50%;
-      z-index: 10;
-      display: none;
-      touch-action: none;
-    }
-    #joystick-knob {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      background: rgba(0, 255, 0, 0.5);
-      border: 2px solid #0f0;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    #fireBtn {
-      position: absolute;
-      bottom: 20px;
-      right: 5px;
-      width: 80px;
-      height: 80px;
-      background: rgba(255, 0, 0, 0.3);
-      border: 2px solid #f00;
-      border-radius: 50%;
-      color: #f00;
-      font-size: 12px;
-      font-weight: bold;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      touch-action: manipulation;
-      pointer-events: all; /* Make button clickable */
-    }
-    #fireBtn.active {
-      background: rgba(255, 0, 0, 0.6);
-    }
-    #controls {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      color: #0f0;
-      font-size: 11px;
-      text-shadow: 0 0 5px #0f0;
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPACE COMBAT 9000</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /*
+        * ------------------------------------
+        * Global Styling
+        * ------------------------------------
+        */
+        :root {
+            --dos-green: #00ff00;
+            --dos-dark: #000000;
+            --text-color: #ffffff;
+            --canvas-bg: #030712; /* Darker background */
+            --ship-color: #3b82f6;
+            --bullet-color: #fde047;
+            --enemy-color: #ef4444;
+            --canvas-width: 800px;
+            --canvas-height: 600px;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #1f2937; /* Gray 800 */
+            color: var(--text-color);
+            font-family: 'Inter', monospace, sans-serif;
+            margin: 0;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: var(--canvas-width);
+            aspect-ratio: 4/3;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            border: 4px solid var(--dos-green); /* DOS Border */
+            border-radius: 6px;
+        }
+
+        canvas {
+            background-color: var(--canvas-bg);
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /*
+        * ------------------------------------
+        * DOS Title Screen Styling
+        * ------------------------------------
+        */
+        #title-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dos-dark);
+            color: var(--dos-green);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 100;
+            font-family: monospace; /* For that blocky DOS look */
+        }
+
+        #title-screen h1 {
+            font-size: clamp(1.5rem, 8vw, 3.5rem);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px #000;
+            animation: blink-text 1s step-end infinite;
+        }
+
+        #title-screen p {
+            font-size: clamp(0.75rem, 3vw, 1.25rem);
+            margin-top: 2rem;
+        }
+
+        #start-button {
+            padding: 0.5rem 1.5rem;
+            margin-top: 1.5rem;
+            background-color: var(--dos-green);
+            color: var(--dos-dark);
+            border: 2px solid var(--dos-green);
+            font-family: monospace;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px 0px var(--dos-green);
+            transition: all 0.1s;
+        }
+
+        #start-button:hover {
+            box-shadow: 2px 2px 0px 0px var(--dos-green);
+            transform: translate(2px, 2px);
+        }
+
+        @keyframes blink-text {
+            50% { opacity: 0.2; }
+        }
+
+        /*
+        * ------------------------------------
+        * Mobile Controls Styling
+        * ------------------------------------
+        */
+        #controls {
+            display: grid;
+            grid-template-areas:
+                "up up shoot"
+                "left down right";
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            max-width: var(--canvas-width);
+        }
+
+        .ctrl-btn {
+            background-color: #374151; /* Gray 700 */
+            color: var(--text-color);
+            border: 2px solid #9ca3af; /* Gray 400 */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            user-select: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.1s, transform 0.1s;
+        }
+
+        .ctrl-btn:active {
+            background-color: #4b5563; /* Gray 600 */
+            transform: scale(0.95);
+        }
+
+        #ctrl-up { grid-area: up; border-radius: 10px; }
+        #ctrl-down { grid-area: down; }
+        #ctrl-left { grid-area: left; }
+        #ctrl-right { grid-area: right; }
+        #ctrl-shoot {
+            grid-area: shoot;
+            background-color: var(--enemy-color);
+            border-color: #b91c1c;
+            border-radius: 10px;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Hide controls on desktop, show on small screens */
+        @media (min-width: 640px) {
+            #controls { display: none; }
+            body { padding: 0; }
+        }
+
+        @media (max-width: 640px) {
+            .ctrl-btn {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="startScreen">
-    <h1>FLEET COMMAND: INVADERS</h1>
-    <h2>A Deep-Space Retro Arcade Experience</h2>
-    <p style="font-size: 14px; margin-bottom: 30px; color: #00ffff; text-shadow: 0 0 5px #00ffff;">
-      Protocol Coded by **Patrick McDonald** and a **Legion of AI**
-    </p>
-    <p>INITIATE GAME MODE</p>
-    <button class="mode-btn" onclick="startGame('mobile')">MOBILE (Touch/Joystick)</button>
-    <button class="mode-btn" onclick="startGame('desktop')">DESKTOP (Keyboard)</button>
-  </div>
-
-  <div id="gameOverScreen" style="display: none;">
-    <h1>SHIP DESTROYED!</h1>
-    <div id="finalScore">FINAL SCORE: 0</div>
-    <button class="mode-btn" onclick="window.location.reload()">RE-INITIALIZE PROTOCOL</button>
-  </div>
-
-  <canvas id="gameCanvas"></canvas>
-  <canvas id="minimap"></canvas>
-  
-  <div id="hud">
-    <div>SCORE: <span id="score">0</span></div>
-    <div>SHIP: <span id="shipType">FIGHTER</span></div>
-    <div>HULL: <span id="health">100</span>%</div>
-    <div>LIVES: <span id="lives">3</span></div>
-  </div>
-  
-  <div class="ship-select">
-    <button class="ship-btn active" data-ship="fighter">FIGHTER (1)</button>
-    <button class="ship-btn" data-ship="carrier">CARRIER (2)</button>
-    <button class="ship-btn" data-ship="brute">BRUTE (3)</button>
-  </div>
-
-  <div id="joystick">
-    <div id="joystick-knob"></div>
-  </div>
-  
-  <button id="fireBtn">FIRE</button>
-  
-  <div id="controls">WASD: Move | **L**: Fire/Boost | 1/2/3: Switch Ship</div>
-
-  <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const minimap = document.getElementById('minimap');
-    const minimapCtx = minimap.getContext('2d');
-    
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const WORLD_SIZE = 2000;
-    const INVADER_COUNT = 80;
-    const NUM_STARS = 150;
-    const MAX_LIVES = 3;
-
-    let score = 0;
-    let gameTime = 0;
-    let joystickActive = false;
-    let joystickDir = {x: 0, y: 0};
-    let firing = false;
-    let controlMode = null;
-    let keys = {};
-    let invaders = [];
-    let invaderBullets = [];
-    let ship = null;
-    let shipLives = MAX_LIVES; // New Lives variable
-    let gameStarted = false;
-    let gameOver = false;
-    let respawning = false;
-
-    // Initialize stars once for performance
-    const stars = [];
-    for (let i = 0; i < NUM_STARS; i++) {
-      stars.push({
-        x: Math.random() * WORLD_SIZE,
-        y: Math.random() * WORLD_SIZE,
-        size: Math.random() * 2 + 0.5
-      });
-    }
-
-    class Vector {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-      }
-      add(v) { return new Vector(this.x + v.x, this.y + v.y); }
-      mult(s) { return new Vector(this.x * s, this.y * s); }
-      mag() { return Math.sqrt(this.x * this.x + this.y * this.y); }
-      normalize() { const m = this.mag(); return m > 0 ? this.mult(1/m) : new Vector(0, 0); }
-    }
-
-    class Ship {
-      constructor(x, y, type, currentHealth = 100) {
-        this.pos = new Vector(x, y);
-        this.vel = new Vector(0, 0);
-        this.angle = 0;
-        this.type = type;
-        this.bullets = [];
-        this.drones = [];
-        
-        if (type === 'fighter') {
-          this.maxSpeed = 6;
-          this.accel = 0.25;
-          this.maxHealth = 100;
-          this.fireRate = 5;
-          this.size = 12;
-          this.hitRadius = 10;
-        } else if (type === 'carrier') {
-          this.maxSpeed = 3;
-          this.accel = 0.12;
-          this.maxHealth = 250;
-          this.fireRate = 320;
-          this.size = 20;
-          this.hitRadius = 18;
-          this.boostPower = 0.5;
-          this.maxBoostSpeed = 7;
-        } else if (type === 'brute') {
-          this.maxSpeed = 5;
-          this.accel = 0.2;
-          this.maxHealth = 150;
-          this.fireRate = 45; // Increased rate of fire (was 53, ~15% faster)
-          this.size = 14;
-          this.hitRadius = 12;
-        }
-        
-        this.health = currentHealth;
-        this.lastFire = 0;
-      }
-
-      update() {
-        // Movement logic (unchanged)
-        if (controlMode === 'mobile') {
-          if (joystickDir.x !== 0 || joystickDir.y !== 0) {
-            const dir = new Vector(joystickDir.x, joystickDir.y).normalize();
-            this.angle = Math.atan2(dir.y, dir.x);
-            this.vel = this.vel.add(dir.mult(this.accel));
-          }
-        } else {
-          const dir = new Vector(0, 0);
-          if (keys['w'] || keys['W']) dir.y -= 1;
-          if (keys['s'] || keys['S']) dir.y += 1;
-          if (keys['a'] || keys['A']) dir.x -= 1;
-          if (keys['d'] || keys['D']) dir.x += 1;
-
-          if (dir.mag() > 0) {
-            this.angle = Math.atan2(dir.y, dir.x);
-            const force = dir.normalize().mult(this.accel);
-            this.vel = this.vel.add(force);
-          }
-        }
-
-        const desktopAction = keys['l'] || keys['L'];
-        if (this.type === 'carrier' && (desktopAction || (controlMode === 'mobile' && firing))) {
-          const boostDir = new Vector(Math.cos(this.angle), Math.sin(this.angle));
-          this.vel = this.vel.add(boostDir.mult(this.boostPower));
-          if (this.vel.mag() > this.maxBoostSpeed) {
-            this.vel = this.vel.normalize().mult(this.maxBoostSpeed);
-          }
-        } else {
-          if (this.vel.mag() > this.maxSpeed) {
-            this.vel = this.vel.normalize().mult(this.maxSpeed);
-          }
-        }
-
-        this.vel = this.vel.mult(0.97);
-        this.pos = this.pos.add(this.vel);
-
-        // Wrap around world limits
-        if (this.pos.x < 0) this.pos.x = WORLD_SIZE;
-        if (this.pos.x > WORLD_SIZE) this.pos.x = 0;
-        if (this.pos.y < 0) this.pos.y = WORLD_SIZE;
-        if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
-
-        // Fire logic
-        const shouldFire = (controlMode === 'desktop' && this.type !== 'carrier' && desktopAction) ||
-                         (controlMode === 'mobile' && this.type !== 'carrier' && firing);
-        
-        if (shouldFire && gameTime - this.lastFire > this.fireRate) {
-          this.fire();
-          this.lastFire = gameTime;
-        }
-
-        this.bullets = this.bullets.filter(b => {
-          b.update();
-          return b.life > 0;
-        });
-
-        this.drones = this.drones.filter(d => {
-          d.update(this.pos);
-          return d.life > 0;
-        });
-
-        if (this.type === 'carrier' && this.drones.length < 3 && gameTime % 150 === 0) {
-          this.drones.push(new Drone(this.pos.x, this.pos.y));
-        }
-
-        // Ship damage/death logic
-        if (this.health <= 0 && !respawning) {
-          respawnShip();
-        }
-      }
-
-      fire() {
-        const speed = 12;
-        const shipVel = this.vel;
-        
-        if (this.type === 'fighter') {
-          const vx = Math.cos(this.angle) * speed + shipVel.x;
-          const vy = Math.sin(this.angle) * speed + shipVel.y;
-          this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ff00', 66)); 
-        } else if (this.type === 'brute') {
-          for (let i = -2; i <= 2; i++) {
-            const angle = this.angle + i * 0.2;
-            const vx = Math.cos(angle) * speed + shipVel.x;
-            const vy = Math.sin(angle) * speed + shipVel.y;
-            this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#ff4400', 100));
-          }
-        }
-      }
-
-      draw(offsetX, offsetY) {
-        // Respawn flicker effect
-        if (respawning && gameTime % 10 < 5) return;
-
-        ctx.save();
-        ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
-        ctx.rotate(this.angle);
-        
-        if (this.type === 'fighter') {
-          ctx.fillStyle = '#00ff00';
-          ctx.beginPath();
-          ctx.moveTo(this.size, 0);
-          ctx.lineTo(-this.size, this.size/2);
-          ctx.lineTo(-this.size/2, 0);
-          ctx.lineTo(-this.size, -this.size/2);
-          ctx.closePath();
-          ctx.fill();
-        } 
-        else if (this.type === 'carrier') {
-          const s = this.size;
-          // Main Body (Long, flat diamond/kite shape)
-          ctx.fillStyle = '#0088ff';
-          ctx.beginPath();
-          ctx.moveTo(s * 2, 0); // Front point
-          ctx.lineTo(s * 0.5, s); // Mid-right
-          ctx.lineTo(-s * 2, s * 0.5); // Rear-right
-          ctx.lineTo(-s * 2, -s * 0.5); // Rear-left
-          ctx.lineTo(s * 0.5, -s); // Mid-left
-          ctx.closePath();
-          ctx.fill();
-          
-          // Command Bridge (Top rear)
-          ctx.fillStyle = '#00ffff';
-          ctx.fillRect(-s * 0.5, -s * 0.25, s * 1.5, s * 0.5);
-          
-          // Engine Thrusters (Rear glow)
-          ctx.fillStyle = '#ff9900';
-          ctx.fillRect(-s * 2.5, -s * 0.2, s * 0.5, s * 0.4);
-
-          // Add boost trail if boosting
-          if ((controlMode === 'desktop' && (keys['l'] || keys['L'])) || (controlMode === 'mobile' && firing)) {
-            ctx.fillStyle = 'rgba(255, 100, 0, 0.5)';
-            ctx.beginPath();
-            ctx.moveTo(-s * 2.5, 0);
-            ctx.lineTo(-s * 3 - Math.random() * 10, s * 0.5);
-            ctx.lineTo(-s * 3 - Math.random() * 10, -s * 0.5);
-            ctx.closePath();
-            ctx.fill();
-          }
-        } 
-        else if (this.type === 'brute') {
-          ctx.fillStyle = '#ff4400';
-          ctx.beginPath();
-          ctx.moveTo(this.size, 0);
-          ctx.lineTo(-this.size, this.size);
-          ctx.lineTo(-this.size, -this.size);
-          ctx.closePath();
-          ctx.fill();
-          ctx.fillStyle = '#ff6622';
-          ctx.fillRect(-this.size * 0.7, -this.size * 0.5, this.size * 1.4, this.size);
-        }
-        
-        ctx.restore();
-
-        this.bullets.forEach(b => b.draw(offsetX, offsetY));
-        this.drones.forEach(d => d.draw(offsetX, offsetY));
-      }
-    }
-
-    class Bullet {
-      constructor(x, y, vx, vy, color = '#ffff00', defaultLife = 100) {
-        this.pos = new Vector(x, y);
-        this.vel = new Vector(vx, vy);
-        this.life = defaultLife;
-        this.color = color;
-        this.radius = 3;
-      }
-
-      update() {
-        this.pos = this.pos.add(this.vel);
-        this.life--;
-      }
-
-      draw(offsetX, offsetY) {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.pos.x - offsetX, this.pos.y - offsetY, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    class InvaderBullet extends Bullet {
-      constructor(x, y, vx, vy) {
-        super(x, y, vx, vy, '#ff00ff', 100);
-        this.radius = 4;
-        this.damage = 5;
-      }
-    }
-
-    class Drone {
-      constructor(x, y) {
-        this.pos = new Vector(x, y);
-        this.vel = new Vector(0, 0);
-        this.life = 400;
-        this.orbitAngle = Math.random() * Math.PI * 2;
-        this.bullets = [];
-        this.lastFire = 0;
-        this.radius = 6;
-      }
-
-      update(parentPos) {
-        this.orbitAngle += 0.04;
-        const targetX = parentPos.x + Math.cos(this.orbitAngle) * 50;
-        const targetY = parentPos.y + Math.sin(this.orbitAngle) * 50;
-        
-        this.vel.x += (targetX - this.pos.x) * 0.02;
-        this.vel.y += (targetY - this.pos.y) * 0.02;
-        this.vel = this.vel.mult(0.88);
-        this.pos = this.pos.add(this.vel);
-        this.life--;
-
-        if (gameTime - this.lastFire > 50) {
-          const nearest = this.findNearestInvader();
-          if (nearest && nearest.dist < 300) {
-            this.fireAt(nearest.invader);
-            this.lastFire = gameTime;
-          }
-        }
-
-        this.bullets = this.bullets.filter(b => {
-          b.update();
-          return b.life > 0;
-        });
-      }
-
-      findNearestInvader() {
-        let nearest = null;
-        let minDist = Infinity;
-        invaders.forEach(inv => {
-          const dx = inv.pos.x - this.pos.x;
-          const dy = inv.pos.y - this.pos.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < minDist) {
-            minDist = dist;
-            nearest = { invader: inv, dist: dist };
-          }
-        });
-        return nearest;
-      }
-
-      fireAt(invader) {
-        const dx = invader.pos.x - this.pos.x;
-        const dy = invader.pos.y - this.pos.y;
-        const angle = Math.atan2(dy, dx);
-        const speed = 9;
-        const vx = Math.cos(angle) * speed;
-        const vy = Math.sin(angle) * speed;
-        this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ffff', 100));
-      }
-
-      draw(offsetX, offsetY) {
-        const x = this.pos.x - offsetX;
-        const y = this.pos.y - offsetY;
-        ctx.fillStyle = '#00ffff';
-        ctx.strokeStyle = '#00ffff';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(x, y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-
-        this.bullets.forEach(b => b.draw(offsetX, offsetY));
-      }
-    }
-
-    class Invader {
-      constructor(x, y, size, inheritedVel = new Vector(0, 0)) {
-        this.pos = new Vector(x, y);
-        // If size is 25 or more, give initial random velocity. Otherwise, use inherited velocity.
-        this.vel = size >= 25 
-          ? new Vector((Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5)
-          : inheritedVel; 
-        this.size = size;
-        this.angle = Math.random() * Math.PI * 2;
-        this.rotSpeed = (Math.random() - 0.5) * 0.08;
-        this.color = '#ff00ff';
-        
-        this.fireRate = 300 + Math.random() * 100; 
-        this.lastFire = gameTime + Math.random() * this.fireRate;
-      }
-
-      update() {
-        // Pursuit behavior towards the player
-        const pursuitVector = ship.pos.add(this.pos.mult(-1));
-        const distance = pursuitVector.mag();
-
-        if (distance > 0) {
-          const pursuitNormalized = pursuitVector.normalize();
-          const pursuitForce = pursuitNormalized.mult(0.01 + this.size * 0.0005);
-          this.vel = this.vel.add(pursuitForce);
-        }
-        
-        // Limit velocity
-        const maxInvaderSpeed = 2 + (50 - this.size) * 0.05;
-        if (this.vel.mag() > maxInvaderSpeed) {
-          this.vel = this.vel.normalize().mult(maxInvaderSpeed);
-        }
-
-        this.pos = this.pos.add(this.vel);
-        this.angle += this.rotSpeed;
-
-        // Wrap around world limits
-        if (this.pos.x < 0) this.pos.x = WORLD_SIZE;
-        if (this.pos.x > WORLD_SIZE) this.pos.x = 0;
-        if (this.pos.y < 0) this.pos.y = WORLD_SIZE;
-        if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
-
-        // Firing logic (unchanged)
-        if (gameTime - this.lastFire > this.fireRate) {
-          this.fire();
-          this.lastFire = gameTime;
-        }
-      }
-
-      fire() {
-        const dx = ship.pos.x - this.pos.x;
-        const dy = ship.pos.y - this.pos.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 800) {
-          const angle = Math.atan2(dy, dx);
-          const speed = 7;
-          const vx = Math.cos(angle) * speed;
-          const vy = Math.sin(angle) * speed;
-
-          invaderBullets.push(new InvaderBullet(this.pos.x, this.pos.y, vx, vy));
-        }
-      }
-
-      draw(offsetX, offsetY) {
-        ctx.save();
-        ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
-        ctx.rotate(this.angle);
-        
-        ctx.fillStyle = this.color;
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1;
-
-        const s = this.size;
-
-        // 1. Octopus Body (Square/Dome)
-        ctx.beginPath();
-        ctx.rect(-s/2, -s/2, s, s/2);
-        ctx.fill();
-
-        // 2. Head Dome
-        ctx.beginPath();
-        ctx.arc(0, -s/2, s/2, Math.PI, 2 * Math.PI);
-        ctx.fill();
-
-        // 3. Tentacles (simple lines/rects)
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = 2;
-        const tentacleCount = 4;
-        for(let i = 0; i < tentacleCount; i++) {
-          const xOffset = (i - tentacleCount/2 + 0.5) * s/4;
-          ctx.beginPath();
-          ctx.moveTo(xOffset, s/2);
-          ctx.lineTo(xOffset, s/2 + s/3);
-          ctx.stroke();
-        }
-
-        // 4. Eyes (small white dots)
-        ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.arc(-s/4, -s/4, s/8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(s/4, -s/4, s/8, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
-      }
-
-      split() {
-        if (this.size > 15) {
-          const newSize = this.size / 2;
-          
-          // Split velocity vector perpendicular to the hit
-          const angle = this.vel.angle() + Math.PI / 2;
-          const perpVel = new Vector(Math.cos(angle), Math.sin(angle)).mult(2);
-
-          return [
-            new Invader(this.pos.x + newSize, this.pos.y, newSize, this.vel.add(perpVel)),
-            new Invader(this.pos.x - newSize, this.pos.y, newSize, this.vel.add(perpVel.mult(-1)))
-          ];
-        }
-        return [];
-      }
-    }
-
-    // Add angle method to Vector prototype for split logic
-    Vector.prototype.angle = function() {
-      return Math.atan2(this.y, this.x);
-    };
-
-    function respawnShip() {
-      shipLives--;
-      if (shipLives < 0) {
-        triggerGameOver();
-        return;
-      }
-
-      respawning = true;
-      const shipType = ship.type;
-      const oldBullets = ship.bullets;
-      const oldDrones = ship.drones;
-      
-      // Reset ship at center with full health
-      ship = new Ship(WORLD_SIZE / 2, WORLD_SIZE / 2, shipType, ship.maxHealth);
-      ship.bullets = oldBullets; // Keep existing bullets
-      ship.drones = oldDrones; // Keep existing drones
-
-      setTimeout(() => {
-        respawning = false;
-      }, 2000); // 2 seconds of invulnerability
-    }
-
-    function startGame(mode) {
-      controlMode = mode;
-      document.getElementById('startScreen').style.display = 'none';
-      document.getElementById('hud').style.display = 'block';
-      document.querySelector('.ship-select').style.display = 'flex';
-      
-      if (mode === 'mobile') {
-        document.getElementById('joystick').style.display = 'block';
-        document.getElementById('fireBtn').style.display = 'flex';
-        setupTouchControls();
-      } else {
-        document.getElementById('controls').style.display = 'block';
-        setupKeyboardControls();
-      }
-
-      ship = new Ship(WORLD_SIZE / 2, WORLD_SIZE / 2, 'fighter');
-      shipLives = MAX_LIVES;
-      
-      for (let i = 0; i < INVADER_COUNT; i++) {
-        const x = Math.random() * WORLD_SIZE;
-        const y = Math.random() * WORLD_SIZE;
-        const size = 20 + Math.random() * 25;
-        invaders.push(new Invader(x, y, size));
-      }
-
-      gameOver = false;
-      gameStarted = true;
-      gameLoop();
-    }
-    
-    function triggerGameOver() {
-      if (gameOver) return;
-      gameOver = true;
-      document.getElementById('finalScore').textContent = `FINAL SCORE: ${score}`;
-      document.getElementById('gameOverScreen').style.display = 'flex';
-      document.getElementById('hud').style.display = 'none';
-      document.querySelector('.ship-select').style.display = 'none';
-      document.getElementById('joystick').style.display = 'none';
-      document.getElementById('fireBtn').style.display = 'none';
-      document.getElementById('controls').style.display = 'none';
-      
-      if (window.gameLoopRequest) cancelAnimationFrame(window.gameLoopRequest);
-    }
-
-    // Setup functions (setupTouchControls, setupKeyboardControls, switchShip) remain the same
-
-    function setupTouchControls() {
-      const joystick = document.getElementById('joystick');
-      const knob = document.getElementById('joystick-knob');
-      let activePointerId = null;
-
-      function handleJoystickStart(e) {
-        if (activePointerId !== null) return;
-        activePointerId = e.pointerId;
-        e.preventDefault();
-        joystickActive = true;
-        handleJoystickMove(e);
-      }
-
-      function handleJoystickMove(e) {
-        if (!joystickActive || e.pointerId !== activePointerId) return;
-        e.preventDefault();
-        
-        const rect = joystick.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        
-        const x = e.clientX - centerX;
-        const y = e.clientY - centerY;
-        
-        const distance = Math.sqrt(x * x + y * y);
-        const maxDistance = 35;
-        
-        let normalizedX = x;
-        let normalizedY = y;
-
-        if (distance > maxDistance) {
-          normalizedX = (x / distance) * maxDistance;
-          normalizedY = (y / distance) * maxDistance;
-          joystickDir.x = (x / distance);
-          joystickDir.y = (y / distance);
-        } else {
-          joystickDir.x = x / maxDistance;
-          joystickDir.y = y / maxDistance;
-        }
-
-        knob.style.transform = `translate(${normalizedX}px, ${normalizedY}px)`;
-      }
-
-      function handleJoystickEnd(e) {
-        if (e.pointerId !== activePointerId) return;
-        e.preventDefault();
-        activePointerId = null;
-        joystickActive = false;
-        joystickDir = {x: 0, y: 0};
-        knob.style.transform = 'translate(-50%, -50%)';
-      }
-
-      joystick.addEventListener('pointerdown', handleJoystickStart);
-      document.addEventListener('pointermove', handleJoystickMove);
-      document.addEventListener('pointerup', handleJoystickEnd);
-
-      const fireBtn = document.getElementById('fireBtn');
-      fireBtn.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        firing = true;
-        fireBtn.classList.add('active');
-      });
-      fireBtn.addEventListener('pointerup', (e) => {
-        e.preventDefault();
-        firing = false;
-        fireBtn.classList.remove('active');
-      });
-
-      function updateFireButtonText() {
-        if (ship && ship.type === 'carrier') {
-          fireBtn.textContent = 'BOOST';
-        } else {
-          fireBtn.textContent = 'FIRE';
-        }
-      }
-      updateFireButtonText();
-      window.updateFireButtonText = updateFireButtonText;
-    }
-
-    function setupKeyboardControls() {
-      window.addEventListener('keydown', e => {
-        if (gameOver) return;
-        keys[e.key.toLowerCase()] = true;
-        if (e.key === '1') switchShip('fighter');
-        if (e.key === '2') switchShip('carrier');
-        if (e.key === '3') switchShip('brute');
-      });
-      
-      window.addEventListener('keyup', e => {
-        if (gameOver) return;
-        keys[e.key.toLowerCase()] = false;
-      });
-    }
-
-    document.querySelectorAll('.ship-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        switchShip(btn.dataset.ship);
-      });
-    });
-
-    function switchShip(type) {
-      if (!ship) return;
-      const oldPos = ship.pos;
-      const oldVel = ship.vel;
-      const oldHealth = ship.health;
-      const oldDrones = ship.drones;
-      ship = new Ship(oldPos.x, oldPos.y, type, oldHealth);
-      ship.vel = oldVel;
-      ship.drones = oldDrones; 
-      document.querySelectorAll('.ship-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector(`[data-ship="${type}"]`).classList.add('active');
-      
-      if (controlMode === 'mobile' && window.updateFireButtonText) {
-        window.updateFireButtonText();
-      }
-    }
-
-    function checkCollisions() {
-      // Remove dead bullets
-      invaderBullets = invaderBullets.filter(b => b.life > 0);
-
-      // --- 1. Friendly Bullets vs Invaders ---
-      ship.bullets = ship.bullets.filter(bullet => {
-        let hit = false;
-        invaders = invaders.filter(inv => {
-          const dx = bullet.pos.x - inv.pos.x;
-          const dy = bullet.pos.y - inv.pos.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < inv.size + bullet.radius) {
-            hit = true;
-            const newInvs = inv.split();
-            invaders.push(...newInvs);
-            score += newInvs.length > 0 ? 5 : 10; // Smaller invaders give less score
-            return false; // Remove the hit invader
-          }
-          return true; // Keep the invader
-        });
-        return !hit; // Remove the bullet if it hit something
-      });
-
-      // --- 2. Drone Bullets vs Invaders ---
-      ship.drones.forEach(drone => {
-        drone.bullets = drone.bullets.filter(bullet => {
-          let hit = false;
-          invaders = invaders.filter(inv => {
-            const dx = bullet.pos.x - inv.pos.x;
-            const dy = bullet.pos.y - inv.pos.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < inv.size + bullet.radius) {
-              hit = true;
-              const newInvs = inv.split();
-              invaders.push(...newInvs);
-              score += newInvs.length > 0 ? 3 : 5;
-              return false;
-            }
-            return true;
-          });
-          return !hit;
-        });
-
-        // Drone collision with invaders
-        invaders.forEach((inv, idx) => {
-          const dx = drone.pos.x - inv.pos.x;
-          const dy = drone.pos.y - inv.pos.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < inv.size + drone.radius) {
-            // When a drone hits, the invader splits and the drone takes damage/life reduction
-            const newInvs = inv.split();
-            invaders.splice(invaders.indexOf(inv), 1);
-            invaders.push(...newInvs);
-            drone.life -= 50;
-            score += 3;
-          }
-        });
-      });
-
-      // --- 3. Invader Bullets vs Ship and Drones ---
-      invaderBullets = invaderBullets.filter(ib => {
-        // Ship collision
-        const shipDx = ib.pos.x - ship.pos.x;
-        const shipDy = ib.pos.y - ship.pos.y;
-        const shipDist = Math.sqrt(shipDx * shipDx + shipDy * shipDy);
-        if (shipDist < ship.hitRadius + ib.radius) {
-          if (!respawning) ship.health -= ib.damage;
-          return false; // Remove invader bullet
-        }
-
-        // Drone collision
-        for (let i = 0; i < ship.drones.length; i++) {
-          const drone = ship.drones[i];
-          const droneDx = ib.pos.x - drone.pos.x;
-          const droneDy = ib.pos.y - drone.pos.y;
-          const droneDist = Math.sqrt(droneDx * droneDx + droneDy * droneDy);
-          if (droneDist < drone.radius + ib.radius) {
-            drone.life -= 20;
-            return false; // Remove invader bullet
-          }
-        }
-
-        return true; // Keep invader bullet
-      });
-
-      // --- 4. Ship collision with invaders (Contact Damage) ---
-      invaders.forEach(inv => {
-        const dx = ship.pos.x - inv.pos.x;
-        const dy = ship.pos.y - inv.pos.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < inv.size + ship.hitRadius) {
-          if (!respawning) ship.health -= 0.5;
-        }
-      });
-    }
-
-    function drawMinimap() {
-      minimapCtx.fillStyle = '#000';
-      minimapCtx.fillRect(0, 0, 100, 100);
-      
-      const scale = 100 / WORLD_SIZE;
-      
-      // Draw Invaders
-      minimapCtx.fillStyle = '#f0f';
-      invaders.forEach(inv => {
-        minimapCtx.fillRect(inv.pos.x * scale - 1, inv.pos.y * scale - 1, 2, 2);
-      });
-      
-      // Draw Player Ship
-      minimapCtx.fillStyle = '#0f0';
-      minimapCtx.fillRect(ship.pos.x * scale - 2, ship.pos.y * scale - 2, 4, 4);
-    }
-    
-    function drawStars(offsetX, offsetY) {
-      ctx.fillStyle = '#fff';
-      const width = canvas.width;
-      const height = canvas.height;
-
-      for (const star of stars) {
-        let drawX = (star.x - offsetX) % WORLD_SIZE;
-        let drawY = (star.y - offsetY) % WORLD_SIZE;
-
-        if (drawX < -star.size) drawX += WORLD_SIZE;
-        if (drawY < -star.size) drawY += WORLD_SIZE;
-        if (drawX > width) drawX -= WORLD_SIZE;
-        if (drawY > height) drawY -= WORLD_SIZE;
-        
-        ctx.fillRect(drawX, drawY, star.size, star.size);
-      }
-    }
-
-    function gameLoop() {
-      window.gameLoopRequest = requestAnimationFrame(gameLoop);
-      
-      if (gameOver) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        return;
-      }
-      
-      gameTime++;
-      
-      ship.update();
-      invaders.forEach(inv => inv.update());
-      invaderBullets.forEach(ib => ib.update());
-      checkCollisions();
-
-      const offsetX = ship.pos.x - canvas.width / 2;
-      const offsetY = ship.pos.y - canvas.height / 2;
-
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      drawStars(offsetX, offsetY);
-
-      // Draw game objects
-      invaders.forEach(inv => inv.draw(offsetX, offsetY));
-      invaderBullets.forEach(ib => ib.draw(offsetX, offsetY));
-      ship.draw(offsetX, offsetY);
-
-      // Update HUD
-      document.getElementById('score').textContent = score;
-      document.getElementById('shipType').textContent = ship.type.toUpperCase();
-      document.getElementById('health').textContent = Math.round(ship.health / ship.maxHealth * 100);
-      document.getElementById('lives').textContent = shipLives;
-
-      drawMinimap();
-    }
-    
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      const knob = document.getElementById('joystick-knob');
-      if (knob) knob.style.transform = 'translate(-50%, -50%)';
-    });
-  </script>
+
+    <h1 class="text-xl font-bold mb-4">SPACE COMBAT 9000</h1>
+
+    <div id="game-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <!-- DOS Style Title Screen -->
+        <div id="title-screen" class="hidden">
+            <pre class="text-xs mb-4">
+88888888888888888888888888888888888888888888888888888888888888888888888888888888
+8                                                                            8
+8               ██████  ██████   █████  ██████  ███████ █████                8
+8              ██      ██       ██   ██ ██   ██ ██      ██   ██              8
+8              ██████  ██      ██     ██ ██████  █████  ██████               8
+8              ██      ██       ██   ██ ██   ██ ██      ██   ██              8
+8               ██████  ██████   █████  ██████  ███████ ██   ██              8
+8                                                                            8
+8                          A 1990's TEXT-MODE CLASSIC                          8
+8                          INITIATE DESTRUCTION PROTOCOL                       8
+8                                                                            8
+88888888888888888888888888888888888888888888888888888888888888888888888888888888
+            </pre>
+            <h1>SPACE COMBAT 9000</h1>
+            <p>DESTROY THE ALIEN SWARM</p>
+            <button id="start-button">PRESS START TO BEGIN</button>
+            <p class="mt-8 text-sm">Use WASD/Arrow Keys to Move, Spacebar to Shoot</p>
+        </div>
+        <div id="game-over-screen" class="hidden absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 flex flex-col items-center justify-center z-50 rounded-md">
+            <h2 class="text-4xl font-mono text-red-500 mb-4">-- GAME OVER --</h2>
+            <p class="text-xl font-mono text-white mb-6">Final Score: <span id="final-score">0</span></p>
+            <button id="restart-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition duration-150">RESTART GAME</button>
+        </div>
+    </div>
+
+    <!-- Mobile Controls -->
+    <div id="controls">
+        <button id="ctrl-up" class="ctrl-btn" ontouchstart="setMovement('up', true)" ontouchend="setMovement('up', false)">&#9650;</button>
+        <button id="ctrl-left" class="ctrl-btn" ontouchstart="setMovement('left', true)" ontouchend="setMovement('left', false)">&#9664;</button>
+        <button id="ctrl-down" class="ctrl-btn" ontouchstart="setMovement('down', true)" ontouchend="setMovement('down', false)">&#9660;</button>
+        <button id="ctrl-right" class="ctrl-btn" ontouchstart="setMovement('right', true)" ontouchend="setMovement('right', false)">&#9654;</button>
+        <button id="ctrl-shoot" class="ctrl-btn" ontouchstart="setMovement('shoot', true)" ontouchend="setMovement('shoot', false)">FIRE</button>
+    </div>
+
+    <script>
+        // Set up the canvas and context
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gameContainer = document.getElementById('game-container');
+        const titleScreen = document.getElementById('title-screen');
+        const startButton = document.getElementById('start-button');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const restartButton = document.getElementById('restart-button');
+        const finalScoreDisplay = document.getElementById('final-score');
+
+        // Game Constants
+        const PLAYER_SPEED = 5;
+        const BULLET_SPEED = 7;
+        const ENEMY_SPEED = 2;
+
+        // Global Game State
+        let gameRunning = false;
+        let score = 0;
+        let lastSpawnTime = 0;
+        let enemies = [];
+        let playerBullets = [];
+        let enemyBullets = [];
+        let drones = []; // For Carrier-spawned drones
+        let level = 1;
+
+        // --- SPAWN RATE LOGIC ---
+        const BASE_SPAWN_DELAY = 2000; // milliseconds
+        let currentSpawnDelay = BASE_SPAWN_DELAY;
+
+        // Player Object
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height - 50,
+            width: 40,
+            height: 20,
+            color: 'var(--ship-color)',
+            health: 3,
+            shooting: false,
+            canShoot: true,
+            shootDelay: 200, // ms
+            lastShotTime: 0,
+            movingLeft: false,
+            movingRight: false,
+            movingUp: false,
+            movingDown: false,
+        };
+
+        // --- CORE CLASSES ---
+
+        class Bullet {
+            constructor(x, y, vx, vy, color = 'var(--bullet-color)', damage = 1) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.radius = 3;
+                this.color = color;
+                this.damage = damage;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        class Enemy {
+            constructor(x, y, type, health, color, width, height, shootInterval = 1000) {
+                this.x = x;
+                this.y = y;
+                this.type = type;
+                this.health = health;
+                this.maxHealth = health;
+                this.color = color;
+                this.width = width;
+                this.height = height;
+                this.vx = ENEMY_SPEED;
+                this.vy = 0;
+                this.shootInterval = shootInterval;
+                this.lastShotTime = Date.now();
+            }
+
+            draw() {
+                // Draw a simple box (replace with more detailed shapes if desired)
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+
+                // Draw Health Bar
+                const healthRatio = this.health / this.maxHealth;
+                const healthBarWidth = this.width;
+                const healthBarHeight = 3;
+                ctx.fillStyle = '#333';
+                ctx.fillRect(this.x, this.y - 8, healthBarWidth, healthBarHeight);
+                ctx.fillStyle = healthRatio > 0.5 ? '#0f0' : healthRatio > 0.2 ? '#ff0' : '#f00';
+                ctx.fillRect(this.x, this.y - 8, healthBarWidth * healthRatio, healthBarHeight);
+            }
+
+            update() {
+                this.x += this.vx;
+
+                // Bounce off walls
+                if (this.x + this.width > canvas.width || this.x < 0) {
+                    this.vx *= -1;
+                    this.y += 20; // Move down a row
+                }
+
+                // Brute specific attack logic
+                if (this.type === 'Brute' && Date.now() - this.lastShotTime > this.shootInterval) {
+                    this.shootBrute();
+                    this.lastShotTime = Date.now();
+                }
+
+                // Carrier specific attack logic
+                if (this.type === 'Carrier' && Date.now() - this.lastShotTime > this.shootInterval * 1.5) {
+                    this.spawnDrones();
+                    this.lastShotTime = Date.now();
+                }
+
+                // Drone specific movement
+                if (this.type === 'Drone') {
+                    // Drones track the player
+                    const dx = player.x - this.x;
+                    const dy = player.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    this.x += (dx / dist) * ENEMY_SPEED * 0.8;
+                    this.y += (dy / dist) * ENEMY_SPEED * 0.8;
+                }
+            }
+            
+            // --- UPDATED BRUTE ATTACK (Increased bullets by 2) ---
+            shootBrute() {
+                // Brute fires a spread of 5 bullets (original 3 + 2 more)
+                const bulletCount = 5;
+                const angleStep = Math.PI / (bulletCount + 1);
+                
+                for (let i = 1; i <= bulletCount; i++) {
+                    // Start angle from Math.PI (downwards)
+                    const angle = Math.PI - (Math.PI / 3) + (i * angleStep * 0.6); // Narrowing the spread slightly
+                    const vx = Math.sin(angle) * BULLET_SPEED * 0.7;
+                    const vy = Math.cos(angle) * BULLET_SPEED * 0.7;
+                    enemyBullets.push(new Bullet(
+                        this.x + this.width / 2,
+                        this.y + this.height,
+                        vx,
+                        vy,
+                        '#ff00ff' // Purple bullets
+                    ));
+                }
+            }
+
+            // --- UPDATED CARRIER ATTACK (Increased drones by 2) ---
+            spawnDrones() {
+                // Carrier spawns 4 drones (original 2 + 2 more)
+                const droneCount = 4;
+                const offsets = [
+                    {x: -this.width/2, y: this.height + 5},
+                    {x: this.width*1.5, y: this.height + 5},
+                    // The two new offsets:
+                    {x: 0, y: this.height * 2},
+                    {x: this.width, y: this.height * 2}
+                ];
+
+                for (let i = 0; i < droneCount; i++) {
+                    if (offsets[i]) {
+                         // Drones are smaller, lower health, and the 'Drone' type
+                         drones.push(new Enemy(
+                            this.x + offsets[i].x,
+                            this.y + offsets[i].y,
+                            'Drone',
+                            1,
+                            '#4ade80', // Green Drone
+                            15, 15,
+                            1000 // Drones shoot too, but rarely
+                        ));
+                    }
+                }
+            }
+        }
+
+        // --- GAME LOGIC FUNCTIONS ---
+
+        function initGame() {
+            // Reset state
+            score = 0;
+            level = 1;
+            enemies = [];
+            playerBullets = [];
+            enemyBullets = [];
+            drones = [];
+            currentSpawnDelay = BASE_SPAWN_DELAY;
+
+            player.health = 3;
+            player.x = canvas.width / 2;
+            player.y = canvas.height - 50;
+        }
+
+        function checkLevelClear() {
+            // Check if both main enemies and drones are cleared
+            if (enemies.length === 0 && drones.length === 0 && gameRunning) {
+                // Level cleared!
+                levelUp();
+            }
+        }
+
+        // --- LEVEL UP LOGIC (Increased spawn rate) ---
+        function levelUp() {
+            level++;
+            // Increase spawn rate by reducing delay. This makes spawning 10% faster per level.
+            currentSpawnDelay = BASE_SPAWN_DELAY * Math.pow(0.9, level - 1);
+            if (currentSpawnDelay < 500) currentSpawnDelay = 500; // Cap delay at 0.5s
+
+            showMessage(`LEVEL ${level} INCOMING! Spawn Rate Increased!`, 1500, 'var(--dos-green)');
+            setTimeout(spawnInitialEnemies, 1500); // Start new wave after message
+        }
+
+
+        function spawnEnemy(type) {
+            const x = Math.random() * (canvas.width - 60);
+            let enemy;
+
+            switch (type) {
+                case 'Basic':
+                    enemy = new Enemy(x, 20, 'Basic', 2, 'var(--enemy-color)', 40, 20);
+                    break;
+                case 'Brute':
+                    // Brutes are tougher and shoot
+                    enemy = new Enemy(x, 20, 'Brute', 5 + level, '#ff6600', 60, 30, 1500 - (level * 50));
+                    break;
+                case 'Carrier':
+                    // Carriers are even tougher and spawn drones
+                    enemy = new Enemy(x, 20, 'Carrier', 8 + level * 2, '#8000ff', 80, 40, 3000 - (level * 100));
+                    break;
+            }
+
+            if (enemy) enemies.push(enemy);
+        }
+
+        function spawnInitialEnemies() {
+            // Basic wave generation for the start of a level
+            for (let i = 0; i < 5 + level; i++) {
+                spawnEnemy('Basic');
+            }
+            if (level >= 2) spawnEnemy('Brute');
+            if (level >= 3) spawnEnemy('Carrier');
+            if (level >= 5) spawnEnemy(Math.random() > 0.5 ? 'Brute' : 'Carrier');
+        }
+
+        function handleSpawning(timestamp) {
+            if (timestamp - lastSpawnTime > currentSpawnDelay) {
+                const rand = Math.random();
+                if (rand < 0.6) {
+                    spawnEnemy('Basic');
+                } else if (rand < 0.8) {
+                    spawnEnemy('Brute');
+                } else {
+                    spawnEnemy('Carrier');
+                }
+                lastSpawnTime = timestamp;
+            }
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x - player.width / 2, player.y - player.height / 2, player.width, player.height);
+
+            // Draw Health
+            ctx.fillStyle = 'white';
+            ctx.font = '12px monospace';
+            ctx.fillText(`HP: ${player.health}`, player.x - 10, player.y + 25);
+        }
+
+        function updatePlayer() {
+            if (player.movingLeft) player.x -= PLAYER_SPEED;
+            if (player.movingRight) player.x += PLAYER_SPEED;
+            if (player.movingUp) player.y -= PLAYER_SPEED;
+            if (player.movingDown) player.y += PLAYER_SPEED;
+
+            // Keep player within bounds
+            player.x = Math.max(player.width / 2, Math.min(canvas.width - player.width / 2, player.x));
+            player.y = Math.max(player.height / 2, Math.min(canvas.height - player.height / 2, player.y));
+
+            if (player.shooting) handlePlayerShoot();
+        }
+
+        function handlePlayerShoot() {
+            const now = Date.now();
+            if (player.canShoot && now - player.lastShotTime > player.shootDelay) {
+                // Fire a single bullet
+                playerBullets.push(new Bullet(player.x, player.y - player.height / 2, 0, -BULLET_SPEED));
+                player.lastShotTime = now;
+            }
+        }
+
+        function updateGame() {
+            if (!gameRunning) return;
+
+            updatePlayer();
+
+            // Update Bullets
+            playerBullets.forEach(b => b.update());
+            enemyBullets.forEach(b => b.update());
+
+            // Filter out-of-bounds bullets
+            playerBullets = playerBullets.filter(b => b.y > 0);
+            enemyBullets = enemyBullets.filter(b => b.y < canvas.height);
+
+            // Update Enemies
+            enemies.forEach(e => e.update());
+            drones.forEach(d => d.update());
+
+            handleCollisions();
+            checkLevelClear();
+
+            // Filter dead entities
+            enemies = enemies.filter(e => e.health > 0);
+            drones = drones.filter(d => d.health > 0);
+
+            // Check Game Over
+            if (player.health <= 0) {
+                gameOver();
+            }
+        }
+
+        function handleCollisions() {
+            // Player Bullet vs. Enemies
+            playerBullets.forEach((bullet, bIndex) => {
+                // Check main enemies
+                enemies.forEach((enemy, eIndex) => {
+                    if (checkCollision(bullet, enemy)) {
+                        enemy.health -= bullet.damage;
+                        playerBullets.splice(bIndex, 1);
+                        score += 10;
+                        if (enemy.health <= 0) {
+                            score += enemy.maxHealth * 5; // Bonus for destroying tough enemies
+                        }
+                    }
+                });
+                // Check drones
+                drones.forEach((drone, dIndex) => {
+                    if (checkCollision(bullet, drone)) {
+                        drone.health -= bullet.damage;
+                        playerBullets.splice(bIndex, 1);
+                        score += 5;
+                        if (drone.health <= 0) {
+                            score += 15;
+                        }
+                    }
+                });
+            });
+
+            // Enemy Bullet vs. Player
+            enemyBullets.forEach((bullet, bIndex) => {
+                if (checkCollision(bullet, player)) {
+                    player.health -= bullet.damage;
+                    enemyBullets.splice(bIndex, 1);
+                }
+            });
+
+            // Enemy/Drone vs. Player (Ramming)
+            [...enemies, ...drones].forEach((enemy) => {
+                if (checkCollision(player, enemy)) {
+                    player.health -= 1; // Take ramming damage
+                    enemy.health = 0; // Enemy is also destroyed
+                }
+            });
+        }
+
+        function checkCollision(objA, objB) {
+            // Player/Enemy Collision (AABB)
+            if (objA.width && objB.width) {
+                return objA.x < objB.x + objB.width &&
+                       objA.x + objA.width > objB.x &&
+                       objA.y < objB.y + objB.height &&
+                       objA.y + objA.height > objB.y;
+            }
+            // Bullet vs. Object Collision (Circle vs. AABB)
+            const closestX = Math.max(objB.x, Math.min(objA.x, objB.x + objB.width));
+            const closestY = Math.max(objB.y, Math.min(objA.y, objB.y + objB.height));
+            const distX = objA.x - closestX;
+            const distY = objA.y - closestY;
+            return (distX * distX + distY * distY) < (objA.radius * objA.radius);
+        }
+
+        let messageTimeout;
+        function showMessage(text, duration, color = 'white') {
+            // Clear any previous message timeout
+            if (messageTimeout) {
+                clearTimeout(messageTimeout);
+            }
+
+            // Draw text directly to the canvas
+            ctx.save();
+            ctx.font = 'bold 30px monospace';
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+            ctx.restore();
+
+            // Schedule removal
+            messageTimeout = setTimeout(() => {
+                messageTimeout = null;
+            }, duration);
+        }
+
+        function drawScore() {
+            ctx.fillStyle = 'var(--dos-green)';
+            ctx.font = '18px monospace';
+            ctx.fillText(`SCORE: ${score}`, 10, 25);
+            ctx.fillText(`LEVEL: ${level}`, canvas.width - 100, 25);
+        }
+
+        // --- GAME LOOP ---
+        function gameLoop(timestamp) {
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (gameRunning) {
+                handleSpawning(timestamp);
+                updateGame();
+
+                drawPlayer();
+                playerBullets.forEach(b => b.draw());
+                enemyBullets.forEach(b => b.draw());
+                enemies.forEach(e => e.draw());
+                drones.forEach(d => d.draw());
+
+                drawScore();
+
+                // If a message is active, redraw it over everything
+                if (messageTimeout) {
+                    ctx.save();
+                    ctx.font = 'bold 30px monospace';
+                    ctx.fillStyle = 'var(--dos-green)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(ctx.messageText, canvas.width / 2, canvas.height / 2);
+                    ctx.restore();
+                }
+
+                requestAnimationFrame(gameLoop);
+            } else {
+                // If game stopped and not showing Game Over, show title screen
+                if (gameOverScreen.classList.contains('hidden')) {
+                     showTitleScreen();
+                }
+            }
+        }
+
+        function startGame() {
+            titleScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            gameRunning = true;
+            initGame();
+            spawnInitialEnemies();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            finalScoreDisplay.textContent = score;
+            gameOverScreen.classList.remove('hidden');
+        }
+
+        function showTitleScreen() {
+            titleScreen.classList.remove('hidden');
+        }
+
+        // --- INPUT HANDLING ---
+
+        function setMovement(direction, isMoving) {
+            switch (direction) {
+                case 'up':
+                    player.movingUp = isMoving;
+                    break;
+                case 'down':
+                    player.movingDown = isMoving;
+                    break;
+                case 'left':
+                    player.movingLeft = isMoving;
+                    break;
+                case 'right':
+                    player.movingRight = isMoving;
+                    break;
+                case 'shoot':
+                    player.shooting = isMoving;
+                    break;
+            }
+        }
+
+        // Keyboard Event Listeners (for desktop/keyboard play)
+        document.addEventListener('keydown', (e) => {
+            if (!gameRunning) return;
+            switch (e.key) {
+                case 'a':
+                case 'A':
+                case 'ArrowLeft':
+                    setMovement('left', true);
+                    break;
+                case 'd':
+                case 'D':
+                case 'ArrowRight':
+                    setMovement('right', true);
+                    break;
+                case 'w':
+                case 'W':
+                case 'ArrowUp':
+                    setMovement('up', true);
+                    break;
+                case 's':
+                case 'S':
+                case 'ArrowDown':
+                    setMovement('down', true);
+                    break;
+                case ' ': // Spacebar
+                    setMovement('shoot', true);
+                    e.preventDefault(); // Prevent scrolling
+                    break;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (!gameRunning) return;
+            switch (e.key) {
+                case 'a':
+                case 'A':
+                case 'ArrowLeft':
+                    setMovement('left', false);
+                    break;
+                case 'd':
+                case 'D':
+                case 'ArrowRight':
+                    setMovement('right', false);
+                    break;
+                case 'w':
+                case 'W':
+                case 'ArrowUp':
+                    setMovement('up', false);
+                    break;
+                case 's':
+                case 'S':
+                case 'ArrowDown':
+                    setMovement('down', false);
+                    break;
+                case ' ': // Spacebar
+                    setMovement('shoot', false);
+                    break;
+            }
+        });
+
+        // Button Event Listeners (Title/Game Over Screens)
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+
+        // Mobile touch event listeners are bound inline in the HTML: ontouchstart/ontouchend
+        // e.g., ontouchstart="setMovement('up', true)"
+
+        // Start the game by showing the Title Screen
+        window.onload = () => {
+             // Adapt canvas size to container for responsiveness
+            const resizeCanvas = () => {
+                const rect = gameContainer.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                // Re-center player on resize if the game is running
+                if (gameRunning) {
+                    player.x = canvas.width / 2;
+                    player.y = canvas.height - 50;
+                }
+            };
+
+            // Initial sizing and listener setup
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Hide the game over screen initially
+            gameOverScreen.classList.add('hidden');
+
+            showTitleScreen();
+        };
+
+    </script>
 </body>
 </html>
