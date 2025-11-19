@@ -1,3 +1,4 @@
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Before Us Universe — BUU</title>
@@ -58,10 +59,10 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
 .panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .panel-body{padding:8px;color:var(--text-gray)}
-.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border);}
+.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border);loading:lazy;}
 @media(max-width:600px){.yt-wrap iframe{height:200px;}}
 .chat-win{display:flex;flex-direction:column;height:520px}
-@media(max-width:600px){.chat-win{height:400px;}}
+@media(max-width:600px){.chat-win{height:300px;}}
 .chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .chat-main{display:flex;flex:1;overflow:hidden}
 .chat-messages{flex:1;overflow:auto;background:#e6e6fa;border-right:1px solid rgba(0,0,0,0.1);padding:8px;color:#000}
@@ -99,7 +100,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .server-title .status-icon{margin-left:5px;font-size:14px;}
 .status-icon.animated{animation:pulse 1s infinite alternate;}
 @keyframes pulse{0%{opacity:1;}100%{opacity:0.5;}}
-#systemFeed{max-height:100px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px;color:var(--text-gray)}
+#systemFeed{max-height:200px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px;color:var(--text-gray)}
 .dm-inline{border:1px solid rgba(255,255,255,0.03);padding:6px;margin:6px 0;background:#021212;border-radius:4px}
 .small{font-size:11px;color:var(--muted)}
 .typing-indicator { font-size: 12px; color: var(--muted); padding: 6px; font-style: italic; }
@@ -110,50 +111,25 @@ a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 @media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
 body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 @keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
-.ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;animation:flash 2s infinite;}
-@keyframes flash{0%{opacity:1;}50%{opacity:0.8;}100%{opacity:1;}}
+.ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;}
 body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 ::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
 ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
 #revivalSitesPanel .panel-body{max-height:100px;overflow:auto;}
+@keyframes flash{0%{opacity:1;}50%{opacity:0.5;}100%{opacity:1;}}
+.flash{animation:flash 1s infinite;}
 #emailPanel{margin-bottom:12px;padding:8px;}
 #emailForm{display:flex;gap:8px;align-items:center;}
 #emailInput{flex:1;padding:8px;background:#001f1f;border:2px solid var(--border);color:var(--fg);font-family:monospace;}
 #emailSubmit{background:var(--accent);color:#000;padding:8px 12px;border:2px solid #000;cursor:pointer;font-weight:700;}
-#shortstreams-wrap{display:flex;justify-content:center;margin:8px auto;}
-#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);}
+#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);loading:lazy;}
 @media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
-#vine-wrap{display:flex;justify-content:center;align-items:center;flex-direction:column;}
-#slideshow-container{width:360px;height:640px;border:4px solid var(--border);margin:8px auto;}
-@media(max-width:600px){#slideshow-container{width:100%;height:560px;}}
-#slideshow-controls{display:flex;gap:8px;justify-content:center;margin-top:8px;}
-#slideshow-controls button{background:var(--accent);color:#000;padding:6px 12px;border:2px solid #000;cursor:pointer;}
-.sub-gallery .panel-title{font-size:11px;}
-.sub-gallery .panel-body{height:400px;}
-.ticker{background:var(--accent);border:2px solid #000;color:#000;font-size:12px;text-align:center;padding:8px;cursor:pointer;border-radius:4px;}
-.toggle-btn{margin-left:auto;}
-.toggle-btn.bottom-toggle{margin-left:auto;}
-#emailPanel .panel-body{height:auto;padding:4px;}
-#ytBody .panel-body{height:auto;}
-#soraBody .panel-body{height:auto;}
-#boardBody{height:600px;}
-#emailPanel iframe{height:200px;}
-#stumbleBtn{width:200px;}
-#fleetcommandBody{height:80vh;}
-@media(max-width:600px){#fleetcommandBody{height:70vh;}}
-@media (min-width: 601px) {
-#startScreen h1 {font-size: 48px;}
-.mode-btn {padding: 20px 40px; font-size: 20px;}
-#hud {font-size: 16px;}
-#controls {font-size: 14px;}
-.ship-btn {padding: 10px 15px; font-size: 14px;}
-}
 </style>
 </head>
 <body>
 <div id="marqueeWrap">
 <div id="marqueeLabel">SYSTEM:</div>
-<div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — — Site Under Construction —</div></div>
+<div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND…</div></div>
 </div>
 <div id="bootOverlay">
 <div id="bootPanel">
@@ -176,9 +152,8 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 <div id="app">
 <div class="title-bar">
-<div class="logo">C//:BUU</div>
-<a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal</a>
-<a class="link-btn" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo</a>
+<a class="link-btn flash" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer" title="Donate via PayPal (pmcdon13) or Venmo (@hisrobustness)">Donate</a>
+<div class="logo">BUU</div>
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
 <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
@@ -188,32 +163,38 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
 <a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
 <div class="controls-right">
+<a class="link-btn" id="samsArt" href="https://robustpvp.wixsite.com/super-parody-funtime" target="_blank" rel="noopener noreferrer" title="pencil drawn on note cards from ref.">Patrick's Art</a>
 </div>
 </div>
 <div id="emailPanel" class="panel">
-<div class="panel-title"><div class="title">Join Our Email List for Updates</div></div>
+<div class="panel-title"><div class="title"><span class="flash">Join</span> Our Email List for Updates</div></div>
 <div class="panel-body">
-<iframe src="https://forms.gle/LBAkMsnVT7xrraYT8" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-</div>
-</div>
-<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:block;margin:12px auto;width:200px;">Stumble</button>
-<div class="panel" id="serverSelectPanel">
-<div class="small">SELECT SERVER</div>
-<div class="controls">
-<select id="channelSelect" aria-label="Choose server">
-<option value="sam">//Sam</option>
-<option value="exuro">//Exuro</option>
-<option value="nero">//Nero</option>
-<option value="nora">//Nora</option>
-<option value="loktal">//Loktal</option>
-</select>
-<button id="serverConfirm" aria-label="Switch server">Switch Server</button>
+<form id="emailForm" action="mailto:robust.pvp@gmail.com" method="post" enctype="text/plain">
+<input id="emailInput" type="email" name="email" placeholder="Your email" required aria-label="Enter your email">
+<button id="emailSubmit" type="submit" aria-label="Join email list">Subscribe</button>
+</form>
 </div>
 </div>
 <div class="layout">
 <div>
-<div class="panel">
-<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">PLAYLIST //SAM</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="ytBody">
+<div class="yt-wrap" style="margin:8px">
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen loading="lazy"></iframe>
+</div>
+</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="soraBody">
+<div id="shortstreams-wrap" style="margin:8px">
+<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen loading="lazy"></iframe>
+</div>
+</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body chat-win" id="chatBody">
 <div class="chat-main">
 <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
@@ -230,827 +211,987 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//PLAYLIST.SAM</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="ytBody">
-<div class="yt-wrap" style="margin:8px">
-<iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen></iframe>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="soraBody">
-<div id="shortstreams-wrap">
-<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen allow="autoplay; fullscreen"></iframe>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="boardBody">
 <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
 <input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
-<div id="boardList" style="overflow:auto;margin:8px 0"></div>
+<div id="boardList" style="max-height:340px;overflow:auto;margin:8px 0"></div>
 <div style="margin:8px">
 <textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
 <button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
 </div>
 </div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//ENTITY (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="entityBody">
-<!-- Virtual pet entity will be housed here -->
+<div class="panel-title"><div class="title">//sora.ai</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body"></div>
 </div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+<div class="panel collapsible">
+<div class="panel-title"><div class="title">//VIRTUAL PET</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="virtual-pet-root"></div>
+</div>
+</div>
+<div>
+<div class="panel" id="serverSelectPanel">
+<div class="small">SELECT SERVER</div>
+<div class="controls">
+<select id="channelSelect" aria-label="Choose server">
+<option value="sam">//Sam</option>
+<option value="exuro">//Exuro</option>
+<option value="nero">//Nero</option>
+<option value="nora">//Nora</option>
+<option value="loktal">//Loktal</option>
+</select>
+<button id="serverConfirm" aria-label="Switch server">Switch Server</button>
+</div>
+</div>
+<div class="panel" id="systemFeedPanel">
+<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
+<div class="panel-body" id="systemFeed"></div>
+</div>
+<div class="panel" id="ortegaPanel">
+<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
+</div>
+<div class="panel" id="serverTrackingPanel">
+<div class="panel-title"><div class="small">SERVER TRACKING</div></div>
+<div class="panel-body" id="serverTrackingList"></div>
 </div>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="fleetcommandBody">
-<iframe srcdoc='<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Fleet Command: Invaders</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #000;
-      font-family: &#x27;Courier New&#x27;, monospace;
-      touch-action: none;
-    }
-    #gameCanvas {
-      display: block;
-      background: #000;
-      touch-action: none;
-      width: 100%;
-      height: 100%;
-    }
-    #startScreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      color: #0f0;
-    }
-    #startScreen h1 {
-      font-size: 32px;
-      margin-bottom: 20px;
-      text-shadow: 0 0 10px #0f0;
-    }
-    #startScreen p {
-      margin-bottom: 30px;
-      font-size: 14px;
-    }
-    .mode-btn {
-      background: rgba(0, 255, 0, 0.2);
-      border: 2px solid #0f0;
-      color: #0f0;
-      padding: 15px 30px;
-      margin: 10px;
-      cursor: pointer;
-      font-family: &#x27;Courier New&#x27;, monospace;
-      font-size: 16px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    .mode-btn:hover {
-      background: rgba(0, 255, 0, 0.4);
-    }
-    #hud {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      color: #0f0;
-      font-size: 12px;
-      text-shadow: 0 0 5px #0f0;
-      pointer-events: none;
-      z-index: 10;
-    }
-    #minimap {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 100px;
-      border: 2px solid #0f0;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 10;
-    }
-    .ship-select {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      z-index: 10;
-    }
-    .ship-btn {
-      background: rgba(0, 255, 0, 0.2);
-      border: 1px solid #0f0;
-      color: #0f0;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-family: &#x27;Courier New&#x27;, monospace;
-      font-size: 11px;
-      touch-action: manipulation;
-    }
-    .ship-btn.active {
-      background: rgba(0, 255, 0, 0.6);
-    }
-    #joystick {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      width: 120px;
-      height: 120px;
-      background: rgba(0, 255, 0, 0.1);
-      border: 2px solid rgba(0, 255, 0, 0.3);
-      border-radius: 50%;
-      z-index: 10;
-      display: none;
-    }
-    #joystick-knob {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      background: rgba(0, 255, 0, 0.5);
-      border: 2px solid #0f0;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    #fireBtn {
-      position: absolute;
-      bottom: 20px;
-      right: 5px;
-      width: 80px;
-      height: 80px;
-      background: rgba(255, 0, 0, 0.3);
-      border: 2px solid #f00;
-      border-radius: 50%;
-      color: #f00;
-      font-size: 12px;
-      font-weight: bold;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      touch-action: manipulation;
-    }
-    #fireBtn.active {
-      background: rgba(255, 0, 0, 0.6);
-    }
-    #controls {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      color: #0f0;
-      font-size: 11px;
-      text-shadow: 0 0 5px #0f0;
-      display: none;
-    }
-  </style>
-</head>
-<body>
-  <div id="startScreen">
-    <h1>FLEET COMMAND: INVADERS</h1>
-    <p style="font-size: 12px; margin-bottom: 10px; color: #0f0; text-shadow: 0 0 5px #0f0;">Created by Patrick McDonald and Claude</p>
-    <p>Choose your control mode:</p>
-    <button class="mode-btn" onclick="startGame(&#x27;mobile&#x27;)">MOBILE (Touch)</button>
-    <button class="mode-btn" onclick="startGame(&#x27;desktop&#x27;)">DESKTOP (Keyboard)</button>
-  </div>
-  <canvas id="gameCanvas"></canvas>
-  <canvas id="minimap"></canvas>
-  
-  <div id="hud">
-    <div>SCORE: <span id="score">0</span></div>
-    <div>SHIP: <span id="shipType">FIGHTER</span></div>
-    <div>HULL: <span id="health">100</span>%</div>
-  </div>
-  
-  <div class="ship-select">
-    <button class="ship-btn active" data-ship="fighter">FIGHTER</button>
-    <button class="ship-btn" data-ship="carrier">CARRIER</button>
-    <button class="ship-btn" data-ship="brute">BRUTE</button>
-  </div>
-  <div id="joystick">
-    <div id="joystick-knob"></div>
-  </div>
-  
-  <button id="fireBtn">FIRE</button>
-  
-  <div id="controls">WASD: Move | SPACE: Fire (Fighter/Brute) or Boost (Carrier) | 1/2/3: Switch Ship</div>
-  <script>
-    const canvas = document.getElementById(&#x27;gameCanvas&#x27;);
-    const ctx = canvas.getContext(&#x27;2d&#x27;);
-    const minimap = document.getElementById(&#x27;minimap&#x27;);
-    const minimapCtx = minimap.getContext(&#x27;2d&#x27;);
+<div class="panel-title"><div class="small">DIRECT MESSAGES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body">
+<div id="dmList" style="margin-top:8px"></div>
+<div class="small" style="margin-top:6px">Click a name to DM</div>
+</div>
+</div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="small">RETRO AD BANNERS</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body">
+<div class="ad-banner">Buy Impossible Teleporter - Only 999 Credits!</div>
+<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
+<div class="ad-banner">Vaporwave Vibes Inc. - Aesthetic Overload Guaranteed</div>
+</div>
+</div>
+<div class="panel collapsible collapsed" id="revivalSitesPanel">
+<div class="panel-title flash"><div class="small">REVIVAL SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" style="max-height:100px;overflow:auto">
+<a href="https://escargot.chat/" target="_blank">escargot.chat</a><p>a revival of Microsoft's MSN Messenger/Windows Live Messenger service. Works with all MSN/WLM clients from 1.0 to 9.0.</p>
+<a href="https://escargot.live/" target="_blank">escargot.live</a><p>a revival of Windows Live Spaces and Windows Live Profiles, run by the same team as escargot.chat. It will launch this summer.</p>
+<a href="#" target="_blank">NINA</a><p>a revival of the old AOL Desktop clients. It also hasn't launched yet, and there's no ETA, but rest assured it'll be here someday :D</p>
+<a href="https://phoenix-im.org/" target="_blank">Phoenix</a><p>a revival of AOL Instant Messenger. Works with all clients from 1.0 to 6.0, though 6.0 is kinda bugged. Also supports Yahoo! Messenger and ICQ.</p>
+<a href="https://bitview.net/" target="_blank">BitView</a><p>one of several classic YouTube clones, and my personal favourite. Replicates YouTube's 2009 design pretty much perfectly.</p>
+<a href="https://vidlii.com/" target="_blank">VidLii</a><p>another YouTube clone. Doesn't replicate YouTube quite as closely as BitView does, but it supports longer videos and more resolutions/audio bitrates than BitView.</p>
+<a href="https://fulptube.net/" target="_blank">FulpTube</a><p>yet ANOTHER YouTube clone. Unlike the previous two, it's meant to replicate YouTube from 2012/2013. Seems a bit glitchier than the other two. It also has its own replica of YouTube XL, and a mobile site.</p>
+<a href="https://spacehey.com/" target="_blank">SpaceHey</a><p>The site you're on right now. A MySpace replica.</p>
+<a href="https://neocities.org/" target="_blank">NeoCities</a><p>a clone of Yahoo! GeoCities. Lets you host your own website, for free (with extra privileges for donators)!</p>
+<a href="https://oldgoogle.neocities.org/" target="_blank">oldgoogle</a><p>a clone of Google Search, with replicas of pretty much every redesign that Google has gone through, from 1998 to 2014.</p>
+<a href="https://oldyahoo.neocities.org/" target="_blank">oldyahoo</a><p>a clone of Yahoo! Search. Exactly the same as above, but for Yahoo! instead.</p>
+<a href="http://bwitter.me/" target="_blank">Bwitter</a><p>a clone of Twitter from 2007. Warning - this site doesn't support HTTPS, so you might want to use a different password from your other accounts.</p>
+<a href="#" target="_blank">Goodblox (RIP</p>
+<a href="https://discord.gg/rverse" target="_blank">rverse</a><p>a Miiverse revival, compatible with Wii U and 3DS. Doesn't have its own website, so I've provided a link to their Discord server.</p>
+<a href="https://rc24.xyz/" target="_blank">RiiConnect24</a><p>a revival for pretty much every single WiiConnect24-dependent Wii channel, such as the Check Mii Out Channel, the Weather Channel, the News Channel, and the Everybody Votes Channel.</p>
+<a href="https://sudomemo.net/" target="_blank">Sudomemo</a><p>a revival for Flipnote Hatena, the animation/art-sharing service for the Nintendo DS app Flipnote Studio.</p>
+<a href="https://wiimmfi.de/" target="_blank">Wiimmfi</a><p>a revival of the Nintendo Wi-Fi Connection service. Similar to RiiConnect24, but for multiplayer games instead of just Wii channels.</p>
+<a href="https://bluemaxima.org/flashpoint/" target="_blank">Flashpoint</a><p>not sure if this quite fits the description of an "old web" revival service, but I'll include it anyway. Flashpoint is a MASSIVE archive for online games using plugins like Adobe Flash, Silverlight, and even really obscure ones like the PopCap Plugin and ActiveX Controls.</p>
+<a href="https://ruffle.rs/" target="_blank">ruffle.rs</a><p>an Adobe Flash emulator, similar to Flashpoint. Unlike Flashpoint, it is available as a browser extension too.</p>
+<a href="https://erm.m4tt72.com" target="_blank">erm.m4tt72.com</a><p>A terminal-style personal website that mimics command-line interfaces with interactive commands</p>
+<a href="https://www.mysteryfleshpitnationalpark.com/" target="_blank">Mystery Flesh Pit National Park</a><p>An ARG-style website presenting fiction as if it were a real national park</p>
+<a href="https://hypnagogicarchive.neocities.org/" target="_blank">The Hypnagogic Archive</a><p>Another ARG with retro aesthetics to tell mysterious stories</p>
+<a href="https://www.youtube.com/c/LOCAL58TV" target="_blank">Local58</a><p>YouTube-based presents fiction as old TV broadcasts, similar to "network" concept</p>
+<a href="#" target="_blank">Command-UI</a><p>A text-based adventure game with retro terminal CRT aesthetics and spacecraft storyline</p>
+<a href="https://space-bar.neocities.org/home" target="_blank">Space Bar</a><p>Interstellar dive bar</p>
+<a href="https://creaturefeatures.tv/" target="_blank">Creature Feature</a><p>Halloween site with horror & sci-fi movies</p>
+<a href="https://melonland.net/" target="_blank">Melonland Project</a><p>Community celebrating joyful, individual web experiences</p>
+<a href="https://status.cafe/" target="_blank">Status Cafe</a><p>Retro status-sharing platform</p>
+<a href="https://nightfall.city/" target="_blank">Nightfall City</a><p>Online community with vintage aesthetic</p>
+<a href="https://onio.cafe/" target="_blank">Onio.cafe</a><p>Ambient message-leaving site</p>
+<a href="https://netstory.io/" target="_blank">Netstory.io</a><p>Modern interactive fiction combining text adventures with browsers</p>
+<a href="https://itch.io/games/tag-twine" target="_blank">Twine-based stories on itch.io</a><p>Thousands of branching narrative games</p>
+<a href="https://www.ifarchive.org/" target="_blank">Interactive Fiction Archive</a><p>Preserves text adventure history</p>
+<a href="https://talefy.ai/" target="_blank">Talefy</a><p>AI-powered interactive storytelling</p>
+<p>ARG & Mystery Sites:</p>
+<a href="https://www.unfiction.com/history/the-beast/" target="_blank">The Beast (2001, historical)</a><p>First major ARG with terminal aesthetics</p>
+<a href="https://www.ilovebees.com/" target="_blank">I Love Bees</a><p>Halo 2 ARG with mysterious website</p>
+<a href="https://en.wikipedia.org/wiki/Cicada_3301" target="_blank">Cicada 3301</a><p>Cryptic puzzle ARG</p>
+<a href="https://x.com/TheSunVanished" target="_blank">The Sun Vanished (Twitter-based)</a><p>Dark world ARG told through social media</p>
+<a href="https://en.wikipedia.org/wiki/Audiogalaxy" target="_blank">Audiogalaxy/Napster Revivals</a><p>Links to music sharing/discovery services that recreate P2P file sharing culture (legally)</p>
+<a href="https://www.somethingawful.com/" target="_blank">Something Awful</a><p>Classic community still running</p>
+<a href="https://www.fark.com/" target="_blank">Fark</a><p>Classic community still running</p>
+<a href="https://www.phpbb.com/community/" target="_blank">phpBB communities</a><p>Classic vBulletin/phpBB communities still running</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+const bootOverlay = document.getElementById('bootOverlay');
+const bootLog = document.getElementById('bootLog');
+const bootInput = document.getElementById('bootInput');
+const bootBtn = document.getElementById('bootBtn');
+const bootStatus = document.getElementById('bootStatus');
+const bootBroadcast = document.getElementById('bootBroadcast');
+const bootChannel = document.getElementById('bootChannel');
+const appRoot = document.getElementById('app');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const channelSelect = document.getElementById('channelSelect');
+const serverConfirm = document.getElementById('serverConfirm');
+const userCountSmall = document.getElementById('userCountSmall');
+const activeUsersList = document.getElementById('activeUsersList');
+const serverTrackingList = document.getElementById('serverTrackingList');
+const boardList = document.getElementById('boardList');
+const boardMsg = document.getElementById('boardMsg');
+const postBoardBtn = document.getElementById('postBoardBtn');
+const systemFeed = document.getElementById('systemFeed');
+const dmList = document.getElementById('dmList');
+const ortegaBtn = document.getElementById('ortegaBtn');
+const chatTitle = document.getElementById('chatTitle');
+const boardTitle = document.getElementById('boardTitle');
+const marqueeInner = document.getElementById('marqueeInner');
+const marqueeWrap = document.getElementById('marquee');
+const boardSearch = document.getElementById('boardSearch');
+let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null;
+let channelListeners = {};
+let feedCache = [];
+let boardListeners = {};
+const bootLines = [
+"C:\\> INITIALIZING BEFORE US UNIVERSE...",
+"C:\\> Loading kernel.............[ONLINE]",
+"C:\\> Checking Ra'Norric link...........[ONLINE]",
+"C:\\> MEMORY CHECK PASSED",
+"C:\\> DISK VERIFIED",
+"C:\\> NETWORK ACTIVE",
+"C:\\> System is .....[ONLINE]",
+"C:\\> Ready for authentication..."
+];
+let lineIdx = 0;
+function typeBootLine(){
+if(lineIdx < bootLines.length){
+bootLog.textContent += bootLines[lineIdx] + "\n";
+lineIdx++;
+setTimeout(typeBootLine, 240 + Math.random()*360);
+}
+}
+typeBootLine();
+onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
+function prependFeedEntry(text){
+const el = document.createElement('div');
+el.className = 'dm-inline';
+el.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+systemFeed.prepend(el);
+while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChild);
+}
+function updateMarqueeFromCache(){
+if(feedCache.length === 0){
+marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND…";
+startMarqueeAnimation();
+return;
+}
+const text = feedCache.slice(0,8).map(item => item.text).join(' ✦ ');
+marqueeInner.textContent = ' ' + text + ' ';
+startMarqueeAnimation();
+}
+let marqueeAnimId = null;
+function startMarqueeAnimation(){
+if(marqueeAnimId) cancelAnimationFrame(marqueeAnimId);
+const inner = marqueeInner;
+inner.style.transform = 'translateX(0)';
+const wrapWidth = marquee.offsetWidth;
+const innerWidth = inner.offsetWidth || wrapWidth * 1.5;
+const speed = 80;
+let start = null;
+function step(ts){
+if(!start) start = ts;
+const elapsed = (ts - start) / 1000;
+const distance = speed * elapsed;
+inner.style.transform = `translateX(${-distance}px)`;
+if(distance > innerWidth + wrapWidth) start = ts;
+marqueeAnimId = requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+}
+const feedRef = ref(db, 'feed');
+onChildAdded(feedRef, snap => {
+const obj = {key: snap.key, text: snap.val(), ts: Date.now()};
+feedCache.unshift(obj);
+if(feedCache.length > 40) feedCache.pop();
+prependFeedEntry(obj.text);
+updateMarqueeFromCache();
+bootBroadcast.textContent = obj.text;
+});
+get(feedRef).then(snap => {
+const data = snap.val() || {};
+feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
+updateMarqueeFromCache();
+});
+function setPresence(h,ch){
+if(!uid || uid.startsWith('offline_')) return;
+try {
+if(presenceRef) remove(presenceRef).catch(()=>{});
+presenceRef = ref(db, `online/${ch}/${uid}`);
+set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid, typing:false}).then(()=>{
+onDisconnect(presenceRef).remove();
+}).catch(e => appendSystem('Presence error: ' + e.message));
+} catch(e){
+appendSystem('Presence failed: ' + e.message);
+}
+}
+let onlineWatchRef = ref(db, 'online');
+function watchOnline(){
+onValue(onlineWatchRef, snap => {
+const data = snap.val() || {};
+renderServerTracking(data);
+renderActiveUsers(data[currentChannel] || {});
+updateUserCount(data);
+updateTypingIndicator(data[currentChannel] || {});
+});
+}
+function renderServerTracking(data){
+serverTrackingList.innerHTML = '';
+const channels = ['sam','exuro','nero','nora','loktal'];
+channels.forEach(ch => {
+const users = Object.values(data[ch] || {});
+const count = users.length;
+const iconColor = count > 0 ? 'lime' : 'red';
+const branch = document.createElement('div');
+branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
+branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon ${count > 0 ? 'animated' : ''}" style="color:${iconColor}">●</span></div><div class="user-list"></div>`;
+const userList = branch.querySelector('.user-list');
+if(count === 0){
+userList.innerHTML = '<div>—</div>';
+} else {
+users.forEach(u => {
+const div = document.createElement('div');
+div.textContent = (u.name || 'Anonymous') + (u.typing ? ' (typing...)' : '');
+div.onclick = () => openDMInline(u.uid, u.name);
+userList.appendChild(div);
+});
+}
+serverTrackingList.appendChild(branch);
+});
+}
+function renderActiveUsers(obj){
+activeUsersList.innerHTML = '';
+Object.values(obj || {}).forEach(u => {
+const row = document.createElement('div'); row.className = 'user-row';
+const dot = document.createElement('div'); dot.className = 'status-dot';
+const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name || 'Anonymous';
+name.onclick = () => openDMInline(u.uid, u.name);
+row.append(dot, name);
+activeUsersList.appendChild(row);
+});
+}
+function updateUserCount(data){
+const count = Object.keys(data[currentChannel] || {}).length;
+userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
+chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
+boardTitle.innerHTML = `//${currentChannel.toUpperCase()} MESSAGE BOARD`;
+}
+function watchPresenceEvents() {
+const channels = ['sam','exuro','nero','nora','loktal'];
+channels.forEach(ch => {
+onChildAdded(ref(db, `online/${ch}`), snap => {
+const u = snap.val();
+if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
+});
+onChildRemoved(ref(db, `online/${ch}`), snap => {
+const u = snap.val();
+if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
+});
+});
+}
+function listenChannel(ch){
+for(const k in channelListeners){
+if(channelListeners[k].ref) off(channelListeners[k].ref);
+}
+channelListeners = {};
+currentChannel = ch;
+chatMessages.innerHTML = '';
+const r = ref(db, `chat/${ch}`);
+const q = query(r, orderByChild('ts'));
+const fn = snap => {
+const o = snap.val();
+if(o && !o.deleted) renderChatMessage(o, snap.key);
+};
+onChildAdded(q, fn, e => appendSystem('Chat listen error: ' + e.message));
+channelListeners[ch] = {ref: r, fn};
+listenBoard(ch);
+}
+function renderChatMessage(o, key){
+const row = document.createElement('div'); row.className = 'chat-row';
+const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
+const bub = document.createElement('div'); bub.className = 'chat-bubble';
+if(o.uid === uid) bub.classList.add('me');
+bub.innerHTML = `<div class="chat-meta">${o.name || 'Anonymous'} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+if(o.uid === uid){
+const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
+edit.onclick = () => { /* edit logic */ };
+const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
+del.onclick = () => {
+update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => appendSystem('Delete failed: ' + e.message));
+row.style.display = 'none'; // Immediate local hide
+};
+bub.append(edit, del);
+}
+row.append(av, bub);
+chatMessages.appendChild(row);
+chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+async function hash(str){
+const e = new TextEncoder().encode(str);
+const b = await crypto.subtle.digest('SHA-256', e);
+return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
+}
+async function postMessage(ch, name, msg){
+if(!uid) return appendSystem('No UID - cannot post');
+const m = msg.trim();
+if(!m || m.length > 500) return;
+const ts = Date.now();
+const h = await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
+const key = push(ref(db, `chat/${ch}`)).key;
+const updates = {};
+updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
+updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
+await update(ref(db), updates).catch(e => appendSystem('Chat post error: ' + e.message));
+set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
+}
+function listenBoard(ch){
+for(const k in boardListeners){
+if(boardListeners[k].ref) off(boardListeners[k].ref);
+}
+boardListeners = {};
+boardList.innerHTML = '';
+const r = ref(db, `board/${ch}`);
+get(r).then(snap => {
+const data = snap.val() || {};
+Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
+renderBoardPost(o, id);
+});
+}).catch(e => appendSystem('Board load error: ' + e.message));
+const fn = snap => {
+const o = snap.val();
+renderBoardPost(o, snap.key);
+boardList.scrollTop = boardList.scrollHeight;
+};
+onChildAdded(r, fn, e => appendSystem('Board listen error: ' + e.message));
+boardListeners[ch] = {ref: r, fn};
+}
+function renderBoardPost(p, id){
+const el = document.createElement('div'); el.className = 'board-thread';
+el.innerHTML = `<strong>${esc(p.name || 'Anonymous')}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
+const reply = document.createElement('span');
+reply.textContent = '[Reply]';
+reply.style.cursor = 'pointer';
+reply.style.color = 'var(--accent)';
+reply.onclick = () => {
+boardMsg.value = `>>${id}\n` + boardMsg.value;
+boardMsg.focus();
+};
+el.appendChild(reply);
+boardList.appendChild(el);
+}
+sendBtn.onclick = () => {
+if(!myHandle) return;
+postMessage(currentChannel, myHandle, chatInput.value);
+chatInput.value = '';
+};
+chatInput.addEventListener('keydown', e => {
+if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
+});
+postBoardBtn.onclick = async () => {
+if(!myHandle) return;
+if(!uid) return appendSystem('No UID - cannot post to board');
+const m = boardMsg.value.trim();
+if(!m || m.length > 1000) return;
+const r = push(ref(db, `board/${currentChannel}`));
+await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
+boardMsg.value = '';
+};
+boardMsg.addEventListener('keydown', e => {
+if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
+});
+serverConfirm.onclick = () => {
+const newCh = channelSelect.value;
+if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
+document.body.classList.add('glitch-transition');
+setTimeout(() => {
+listenChannel(newCh);
+setPresence(myHandle, newCh);
+currentChannel = newCh;
+document.body.classList.remove('glitch-transition');
+}, 1000);
+}
+};
+ortegaBtn.onclick = () => appendSystem('Project ORTEGA is currently [DOWN].');
+async function registerDMPair(tuid){
+if(uid.startsWith('offline_')) return;
+const pid = [uid, tuid].sort().join('_');
+const updates = {};
+updates[`dmPairs/${pid}/users/${uid}`] = true;
+updates[`dmPairs/${pid}/users/${tuid}`] = true;
+await update(ref(db), updates).catch(() => {});
+}
+function openDMInline(tuid, tname){
+if(tuid === uid) return;
+registerDMPair(tuid);
+const pid = [uid, tuid].sort().join('_');
+if(document.querySelector(`[data-dmid="${pid}"]`)) return;
+const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
+const header = document.createElement('div'); header.textContent = `DM: ${tname || 'Anonymous'}`; header.style.fontWeight = '700';
+const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
+const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
+const send = document.createElement('button'); send.textContent = 'Send'; send.style.marginTop = '6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
+container.append(header, msgs, inp, send);
+dmList.prepend(container);
+const dmRef = ref(db, `dm/${pid}`);
+onChildAdded(dmRef, snap => {
+const o = snap.val();
+const el = document.createElement('div'); el.style.margin = '6px 0';
+el.textContent = `${o.fromName || 'Anonymous'}: ${o.msg}`;
+msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
+});
+send.onclick = async () => {
+const txt = inp.value.trim();
+if(!txt) return;
+const ts = Date.now();
+const key = push(ref(db, `dm/${pid}`)).key;
+const updates = {};
+updates[`/dm/${pid}/${key}`] = {from: uid, to: tuid, fromName: myHandle, toName: tname, msg: txt, ts};
+await update(ref(db), updates).catch(() => {});
+inp.value = '';
+};
+}
+let typingTimeout = null;
+chatInput.addEventListener('input', () => {
+if(!uid || uid.startsWith('offline_')) return;
+const isTyping = chatInput.value.trim().length > 0;
+set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
+clearTimeout(typingTimeout);
+typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
+resetIdleTimer();
+});
+function updateTypingIndicator(obj){
+const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name || 'Anonymous');
+document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function appendSystem(t){
+const d = document.createElement('div');
+d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
+d.style.fontSize = '12px';
+systemFeed.prepend(d);
+}
+bootBtn.addEventListener('click', async () => {
+let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
+if(!raw){
+bootStatus.textContent = "Please enter a handle.";
+return;
+}
+bootStatus.textContent = "Entering network...";
+let credential;
+try {
+credential = await signInAnonymously(auth);
+uid = credential.user.uid;
+} catch(e) {
+bootStatus.textContent = "Auth error: " + e.message;
+appendSystem('Authentication failed: ' + e.message);
+return;
+}
+myHandle = raw;
+currentChannel = bootChannel.value || 'exuro';
+// Try DB in background - never block load
+setTimeout(() => {
+set(ref(db, `users/${uid}`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
+appendSystem('Profile save failed: ' + e.message);
+});
+setPresence(myHandle, currentChannel);
+}, 500);
+finishBoot();
+resetIdleTimer();
+});
+function finishBoot(){
+bootStatus.textContent = `Welcome, ${myHandle}!`;
+setTimeout(() => {
+bootOverlay.style.display = 'none';
+appRoot.style.display = 'block';
+channelSelect.value = currentChannel;
+initializePanels();
+appendSystem('System ready');
+listenChannel(currentChannel);
+appendSystem(`User '${myHandle}' logged in to //${currentChannel.toUpperCase()}`);
+const root = ReactDOM.createRoot(document.getElementById('virtual-pet-root'));
+root.render(React.createElement(VirtualPet, { petName: myHandle }));
+}, 900);
+}
+function initializePanels(){
+document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
+}
+watchOnline();
+watchPresenceEvents();
+appendSystem('Initializing...');
+setTimeout(() => updateMarqueeFromCache(), 800);
+setInterval(() => {
+const p = 80 + Math.floor(Math.random() * 11);
+bootBroadcast.textContent = `Timeline stability.. ${p}%`;
+bootBroadcast.classList.add('glitch-update');
+setTimeout(() => bootBroadcast.classList.remove('glitch-update'), 500);
+}, 5000);
+for(let i=0; i<8; i++){
+const p = document.createElement('div'); p.className = 'particle';
+p.style.left = Math.random()*100 + '%';
+p.style.animationDelay = Math.random()*5 + 's';
+marqueeWrap.appendChild(p);
+}
+document.querySelectorAll('.collapsible .toggle-btn').forEach(btn => {
+btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
+});
+boardSearch.addEventListener('input', () => {
+const term = boardSearch.value.toLowerCase();
+Array.from(boardList.children).forEach(el => {
+el.style.display = el.textContent.toLowerCase().includes(term) ? '' : 'none';
+});
+});
+setInterval(() => {
+activeUsersList.classList.add('glitch-update');
+setTimeout(() => activeUsersList.classList.remove('glitch-update'), 500);
+}, 30000);
+window.addEventListener('beforeunload', () => {
+if(presenceRef) remove(presenceRef);
+});
+setInterval(async () => {
+try {
+const snap = await get(ref(db,'chat'));
+const data = snap.val()||{};
+for(const ch in data){
+for(const id in data[ch]){
+if(data[ch][id].ts && Date.now() - data[ch][id].ts > 24*60*60*1000){
+await remove(ref(db, `chat/${ch}/${id}`));
+}
+}
+}
+} catch(e){ appendSystem('Purge error'); }
+}, 60*60*1000);
+setInterval(() => {
+if (uid && currentChannel) {
+set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
+}
+}, 300000);
+let idleTimer;
+function resetIdleTimer() {
+clearTimeout(idleTimer);
+idleTimer = setTimeout(() => {
+if(presenceRef) remove(presenceRef);
+bootOverlay.style.display = 'flex';
+appRoot.style.display = 'none';
+appendSystem('Idle timeout - returned to boot screen.');
+}, 600000); // 10 minutes
+}
+document.addEventListener('mousemove', resetIdleTimer);
+document.addEventListener('keydown', resetIdleTimer);
+document.addEventListener('touchstart', resetIdleTimer);
+</script>
+<script type="text/babel">
+const initialState = {
+captured: false,
+isOutside: false,
+pos: { x: 20, y: 30 },
+vel: { x: 2, y: 1 },
+hunger: 100,
+happiness: 100,
+bladder: 0,
+needsBathroom: false,
+poops: [],
+message: '',
+collapsed: false,
+isPetting: false,
+isDragging: false,
+isScared: false,
+animFrame: 0,
+petName: ''
+};
+function reducer(state, action) {
+switch (action.type) {
+case 'LOAD_STATE':
+return { ...state, ...action.payload };
+case 'SET_CAPTURED':
+return { ...state, captured: action.payload };
+case 'SET_IS_OUTSIDE':
+return { ...state, isOutside: action.payload };
+case 'SET_POS':
+return { ...state, pos: action.payload };
+case 'SET_VEL':
+return { ...state, vel: action.payload };
+case 'UPDATE_STATS':
+return { ...state, hunger: action.hunger, happiness: action.happiness, bladder: action.bladder };
+case 'SET_NEEDS_BATHROOM':
+return { ...state, needsBathroom: action.payload };
+case 'ADD_POOP':
+return { ...state, poops: [...state.poops, action.payload] };
+case 'REMOVE_POOP':
+return { ...state, poops: state.poops.filter(p => p.id !== action.payload) };
+case 'SET_MESSAGE':
+return { ...state, message: action.payload };
+case 'SET_COLLAPSED':
+return { ...state, collapsed: action.payload };
+case 'SET_IS_PETTING':
+return { ...state, isPetting: action.payload };
+case 'SET_IS_DRAGGING':
+return { ...state, isDragging: action.payload };
+case 'SET_IS_SCARED':
+return { ...state, isScared: action.payload };
+case 'SET_ANIM_FRAME':
+return { ...state, animFrame: action.payload };
+default:
+return state;
+}
+}
+const VirtualPet = ({ petName }) => {
+const [state, dispatch] = React.useReducer(reducer, { ...initialState, petName });
+const lastScrollY = React.useRef(0);
+const dragOffset = React.useRef({ x: 0, y: 0 });
+React.useEffect(() => {
+const storageKey = virtualPet_${petName};
+const saved = JSON.parse(localStorage.getItem(storageKey));
+if (saved) {
+dispatch({ type: 'LOAD_STATE', payload: saved });
+}
+}, [petName]);
+React.useEffect(() => {
+if (state.captured) {
+const storageKey = virtualPet_${petName};
+localStorage.setItem(storageKey, JSON.stringify(state));
+}
+}, [state, petName]);
+React.useEffect(() => {
+const interval = setInterval(() => {
+dispatch({ type: 'SET_ANIM_FRAME', payload: (state.animFrame + 1) % 4 });
+}, 300);
+return () => clearInterval(interval);
+}, [state.animFrame]);
+React.useEffect(() => {
+if (state.captured) return;
+const moveInterval = setInterval(() => {
+dispatch(prevState => {
+let newX = prevState.pos.x + prevState.vel.x;
+let newY = prevState.pos.y + prevState.vel.y;
+let newVelX = prevState.vel.x;
+let newVelY = prevState.vel.y;
+if (newX > 90 || newX < 5) {
+newVelX = -newVelX;
+newX = Math.max(5, Math.min(90, newX));
+}
+if (newY > 80 || newY < 5) {
+newVelY = -newVelY;
+newY = Math.max(5, Math.min(80, newY));
+}
+if (Math.random() < 0.02) {
+newVelX = (Math.random() - 0.5) * 3;
+newVelY = (Math.random() - 0.5) * 3;
+}
+dispatch({ type: 'SET_VEL', payload: { x: newVelX, y: newVelY } });
+return { type: 'SET_POS', payload: { x: newX, y: newY } };
+});
+}, 50);
+return () => clearInterval(moveInterval);
+}, [state.captured]);
+React.useEffect(() => {
+if (state.captured) return;
+const handleMouseMove = (e) => {
+const creatureX = (state.pos.x / 100) * window.innerWidth;
+const creatureY = (state.pos.y / 100) * window.innerHeight;
+const distance = Math.sqrt(
+Math.pow(e.clientX - creatureX, 2) +
+Math.pow(e.clientY - creatureY, 2)
+);
+if (distance < 150) {
+dispatch({ type: 'SET_IS_SCARED', payload: true });
+const angle = Math.atan2(creatureY - e.clientY, creatureX - e.clientX);
+dispatch({ type: 'SET_VEL', payload: {
+x: Math.cos(angle) * 4,
+y: Math.sin(angle) * 4
+} });
+} else {
+dispatch({ type: 'SET_IS_SCARED', payload: false });
+}
+};
+window.addEventListener('mousemove', handleMouseMove);
+return () => window.removeEventListener('mousemove', handleMouseMove);
+}, [state.captured, state.pos]);
+React.useEffect(() => {
+if (!state.captured) return;
+const interval = setInterval(() => {
+let newHunger = Math.max(0, state.hunger - 1);
+let newHappiness = Math.max(0, state.happiness - 0.5);
+let newBladder = Math.min(100, state.bladder + 2);
+if (newHunger === 0) {
+showMessage('Pet is starving! Feed now!');
+newHappiness = Math.max(0, newHappiness - 10);
+}
+if (newHappiness === 0) {
+showMessage('Pet is unhappy! Play with it!');
+}
+if (newBladder >= 80 && !state.needsBathroom && !state.isOutside) {
+dispatch({ type: 'SET_NEEDS_BATHROOM', payload: true });
+showMessage('Need bathroom!');
+}
+dispatch({ type: 'UPDATE_STATS', hunger: newHunger, happiness: newHappiness, bladder: newBladder });
+}, 2000);
+return () => clearInterval(interval);
+}, [state.captured, state.hunger, state.happiness, state.bladder, state.needsBathroom, state.isOutside]);
+React.useEffect(() => {
+if (!state.isOutside) return;
+const handleScroll = () => {
+const currentScroll = window.scrollY;
+const scrollDelta = currentScroll - lastScrollY.current;
+dispatch({ type: 'SET_VEL', payload: { x: state.vel.x, y: state.vel.y + scrollDelta * 0.1 } });
+lastScrollY.current = currentScroll;
+};
+window.addEventListener('scroll', handleScroll);
+return () => window.removeEventListener('scroll', handleScroll);
+}, [state.isOutside]);
+React.useEffect(() => {
+if (!state.isOutside || state.isDragging) return;
+const physics = setInterval(() => {
+dispatch(prevState => {
+let newX = prevState.pos.x;
+let newY = prevState.pos.y;
+let newVelX = prevState.vel.x;
+let newVelY = prevState.vel.y;
+newVelY += 0.3;
+if (Math.random() < 0.3) {
+newVelX += (Math.random() - 0.5) * 0.5;
+newVelY -= Math.random() * 2;
+}
+newX += newVelX;
+newY += newVelY;
+if (newX > 95 || newX < 5) {
+newVelX = -newVelX * 0.7;
+newX = Math.max(5, Math.min(95, newX));
+}
+if (newY > 85 || newY < 10) {
+newVelY = -newVelY * 0.6;
+newY = Math.max(10, Math.min(85, newY));
+}
+newVelX *= 0.95;
+newVelY *= 0.98;
+dispatch({ type: 'SET_VEL', payload: { x: newVelX, y: newVelY } });
+return { type: 'SET_POS', payload: { x: newX, y: newY } };
+});
+}, 50);
+return () => clearInterval(physics);
+}, [state.isOutside, state.vel, state.isDragging]);
+React.useEffect(() => {
+if (!state.captured || !state.isOutside || state.bladder < 80) return;
+const poopTimer = setTimeout(() => {
+const newPoop = { id: Date.now(), x: state.pos.x, y: state.pos.y + 10 };
+dispatch({ type: 'ADD_POOP', payload: newPoop });
+dispatch({ type: 'UPDATE_STATS', bladder: 0 });
+dispatch({ type: 'SET_NEEDS_BATHROOM', payload: false });
+showMessage('Relieved!');
+}, 2000);
+return () => clearTimeout(poopTimer);
+}, [state.captured, state.isOutside, state.bladder, state.pos]);
+React.useEffect(() => {
+if (!state.isDragging) return;
+const handleMove = (e) => {
+const viewportWidth = window.innerWidth;
+const viewportHeight = window.innerHeight;
+const newX = ((e.clientX - dragOffset.current.x) / viewportWidth) * 100;
+const newY = ((e.clientY - dragOffset.current.y) / viewportHeight) * 100;
+dispatch({ type: 'SET_POS', payload: { x: Math.max(5, Math.min(95, newX)), y: Math.max(5, Math.min(95, newY)) } });
+dispatch({ type: 'SET_VEL', payload: { x: 0, y: 0 } });
+};
+const handleUp = () => dispatch({ type: 'SET_IS_DRAGGING', payload: false });
+window.addEventListener('mousemove', handleMove);
+window.addEventListener('mouseup', handleUp);
+window.addEventListener('touchmove', handleMove, { passive: false });
+window.addEventListener('touchend', handleUp);
+return () => {
+window.removeEventListener('mousemove', handleMove);
+window.removeEventListener('mouseup', handleUp);
+window.removeEventListener('touchmove', handleMove);
+window.removeEventListener('touchend', handleUp);
+};
+}, [state.isDragging]);
+const showMessage = React.useCallback((msg) => {
+dispatch({ type: 'SET_MESSAGE', payload: msg });
+setTimeout(() => dispatch({ type: 'SET_MESSAGE', payload: '' }), 3000);
+}, []);
+const captureCreature = () => {
+if (state.captured) return;
+dispatch({ type: 'SET_CAPTURED', payload: true });
+showMessage('Caught!');
+dispatch({ type: 'SET_POS', payload: { x: 50, y: 50 } });
+dispatch({ type: 'SET_VEL', payload: { x: 0, y: 0 } });
+};
+const feed = () => {
+dispatch({ type: 'UPDATE_STATS', hunger: Math.min(100, state.hunger + 30), happiness: Math.min(100, state.happiness + 10) });
+showMessage('Yum!');
+};
+const play = () => {
+dispatch({ type: 'UPDATE_STATS', happiness: Math.min(100, state.happiness + 30), hunger: Math.max(0, state.hunger - 5) });
+showMessage('Fun!');
+};
+const letOut = () => {
+dispatch({ type: 'SET_IS_OUTSIDE', payload: true });
+dispatch({ type: 'SET_POS', payload: { x: 50, y: 50 } });
+dispatch({ type: 'SET_VEL', payload: { x: (Math.random() - 0.5) * 3, y: -2 } });
+showMessage('Outside!');
+};
+const bringBack = () => {
+dispatch({ type: 'SET_IS_OUTSIDE', payload: false });
+dispatch({ type: 'SET_POS', payload: { x: 50, y: 50 } });
+dispatch({ type: 'SET_VEL', payload: { x: 0, y: 0 } });
+showMessage('Home!');
+};
+const cleanPoop = (id) => {
+dispatch({ type: 'REMOVE_POOP', payload: id });
+dispatch({ type: 'UPDATE_STATS', happiness: Math.min(100, state.happiness + 15) });
+showMessage('Clean!');
+};
+const handleCreatureMouseDown = (e) => {
+if (!state.isOutside) return;
+dispatch({ type: 'SET_IS_DRAGGING', payload: true });
+const rect = e.currentTarget.getBoundingClientRect();
+dragOffset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+};
+const petCreature = () => {
+if (state.isDragging) return;
+dispatch({ type: 'SET_IS_PETTING', payload: true });
+dispatch({ type: 'UPDATE_STATS', happiness: Math.min(100, state.happiness + 5) });
+showMessage('Happy!');
+setTimeout(() => dispatch({ type: 'SET_IS_PETTING', payload: false }), 1000);
+};
+const getStatColor = (value) => {
+if (value > 60) return '#4caf50';
+if (value > 30) return '#ff9800';
+return '#f44336';
+};
+return (
     
-    function resizeCanvas() {
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
-    }
-    resizeCanvas();
-    window.addEventListener(&#x27;resize&#x27;, resizeCanvas);
-    const WORLD_SIZE = 4000;
-    const INVADER_COUNT = 80;
-    let score = 0;
-    let gameTime = 0;
-    let joystickActive = false;
-    let joystickDir = {x: 0, y: 0};
-    let firing = false;
-    let controlMode = null;
-    let keys = {};
-    let invaders = [];
-    let invaderBullets = []; // NEW: Array for enemy projectiles
-    let ship = null;
-    let gameStarted = false;
-    class Vector {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-      }
-      add(v) { return new Vector(this.x + v.x, this.y + v.y); }
-      mult(s) { return new Vector(this.x * s, this.y * s); }
-      mag() { return Math.sqrt(this.x * this.x + this.y * this.y); }
-      normalize() { const m = this.mag(); return m > 0 ? this.mult(1/m) : new Vector(0, 0); }
-    }
-    class Ship {
-      constructor(x, y, type) {
-        this.pos = new Vector(x, y);
-        this.vel = new Vector(0, 0);
-        this.angle = 0;
-        this.type = type;
-        this.bullets = [];
-        this.drones = [];
+      
         
-        if (type === &#x27;fighter&#x27;) {
-          this.maxSpeed = 6;
-          this.accel = 0.25;
-          this.health = 100;
-          this.maxHealth = 100;
-          this.fireRate = 5;
-          this.size = 12;
-          this.hitRadius = 10;
-        } else if (type === &#x27;carrier&#x27;) {
-          this.maxSpeed = 3;
-          this.accel = 0.12;
-          this.health = 250;
-          this.maxHealth = 250;
-          this.fireRate = 320;
-          this.size = 22;
-          this.hitRadius = 20;
-          this.boostPower = 0.5;
-          this.maxBoostSpeed = 7;
-        } else if (type === &#x27;brute&#x27;) {
-          this.maxSpeed = 5;
-          this.accel = 0.2;
-          this.health = 150;
-          this.maxHealth = 150;
-          this.fireRate = 53;
-          this.size = 14;
-          this.hitRadius = 12;
-        }
-        
-        this.lastFire = 0;
-      }
-      update() {
-        if (controlMode === &#x27;mobile&#x27;) {
-          if (joystickDir.x !== 0 || joystickDir.y !== 0) {
-            const dir = new Vector(joystickDir.x, joystickDir.y).normalize();
-            this.angle = Math.atan2(dir.y, dir.x);
-            this.vel = this.vel.add(dir.mult(this.accel));
-          }
-        } else {
-          const dir = new Vector(0, 0);
-          if (keys[&#x27;w&#x27;] || keys[&#x27;W&#x27;]) dir.y -= 1;
-          if (keys[&#x27;s&#x27;] || keys[&#x27;S&#x27;]) dir.y += 1;
-          if (keys[&#x27;a&#x27;] || keys[&#x27;A&#x27;]) dir.x -= 1;
-          if (keys[&#x27;d&#x27;] || keys[&#x27;D&#x27;]) dir.x += 1;
-          if (dir.mag() > 0) {
-            this.angle = Math.atan2(dir.y, dir.x);
-            const force = dir.normalize().mult(this.accel);
-            this.vel = this.vel.add(force);
-          }
-        }
-        // Boost for carrier (desktop/mobile)
-        if (this.type === &#x27;carrier&#x27; && ((controlMode === &#x27;desktop&#x27; && keys[&#x27; &#x27;]) || (controlMode === &#x27;mobile&#x27; && firing))) {
-          const boostDir = new Vector(Math.cos(this.angle), Math.sin(this.angle));
-          this.vel = this.vel.add(boostDir.mult(this.boostPower));
+          PIXEL PET
+          {!state.captured ? (
+            
+              A WILD CREATURE!
+              Move cursor near it...
+              Click to catch!
+            
+          ) : (
+            CAPTURED! Care for it below.
+          )}
           
-          if (this.vel.mag() > this.maxBoostSpeed) {
-            this.vel = this.vel.normalize().mult(this.maxBoostSpeed);
-          }
-        } else {
-          // Normal speed limit
-          if (this.vel.mag() > this.maxSpeed) {
-            this.vel = this.vel.normalize().mult(this.maxSpeed);
-          }
-        }
-        this.vel = this.vel.mult(0.97);
-        this.pos = this.pos.add(this.vel);
-        // Wrap around world limits
-        if (this.pos.x < 0) this.pos.x = WORLD_SIZE;
-        if (this.pos.x > WORLD_SIZE) this.pos.x = 0;
-        if (this.pos.y < 0) this.pos.y = WORLD_SIZE;
-        if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
-        // Fire logic (Desktop or Mobile manual fire)
-        const shouldFire = (controlMode === &#x27;desktop&#x27; && this.type !== &#x27;carrier&#x27; && keys[&#x27; &#x27;]) ||
-                         (controlMode === &#x27;mobile&#x27; && this.type !== &#x27;carrier&#x27; && firing);
         
-        if (shouldFire && gameTime - this.lastFire > this.fireRate) {
-          this.fire();
-          this.lastFire = gameTime;
-        }
-        this.bullets = this.bullets.filter(b => {
-          b.update();
-          return b.life > 0;
-        });
-        this.drones = this.drones.filter(d => {
-          d.update(this.pos);
-          return d.life > 0;
-        });
-        if (this.type === &#x27;carrier&#x27; && this.drones.length < 3 && gameTime % 150 === 0) {
-          this.drones.push(new Drone(this.pos.x, this.pos.y));
-        }
-      }
-      fire() {
-        const speed = 12;
-        const shipVel = this.vel;
-        
-        if (this.type === &#x27;fighter&#x27;) {
-          const vx = Math.cos(this.angle) * speed + shipVel.x;
-          const vy = Math.sin(this.angle) * speed + shipVel.y;
-          this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, &#x27;#00ff00&#x27;));
-        } else if (this.type === &#x27;brute&#x27;) {
-          for (let i = -2; i <= 2; i++) {
-            const angle = this.angle + i * 0.2;
-            const vx = Math.cos(angle) * speed + shipVel.x;
-            const vy = Math.sin(angle) * speed + shipVel.y;
-            this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, &#x27;#ff4400&#x27;));
-          }
-        }
-      }
-      findNearestInvader() {
-        let nearest = null;
-        let minDist = Infinity;
-        invaders.forEach(inv => {
-          const dx = inv.pos.x - this.pos.x;
-          const dy = inv.pos.y - this.pos.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < minDist) {
-            minDist = dist;
-            nearest = { invader: inv, dist: dist };
-          }
-        });
-        return nearest;
-      }
-      draw(offsetX, offsetY) {
-        ctx.save();
-        ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
-        ctx.rotate(this.angle);
-        
-        if (this.type === &#x27;fighter&#x27;) {
-          ctx.fillStyle = &#x27;#00ff00&#x27;;
-          ctx.beginPath();
-          ctx.moveTo(this.size, 0);
-          ctx.lineTo(-this.size, this.size/2);
-          ctx.lineTo(-this.size/2, 0);
-          ctx.lineTo(-this.size, -this.size/2);
-          ctx.closePath();
-          ctx.fill();
-        } else if (this.type === &#x27;carrier&#x27;) {
-          ctx.fillStyle = &#x27;#0088ff&#x27;;
-          ctx.fillRect(-this.size, -this.size/2, this.size*2, this.size);
-          ctx.fillStyle = &#x27;#00aaff&#x27;;
-          ctx.fillRect(-this.size/2, -this.size, this.size, this.size/2);
-        } else if (this.type === &#x27;brute&#x27;) {
-          ctx.fillStyle = &#x27;#ff4400&#x27;;
-          ctx.beginPath();
-          ctx.moveTo(this.size, 0);
-          ctx.lineTo(-this.size, this.size);
-          ctx.lineTo(-this.size, -this.size);
-          ctx.closePath();
-          ctx.fill();
-          ctx.fillStyle = &#x27;#ff6622&#x27;;
-          ctx.fillRect(-this.size * 0.7, -this.size * 0.5, this.size * 1.4, this.size);
-        }
-        
-        ctx.restore();
-        this.bullets.forEach(b => b.draw(offsetX, offsetY));
-        this.drones.forEach(d => d.draw(offsetX, offsetY));
-      }
-    }
-    class Bullet {
-      constructor(x, y, vx, vy, color = &#x27;#ffff00&#x27;) {
-        this.pos = new Vector(x, y);
-        this.vel = new Vector(vx, vy);
-        this.life = 100;
-        this.color = color;
-        this.radius = 3;
-      }
-      update() {
-        this.pos = this.pos.add(this.vel);
-        this.life--;
-      }
-      draw(offsetX, offsetY) {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.pos.x - offsetX, this.pos.y - offsetY, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-    // NEW: Invader Bullet Class
-    class InvaderBullet extends Bullet {
-      constructor(x, y, vx, vy) {
-        super(x, y, vx, vy, &#x27;#ff00ff&#x27;); // Purple/pink hostile color
-        this.radius = 4;
-        this.damage = 5; // Damage per hit
-      }
-    }
-    class Drone {
-      constructor(x, y) {
-        this.pos = new Vector(x, y);
-        this.vel = new Vector(0, 0);
-        this.life = 400;
-        this.orbitAngle = Math.random() * Math.PI * 2;
-        this.bullets = [];
-        this.lastFire = 0;
-        this.radius = 6;
-      }
-      update(parentPos) {
-        this.orbitAngle += 0.04;
-        const targetX = parentPos.x + Math.cos(this.orbitAngle) * 50;
-        const targetY = parentPos.y + Math.sin(this.orbitAngle) * 50;
-        
-        this.vel.x += (targetX - this.pos.x) * 0.02;
-        this.vel.y += (targetY - this.pos.y) * 0.02;
-        this.vel = this.vel.mult(0.88);
-        this.pos = this.pos.add(this.vel);
-        this.life--;
-        // Auto-fire at invaders
-        if (gameTime - this.lastFire > 50) {
-          const nearest = this.findNearestInvader();
-          if (nearest && nearest.dist < 250) {
-            this.fireAt(nearest.invader);
-            this.lastFire = gameTime;
-          }
-        }
-        this.bullets = this.bullets.filter(b => {
-          b.update();
-          return b.life > 0;
-        });
-      }
-      findNearestInvader() {
-        let nearest = null;
-        let minDist = Infinity;
-        invaders.forEach(inv => {
-          const dx = inv.pos.x - this.pos.x;
-          const dy = inv.pos.y - this.pos.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < minDist) {
-            minDist = dist;
-            nearest = { invader: inv, dist: dist };
-          }
-        });
-        return nearest;
-      }
-      fireAt(invader) {
-        const dx = invader.pos.x - this.pos.x;
-        const dy = invader.pos.y - this.pos.y;
-        const angle = Math.atan2(dy, dx);
-        const speed = 9;
-        const vx = Math.cos(angle) * speed;
-        const vy = Math.sin(angle) * speed;
-        this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, &#x27;#00ffff&#x27;));
-      }
-      draw(offsetX, offsetY) {
-        const x = this.pos.x - offsetX;
-        const y = this.pos.y - offsetY;
-        ctx.fillStyle = &#x27;#00ffff&#x27;;
-        ctx.strokeStyle = &#x27;#00ffff&#x27;;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(x, y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        this.bullets.forEach(b => b.draw(offsetX, offsetY));
-      }
-    }
-    class Invader {
-      constructor(x, y, size) {
-        this.pos = new Vector(x, y);
-        this.vel = new Vector((Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5);
-        this.size = size;
-        this.angle = Math.random() * Math.PI * 2;
-        this.rotSpeed = (Math.random() - 0.5) * 0.08;
-        this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
-        // NEW: Firing properties
-        this.fireRate = 200 + Math.random() * 100; // Slow fire: roughly every 3-5 seconds (60 FPS * 3.5 sec)
-        this.lastFire = gameTime + Math.random() * this.fireRate;
-      }
-      update() {
-        this.pos = this.pos.add(this.vel);
-        this.angle += this.rotSpeed;
-        // Wrap around world limits
-        if (this.pos.x < 0) this.pos.x = WORLD_SIZE;
-        if (this.pos.x > WORLD_SIZE) this.pos.x = 0;
-        if (this.pos.y < 0) this.pos.y = WORLD_SIZE;
-        if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
-        // NEW: Firing logic
-        if (gameTime - this.lastFire > this.fireRate) {
-          this.fire();
-          this.lastFire = gameTime;
-        }
-      }
-      fire() {
-        const dx = ship.pos.x - this.pos.x;
-        const dy = ship.pos.y - this.pos.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        // Only fire if the ship is somewhat close (e.g., within 800 units)
-        if (dist < 800) {
-          const angle = Math.atan2(dy, dx);
-          const speed = 7;
-          const vx = Math.cos(angle) * speed;
-          const vy = Math.sin(angle) * speed;
-          invaderBullets.push(new InvaderBullet(this.pos.x, this.pos.y, vx, vy));
-        }
-      }
-      draw(offsetX, offsetY) {
-        ctx.save();
-        ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
-        ctx.rotate(this.angle);
-        
-        ctx.fillStyle = this.color;
-        ctx.strokeStyle = &#x27;#fff&#x27;;
-        ctx.lineWidth = 1;
-        const s = this.size;
-        // 1. Octopus Body (Square/Dome)
-        ctx.beginPath();
-        ctx.rect(-s/2, -s/2, s, s/2);
-        ctx.fill();
-        // 2. Head Dome
-        ctx.beginPath();
-        ctx.arc(0, -s/2, s/2, Math.PI, 2 * Math.PI);
-        ctx.fill();
-        // 3. Tentacles (simple lines/rects)
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = 2;
-        const tentacleCount = 4;
-        for(let i = 0; i < tentacleCount; i++) {
-          const xOffset = (i - tentacleCount/2 + 0.5) * s/4;
-          ctx.beginPath();
-          ctx.moveTo(xOffset, s/2);
-          ctx.lineTo(xOffset, s/2 + s/3);
-          ctx.stroke();
-        }
-        // 4. Eyes (small white dots)
-        ctx.fillStyle = &#x27;#fff&#x27;;
-        ctx.beginPath();
-        ctx.arc(-s/4, -s/4, s/8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(s/4, -s/4, s/8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-      split() {
-        if (this.size > 15) {
-          return [
-            new Invader(this.pos.x + Math.random() * 10 - 5, this.pos.y + Math.random() * 10 - 5, this.size / 2),
-            new Invader(this.pos.x + Math.random() * 10 - 5, this.pos.y + Math.random() * 10 - 5, this.size / 2)
-          ];
-        }
-        return [];
-      }
-    }
-    function startGame(mode) {
-      controlMode = mode;
-      document.getElementById(&#x27;startScreen&#x27;).style.display = &#x27;none&#x27;;
+        {(!state.captured || state.isOutside) && (
+          
+            {state.isScared && !state.captured ? '😱' : state.isPetting ? '😊' : '👾'}
+          
+        )}
+        {state.poops.map(poop => (
+           cleanPoop(poop.id)} style={{
+            position: 'fixed',
+            left: `${poop.x}%`,
+            top: `${poop.y}%`,
+            fontSize: '40px',
+            cursor: 'pointer',
+            zIndex: 9998
+          }}>
+            💩
+          
+        ))}
       
-      if (mode === &#x27;mobile&#x27;) {
-        document.getElementById(&#x27;joystick&#x27;).style.display = &#x27;block&#x27;;
-        document.getElementById(&#x27;fireBtn&#x27;).style.display = &#x27;flex&#x27;;
-        setupTouchControls();
-      } else {
-        document.getElementById(&#x27;controls&#x27;).style.display = &#x27;block&#x27;;
-        setupKeyboardControls();
-      }
-      ship = new Ship(WORLD_SIZE / 2, WORLD_SIZE / 2, &#x27;fighter&#x27;);
-      
-      for (let i = 0; i < INVADER_COUNT; i++) {
-        const x = Math.random() * WORLD_SIZE;
-        const y = Math.random() * WORLD_SIZE;
-        const size = 20 + Math.random() * 25;
-        invaders.push(new Invader(x, y, size));
-      }
-      gameStarted = true;
-      gameLoop();
-    }
-    function setupTouchControls() {
-      const joystick = document.getElementById(&#x27;joystick&#x27;);
-      const knob = document.getElementById(&#x27;joystick-knob&#x27;);
-      
-      joystick.addEventListener(&#x27;touchstart&#x27;, handleJoystickStart);
-      joystick.addEventListener(&#x27;touchmove&#x27;, handleJoystickMove);
-      joystick.addEventListener(&#x27;touchend&#x27;, handleJoystickEnd);
-      function handleJoystickStart(e) {
-        e.preventDefault();
-        joystickActive = true;
-        handleJoystickMove(e);
-      }
-      function handleJoystickMove(e) {
-        if (!joystickActive) return;
-        e.preventDefault();
+      {state.captured && (
         
-        const rect = joystick.getBoundingClientRect();
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const touch = e.touches[0];
-        const x = touch.clientX - rect.left - centerX;
-        const y = touch.clientY - rect.top - centerY;
+          
+            {state.petName ? `${state.petName.toUpperCase()}'S PET` : 'MY PET'}
+            <button onclick="{()" &#x3D;=""> dispatch({ type: 'SET_COLLAPSED', payload: !state.collapsed })} style={{
+              background: '#1a252f',
+              border: '2px solid #ecf0f1',
+              color: '#ecf0f1',
+              padding: '5px 10px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}>
+              {state.collapsed ? '▲' : '▼'}
+            </button>
+          
+          {state.message && (
+            
+              {state.message}
+            
+          )}
+          {!state.collapsed && (
+            <>
+              
+                {!state.isOutside ? (
+                  
+                    {state.isPetting ? '😊' : state.animFrame % 2 === 0 ? '👾' : '👻'}
+                  
+                ) : (
+                  
+                    ...
+                    OUTSIDE
+                  
+                )}
+              
+              
+                <statbar label="FOOD" value="{state.hunger}" color="{getStatColor(state.hunger)}">
+                <statbar label="HAPPY" value="{state.happiness}" color="{getStatColor(state.happiness)}">
+                <statbar label="POTTY" value="{state.bladder}" color="{getStatColor(100" -="" state.bladder)}="">
+              </statbar></statbar></statbar>
+              
+                <pixelbutton onclick="{feed}">FEED</pixelbutton>
+                <pixelbutton onclick="{play}">PLAY</pixelbutton>
+                {!state.isOutside ? (
+                  <pixelbutton onclick="{letOut}" danger="{state.needsBathroom}" style="{{" gridcolumn:="" &#x27;1="" -1&#x27;="" }}="">
+                    {state.needsBathroom ? 'POTTY!' : 'OUTSIDE'}
+                  </pixelbutton>
+                ) : (
+                  <pixelbutton onclick="{bringBack}" style="{{" gridcolumn:="" &#x27;1="" -1&#x27;="" }}="">
+                    RETURN
+                  </pixelbutton>
+                )}
+              
+            
+          )}
         
-        const distance = Math.sqrt(x * x + y * y);
-        const maxDistance = 35;
-        
-        if (distance > maxDistance) {
-          joystickDir.x = (x / distance);
-          joystickDir.y = (y / distance);
-          knob.style.transform = `translate(${(x / distance) * maxDistance}px, ${(y / distance) * maxDistance}px)`;
-        } else {
-          joystickDir.x = x / maxDistance;
-          joystickDir.y = y / maxDistance;
-          knob.style.transform = `translate(${x}px, ${y}px)`;
-        }
-      }
-      function handleJoystickEnd(e) {
-        e.preventDefault();
-        joystickActive = false;
-        joystickDir = {x: 0, y: 0};
-        knob.style.transform = &#x27;translate(0, 0)&#x27;;
-      }
-      const fireBtn = document.getElementById(&#x27;fireBtn&#x27;);
-      fireBtn.addEventListener(&#x27;touchstart&#x27;, (e) => {
-        e.preventDefault();
-        firing = true;
-        fireBtn.classList.add(&#x27;active&#x27;);
-      });
-      fireBtn.addEventListener(&#x27;touchend&#x27;, (e) => {
-        e.preventDefault();
-        firing = false;
-        fireBtn.classList.remove(&#x27;active&#x27;);
-      });
-      function updateFireButtonText() {
-        if (ship && ship.type === &#x27;carrier&#x27;) {
-          fireBtn.textContent = &#x27;BOOST&#x27;;
-        } else {
-          fireBtn.textContent = &#x27;FIRE&#x27;;
-        }
-      }
-      updateFireButtonText();
-      window.updateFireButtonText = updateFireButtonText;
-    }
-    function setupKeyboardControls() {
-      window.addEventListener(&#x27;keydown&#x27;, e => {
-        keys[e.key] = true;
-        if (e.key === &#x27;1&#x27;) switchShip(&#x27;fighter&#x27;);
-        if (e.key === &#x27;2&#x27;) switchShip(&#x27;carrier&#x27;);
-        if (e.key === &#x27;3&#x27;) switchShip(&#x27;brute&#x27;);
-      });
+      )}
+    
+  );
+};
+const StatBar = ({ label, value, color }) => (
+  
+    
+      {label}
+      {Math.round(value)}%
+    
+    
       
-      window.addEventListener(&#x27;keyup&#x27;, e => keys[e.key] = false);
-    }
-    document.querySelectorAll(&#x27;.ship-btn&#x27;).forEach(btn => {
-      btn.addEventListener(&#x27;click&#x27;, (e) => {
-        e.preventDefault();
-        switchShip(btn.dataset.ship);
-      });
-    });
-    function switchShip(type) {
-      if (!ship) return;
-      const oldPos = ship.pos;
-      const oldVel = ship.vel;
-      ship = new Ship(oldPos.x, oldPos.y, type);
-      ship.vel = oldVel;
-      document.querySelectorAll(&#x27;.ship-btn&#x27;).forEach(b => b.classList.remove(&#x27;active&#x27;));
-      document.querySelector(`[data-ship="${type}"]`).classList.add(&#x27;active&#x27;);
-      
-      if (controlMode === &#x27;mobile&#x27; && window.updateFireButtonText) {
-        window.updateFireButtonText();
-      }
-    }
-    function checkCollisions() {
-      // Remove dead bullets
-      invaderBullets = invaderBullets.filter(b => b.life > 0);
-      // --- 1. Friendly Bullets vs Invaders ---
-      ship.bullets = ship.bullets.filter(bullet => {
-        let hit = false;
-        invaders = invaders.filter(inv => {
-          const dx = bullet.pos.x - inv.pos.x;
-          const dy = bullet.pos.y - inv.pos.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < inv.size + bullet.radius) {
-            hit = true;
-            const newInvs = inv.split();
-            invaders.push(...newInvs);
-            score += 10;
-            if (Math.random() < 0.2) {
-              invaders.push(new Invader(Math.random() * WORLD_SIZE, Math.random() * WORLD_SIZE, 25));
-            }
-            return false; // Remove the hit invader
-          }
-          return true; // Keep the invader
-        });
-        return !hit; // Remove the bullet if it hit something
-      });
-      // --- 2. Drone Bullets vs Invaders ---
-      ship.drones.forEach(drone => {
-        drone.bullets = drone.bullets.filter(bullet => {
-          let hit = false;
-          invaders = invaders.filter(inv => {
-            const dx = bullet.pos.x - inv.pos.x;
-            const dy = bullet.pos.y - inv.pos.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < inv.size + bullet.radius) {
-              hit = true;
-              const newInvs = inv.split();
-              invaders.push(...newInvs);
-              score += 5;
-              return false;
-            }
-            return true;
-          });
-          return !hit;
-        });
-        // Drone collision with invaders
-        invaders.forEach((inv, idx) => {
-          const dx = drone.pos.x - inv.pos.x;
-          const dy = drone.pos.y - inv.pos.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < inv.size + drone.radius) {
-            invaders.splice(idx, 1);
-            invaders.push(...inv.split());
-            drone.life -= 50;
-            score += 3;
-          }
-        });
-      });
-      // --- 3. Invader Bullets vs Ship and Drones (NEW) ---
-      invaderBullets = invaderBullets.filter(ib => {
-        // Ship collision
-        const shipDx = ib.pos.x - ship.pos.x;
-        const shipDy = ib.pos.y - ship.pos.y;
-        const shipDist = Math.sqrt(shipDx * shipDx + shipDy * shipDy);
-        if (shipDist < ship.hitRadius + ib.radius) {
-          ship.health -= ib.damage;
-          if (ship.health < 0) ship.health = 0;
-          return false; // Remove invader bullet
-        }
-        // Drone collision
-        for (let i = 0; i < ship.drones.length; i++) {
-          const drone = ship.drones[i];
-          const droneDx = ib.pos.x - drone.pos.x;
-          const droneDy = ib.pos.y - drone.pos.y;
-          const droneDist = Math.sqrt(droneDx * droneDx + droneDy * droneDy);
-          if (droneDist < drone.radius + ib.radius) {
-            drone.life -= 20; // Drones take less damage
-            return false; // Remove invader bullet
-          }
-        }
-        return true; // Keep invader bullet
-      });
-      // --- 4. Ship collision with invaders (Contact Damage) ---
-      invaders.forEach(inv => {
-        const dx = ship.pos.x - inv.pos.x;
-        const dy = ship.pos.y - inv.pos.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < inv.size + ship.hitRadius) {
-          ship.health -= 0.5;
-          if (ship.health < 0) ship.health = 0;
-        }
-      });
+    
+  
+);
+const PixelButton = ({ children, onClick, danger, style }) => (
+<button onClick={onClick} style={{
+padding: '12px',
+border: '3px solid #ecf0f1',
+background: danger ? '#e74c3c' : '#27ae60',
+color: '#ecf0f1',
+fontWeight: 'bold',
+cursor: 'pointer',
+fontSize: '0.9em',
+...style
+}}>
+{children}
+</button>
+);
+</script>
+</body>
+</html>
