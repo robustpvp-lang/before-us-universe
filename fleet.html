@@ -9,6 +9,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      /* Prevents iOS/Android from showing menus on long press */
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       user-select: none;
@@ -17,12 +18,13 @@
       overflow: hidden;
       background: #000;
       font-family: 'Courier New', monospace;
-      touch-action: none;
+      /* Allow horizontal scrolling to prevent mobile issues, but hide overflow */
+      touch-action: pan-y;
     }
     #gameCanvas {
       display: block;
       background: #000;
-      touch-action: none;
+      touch-action: none; /* Critical for preventing zoom/scroll on game area */
     }
     #startScreen, #gameOverScreen {
       position: fixed;
@@ -39,14 +41,26 @@
       color: #0f0;
       text-align: center;
     }
+    /* Enhanced Title Screen Styling */
     #startScreen h1 {
-      font-size: 32px;
-      margin-bottom: 5px;
-      text-shadow: 0 0 10px #0f0;
+      font-size: 56px;
+      margin-bottom: 20px;
+      color: #ff00ff; /* Bright magenta/pink */
+      text-shadow: 0 0 15px #ff00ff, 0 0 5px #0f0;
+      letter-spacing: 5px;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.8; } }
+    #startScreen h2 {
+      font-size: 24px;
+      color: #00ffff;
+      margin-bottom: 10px;
+      text-shadow: 0 0 5px #00ffff;
     }
     #startScreen p {
       margin-bottom: 30px;
       font-size: 14px;
+      color: #0f0;
     }
     #gameOverScreen h1 {
       color: #f00;
@@ -70,9 +84,12 @@
       font-size: 16px;
       font-weight: bold;
       text-transform: uppercase;
+      box-shadow: 0 0 5px #0f0;
+      transition: all 0.1s;
     }
     .mode-btn:hover {
       background: rgba(0, 255, 0, 0.4);
+      box-shadow: 0 0 10px #0f0;
     }
     #hud {
       position: absolute;
@@ -128,6 +145,7 @@
       border-radius: 50%;
       z-index: 10;
       display: none;
+      touch-action: none; /* Important for preventing touch conflicts */
     }
     #joystick-knob {
       position: absolute;
@@ -175,18 +193,19 @@
 <body>
   <div id="startScreen">
     <h1>FLEET COMMAND: INVADERS</h1>
-        <p style="font-size: 12px; margin-bottom: 30px; color: #0f0; text-shadow: 0 0 5px #0f0;">
-      Made by **Patrick McDonald** and a **Legion of AI**
+    <h2>A Deep-Space Retro Arcade Experience</h2>
+    <p style="font-size: 14px; margin-bottom: 30px; color: #00ffff; text-shadow: 0 0 5px #00ffff;">
+      Protocol Coded by **Patrick McDonald** and a **Legion of AI**
     </p>
-    <p>Choose your control mode:</p>
-    <button class="mode-btn" onclick="startGame('mobile')">MOBILE (Touch)</button>
+    <p>INITIATE GAME MODE</p>
+    <button class="mode-btn" onclick="startGame('mobile')">MOBILE (Touch/Joystick)</button>
     <button class="mode-btn" onclick="startGame('desktop')">DESKTOP (Keyboard)</button>
   </div>
 
-    <div id="gameOverScreen" style="display: none;">
+  <div id="gameOverScreen" style="display: none;">
     <h1>SHIP DESTROYED!</h1>
     <div id="finalScore">FINAL SCORE: 0</div>
-    <button class="mode-btn" onclick="window.location.reload()">RE-INITIALIZE PROTOCOL</button>
+    <button class="mode-btn" onclick="window.location.reload()">RE-INITIALIZE PROTOCOL</sbutton>
   </div>
 
   <canvas id="gameCanvas"></canvas>
@@ -210,7 +229,7 @@
   
   <button id="fireBtn">FIRE</button>
   
-  <div id="controls">WASD: Move | SPACE: Fire (Fighter/Brute) or Boost (Carrier) | 1/2/3: Switch Ship</div>
+  <div id="controls">WASD: Move | **L**: Fire (Fighter/Brute) or Boost (Carrier) | 1/2/3: Switch Ship</div>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
@@ -221,9 +240,9 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // MODIFICATION 3: Doubled the map size from 1000 to 2000
     const WORLD_SIZE = 2000;
     const INVADER_COUNT = 80;
+    const NUM_STARS = 150; // Constant star count for performance
 
     let score = 0;
     let gameTime = 0;
@@ -236,7 +255,16 @@
     let invaderBullets = [];
     let ship = null;
     let gameStarted = false;
-    let gameOver = false; // New state variable
+    let gameOver = false;
+    // Initialize stars once for performance
+    const stars = [];
+    for (let i = 0; i < NUM_STARS; i++) {
+      stars.push({
+        x: Math.random() * WORLD_SIZE,
+        y: Math.random() * WORLD_SIZE,
+        size: Math.random() * 2 + 0.5
+      });
+    }
 
     class Vector {
       constructor(x, y) {
@@ -310,8 +338,11 @@
           }
         }
 
+        // Check for 'l' key for desktop firing/boosting
+        const desktopAction = keys['l'] || keys['L'];
+
         // Boost for carrier (desktop/mobile)
-        if (this.type === 'carrier' && ((controlMode === 'desktop' && keys[' ']) || (controlMode === 'mobile' && firing))) {
+        if (this.type === 'carrier' && (desktopAction || (controlMode === 'mobile' && firing))) {
           const boostDir = new Vector(Math.cos(this.angle), Math.sin(this.angle));
           this.vel = this.vel.add(boostDir.mult(this.boostPower));
           
@@ -335,7 +366,7 @@
         if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
 
         // Fire logic (Desktop or Mobile manual fire)
-        const shouldFire = (controlMode === 'desktop' && this.type !== 'carrier' && keys[' ']) ||
+        const shouldFire = (controlMode === 'desktop' && this.type !== 'carrier' && desktopAction) ||
                          (controlMode === 'mobile' && this.type !== 'carrier' && firing);
         
         if (shouldFire && gameTime - this.lastFire > this.fireRate) {
@@ -357,7 +388,6 @@
           this.drones.push(new Drone(this.pos.x, this.pos.y));
         }
 
-        // MODIFICATION 4: Game Over Check
         if (this.health <= 0) {
           triggerGameOver();
         }
@@ -370,13 +400,14 @@
         if (this.type === 'fighter') {
           const vx = Math.cos(this.angle) * speed + shipVel.x;
           const vy = Math.sin(this.angle) * speed + shipVel.y;
-          this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ff00'));
+          // Fighter bullet life reduced from 100 to 66 (approx 1/3 reduction in range)
+          this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ff00', 66)); 
         } else if (this.type === 'brute') {
           for (let i = -2; i <= 2; i++) {
             const angle = this.angle + i * 0.2;
             const vx = Math.cos(angle) * speed + shipVel.x;
             const vy = Math.sin(angle) * speed + shipVel.y;
-            this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#ff4400'));
+            this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#ff4400', 100));
           }
         }
       }
@@ -396,25 +427,37 @@
           ctx.closePath();
           ctx.fill();
         } 
-        // MODIFICATION 5: New Carrier Design
         else if (this.type === 'carrier') {
           const s = this.size;
-          // Main Hull
+          // Main Body (Long, flat diamond/kite shape)
           ctx.fillStyle = '#0088ff';
-          ctx.fillRect(-s*1.5, -s/4, s*3, s/2);
-          // Cockpit/Bridge
-          ctx.fillStyle = '#00aaff';
-          ctx.fillRect(s, -s/2, s/2, s);
-          // Engine Thrusters
-          ctx.fillStyle = '#ff0000';
           ctx.beginPath();
-          ctx.moveTo(-s*1.5, -s/4);
-          ctx.lineTo(-s*1.8, -s/2);
-          ctx.lineTo(-s*1.8, s/2);
-          ctx.lineTo(-s*1.5, s/4);
+          ctx.moveTo(s * 2, 0); // Front point
+          ctx.lineTo(s * 0.5, s); // Mid-right
+          ctx.lineTo(-s * 2, s * 0.5); // Rear-right
+          ctx.lineTo(-s * 2, -s * 0.5); // Rear-left
+          ctx.lineTo(s * 0.5, -s); // Mid-left
+          ctx.closePath();
           ctx.fill();
+          
+          // Command Bridge (Top rear)
+          ctx.fillStyle = '#00ffff';
+          ctx.fillRect(-s * 0.5, -s * 0.25, s * 1.5, s * 0.5);
+          
+          // Engine Thrusters (Rear glow)
           ctx.fillStyle = '#ff9900';
-          ctx.fillRect(-s*1.7, -s/4, s*0.2, s/2); // Glow
+          ctx.fillRect(-s * 2.5, -s * 0.2, s * 0.5, s * 0.4);
+
+          // Add boost trail if boosting
+          if ((controlMode === 'desktop' && (keys['l'] || keys['L'])) || (controlMode === 'mobile' && firing)) {
+            ctx.fillStyle = 'rgba(255, 100, 0, 0.5)';
+            ctx.beginPath();
+            ctx.moveTo(-s * 2.5, 0);
+            ctx.lineTo(-s * 3 - Math.random() * 10, s * 0.5);
+            ctx.lineTo(-s * 3 - Math.random() * 10, -s * 0.5);
+            ctx.closePath();
+            ctx.fill();
+          }
         } 
         else if (this.type === 'brute') {
           ctx.fillStyle = '#ff4400';
@@ -436,10 +479,11 @@
     }
 
     class Bullet {
-      constructor(x, y, vx, vy, color = '#ffff00') {
+      // Added defaultLife parameter
+      constructor(x, y, vx, vy, color = '#ffff00', defaultLife = 100) {
         this.pos = new Vector(x, y);
         this.vel = new Vector(vx, vy);
-        this.life = 100;
+        this.life = defaultLife; // Set life based on caller (Ship type)
         this.color = color;
         this.radius = 3;
       }
@@ -459,7 +503,7 @@
 
     class InvaderBullet extends Bullet {
       constructor(x, y, vx, vy) {
-        super(x, y, vx, vy, '#ff00ff');
+        super(x, y, vx, vy, '#ff00ff', 100);
         this.radius = 4;
         this.damage = 5;
       }
@@ -524,7 +568,7 @@
         const speed = 9;
         const vx = Math.cos(angle) * speed;
         const vy = Math.sin(angle) * speed;
-        this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ffff'));
+        this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ffff', 100));
       }
 
       draw(offsetX, offsetY) {
@@ -551,7 +595,6 @@
         this.rotSpeed = (Math.random() - 0.5) * 0.08;
         this.color = '#ff00ff';
         
-        // MODIFICATION 6: Slower fire rate (increased from ~250 to ~350)
         this.fireRate = 300 + Math.random() * 100; 
         this.lastFire = gameTime + Math.random() * this.fireRate;
       }
@@ -674,7 +717,6 @@
       gameLoop();
     }
     
-    // MODIFICATION 7: Death Sequence Function
     function triggerGameOver() {
       if (gameOver) return;
       gameOver = true;
@@ -685,61 +727,76 @@
       document.getElementById('joystick').style.display = 'none';
       document.getElementById('fireBtn').style.display = 'none';
       document.getElementById('controls').style.display = 'none';
+      
+      // Stop the game loop
+      if (window.gameLoopRequest) cancelAnimationFrame(window.gameLoopRequest);
     }
 
     function setupTouchControls() {
       const joystick = document.getElementById('joystick');
       const knob = document.getElementById('joystick-knob');
       
-      joystick.addEventListener('touchstart', handleJoystickStart);
-      joystick.addEventListener('touchmove', handleJoystickMove);
-      joystick.addEventListener('touchend', handleJoystickEnd);
+      // Use 'pointer' events for better mobile compatibility across various devices
+      joystick.addEventListener('pointerdown', handleJoystickStart);
+      document.addEventListener('pointermove', handleJoystickMove);
+      document.addEventListener('pointerup', handleJoystickEnd);
+
+      let activePointerId = null;
 
       function handleJoystickStart(e) {
+        if (activePointerId !== null) return;
+        activePointerId = e.pointerId;
         e.preventDefault();
         joystickActive = true;
         handleJoystickMove(e);
       }
 
       function handleJoystickMove(e) {
-        if (!joystickActive) return;
+        if (!joystickActive || e.pointerId !== activePointerId) return;
         e.preventDefault();
         
         const rect = joystick.getBoundingClientRect();
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const touch = e.touches[0];
-        const x = touch.clientX - rect.left - centerX;
-        const y = touch.clientY - rect.top - centerY;
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        const x = e.clientX - centerX;
+        const y = e.clientY - centerY;
         
         const distance = Math.sqrt(x * x + y * y);
-        const maxDistance = 35;
+        const maxDistance = 35; // Half of knob width/height
         
+        let normalizedX = x;
+        let normalizedY = y;
+
         if (distance > maxDistance) {
+          normalizedX = (x / distance) * maxDistance;
+          normalizedY = (y / distance) * maxDistance;
           joystickDir.x = (x / distance);
           joystickDir.y = (y / distance);
-          knob.style.transform = `translate(${(x / distance) * maxDistance}px, ${(y / distance) * maxDistance}px)`;
         } else {
           joystickDir.x = x / maxDistance;
           joystickDir.y = y / maxDistance;
-          knob.style.transform = `translate(${x}px, ${y}px)`;
         }
+
+        knob.style.transform = `translate(${normalizedX}px, ${normalizedY}px)`;
       }
 
       function handleJoystickEnd(e) {
+        if (e.pointerId !== activePointerId) return;
         e.preventDefault();
+        activePointerId = null;
         joystickActive = false;
         joystickDir = {x: 0, y: 0};
-        knob.style.transform = 'translate(0, 0)';
+        knob.style.transform = 'translate(-50%, -50%)';
       }
 
       const fireBtn = document.getElementById('fireBtn');
-      fireBtn.addEventListener('touchstart', (e) => {
+      fireBtn.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         firing = true;
         fireBtn.classList.add('active');
       });
-      fireBtn.addEventListener('touchend', (e) => {
+      fireBtn.addEventListener('pointerup', (e) => {
         e.preventDefault();
         firing = false;
         fireBtn.classList.remove('active');
@@ -758,13 +815,17 @@
 
     function setupKeyboardControls() {
       window.addEventListener('keydown', e => {
-        keys[e.key] = true;
+        if (gameOver) return;
+        keys[e.key.toLowerCase()] = true;
         if (e.key === '1') switchShip('fighter');
         if (e.key === '2') switchShip('carrier');
         if (e.key === '3') switchShip('brute');
       });
       
-      window.addEventListener('keyup', e => keys[e.key] = false);
+      window.addEventListener('keyup', e => {
+        if (gameOver) return;
+        keys[e.key.toLowerCase()] = false;
+      });
     }
 
     document.querySelectorAll('.ship-btn').forEach(btn => {
@@ -900,14 +961,35 @@
       minimapCtx.fillStyle = '#0f0';
       minimapCtx.fillRect(ship.pos.x * scale - 2, ship.pos.y * scale - 2, 4, 4);
     }
+    
+    function drawStars(offsetX, offsetY) {
+      ctx.fillStyle = '#fff';
+      const width = canvas.width;
+      const height = canvas.height;
+
+      for (const star of stars) {
+        // Calculate star position relative to the viewport (0, 0)
+        // Modulo operation provides the wrap-around effect, ensuring stars are always visible
+        let drawX = (star.x - offsetX) % WORLD_SIZE;
+        let drawY = (star.y - offsetY) % WORLD_SIZE;
+
+        // Wrap around to the other side of the screen if they scroll off
+        if (drawX < -star.size) drawX += WORLD_SIZE;
+        if (drawY < -star.size) drawY += WORLD_SIZE;
+        if (drawX > width) drawX -= WORLD_SIZE;
+        if (drawY > height) drawY -= WORLD_SIZE;
+        
+        ctx.fillRect(drawX, drawY, star.size, star.size);
+      }
+    }
 
     function gameLoop() {
-      if (!gameStarted || gameOver) {
-        if (gameOver) {
-          // If game is over, keep the last frame drawn or show a subtle screen effect
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+      window.gameLoopRequest = requestAnimationFrame(gameLoop);
+      
+      if (gameOver) {
+        // Subtly fade the screen to reinforce game over state
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         return;
       }
       
@@ -924,31 +1006,27 @@
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Draw everything
+      // Draw stars (Performance optimized)
+      drawStars(offsetX, offsetY);
+
+      // Draw game objects
       invaders.forEach(inv => inv.draw(offsetX, offsetY));
       invaderBullets.forEach(ib => ib.draw(offsetX, offsetY));
       ship.draw(offsetX, offsetY);
-
-      // Draw stars (background detail)
-      for (let i = 0; i < 150; i++) {
-        const starX = (Math.random() * WORLD_SIZE - offsetX) % canvas.width;
-        const starY = (Math.random() * WORLD_SIZE - offsetY) % canvas.height;
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(starX < 0 ? starX + canvas.width : starX, starY < 0 ? starY + canvas.height : starY, 1, 1);
-      }
 
       document.getElementById('score').textContent = score;
       document.getElementById('shipType').textContent = ship.type.toUpperCase();
       document.getElementById('health').textContent = Math.round(ship.health);
 
       drawMinimap();
-
-      requestAnimationFrame(gameLoop);
     }
-
+    
+    // Ensure joystick knob returns to center on resize
     window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      const knob = document.getElementById('joystick-knob');
+      if (knob) knob.style.transform = 'translate(-50%, -50%)';
     });
   </script>
 </body>
