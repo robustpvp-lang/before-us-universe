@@ -1,982 +1,450 @@
-<head>
-<meta charset="utf-8">
-<title>Before Us Universe — BUU</title>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23001a1a'/><path d='M20 25h60v10h-60zM20 45h60v10h-60zM20 65h60v10h-60z' fill='%2300ffff'/><circle cx='50' cy='50' r='8' fill='%23ffcc00'/></svg>" type="image/svg+xml">
-<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-<style>
-:root{
---bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
---text-gray:#e6f7f7; --muted:#00aaaa; --online:#00ff9d; --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
-}
-html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:auto}
-body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
-#crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06) 2px,transparent 2px,transparent 4px);pointer-events:none;z-index:999}
-a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4px;font-weight:700;cursor:pointer;border:2px solid #000;margin:2px;font-size:11px;text-decoration:none;display:inline-block}
-.panel-title::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.03),rgba(0,0,0,0.03) 1px,transparent 1px,transparent 2px);pointer-events:none;opacity:0.5;}
-.panel{border:3px solid var(--border); background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFElEQVR42mNk+A8AAwUBAScAAAQq9gD31A+6AAAAAElFTkSuQmCC') repeat; margin-bottom:20px;}
-@keyframes glitch{2%,64%{transform:translate(2px,0) skew(5deg);}4%,60%{transform:translate(-2px,0) skew(-5deg);}62%{transform:translate(0,0) skew(3deg);}}
-.glitch{animation:glitch 1s linear infinite;}
-.glitch-update{animation:glitch 0.5s linear;}
-.panel-title{animation:warp 1s ease-in;}
-@keyframes warp{0%{transform:skewX(10deg);}100%{transform:skewX(0);}}
-#marquee{position:relative;}
-#marquee .particle{position:absolute;width:2px;height:2px;background:var(--fg);opacity:0.5;border-radius:50%;animation:float 5s linear infinite;}
-@keyframes float{0%{transform:translate(0,0);}100%{transform:translate(20px,-20px);opacity:0;}}
-.toggle-btn{background:var(--accent);color:#000;border:2px solid #000;padding:4px 8px;cursor:pointer;font-size:10px;margin-left:auto;animation:flicker 0.5s infinite alternate;}
-@keyframes flicker{0%{opacity:1;}100%{opacity:0.7;}}
-.panel-body{display:block;}
-.collapsed .panel-body{display:none;}
-#boardSearch{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;width:100%;font-family:monospace;margin-bottom:8px;}
-#marqueeWrap{position:fixed;left:0;right:0;top:0;height:38px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));z-index:99999;display:flex;align-items:center;padding:6px 12px;box-sizing:border-box}
-#marqueeLabel{font-family:'Press Start 2P';font-size:12px;color:#fff;margin-right:12px;white-space:nowrap}
-#marquee{flex:1;overflow:hidden;position:relative;height:20px}
-#marqueeInner{position:absolute;white-space:nowrap;will-change:transform;display:inline-block;padding-left:100%}
-#bootOverlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.9),rgba(0,0,0,0.95));color:var(--fg);z-index:99998;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Roboto Mono',monospace}
-#bootPanel{width:92%;max-width:820px;background:var(--panel-bg);border:4px solid var(--border);padding:18px;box-shadow:0 0 30px rgba(0,255,255,0.06)}
-#bootLog{line-height:1.6;white-space:pre-wrap;margin-bottom:12px;font-size:13px;color:var(--text-gray)}
-#bootPrompt{color:var(--accent);margin-bottom:6px;animation:blink 1s step-end infinite;}
-@keyframes blink{50%{opacity:0;}}
-#bootInputs{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-#bootInput{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;width:48%;min-width:160px;font-family:monospace}
-#bootChannel{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;font-family:monospace;width:48%;min-width:160px}
-#bootBtn{background:var(--accent);border:2px solid #000;color:#000;padding:8px 14px;cursor:pointer;font-weight:700}
-#bootBanner{margin-top:10px;background:rgba(0,0,0,0.35);padding:8px;border-radius:4px;color:var(--fg);font-size:12px}
-#bootBroadcast{animation:glitch 3s infinite alternate;}
-#app{display:none;padding:56px 12px 12px 12px;box-sizing:border-box;height:100%;overflow:auto}
-.title-bar{display:flex;gap:8px;flex-wrap:nowrap;padding:8px;background:transparent;color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center;justify-content:flex-start;overflow-x:auto}
-.title-bar::-webkit-scrollbar{height:12px;background:var(--panel-bg);border:1px solid var(--border);}
-.title-bar::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
-.title-bar .logo{font-weight:700;letter-spacing:1px}
-.controls-right{margin-left:auto;display:flex;gap:8px;align-items:center}
-.layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
-@media(max-width:980px){.layout{grid-template-columns:1fr}.layout > div:last-child{order:-1;}}
-@media (max-width:600px){.title-bar{flex-wrap:nowrap;overflow-x:auto;}.title-bar{font-size:11px;}}
-.panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
-.panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
-.panel-body{padding:8px;color:var(--text-gray)}
-.yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border);}
-@media(max-width:600px){.yt-wrap iframe{height:200px;}}
-.chat-win{display:flex;flex-direction:column;height:520px}
-@media(max-width:600px){.chat-win{height:400px;}}
-.chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
-.chat-main{display:flex;flex:1;overflow:hidden}
-.chat-messages{flex:1;overflow:auto;background:#e6e6fa;border-right:1px solid rgba(0,0,0,0.1);padding:8px;color:#000}
-.chat-users{background:#fffacd;border-left:1px solid rgba(0,0,0,0.1);padding:8px;overflow:auto;width:200px}
-@media(max-width:700px){.chat-main{flex-direction:column}.chat-users{width:auto;border-left:0;border-top:1px solid rgba(0,0,0,0.1)}}
-.chat-row{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
-.chat-avatar{width:36px;height:36px;border-radius:50%;background:#add8e6;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#001a1a}
-@media(max-width:600px){.chat-avatar{width:24px;height:24px;font-size:10px;}}
-.chat-bubble{max-width:78%;padding:10px;border-radius:8px;background:#e6e6fa;border:1px solid rgba(0,0,0,0.1);font-family:Arial;color:#000}
-.chat-bubble.me{background:#fffacd;border:1px solid #f0d280;text-align:right;color:#222}
-.chat-meta{font-size:11px;color:#808080;font-weight:700;margin-bottom:4px}
-@media(max-width:600px){.chat-meta{font-size:9px;}}
-.user-row{display:flex;gap:8px;align-items:center;padding:6px;font-size:12px;cursor:pointer}
-@media(max-width:600px){.user-row{font-size:10px;}}
-.status-dot{width:9px;height:9px;border-radius:50%;background:var(--online)}
-.uname{font-family:'Press Start 2P';color:#ff0000;font-size:12px}
-@media(max-width:600px){.uname{font-size:10px;}}
-.chat-controls{display:flex;gap:6px;padding:8px;background:#fffacd;border-top:1px solid rgba(0,0,0,0.1)}
-.chat-controls input{flex:1;padding:8px;border:2px inset rgba(0,0,0,0.1);background:#fff;color:#000}
-.chat-controls button{padding:8px;border:2px outset rgba(0,0,0,0.1);background:#add8e6;cursor:pointer;color:#000}
-.board-thread{background:#f0f8ff;border:1px solid #ccc;padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:#000;white-space:pre-wrap;}
-.board-thread:nth-child(even) {background: #f0f0f0;}
-.board-thread strong{color:#000080;font-size:14px}
-.board-thread .small{color:#808080;font-style:italic;margin-top:4px;display:block}
-#serverSelectPanel{margin-bottom:12px;padding:8px}
-#serverSelectPanel .controls{display:flex;gap:8px;align-items:center}
-#serverSelectPanel select{flex:1;padding:12px;background:#001f1f;border:3px solid var(--border);color:var(--fg);font-weight:700;font-size:14px;border-radius:6px}
-#serverConfirm{background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;box-shadow:0 0 10px var(--accent)}
-#ortegaPanel button{width:100%;background:var(--accent);color:#000;padding:12px;border:3px solid #000;border-radius:6px;font-weight:900;cursor:pointer;font-size:14px}
-#serverTrackingPanel .server-branch{margin-bottom:12px}
-#serverTrackingPanel .server-title{font-weight:700;color:var(--accent);font-size:13px;cursor:pointer}
-#serverTrackingPanel .user-list{margin-left:12px;margin-top:4px;font-size:12px}
-#serverTrackingPanel .user-list div{margin:2px 0;padding:6px;background:#001f1f;border-radius:4px;cursor:pointer}
-#serverTrackingPanel .current-server .server-title{color:#000;background:var(--accent);padding:6px;border-radius:4px}
-.server-title .status-icon{margin-left:5px;font-size:14px;}
-.status-icon.animated{animation:pulse 1s infinite alternate;}
-@keyframes pulse{0%{opacity:1;}100%{opacity:0.5;}}
-#systemFeed{max-height:100px;overflow:auto;background:var(--panel-bg);border:2px solid var(--border);padding:6px;font-size:12px;color:var(--text-gray)}
-.dm-inline{border:1px solid rgba(255,255,255,0.03);padding:6px;margin:6px 0;background:#021212;border-radius:4px}
-.small{font-size:11px;color:var(--muted)}
-.typing-indicator { font-size: 12px; color: var(--muted); padding: 6px; font-style: italic; }
-body,html{overflow-x:hidden}
-a, button, .user-row{ -webkit-tap-highlight-color: transparent;}
-a:active, button:active, .user-row:active{animation:glitch 0.2s;}
-#revivalSitesPanel a {color: #ffffff;}
-@media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
-body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
-@keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
-.ad-banner{background:yellow;color:black;border:2px dashed red;padding:10px;margin:10px 0;font-family:'Press Start 2P';text-align:center;font-size:10px;animation:flash 2s infinite;}
-@keyframes flash{0%{opacity:1;}50%{opacity:0.8;}100%{opacity:1;}}
-body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
-::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
-::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
-#revivalSitesPanel .panel-body{max-height:100px;overflow:auto;}
-#emailPanel{margin-bottom:12px;padding:8px;}
-#emailForm{display:flex;gap:8px;align-items:center;}
-#emailInput{flex:1;padding:8px;background:#001f1f;border:2px solid var(--border);color:var(--fg);font-family:monospace;}
-#emailSubmit{background:var(--accent);color:#000;padding:8px 12px;border:2px solid #000;cursor:pointer;font-weight:700;}
-#shortstreams-wrap{display:flex;justify-content:center;margin:8px auto;}
-#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);}
-@media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
-#vine-wrap{display:flex;justify-content:center;align-items:center;flex-direction:column;}
-#slideshow-container{width:360px;height:640px;border:4px solid var(--border);margin:8px auto;}
-@media(max-width:600px){#slideshow-container{width:100%;height:560px;}}
-#slideshow-controls{display:flex;gap:8px;justify-content:center;margin-top:8px;}
-#slideshow-controls button{background:var(--accent);color:#000;padding:6px 12px;border:2px solid #000;cursor:pointer;}
-.sub-gallery .panel-title{font-size:11px;}
-.sub-gallery .panel-body{height:400px;}
-.ticker{background:var(--accent);border:2px solid #000;color:#000;font-size:12px;text-align:center;padding:8px;cursor:pointer;border-radius:4px;}
-.toggle-btn{margin-left:auto;}
-.toggle-btn.bottom-toggle{margin-left:auto;}
-#emailPanel .panel-body{height:auto;padding:4px;}
-#ytBody .panel-body{height:auto;}
-#soraBody .panel-body{height:auto;}
-#boardBody{height:600px;}
-#emailPanel iframe{height:200px;}
-#stumbleBtn{width:200px;}
-#fleetcommandBody{height:80vh;}
-@media(max-width:600px){#fleetcommandBody{height:70vh;}}
-@media (min-width: 601px) {
-#startScreen h1 {font-size: 48px;}
-.mode-btn {padding: 20px 40px; font-size: 20px;}
-#hud {font-size: 16px;}
-#controls {font-size: 14px;}
-.ship-btn {padding: 10px 15px; font-size: 14px;}
-}
-</style>
-</head>
-<body>
-<div id="marqueeWrap">
-<div id="marqueeLabel">SYSTEM:</div>
-<div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — — Site Under Construction —</div></div>
-</div>
-<div id="bootOverlay">
-<div id="bootPanel">
-<div id="bootLog" class="small"></div>
-<div id="bootPrompt">> ENTER HANDLE & SELECT SERVER</div>
-<div id="bootInputs">
-<input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (required)" aria-label="Enter your handle">
-<select id="bootChannel" aria-label="Select server">
-<option value="sam">//Sam</option>
-<option value="exuro">//Exuro</option>
-<option value="nero">//Nero</option>
-<option value="nora">//Nora</option>
-<option value="loktal">//Loktal</option>
-</select>
-<button id="bootBtn" aria-label="Enter Network">ENTER NETWORK</button>
-</div>
-<div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
-<div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Timeline stability.. 84%</span></div>
-</div>
-</div>
-<div id="app">
-<div class="title-bar">
-<div class="logo">C//:BUU</div>
-<a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal</a>
-<a class="link-btn" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo</a>
-<a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
-<a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
-<a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
-<a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
-<a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
-<a class="link-btn" href="https://sora.chatgpt.com/profile/robustpvp" target="_blank" rel="noopener noreferrer">Sora</a>
-<a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
-<a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
-<div class="controls-right">
-</div>
-</div>
-<div id="emailPanel" class="panel">
-<div class="panel-title"><div class="title">Join Our Email List for Updates</div></div>
-<div class="panel-body">
-<iframe src="https://forms.gle/LBAkMsnVT7xrraYT8" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-</div>
-</div>
-<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:block;margin:12px auto;width:200px;">Stumble</button>
-<div class="panel" id="serverSelectPanel">
-<div class="small">SELECT SERVER</div>
-<div class="controls">
-<select id="channelSelect" aria-label="Choose server">
-<option value="sam">//Sam</option>
-<option value="exuro">//Exuro</option>
-<option value="nero">//Nero</option>
-<option value="nora">//Nora</option>
-<option value="loktal">//Loktal</option>
-</select>
-<button id="serverConfirm" aria-label="Switch server">Switch Server</button>
-</div>
-</div>
-<div class="layout">
-<div>
-<div class="panel">
-<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
-<div class="panel-body chat-win" id="chatBody">
-<div class="chat-main">
-<div class="chat-messages" id="chatMessages" aria-live="polite"></div>
-<div class="chat-users">
-<div class="small" style="margin-bottom:6px">USERS ONLINE</div>
-<div id="activeUsersList"></div>
-</div>
-</div>
-<div id="typingIndicator" class="typing-indicator"></div>
-<div class="chat-controls">
-<input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
-<button id="sendBtn" aria-label="Send message">SEND</button>
-</div>
-</div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//PLAYLIST.SAM</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="ytBody">
-<div class="yt-wrap" style="margin:8px">
-<iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen></iframe>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="soraBody">
-<div id="shortstreams-wrap">
-<iframe src="https://www.youtube.com/embed/videoseries?list=PLDpwpKvok1S8ff8zQ9joe7wx3QrL977Wu" allowfullscreen allow="autoplay; fullscreen"></iframe>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="boardBody">
-<div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
-<input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
-<div id="boardList" style="overflow:auto;margin:8px 0"></div>
-<div style="margin:8px">
-<textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
-<button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//ENTITY (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="entityBody">
-<iframe src="entity.html" style="width:100%; height:100%; border:none;"></iframe>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="fleetcommandBody">
-<iframe src="fleet.html" style="width:100%; height:100%; border:none;"></iframe>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-</div>
-<div>
-<div class="panel" id="systemFeedPanel">
-<div class="panel-title"><div class="small">SYSTEM FEED</div></div>
-<div class="panel-body" id="systemFeed"></div>
-</div>
-<div class="panel" id="serverTrackingPanel">
-<div class="panel-title"><div class="small">SERVER LIST</div></div>
-<div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
-<div id="dmList" style="margin-top:8px"></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div id="ortegaPanel">
-<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-</div>
-<div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
-<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
-<div class="ad-banner">Do you need more arms? Try Hexapro!</div>
-<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
-</div>
-</div>
-<div class="bottom-section">
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body">
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//pronkerwronkers</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/7spAtXSkFi" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//othertoons</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/0m2TljGOPp" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//oldertoons</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/vag2TToeTw" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//mylittlehorse</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/MHC5RFn0it" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//HannahBananaH</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/jaCSMGh4a1" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//invaderzurm</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/lQHM6EY0pf" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//farkyoddpurents</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/8sSK8RALYq" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//futurobama</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/S1MHwynxPs" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//frapjack</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/lpmSp9KPyW" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//furmly guy</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/YYCtbDyDJq" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//ahhkindareal</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/sAStLCtCjU" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//aquacrap</div><div class="toggle-btn">▼</div></div>
-<div class="panel-body"><iframe src="https://imgbox.com/g/RU0DGepWyI" style="width:100%;height:100%;"></iframe></div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//sora.ai (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="vineBody">
-<div id="slideshow-container">
-<iframe id="slideshow-iframe" src="" allowfullscreen allow="autoplay; fullscreen" style="width:100%;height:100%;"></iframe>
-</div>
-<div id="slideshow-controls">
-<button id="prevVid">Prev</button>
-<button id="nextVid">Next</button>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="panel collapsible collapsed" id="revivalSitesPanel">
-<div class="panel-title"><div class="small">//REVIVAL.SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" style="max-height:100px;overflow:auto">
-<a href="https://escargot.chat/" target="_blank">escargot.chat</a><p>Revived version of Microsoft's classic MSN Messenger service, compatible with clients from 1.0 to 9.0.</p>
-<a href="https://escargot.live/" target="_blank">escargot.live</a><p>Upcoming revival of Windows Live Spaces and Profiles by the escargot team, launching soon.</p>
-<a href="https://phoenix-im.org/" target="_blank">Phoenix</a><p>Revival of AOL Instant Messenger supporting clients 1.0 to 6.0 (with some bugs in 6.0), plus Yahoo! Messenger and ICQ.</p>
-<a href="https://bitview.net/" target="_blank">BitView</a><p>Accurate clone of YouTube's 2009 interface for video sharing.</p>
-<a href="https://vidlii.com/" target="_blank">VidLii</a><p>YouTube-inspired platform with support for extended video lengths and multiple quality options.</p>
-<a href="https://fulptube.net/" target="_blank">FulpTube</a><p>Replica of YouTube circa 2012-2013, including big-screen and mobile variants, though with some glitches.</p>
-<a href="https://spacehey.com/" target="_blank">SpaceHey</a><p>MySpace-like social site for custom profiles and networking.</p>
-<a href="https://neocities.org/" target="_blank">NeoCities</a><p>Free hosting platform echoing the spirit of GeoCities for personal websites.</p>
-<a href="https://oldgoogle.neocities.org/" target="_blank">oldgoogle</a><p>Re-creations of Google Search interfaces from 1998 through 2014.</p>
-<a href="https://oldyahoo.neocities.org/" target="_blank">oldyahoo</a><p>Replicas of classic Yahoo! Search designs over the years.</p>
-<a href="https://bwitter.me/" target="_blank">Bwitter</a><p>2007-era Twitter clone (note: lacks HTTPS, use unique password).</p>
-<a href="https://discord.gg/rverse" target="_blank">rverse</a><p>Miiverse clone compatible with Wii U and 3DS consoles.</p>
-<a href="https://rc24.xyz/" target="_blank">RiiConnect24</a><p>Restored Wii channels including Check Mii Out, Weather, News, and Everybody Votes.</p>
-<a href="https://sudomemo.net/" target="_blank">Sudomemo</a><p>Revival of Flipnote Hatena for sharing DS animations.</p>
-<a href="https://wiimmfi.de/" target="_blank">Wiimmfi</a><p>Replacement for Nintendo Wi-Fi Connection, enabling Wii online multiplayer.</p>
-<a href="https://bluemaxima.org/flashpoint/" target="_blank">Flashpoint</a><p>Extensive archive of web games using plugins like Flash, Silverlight, and more obscure tech.</p>
-<a href="https://ruffle.rs/" target="_blank">ruffle.rs</a><p>Open-source Flash player emulator, installable as a browser add-on.</p>
-<a href="https://erm.m4tt72.com" target="_blank">erm.m4tt72.com</a><p>Command-line inspired personal site with interactive features.</p>
-<a href="https://www.mysteryfleshpitnationalpark.com/" target="_blank">Mystery Flesh Pit National Park</a><p>ARG-style site portraying a fictional bizarre national park.</p>
-<a href="https://hypnagogicarchive.neocities.org/" target="_blank">The Hypnagogic Archive</a><p>Retro-themed ARG exploring enigmatic stories.</p>
-<a href="https://www.youtube.com/c/LOCAL58TV" target="_blank">Local58</a><p>YouTube series mimicking vintage TV with eerie content.</p>
-<a href="https://space-bar.neocities.org/home" target="_blank">Space Bar</a><p>Simulated cosmic bar hangout.</p>
-<a href="https://creaturefeatures.tv/" target="_blank">Creature Feature</a><p>Spooky site hosting horror and sci-fi movies.</p>
-<a href="https://melonland.net/" target="_blank">Melonland Project</a><p>Group celebrating unique, fun web creations.</p>
-<a href="https://status.cafe/" target="_blank">Status Cafe</a><p>Vintage-style status update sharing service.</p>
-<a href="https://nightfall.city/" target="_blank">Nightfall City</a><p>Community with old-school web vibes.</p>
-<a href="https://onio.cafe/" target="_blank">Onio.cafe</a><p>Place for posting subtle, atmospheric notes.</p>
-<a href="https://netstory.io/" target="_blank">Netstory.io</a><p>Web-enhanced text adventure platform.</p>
-<a href="https://itch.io/games/tag-twine" target="_blank">Twine-based stories on itch.io</a><p>Vast array of choose-your-own-adventure games.</p>
-<a href="https://www.ifarchive.org/" target="_blank">Interactive Fiction Archive</a><p>Collection preserving text-based game history.</p>
-<a href="https://talefy.ai/" target="_blank">Talefy</a><p>AI-driven tool for creating interactive tales.</p>
-<p>ARG & Mystery Sites:</p>
-<a href="https://www.unfiction.com/history/the-beast/" target="_blank">The Beast (2001, historical)</a><p>Pioneering ARG using command-line motifs.</p>
-<a href="https://www.ilovebees.com/" target="_blank">I Love Bees</a><p>Halo 2 promotional ARG with cryptic web elements.</p>
-<a href="https://x.com/TheSunVanished" target="_blank">The Sun Vanished (Twitter-based)</a><p>Dystopian narrative unfolded via posts.</p>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="ticker" id="visitorPanel">
-<div id="visitorCounter">Visitors: Loading...</div>
-</div>
-</div>
-</div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
-const bootOverlay = document.getElementById('bootOverlay');
-const bootLog = document.getElementById('bootLog');
-const bootInput = document.getElementById('bootInput');
-const bootBtn = document.getElementById('bootBtn');
-const bootStatus = document.getElementById('bootStatus');
-const bootBroadcast = document.getElementById('bootBroadcast');
-const bootChannel = document.getElementById('bootChannel');
-const appRoot = document.getElementById('app');
-const chatMessages = document.getElementById('chatMessages');
-const chatInput = document.getElementById('chatInput');
-const sendBtn = document.getElementById('sendBtn');
-const channelSelect = document.getElementById('channelSelect');
-const serverConfirm = document.getElementById('serverConfirm');
-const userCountSmall = document.getElementById('userCountSmall');
-const activeUsersList = document.getElementById('activeUsersList');
-const serverTrackingList = document.getElementById('serverTrackingList');
-const boardList = document.getElementById('boardList');
-const boardMsg = document.getElementById('boardMsg');
-const postBoardBtn = document.getElementById('postBoardBtn');
-const systemFeed = document.getElementById('systemFeed');
-const dmList = document.getElementById('dmList');
-const ortegaBtn = document.getElementById('ortegaBtn');
-const chatTitle = document.getElementById('chatTitle');
-const boardTitle = document.getElementById('boardTitle');
-const marqueeInner = document.getElementById('marqueeInner');
-const marqueeWrap = document.getElementById('marquee');
-const boardSearch = document.getElementById('boardSearch');
-let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null;
-let channelListeners = {};
-let feedCache = [];
-let boardListeners = {};
-const bootLines = [
-"C:\\> INITIALIZING BEFORE US UNIVERSE...",
-"C:\\> Loading kernel.............[ONLINE]",
-"C:\\> Checking Ra'Norric link....[ONLINE]",
-"C:\\> MEMORY CHECK PASSED",
-"C:\\> DISK VERIFIED",
-"C:\\> NETWORK ACTIVE",
-"C:\\> System is .....[ONLINE]",
-"C:\\> Ready for authentication..."
-];
-let lineIdx = 0;
-function typeBootLine(){
-if(lineIdx < bootLines.length){
-bootLog.textContent += bootLines[lineIdx] + "\n";
-lineIdx++;
-setTimeout(typeBootLine, 240 + Math.random()*360);
-}
-}
-typeBootLine();
-onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
-function prependFeedEntry(text){
-const el = document.createElement('div');
-el.className = 'dm-inline';
-el.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
-systemFeed.prepend(el);
-while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChild);
-}
-function updateMarqueeFromCache(){
-if(feedCache.length === 0){
-marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — Site Under Construction —";
-startMarqueeAnimation();
-return;
-}
-const text = feedCache.slice(0,8).map(item => item.text).join(' ✦ ');
-marqueeInner.textContent = ' ' + text + ' ';
-startMarqueeAnimation();
-}
-let marqueeAnimId = null;
-function startMarqueeAnimation(){
-if(marqueeAnimId) cancelAnimationFrame(marqueeAnimId);
-const inner = marqueeInner;
-inner.style.transform = 'translateX(0)';
-const wrapWidth = marquee.offsetWidth;
-const innerWidth = inner.offsetWidth || wrapWidth * 1.5;
-const speed = 80;
-let start = null;
-function step(ts){
-if(!start) start = ts;
-const elapsed = (ts - start) / 1000;
-const distance = speed * elapsed;
-inner.style.transform = `translateX(${-distance}px)`;
-if(distance > innerWidth + wrapWidth) start = ts;
-marqueeAnimId = requestAnimationFrame(step);
-}
-requestAnimationFrame(step);
-}
-const feedRef = ref(db, 'feed');
-onChildAdded(feedRef, snap => {
-const obj = {key: snap.key, text: snap.val(), ts: Date.now()};
-feedCache.unshift(obj);
-if(feedCache.length > 40) feedCache.pop();
-prependFeedEntry(obj.text);
-updateMarqueeFromCache();
-bootBroadcast.textContent = obj.text;
-});
-get(feedRef).then(snap => {
-const data = snap.val() || {};
-feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
-updateMarqueeFromCache();
-});
-function setPresence(h,ch){
-if(!uid || uid.startsWith('offline_')) return;
-try {
-if(presenceRef) remove(presenceRef).catch(()=>{});
-presenceRef = ref(db, `online/${ch}/${uid}`);
-set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid, typing:false}).then(()=>{
-onDisconnect(presenceRef).remove();
-}).catch(e => appendSystem('Presence error: ' + e.message));
-} catch(e){
-appendSystem('Presence failed: ' + e.message);
-}
-}
-let onlineWatchRef = ref(db, 'online');
-function watchOnline(){
-onValue(onlineWatchRef, snap => {
-const data = snap.val() || {};
-renderServerTracking(data);
-renderActiveUsers(data[currentChannel] || {});
-updateUserCount(data);
-updateTypingIndicator(data[currentChannel] || {});
-});
-}
-function renderServerTracking(data){
-serverTrackingList.innerHTML = '';
-const channels = ['sam','exuro','nero','nora','loktal'];
-channels.forEach(ch => {
-const users = Object.values(data[ch] || {});
-const count = users.length;
-const iconColor = count > 0 ? 'lime' : 'red';
-const branch = document.createElement('div');
-branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
-branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon ${count > 0 ? 'animated' : ''}" style="color:${iconColor}">●</span></div><div class="user-list"></div>`;
-const userList = branch.querySelector('.user-list');
-if(count === 0){
-userList.innerHTML = '<div>—</div>';
-} else {
-users.forEach(u => {
-const div = document.createElement('div');
-div.textContent = (u.name || 'Anonymous') + (u.typing ? ' (typing...)' : '');
-div.onclick = () => openDMInline(u.uid, u.name);
-userList.appendChild(div);
-});
-}
-serverTrackingList.appendChild(branch);
-});
-}
-function renderActiveUsers(obj){
-activeUsersList.innerHTML = '';
-Object.values(obj || {}).forEach(u => {
-const row = document.createElement('div'); row.className = 'user-row';
-const dot = document.createElement('div'); dot.className = 'status-dot';
-const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name || 'Anonymous';
-name.onclick = () => openDMInline(u.uid, u.name);
-row.append(dot, name);
-activeUsersList.appendChild(row);
-});
-}
-function updateUserCount(data){
-const count = Object.keys(data[currentChannel] || {}).length;
-userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
-chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
-boardTitle.innerHTML = `//${currentChannel.toUpperCase()} MESSAGE BOARD`;
-}
-function watchPresenceEvents() {
-const channels = ['sam','exuro','nero','nora','loktal'];
-channels.forEach(ch => {
-onChildAdded(ref(db, `online/${ch}`), snap => {
-const u = snap.val();
-if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
-});
-onChildRemoved(ref(db, `online/${ch}`), snap => {
-const u = snap.val();
-if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
-});
-});
-}
-function listenChannel(ch){
-for(const k in channelListeners){
-if(channelListeners[k].ref) off(channelListeners[k].ref);
-}
-channelListeners = {};
-currentChannel = ch;
-chatMessages.innerHTML = '';
-const r = ref(db, `chat/${ch}`);
-const q = query(r, orderByChild('ts'));
-const fn = snap => {
-const o = snap.val();
-if(o && !o.deleted) renderChatMessage(o, snap.key);
+import React, { useState, useEffect, useRef } from 'react';
+
+const SpaceInvader = ({ stage, wandering, frame }) => {
+  const sizes = [56, 72, 88];
+  const size = sizes[stage];
+  const tentacleWave = frame === 1 ? 1 : 0;
+  return (
+    <svg viewBox="0 0 14 14" style={{width: size, height: size, imageRendering: 'pixelated'}} className={!wandering ? "animate-bounce" : ""}>
+      {/* Head/body - rounded octopus shape */}
+      <rect x="4" y="2" width="6" height="1" fill="#9B59B6"/>
+      <rect x="3" y="3" width="8" height="1" fill="#9B59B6"/>
+      <rect x="2" y="4" width="10" height="4" fill="#9B59B6"/>
+      <rect x="3" y="8" width="8" height="1" fill="#9B59B6"/>
+      
+      {/* Eyes - large round */}
+      <rect x="4" y="5" width="2" height="2" fill="#FFF"/>
+      <rect x="8" y="5" width="2" height="2" fill="#FFF"/>
+      <rect x="5" y="6" width="1" height="1" fill="#000"/>
+      <rect x="9" y="6" width="1" height="1" fill="#000"/>
+      
+      {/* Tentacles - wavy animated */}
+      <rect x={2 - tentacleWave} y="9" width="1" height="2" fill="#8E44AD"/>
+      <rect x={1 - tentacleWave} y="11" width="1" height="2" fill="#8E44AD"/>
+      
+      <rect x="4" y="9" width="1" height="3" fill="#8E44AD"/>
+      <rect x={4 + (tentacleWave * -1)} y="12" width="1" height="1" fill="#8E44AD"/>
+      
+      <rect x="6" y="9" width="1" height="2" fill="#8E44AD"/>
+      <rect x={6 + tentacleWave} y="11" width="1" height="2" fill="#8E44AD"/>
+      
+      <rect x="8" y="9" width="1" height="3" fill="#8E44AD"/>
+      <rect x={8 + (tentacleWave * -1)} y="12" width="1" height="1" fill="#8E44AD"/>
+      
+      <rect x={11 + tentacleWave} y="9" width="1" height="2" fill="#8E44AD"/>
+      <rect x={12 + tentacleWave} y="11" width="1" height="2" fill="#8E44AD"/>
+      
+      {/* Highlights */}
+      <rect x="3" y="4" width="2" height="1" fill="#BB8FCE" opacity="0.6"/>
+    </svg>
+  );
 };
-onChildAdded(q, fn, e => appendSystem('Chat listen error: ' + e.message));
-channelListeners[ch] = {ref: r, fn};
-listenBoard(ch);
-}
-function renderChatMessage(o, key){
-const row = document.createElement('div'); row.className = 'chat-row';
-const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
-const bub = document.createElement('div'); bub.className = 'chat-bubble';
-if(o.uid === uid) bub.classList.add('me');
-bub.innerHTML = `<div class="chat-meta">${o.name || 'Anonymous'} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
-if(o.uid === uid){
-const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
-edit.onclick = () => { /* edit logic */ };
-const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
-del.onclick = () => {
-update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => appendSystem('Delete failed: ' + e.message));
-row.style.display = 'none';
+
+const CREATURES = {
+  invader: { name: 'Space Invader', component: SpaceInvader }
 };
-bub.append(edit, del);
+
+export default function Tamagotchi() {
+  const [selectedCreature, setSelectedCreature] = useState(null);
+  const [stage, setStage] = useState(0);
+  const [hunger, setHunger] = useState(100);
+  const [happiness, setHappiness] = useState(100);
+  const [cleanliness, setCleanliness] = useState(100);
+  const [age, setAge] = useState(0);
+  const [alive, setAlive] = useState(true);
+  const [message, setMessage] = useState('');
+  const [poopCount, setPoopCount] = useState(0);
+  const [wandering, setWandering] = useState(false);
+  const [position, setPosition] = useState({ x: 50, y: 50 });
+  const [petReaction, setPetReaction] = useState('');
+  const animationRef = useRef(null);
+  const [spriteFrame, setSpriteFrame] = useState(0);
+  const [isNapping, setIsNapping] = useState(false);
+
+  useEffect(() => {
+    if (!alive) return;
+    const interval = setInterval(() => {
+      setSpriteFrame(prev => (prev + 1) % 2);
+    }, 500);
+    return () => clearInterval(interval);
+  }, [alive]);
+
+  useEffect(() => {
+    if (!alive) return;
+    const napCheck = setInterval(() => {
+      // 10% chance to nap if happiness is low
+      if (happiness < 40 && !isNapping && Math.random() < 0.1) {
+        setIsNapping(true);
+        setTimeout(() => setIsNapping(false), 5000); // Nap for 5 seconds
+      }
+    }, 3000);
+    return () => clearInterval(napCheck);
+  }, [alive, happiness, isNapping]);
+
+  useEffect(() => {
+    if (!selectedCreature || !alive) return;
+    const interval = setInterval(() => {
+      setAge(prev => prev + 1);
+      setHunger(prev => Math.max(0, prev - 2));
+      setHappiness(prev => Math.max(0, prev - 1));
+      setCleanliness(prev => Math.max(0, prev - 1.5));
+      if (Math.random() < 0.1 && poopCount < 3) {
+        setPoopCount(prev => prev + 1);
+        setCleanliness(prev => Math.max(0, prev - 15));
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [selectedCreature, alive, poopCount]);
+
+  useEffect(() => {
+    if (!selectedCreature) return;
+    if (hunger <= 0 || happiness <= 0 || cleanliness <= 0) {
+      setAlive(false);
+      setWandering(false);
+      showMsg('💔 PET DIED');
+      return;
+    }
+    
+    const avgHealth = (hunger + happiness + cleanliness) / 3;
+    if (avgHealth < 30 && message === '') {
+      showMsg('⚠️ CRITICAL!');
+    } else if (avgHealth < 50 && avgHealth >= 30 && message === '') {
+      showMsg('😟 UNHAPPY');
+    }
+    
+    if (age > 50 && stage < 2) {
+      setStage(2);
+      showMsg('🎉 EVOLVED!');
+    } else if (age > 20 && stage < 1) {
+      setStage(1);
+      showMsg('🎉 GREW UP!');
+    }
+  }, [hunger, happiness, cleanliness, age, stage, selectedCreature]);
+
+  useEffect(() => {
+    if (!wandering || !alive) {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      return;
+    }
+
+    let targetX = Math.random() * 80 + 10;
+    let targetY = Math.random() * 80 + 10;
+    let lastTime = Date.now();
+    let velocityX = 0;
+    let velocityY = 0;
+
+    const animate = () => {
+      const now = Date.now();
+      const delta = (now - lastTime) / 1000;
+      lastTime = now;
+
+      setPosition(prev => {
+        const dx = targetX - prev.x;
+        const dy = targetY - prev.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Pick new target if reached or occasionally change direction
+        if (distance < 3 || Math.random() < 0.01) {
+          targetX = Math.random() * 80 + 10;
+          targetY = Math.random() * 80 + 10;
+        }
+
+        // Space physics - slower, floatier movement
+        const speed = 8;
+        const acceleration = 12;
+        const drag = 0.98; // Slight drag for space feel
+        
+        // Smooth acceleration towards target
+        const targetVelX = (dx / distance) * speed;
+        const targetVelY = (dy / distance) * speed;
+        
+        velocityX += (targetVelX - velocityX) * acceleration * delta;
+        velocityY += (targetVelY - velocityY) * acceleration * delta;
+        
+        // Apply drag
+        velocityX *= drag;
+        velocityY *= drag;
+
+        let newX = prev.x + velocityX * delta;
+        let newY = prev.y + velocityY * delta;
+
+        // Bounce off borders with space physics
+        if (newX < -5) {
+          newX = -5;
+          velocityX = Math.abs(velocityX) * 0.6; // Softer bounce
+          targetX = Math.random() * 40 + 30;
+        } else if (newX > 105) {
+          newX = 105;
+          velocityX = -Math.abs(velocityX) * 0.6;
+          targetX = Math.random() * 40 + 20;
+        }
+
+        if (newY < -5) {
+          newY = -5;
+          velocityY = Math.abs(velocityY) * 0.6;
+          targetY = Math.random() * 40 + 30;
+        } else if (newY > 105) {
+          newY = 105;
+          velocityY = -Math.abs(velocityY) * 0.6;
+          targetY = Math.random() * 40 + 20;
+        }
+
+        return { x: newX, y: newY };
+      });
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [wandering, alive]);
+
+  const showMsg = (msg) => {
+    setMessage(msg);
+    setTimeout(() => setMessage(''), 2000);
+  };
+
+  const handlePetClick = () => {
+    if (!alive || isNapping) return;
+    const reactions = ['♥', '★', '!', '^_^', '~'];
+    const reaction = reactions[Math.floor(Math.random() * reactions.length)];
+    setPetReaction(reaction);
+    setHappiness(prev => Math.min(100, prev + 5));
+    setTimeout(() => setPetReaction(''), 1000);
+  };
+
+  const toggleWandering = () => {
+    if (!alive) return;
+    setWandering(!wandering);
+    if (!wandering) {
+      showMsg('Let out!');
+    } else {
+      showMsg('Returned!');
+      setPosition({ x: 50, y: 50 });
+    }
+  };
+
+  if (!selectedCreature) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+        <div className="bg-gray-800 rounded-lg p-4 shadow-2xl border-2 border-cyan-500" style={{width: 320, maxWidth: '95vw'}}>
+          <div className="bg-black rounded p-3 mb-3 border-2 border-cyan-500">
+            <div className="bg-black rounded p-2 mb-3 border border-cyan-700">
+              <h1 className="text-lg font-bold text-center text-cyan-400" style={{fontFamily: 'Courier New, monospace', letterSpacing: '2px'}}>
+                ═══ VIRTUAL PET ═══
+              </h1>
+              <div className="text-center text-cyan-600 text-xs mt-1" style={{fontFamily: 'Courier New, monospace'}}>
+                C:\PETS\SELECT.EXE
+              </div>
+            </div>
+            <div className="flex justify-center">
+              {Object.entries(CREATURES).map(([key, creature]) => {
+                const C = creature.component;
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setSelectedCreature(key)}
+                    className="bg-black hover:bg-gray-900 rounded p-4 border-2 border-cyan-700 hover:border-cyan-400 transition-all"
+                  >
+                    <div className="flex justify-center mb-2">
+                      <C stage={0} wandering={false} frame={0} />
+                    </div>
+                    <div className="text-[10px] font-bold text-cyan-400 text-center" style={{fontFamily: 'Courier New, monospace'}}>
+                      [{creature.name}]
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const creature = CREATURES[selectedCreature];
+  const C = creature.component;
+
+  return (
+    <div className="min-h-screen bg-black flex items-center justify-center p-4 relative">
+      {wandering && alive && (
+        <div 
+          className="fixed cursor-pointer transition-all duration-100 z-50"
+          style={{
+            left: `${position.x}%`,
+            top: `${position.y}%`,
+            transform: 'translate(-50%, -50%)'
+          }}
+          onClick={handlePetClick}
+        >
+          <div className="relative">
+            <C stage={stage} wandering={true} frame={spriteFrame} />
+            {isNapping && (
+              <div className="absolute -top-8 -right-8 text-2xl">
+                💤
+              </div>
+            )}
+            {petReaction && (
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-2xl animate-bounce text-cyan-400">
+                {petReaction}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="bg-gray-800 rounded-lg p-4 shadow-2xl border-2 border-cyan-500" style={{width: 320, maxWidth: '95vw'}}>
+        <div className="bg-black rounded p-3 border-2 border-cyan-500">
+          <div className="bg-black rounded p-2 border border-cyan-700">
+            <div className="flex justify-between mb-2 text-[10px] font-bold" style={{fontFamily: 'Courier New, monospace'}}>
+              <span className="text-cyan-400">AGE:{Math.floor(age/10)}d</span>
+              <span className="text-cyan-400">[{alive ? 'ALIVE' : 'DEAD'}]</span>
+            </div>
+            
+            <div 
+              className="bg-gray-900 rounded p-4 mb-2 relative flex items-center justify-center cursor-pointer border border-cyan-800"
+              style={{minHeight: 130}}
+              onClick={!wandering ? handlePetClick : undefined}
+            >
+              {wandering ? (
+                <div className="text-[10px] font-bold text-cyan-600 text-center" style={{fontFamily: 'Courier New, monospace'}}>
+                  &gt; WANDERING...
+                </div>
+              ) : alive ? (
+                <div className="relative">
+                  <C stage={stage} wandering={false} frame={spriteFrame} />
+                  {isNapping && (
+                    <div className="absolute -top-8 -right-6 text-3xl">
+                      💤
+                    </div>
+                  )}
+                  {petReaction && (
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-3xl animate-bounce text-cyan-400">
+                      {petReaction}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-5xl">💀</div>
+              )}
+              {poopCount > 0 && !wandering && (
+                <div className="absolute bottom-1 left-1 flex gap-1">
+                  {[...Array(poopCount)].map((_, i) => <span key={i} className="text-xl">💩</span>)}
+                </div>
+              )}
+            </div>
+
+            {message && (
+              <div className="text-center text-[9px] font-bold text-cyan-400 mb-2 border border-cyan-800 py-1" style={{fontFamily: 'Courier New, monospace'}}>
+                &gt; {message}
+              </div>
+            )}
+
+            <div className="space-y-1 text-[8px] font-bold" style={{fontFamily: 'Courier New, monospace'}}>
+              <div className="flex items-center gap-1">
+                <span className="text-cyan-400 w-12">FOOD:</span>
+                <div className="flex-1 bg-gray-900 h-3 rounded border border-cyan-800">
+                  <div 
+                    className="h-full rounded transition-all duration-500" 
+                    style={{
+                      width: `${Math.max(0, Math.min(100, hunger))}%`,
+                      backgroundColor: hunger > 50 ? '#fbbf24' : hunger > 20 ? '#f59e0b' : '#dc2626'
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-cyan-400 w-12">HAPPY:</span>
+                <div className="flex-1 bg-gray-900 h-3 rounded border border-cyan-800">
+                  <div 
+                    className="h-full rounded transition-all duration-500" 
+                    style={{
+                      width: `${Math.max(0, Math.min(100, happiness))}%`,
+                      backgroundColor: happiness > 50 ? '#f472b6' : happiness > 20 ? '#f59e0b' : '#dc2626'
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-cyan-400 w-12">CLEAN:</span>
+                <div className="flex-1 bg-gray-900 h-3 rounded border border-cyan-800">
+                  <div 
+                    className="h-full rounded transition-all duration-500" 
+                    style={{
+                      width: `${Math.max(0, Math.min(100, cleanliness))}%`,
+                      backgroundColor: cleanliness > 50 ? '#60a5fa' : cleanliness > 20 ? '#f59e0b' : '#dc2626'
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2 mt-3">
+          <button
+            onClick={() => { setHunger(Math.min(100, hunger + 20)); showMsg('YUM!'); }}
+            disabled={!alive}
+            className="bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-yellow-600 hover:border-yellow-400 disabled:border-gray-700 text-yellow-400 disabled:text-gray-600 font-bold py-3 rounded text-[9px]"
+            style={{fontFamily: 'Courier New, monospace'}}
+          >
+            [FEED]
+          </button>
+          <button
+            onClick={() => { setHappiness(Math.min(100, happiness + 25)); setHunger(Math.max(0, hunger - 10)); showMsg('FUN!'); }}
+            disabled={!alive}
+            className="bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-pink-600 hover:border-pink-400 disabled:border-gray-700 text-pink-400 disabled:text-gray-600 font-bold py-3 rounded text-[9px]"
+            style={{fontFamily: 'Courier New, monospace'}}
+          >
+            [PLAY]
+          </button>
+          <button
+            onClick={() => { setPoopCount(0); setCleanliness(100); showMsg('CLEAN!'); }}
+            disabled={!alive || poopCount === 0}
+            className="bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-blue-600 hover:border-blue-400 disabled:border-gray-700 text-blue-400 disabled:text-gray-600 font-bold py-3 rounded text-[9px]"
+            style={{fontFamily: 'Courier New, monospace'}}
+          >
+            [WASH]
+          </button>
+        </div>
+
+        <button
+          onClick={toggleWandering}
+          disabled={!alive}
+          className="w-full mt-2 bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-purple-600 hover:border-purple-400 disabled:border-gray-700 text-purple-400 disabled:text-gray-600 font-bold py-1 rounded text-[8px]"
+          style={{fontFamily: 'Courier New, monospace'}}
+        >
+          {wandering ? '[RETURN]' : '[LET OUT]'}
+        </button>
+
+        <button
+          onClick={() => {
+            setSelectedCreature(null);
+            setStage(0);
+            setHunger(100);
+            setHappiness(100);
+            setCleanliness(100);
+            setAge(0);
+            setAlive(true);
+            setMessage('');
+            setPoopCount(0);
+            setWandering(false);
+            setPosition({ x: 50, y: 50 });
+            setIsNapping(false);
+          }}
+          className="w-full mt-1 bg-black hover:bg-gray-900 border-2 border-red-600 hover:border-red-400 text-red-400 font-bold py-1 rounded text-[8px]"
+          style={{fontFamily: 'Courier New, monospace'}}
+        >
+          [RESET]
+        </button>
+      </div>
+    </div>
+  );
 }
-row.append(av, bub);
-chatMessages.appendChild(row);
-chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-async function hash(str){
-const e = new TextEncoder().encode(str);
-const b = await crypto.subtle.digest('SHA-256', e);
-return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
-}
-async function postMessage(ch, name, msg){
-if(!uid) return appendSystem('No UID - cannot post');
-const m = msg.trim();
-if(!m || m.length > 500) return;
-const ts = Date.now();
-const h = await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
-const key = push(ref(db, `chat/${ch}`)).key;
-const updates = {};
-updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
-updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
-await update(ref(db), updates).catch(e => appendSystem('Chat post error: ' + e.message));
-set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
-}
-function listenBoard(ch){
-for(const k in boardListeners){
-if(boardListeners[k].ref) off(boardListeners[k].ref);
-}
-boardListeners = {};
-boardList.innerHTML = '';
-const r = ref(db, `board/${ch}`);
-get(r).then(snap => {
-const data = snap.val() || {};
-Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
-renderBoardPost(o, id);
-});
-}).catch(e => appendSystem('Board load error: ' + e.message));
-const fn = snap => {
-const o = snap.val();
-renderBoardPost(o, snap.key);
-boardList.scrollTop = boardList.scrollHeight;
-};
-onChildAdded(r, fn, e => appendSystem('Board listen error: ' + e.message));
-boardListeners[ch] = {ref: r, fn};
-}
-function renderBoardPost(p, id){
-const el = document.createElement('div'); el.className = 'board-thread';
-el.innerHTML = `<strong>${esc(p.name || 'Anonymous')}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
-const reply = document.createElement('span');
-reply.textContent = '[Reply]';
-reply.style.cursor = 'pointer';
-reply.style.color = 'var(--accent)';
-reply.onclick = () => {
-boardMsg.value = `>>${id}\n` + boardMsg.value;
-boardMsg.focus();
-};
-el.appendChild(reply);
-boardList.appendChild(el);
-}
-sendBtn.onclick = () => {
-if(!myHandle) return;
-const val = chatInput.value.trim();
-if(val.startsWith('/d6')){
-const roll = Math.floor(Math.random() * 6) + 1;
-postMessage(currentChannel, myHandle, `rolled d6: ${roll}`);
-} else if(val.startsWith('/d20')){
-const roll = Math.floor(Math.random() * 20) + 1;
-postMessage(currentChannel, myHandle, `rolled d20: ${roll}`);
-} else {
-postMessage(currentChannel, myHandle, val);
-}
-chatInput.value = '';
-};
-chatInput.addEventListener('keydown', e => {
-if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
-});
-postBoardBtn.onclick = async () => {
-if(!myHandle) return;
-if(!uid) return appendSystem('No UID - cannot post to board');
-const m = boardMsg.value.trim();
-if(!m || m.length > 1000) return;
-const r = push(ref(db, `board/${currentChannel}`));
-await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
-boardMsg.value = '';
-};
-boardMsg.addEventListener('keydown', e => {
-if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
-});
-serverConfirm.onclick = () => {
-const newCh = channelSelect.value;
-if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
-document.body.classList.add('glitch-transition');
-setTimeout(() => {
-listenChannel(newCh);
-setPresence(myHandle, newCh);
-currentChannel = newCh;
-document.body.classList.remove('glitch-transition');
-}, 1000);
-}
-};
-ortegaBtn.onclick = () => {};
-async function registerDMPair(tuid){
-if(uid.startsWith('offline_')) return;
-const pid = [uid, tuid].sort().join('_');
-const updates = {};
-updates[`dmPairs/${pid}/users/${uid}`] = true;
-updates[`dmPairs/${pid}/users/${tuid}`] = true;
-await update(ref(db), updates).catch(() => {});
-}
-function openDMInline(tuid, tname){
-if(tuid === uid) return;
-registerDMPair(tuid);
-const pid = [uid, tuid].sort().join('_');
-if(document.querySelector(`[data-dmid="${pid}"]`)) return;
-const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
-const header = document.createElement('div'); header.textContent = `DM: ${tname || 'Anonymous'}`; header.style.fontWeight = '700';
-const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
-const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
-const send = document.createElement('button'); send.textContent = 'Send'; send.style.marginTop = '6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
-container.append(header, msgs, inp, send);
-dmList.prepend(container);
-const dmRef = ref(db, `dm/${pid}`);
-onChildAdded(dmRef, snap => {
-const o = snap.val();
-const el = document.createElement('div'); el.style.margin = '6px 0';
-el.textContent = `${o.fromName || 'Anonymous'}: ${o.msg}`;
-msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
-if(o.from !== uid){
-appendSystem(`New DM from ${o.fromName || 'Anonymous'}`);
-}
-});
-send.onclick = async () => {
-const txt = inp.value.trim();
-if(!txt) return;
-const ts = Date.now();
-const key = push(ref(db, `dm/${pid}`)).key;
-const updates = {};
-updates[`/dm/${pid}/${key}`] = {from: uid, to: tuid, fromName: myHandle, toName: tname, msg: txt, ts};
-await update(ref(db), updates).catch(() => {});
-inp.value = '';
-};
-}
-let typingTimeout = null;
-chatInput.addEventListener('input', () => {
-if(!uid || uid.startsWith('offline_')) return;
-const isTyping = chatInput.value.trim().length > 0;
-set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
-clearTimeout(typingTimeout);
-typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
-resetIdleTimer();
-});
-function updateTypingIndicator(obj){
-const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name || 'Anonymous');
-document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
-}
-function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function appendSystem(t){
-const d = document.createElement('div');
-d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
-d.style.fontSize = '12px';
-systemFeed.prepend(d);
-}
-signInAnonymously(auth).then(() => {
-const visitorsRef = ref(db, 'visitors/count');
-get(visitorsRef).then(snap => {
-let count = snap.val() || 0;
-count++;
-set(visitorsRef, count);
-document.getElementById('visitorCounter').textContent = 'Visitors: ' + count;
-}).catch(() => {document.getElementById('visitorCounter').textContent = 'Visitors: Error';});
-const logRef = push(ref(db, 'visitors/logs'));
-set(logRef, {ts: Date.now(), handle: myHandle || 'anonymous'});
-}).catch(e => appendSystem('Anonymous auth failed: ' + e.message));
-bootBtn.addEventListener('click', async () => {
-let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
-if(!raw){
-bootStatus.textContent = "Please enter a handle.";
-return;
-}
-bootStatus.textContent = "Entering network...";
-let credential;
-try {
-credential = await signInAnonymously(auth);
-uid = credential.user.uid;
-} catch(e) {
-bootStatus.textContent = "Auth error: " + e.message;
-appendSystem('Authentication failed: ' + e.message);
-return;
-}
-myHandle = raw;
-currentChannel = bootChannel.value || 'exuro';
-// Try DB in background - never block load
-setTimeout(() => {
-set(ref(db, `users/${uid}`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
-appendSystem('Profile save failed: ' + e.message);
-});
-setPresence(myHandle, currentChannel);
-}, 500);
-finishBoot();
-resetIdleTimer();
-});
-function finishBoot(){
-bootStatus.textContent = `Welcome, ${myHandle}!`;
-setTimeout(() => {
-bootOverlay.style.display = 'none';
-appRoot.style.display = 'block';
-channelSelect.value = currentChannel;
-initializePanels();
-appendSystem('System ready');
-listenChannel(currentChannel);
-}, 900);
-}
-function initializePanels(){
-document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
-document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
-btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
-});
-}
-watchOnline();
-watchPresenceEvents();
-appendSystem('Initializing...');
-setTimeout(() => updateMarqueeFromCache(), 800);
-setInterval(() => {
-const p = 80 + Math.floor(Math.random() * 11);
-bootBroadcast.textContent = `Timeline stability.. ${p}%`;
-bootBroadcast.classList.add('glitch-update');
-setTimeout(() => bootBroadcast.classList.remove('glitch-update'), 500);
-}, 5000);
-for(let i=0; i<8; i++){
-const p = document.createElement('div'); p.className = 'particle';
-p.style.left = Math.random()*100 + '%';
-p.style.animationDelay = Math.random()*5 + 's';
-marqueeWrap.appendChild(p);
-}
-document.querySelectorAll('.collapsible .toggle-btn:not(.bottom-toggle)').forEach(btn => {
-btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
-});
-boardSearch.addEventListener('input', () => {
-const term = boardSearch.value.toLowerCase();
-Array.from(boardList.children).forEach(el => {
-el.style.display = el.textContent.toLowerCase().includes(term) ? '' : 'none';
-});
-});
-setInterval(() => {
-activeUsersList.classList.add('glitch-update');
-setTimeout(() => activeUsersList.classList.remove('glitch-update'), 500);
-}, 30000);
-window.addEventListener('beforeunload', () => {
-if(presenceRef) remove(presenceRef);
-});
-setInterval(async () => {
-try {
-const snap = await get(ref(db,'chat'));
-const data = snap.val()||{};
-for(const ch in data){
-for(const id in data[ch]){
-if(data[ch][id].ts && Date.now() - data[ch][id].ts > 24*60*60*1000){
-await remove(ref(db, `chat/${ch}/${id}`));
-}
-}
-}
-} catch(e){ appendSystem('Purge error'); }
-}, 60*60*1000);
-setInterval(() => {
-if (uid && currentChannel) {
-set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
-}
-}, 300000);
-let idleTimer;
-function resetIdleTimer() {
-clearTimeout(idleTimer);
-idleTimer = setTimeout(() => {
-bootOverlay.style.display = 'flex';
-appRoot.style.display = 'none';
-appendSystem('Idle timeout - returned to boot screen.');
-}, 600000); // 10 minutes
-}
-document.addEventListener('mousemove', resetIdleTimer);
-document.addEventListener('keydown', resetIdleTimer);
-document.addEventListener('touchstart', resetIdleTimer);
-const revivalLinks = Array.from(document.querySelectorAll('#revivalSitesPanel .panel-body a'))
-.map(a => a.href)
-.filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com') && !href.includes('robustpvp-lang.github.io'));
-const toolbarLinks = [
-'https://tokillamockinggoblin.boards.net/',
-'https://youtube.com/@Patrickauthor',
-'https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview',
-'https://spacehey.com/profile?id=4317004',
-'https://www.phpbb.com/',
-'https://sora.chatgpt.com/profile/robustpvp',
-'https://web.archive.org/',
-'https://www.oldversion.com/'
-];
-revivalLinks.push(...toolbarLinks);
-document.getElementById('stumbleBtn').onclick = () => {
-const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)];
-const timestamp = Date.now();
-window.open(`${randomLink}?t=${timestamp}`, '_blank');
-};
-const videoUrls = [
-"https://sendvid.com/embed/0c8dl0bv",
-"https://sendvid.com/embed/xxixiywf",
-"https://sendvid.com/embed/usocjxvk",
-"https://sendvid.com/embed/2d59hgkv",
-"https://sendvid.com/embed/i2hzp3nt",
-"https://sendvid.com/embed/307idtnc",
-"https://sendvid.com/embed/jq9sr48s",
-"https://sendvid.com/embed/8ew7k1xz",
-"https://sendvid.com/embed/2mia7yat",
-"https://sendvid.com/embed/0m0vjefo",
-"https://sendvid.com/embed/gp6oh3w7",
-"https://sendvid.com/embed/pv63vm21",
-"https://sendvid.com/embed/iv60r8he",
-"https://sendvid.com/embed/pk7zb18c",
-"https://sendvid.com/embed/o7djkxku",
-"https://sendvid.com/embed/nfccmiqb",
-"https://sendvid.com/embed/89nunxww",
-"https://sendvid.com/embed/7no2540r",
-"https://sendvid.com/embed/weuus52x",
-"https://sendvid.com/embed/oqixh9i0",
-"https://sendvid.com/embed/x3jo7qhs",
-"https://sendvid.com/embed/tbrhbmk2",
-"https://sendvid.com/embed/i9to7i9k",
-"https://sendvid.com/embed/7z9yljep",
-"https://sendvid.com/embed/vxo3hv19"
-];
-let currentVideoIndex = 0;
-const slideshowIframe = document.getElementById('slideshow-iframe');
-function updateVideo() {
-slideshowIframe.src = videoUrls[currentVideoIndex];
-}
-document.getElementById('nextVid').onclick = () => {
-currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
-updateVideo();
-};
-document.getElementById('prevVid').onclick = () => {
-currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.length;
-updateVideo();
-};
-updateVideo();
-</script>
-</body>
-</html>
