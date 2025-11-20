@@ -1,383 +1,899 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FleetCommand: Tactical</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-    :root {
-        --dos-green: #00ff00;
-        --dos-bg: #000000;
-        --hud-bg: rgba(0, 20, 0, 0.8);
-        --game-width: 575px;
-        --game-height: 431px; /* Approx 4:3 ratio */
-    }
-
-    body {
-        background-color: #111;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        margin: 0;
-        font-family: 'Courier New', Courier, monospace;
-        color: white;
-    }
-
-    /* Main Game Wrapper - Locked to 575px */
-    #game-wrapper {
-        position: relative;
-        width: var(--game-width);
-        height: var(--game-height);
-        border: 4px solid #333;
-        background-color: #000;
-        box-shadow: 0 0 20px rgba(0,0,0,0.8);
-        overflow: hidden;
-    }
-
-    canvas {
-        display: block;
-        width: 100%;
-        height: 100%;
-        background-color: #020617;
-    }
-
-    /* UI Overlay - Handles HUD and Screens */
-    .ui-layer {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none; /* Let clicks pass through to canvas */
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    /* Top HUD Bar */
-    .hud-bar {
-        background-color: var(--hud-bg);
-        padding: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #333;
-        pointer-events: auto; /* Re-enable clicks for buttons */
-        height: 50px;
-    }
-
-    .hud-btn {
-        background: #374151;
-        border: 1px solid #6b7280;
-        color: white;
-        font-size: 12px;
-        padding: 4px 10px;
-        cursor: pointer;
-        text-transform: uppercase;
-        font-weight: bold;
-        transition: background 0.2s;
-    }
-    .hud-btn:hover { background: #4b5563; }
-    .hud-btn:active { transform: translateY(1px); }
-
-    .score-display {
-        font-size: 18px;
-        color: var(--dos-green);
-        font-weight: bold;
-    }
-
-    /* Screens (Title, Game Over, Map) */
-    .screen {
-        position: absolute;
-        top: 50px; /* Below HUD */
-        left: 0;
-        width: 100%;
-        height: calc(100% - 50px);
-        background: rgba(0, 0, 0, 0.9);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        pointer-events: auto;
-        z-index: 10;
-    }
-
-    .hidden { display: none !important; }
-
-    h1 { color: var(--dos-green); font-size: 32px; margin-bottom: 10px; text-transform: uppercase; text-shadow: 0 0 10px var(--dos-green); }
-    h2 { color: #ef4444; font-size: 28px; margin-bottom: 10px; }
-    p { color: #ccc; margin-bottom: 20px; font-size: 14px; text-align: center; padding: 0 20px; }
-
-    .action-btn {
-        padding: 10px 20px;
-        font-size: 16px;
-        background: var(--dos-green);
-        color: black;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        font-family: 'Courier New', monospace;
-    }
-    .action-btn:hover { background: #fff; }
-
-    /* Map Grid Styling */
-    #map-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 5px;
-        width: 80%;
-        height: 60%;
-        border: 1px solid #444;
-        padding: 5px;
-    }
-    .map-cell { background: #111; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #444; }
-    .map-cell.active { background: #064e3b; color: #34d399; border-color: #059669; }
-    .map-cell.player-loc { background: #1e3a8a; color: white; border: 1px solid #3b82f6; }
-
-    /* Helper text below game */
-    .controls-hint {
-        width: var(--game-width);
-        margin-top: 10px;
-        color: #666;
-        font-size: 12px;
-        text-align: center;
-    }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Fleet Command: Invaders</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    body {
+      overflow: hidden;
+      background: #000;
+      font-family: 'Courier New', monospace;
+      touch-action: none;
+    }
+    #gameCanvas {
+      display: block;
+      background: #000;
+      touch-action: none;
+    }
+    #startScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      color: #0f0;
+    }
+    #startScreen h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #0f0;
+    }
+    #startScreen p {
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    .mode-btn {
+      background: rgba(0, 255, 0, 0.2);
+      border: 2px solid #0f0;
+      color: #0f0;
+      padding: 15px 30px;
+      margin: 10px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .mode-btn:hover {
+      background: rgba(0, 255, 0, 0.4);
+    }
+    #hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #0f0;
+      font-size: 12px;
+      text-shadow: 0 0 5px #0f0;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #minimap {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 100px;
+      border: 2px solid #0f0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 10;
+    }
+    .ship-select {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      z-index: 10;
+    }
+    .ship-btn {
+      background: rgba(0, 255, 0, 0.2);
+      border: 1px solid #0f0;
+      color: #0f0;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      touch-action: manipulation;
+    }
+    .ship-btn.active {
+      background: rgba(0, 255, 0, 0.6);
+    }
+    #joystick {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 120px;
+      height: 120px;
+      background: rgba(0, 255, 0, 0.1);
+      border: 2px solid rgba(0, 255, 0, 0.3);
+      border-radius: 50%;
+      z-index: 10;
+      display: none;
+    }
+    #joystick-knob {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 255, 0, 0.5);
+      border: 2px solid #0f0;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    #fireBtn {
+      position: absolute;
+      bottom: 20px;
+      right: 5px;
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 0, 0, 0.3);
+      border: 2px solid #f00;
+      border-radius: 50%;
+      color: #f00;
+      font-size: 12px;
+      font-weight: bold;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      touch-action: manipulation;
+    }
+    #fireBtn.active {
+      background: rgba(255, 0, 0, 0.6);
+    }
+    #controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      color: #0f0;
+      font-size: 11px;
+      text-shadow: 0 0 5px #0f0;
+      display: none;
+    }
+  </style>
 </head>
 <body>
+  <div id="startScreen">
+    <h1>FLEET COMMAND: INVADERS</h1>
+    <p style="font-size: 12px; margin-bottom: 10px; color: #0f0; text-shadow: 0 0 5px #0f0;">Created by Patrick McDonald and Claude</p>
+    <p>Choose your control mode:</p>
+    <button class="mode-btn" onclick="startGame('mobile')">MOBILE (Touch)</button>
+    <button class="mode-btn" onclick="startGame('desktop')">DESKTOP (Keyboard)</button>
+  </div>
 
-<div id="game-wrapper">
-    <canvas id="gameCanvas" width="575" height="431"></canvas>
-    
-    <div class="ui-layer">
-        <div class="hud-bar">
-            <div class="flex gap-2">
-                <button class="hud-btn" id="btn-map" onclick="toggleMap()">Map</button>
-                <button class="hud-btn" id="btn-switch" onclick="switchShip()">Switch Ship</button>
-            </div>
-            <div class="score-display">SCORE: <span id="score-val">0</span></div>
-            <div class="text-xs text-gray-400">LVL <span id="level-val">1</span></div>
-        </div>
+  <canvas id="gameCanvas"></canvas>
+  <canvas id="minimap"></canvas>
+  
+  <div id="hud">
+    <div>SCORE: <span id="score">0</span></div>
+    <div>SHIP: <span id="shipType">FIGHTER</span></div>
+    <div>HULL: <span id="health">100</span>%</div>
+  </div>
+  
+  <div class="ship-select">
+    <button class="ship-btn active" data-ship="fighter">FIGHTER</button>
+    <button class="ship-btn" data-ship="carrier">CARRIER</button>
+    <button class="ship-btn" data-ship="brute">BRUTE</button>
+  </div>
 
-        <div id="title-screen" class="screen">
-            <h1>FLEET COMMAND</h1>
-            <p>Sector 7 is under attack.<br>Initialize defense protocols.</p>
-            <button class="action-btn" onclick="startGame()">INITIALIZE</button>
-        </div>
+  <div id="joystick">
+    <div id="joystick-knob"></div>
+  </div>
+  
+  <button id="fireBtn">FIRE</button>
+  
+  <div id="controls">WASD: Move | SPACE: Fire (Fighter/Brute) or Boost (Carrier) | 1/2/3: Switch Ship</div>
 
-        <div id="game-over-screen" class="screen hidden">
-            <h2>SIGNAL LOST</h2>
-            <p>Your fleet has been decimated.</p>
-            <p>Final Score: <span id="final-score">0</span></p>
-            <button class="action-btn" onclick="resetGame()">REBOOT SYSTEM</button>
-        </div>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const minimap = document.getElementById('minimap');
+    const minimapCtx = minimap.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-        <div id="map-screen" class="screen hidden">
-            <h1 style="font-size: 20px; margin-bottom: 10px;">TACTICAL MAP</h1>
-            <div id="map-grid">
-                </div>
-            <p style="margin-top: 15px; margin-bottom: 5px;">PAUSED</p>
-            <button class="hud-btn" onclick="toggleMap()">RESUME</button>
-        </div>
-    </div>
-</div>
+    const WORLD_SIZE = 4000;
+    const INVADER_COUNT = 80;
 
-<div class="controls-hint">
-    WASD / Arrows to Move &bull; SPACE to Shoot
-</div>
+    let score = 0;
+    let gameTime = 0;
+    let joystickActive = false;
+    let joystickDir = {x: 0, y: 0};
+    let firing = false;
+    let controlMode = null;
+    let keys = {};
+    let invaders = [];
+    let invaderBullets = []; // NEW: Array for enemy projectiles
+    let ship = null;
+    let gameStarted = false;
 
-<script>
-    /**
-     * GAME CONFIGURATION
-     */
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    // UI Elements
-    const uiScore = document.getElementById('score-val');
-    const uiLevel = document.getElementById('level-val');
-    const uiFinalScore = document.getElementById('final-score');
-    const titleScreen = document.getElementById('title-screen');
-    const gameOverScreen = document.getElementById('game-over-screen');
-    const mapScreen = document.getElementById('map-screen');
-    const mapGrid = document.getElementById('map-grid');
+    class Vector {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+      add(v) { return new Vector(this.x + v.x, this.y + v.y); }
+      mult(s) { return new Vector(this.x * s, this.y * s); }
+      mag() { return Math.sqrt(this.x * this.x + this.y * this.y); }
+      normalize() { const m = this.mag(); return m > 0 ? this.mult(1/m) : new Vector(0, 0); }
+    }
 
-    // Game State
-    let gameRunning = false;
-    let isPaused = false;
-    let score = 0;
-    let level = 1;
-    let lastTime = 0;
-    let spawnTimer = 0;
-    let spawnDelay = 2000;
+    class Ship {
+      constructor(x, y, type) {
+        this.pos = new Vector(x, y);
+        this.vel = new Vector(0, 0);
+        this.angle = 0;
+        this.type = type;
+        this.bullets = [];
+        this.drones = [];
+        
+        if (type === 'fighter') {
+          this.maxSpeed = 6;
+          this.accel = 0.25;
+          this.health = 100;
+          this.maxHealth = 100;
+          this.fireRate = 5;
+          this.size = 12;
+          this.hitRadius = 10;
+        } else if (type === 'carrier') {
+          this.maxSpeed = 3;
+          this.accel = 0.12;
+          this.health = 250;
+          this.maxHealth = 250;
+          this.fireRate = 320;
+          this.size = 22;
+          this.hitRadius = 20;
+          this.boostPower = 0.5;
+          this.maxBoostSpeed = 7;
+        } else if (type === 'brute') {
+          this.maxSpeed = 5;
+          this.accel = 0.2;
+          this.health = 150;
+          this.maxHealth = 150;
+          this.fireRate = 53;
+          this.size = 14;
+          this.hitRadius = 12;
+        }
+        
+        this.lastFire = 0;
+      }
 
-    // Ships Configuration
-    const shipTypes = [
-        { name: 'Interceptor', color: '#3b82f6', width: 30, speed: 5, hp: 3, shotDelay: 200 }, // Balanced
-        { name: 'Bomber', color: '#ef4444', width: 40, speed: 3, hp: 5, shotDelay: 400 },      // Slow, Tanky
-        { name: 'Stealth', color: '#eab308', width: 20, speed: 7, hp: 2, shotDelay: 150 }      // Fast, Weak
-    ];
-    let currentShipIdx = 0;
+      update() {
+        if (controlMode === 'mobile') {
+          if (joystickDir.x !== 0 || joystickDir.y !== 0) {
+            const dir = new Vector(joystickDir.x, joystickDir.y).normalize();
+            this.angle = Math.atan2(dir.y, dir.x);
+            this.vel = this.vel.add(dir.mult(this.accel));
+          }
+        } else {
+          const dir = new Vector(0, 0);
+          if (keys['w'] || keys['W']) dir.y -= 1;
+          if (keys['s'] || keys['S']) dir.y += 1;
+          if (keys['a'] || keys['A']) dir.x -= 1;
+          if (keys['d'] || keys['D']) dir.x += 1;
 
-    // Entities
-    const player = {
-        x: canvas.width / 2,
-        y: canvas.height - 50,
-        width: 30,
-        height: 30,
-        dx: 0,
-        dy: 0,
-        hp: 3,
-        maxHp: 3,
-        lastShot: 0,
-        shooting: false
-    };
+          if (dir.mag() > 0) {
+            this.angle = Math.atan2(dir.y, dir.x);
+            const force = dir.normalize().mult(this.accel);
+            this.vel = this.vel.add(force);
+          }
+        }
 
-    let bullets = [];
-    let enemies = [];
-    let particles = [];
+        // Boost for carrier (desktop/mobile)
+        if (this.type === 'carrier' && ((controlMode === 'desktop' && keys[' ']) || (controlMode === 'mobile' && firing))) {
+          const boostDir = new Vector(Math.cos(this.angle), Math.sin(this.angle));
+          this.vel = this.vel.add(boostDir.mult(this.boostPower));
+          
+          if (this.vel.mag() > this.maxBoostSpeed) {
+            this.vel = this.vel.normalize().mult(this.maxBoostSpeed);
+          }
+        } else {
+          // Normal speed limit
+          if (this.vel.mag() > this.maxSpeed) {
+            this.vel = this.vel.normalize().mult(this.maxSpeed);
+          }
+        }
 
-    // Controls
-    const keys = { ArrowUp:false, ArrowDown:false, ArrowLeft:false, ArrowRight:false, w:false, s:false, a:false, d:false, " ":false };
+        this.vel = this.vel.mult(0.97);
+        this.pos = this.pos.add(this.vel);
 
-    /**
-     * INITIALIZATION
-     */
-    function init() {
-        // Generate Map Grid visual
-        mapGrid.innerHTML = '';
-        for(let i=0; i<16; i++) {
-            const div = document.createElement('div');
-            div.className = 'map-cell';
-            if(i === 13) div.classList.add('player-loc'); // Fake player location
-            else if(i < 4) div.classList.add('active');   // Fake enemies
-            div.innerText = i < 4 ? 'HOSTILE' : (i===13 ? 'YOU' : '.');
-            mapGrid.appendChild(div);
-        }
+        // Wrap around world limits
+        if (this.pos.x < 0) this.pos.x = WORLD_SIZE;
+        if (this.pos.x > WORLD_SIZE) this.pos.x = 0;
+        if (this.pos.y < 0) this.pos.y = WORLD_SIZE;
+        if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
 
-        // Set initial ship stats
-        applyShipStats();
+        // Fire logic (Desktop or Mobile manual fire)
+        const shouldFire = (controlMode === 'desktop' && this.type !== 'carrier' && keys[' ']) ||
+                         (controlMode === 'mobile' && this.type !== 'carrier' && firing);
+        
+        if (shouldFire && gameTime - this.lastFire > this.fireRate) {
+          this.fire();
+          this.lastFire = gameTime;
+        }
 
-        // Start Loop
-        requestAnimationFrame(gameLoop);
-    }
+        this.bullets = this.bullets.filter(b => {
+          b.update();
+          return b.life > 0;
+        });
 
-    function applyShipStats() {
-        const type = shipTypes[currentShipIdx];
-        player.width = type.width;
-        player.maxHp = type.hp; // Only applies on reset usually, but we'll keep current HP relative
-        // Update button text
-        document.getElementById('btn-switch').innerText = `SHIP: ${type.name}`;
-    }
+        this.drones = this.drones.filter(d => {
+          d.update(this.pos);
+          return d.life > 0;
+        });
 
-    function startGame() {
-        gameRunning = true;
-        isPaused = false;
-        score = 0;
-        level = 1;
-        player.hp = shipTypes[currentShipIdx].hp;
-        bullets = [];
-        enemies = [];
-        particles = [];
-        player.x = canvas.width / 2;
-        player.y = canvas.height - 50;
-        
-        titleScreen.classList.add('hidden');
-        gameOverScreen.classList.add('hidden');
-        mapScreen.classList.add('hidden');
-        
-        updateHUD();
-    }
+        if (this.type === 'carrier' && this.drones.length < 3 && gameTime % 150 === 0) {
+          this.drones.push(new Drone(this.pos.x, this.pos.y));
+        }
+      }
 
-    function resetGame() {
-        startGame();
-    }
+      fire() {
+        const speed = 12;
+        const shipVel = this.vel;
+        
+        if (this.type === 'fighter') {
+          const vx = Math.cos(this.angle) * speed + shipVel.x;
+          const vy = Math.sin(this.angle) * speed + shipVel.y;
+          this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ff00'));
+        } else if (this.type === 'brute') {
+          for (let i = -2; i <= 2; i++) {
+            const angle = this.angle + i * 0.2;
+            const vx = Math.cos(angle) * speed + shipVel.x;
+            const vy = Math.sin(angle) * speed + shipVel.y;
+            this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#ff4400'));
+          }
+        }
+      }
 
-    function toggleMap() {
-        if(!gameRunning) return;
-        isPaused = !isPaused;
-        if(isPaused) {
-            mapScreen.classList.remove('hidden');
-        } else {
-            mapScreen.classList.add('hidden');
-        }
-    }
+      findNearestInvader() {
+        let nearest = null;
+        let minDist = Infinity;
+        invaders.forEach(inv => {
+          const dx = inv.pos.x - this.pos.x;
+          const dy = inv.pos.y - this.pos.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < minDist) {
+            minDist = dist;
+            nearest = { invader: inv, dist: dist };
+          }
+        });
+        return nearest;
+      }
 
-    function switchShip() {
-        currentShipIdx = (currentShipIdx + 1) % shipTypes.length;
-        applyShipStats();
-        // If playing, flash message? (Optional)
-    }
+      draw(offsetX, offsetY) {
+        ctx.save();
+        ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
+        ctx.rotate(this.angle);
+        
+        if (this.type === 'fighter') {
+          ctx.fillStyle = '#00ff00';
+          ctx.beginPath();
+          ctx.moveTo(this.size, 0);
+          ctx.lineTo(-this.size, this.size/2);
+          ctx.lineTo(-this.size/2, 0);
+          ctx.lineTo(-this.size, -this.size/2);
+          ctx.closePath();
+          ctx.fill();
+        } else if (this.type === 'carrier') {
+          ctx.fillStyle = '#0088ff';
+          ctx.fillRect(-this.size, -this.size/2, this.size*2, this.size);
+          ctx.fillStyle = '#00aaff';
+          ctx.fillRect(-this.size/2, -this.size, this.size, this.size/2);
+        } else if (this.type === 'brute') {
+          ctx.fillStyle = '#ff4400';
+          ctx.beginPath();
+          ctx.moveTo(this.size, 0);
+          ctx.lineTo(-this.size, this.size);
+          ctx.lineTo(-this.size, -this.size);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#ff6622';
+          ctx.fillRect(-this.size * 0.7, -this.size * 0.5, this.size * 1.4, this.size);
+        }
+        
+        ctx.restore();
 
-    function updateHUD() {
-        uiScore.innerText = score;
-        uiLevel.innerText = level;
-    }
+        this.bullets.forEach(b => b.draw(offsetX, offsetY));
+        this.drones.forEach(d => d.draw(offsetX, offsetY));
+      }
+    }
 
-    /**
-     * GAME LOOP
-     */
-    function gameLoop(timestamp) {
-        const dt = timestamp - lastTime;
-        lastTime = timestamp;
+    class Bullet {
+      constructor(x, y, vx, vy, color = '#ffff00') {
+        this.pos = new Vector(x, y);
+        this.vel = new Vector(vx, vy);
+        this.life = 100;
+        this.color = color;
+        this.radius = 3;
+      }
 
-        if (gameRunning && !isPaused) {
-            update(dt);
-            draw();
-        }
+      update() {
+        this.pos = this.pos.add(this.vel);
+        this.life--;
+      }
 
-        requestAnimationFrame(gameLoop);
-    }
+      draw(offsetX, offsetY) {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.pos.x - offsetX, this.pos.y - offsetY, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
 
-    function update(dt) {
-        // 1. Player Movement
-        const ship = shipTypes[currentShipIdx];
-        if (keys.ArrowLeft || keys.a) player.x -= ship.speed;
-        if (keys.ArrowRight || keys.d) player.x += ship.speed;
-        if (keys.ArrowUp || keys.w) player.y -= ship.speed;
-        if (keys.ArrowDown || keys.s) player.y += ship.speed;
+    // NEW: Invader Bullet Class
+    class InvaderBullet extends Bullet {
+      constructor(x, y, vx, vy) {
+        super(x, y, vx, vy, '#ff00ff'); // Purple/pink hostile color
+        this.radius = 4;
+        this.damage = 5; // Damage per hit
+      }
+    }
 
-        // Clamp bounds
-        player.x = Math.max(player.width/2, Math.min(canvas.width - player.width/2, player.x));
-        player.y = Math.max(player.height/2, Math.min(canvas.height - player.height/2, player.y));
+    class Drone {
+      constructor(x, y) {
+        this.pos = new Vector(x, y);
+        this.vel = new Vector(0, 0);
+        this.life = 400;
+        this.orbitAngle = Math.random() * Math.PI * 2;
+        this.bullets = [];
+        this.lastFire = 0;
+        this.radius = 6;
+      }
 
-        // 2. Shooting
-        if (keys[" "] && Date.now() - player.lastShot > ship.shotDelay) {
-            bullets.push({ x: player.x, y: player.y - 20, width: 4, height: 10, color: '#ffff00' });
-            player.lastShot = Date.now();
-        }
+      update(parentPos) {
+        this.orbitAngle += 0.04;
+        const targetX = parentPos.x + Math.cos(this.orbitAngle) * 50;
+        const targetY = parentPos.y + Math.sin(this.orbitAngle) * 50;
+        
+        this.vel.x += (targetX - this.pos.x) * 0.02;
+        this.vel.y += (targetY - this.pos.y) * 0.02;
+        this.vel = this.vel.mult(0.88);
+        this.pos = this.pos.add(this.vel);
+        this.life--;
 
-        // 3. Bullets
-        bullets.forEach(b => b.y -= 8);
-        bullets = bullets.filter(b => b.y > -10);
+        // Auto-fire at invaders
+        if (gameTime - this.lastFire > 50) {
+          const nearest = this.findNearestInvader();
+          if (nearest && nearest.dist < 250) {
+            this.fireAt(nearest.invader);
+            this.lastFire = gameTime;
+          }
+        }
 
-        // 4. Spawning Enemies
-        if (Date.now() - spawnTimer > spawnDelay) {
-            spawnEnemy();
-            spawnTimer = Date.now();
-        }
+        this.bullets = this.bullets.filter(b => {
+          b.update();
+          return b.life > 0;
+        });
+      }
 
-        // 5. Enemies Update
-        enemies.forEach(e => {
-            e.y += e.speed;
-            e.x += Math.sin(e.y * 0.05) * 2; // Wavy movement
-        });
+      findNearestInvader() {
+        let nearest = null;
+        let minDist = Infinity;
+        invaders.forEach(inv => {
+          const dx = inv.pos.x - this.pos.x;
+          const dy = inv.pos.y - this.pos.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < minDist) {
+            minDist = dist;
+            nearest = { invader: inv, dist: dist };
+          }
+        });
+        return nearest;
+      }
 
-        // 6. Collision
-        bullets.forEach((b, bi) => {
-            enemies.forEach((e, ei) => {
-                if (rectIntersect(b.x, b.y, b.width, b.height, e.x, e.y, e.width, e.height)) {
-                    // Hit
-                    createParticles(e.x + e.width/2, e.y + e.height/2, e.color);
-                    enemies.splice(ei, 1);
-                    bullets.splice(bi, 1);
-                    score += 10;
-                    updateHUD();
-                    
-                    // Level up simple logic
-                    if(score % 100 === 0) {
-                        level++;
-                        spawnDelay = Math.max(500, spawnDelay - 2
+      fireAt(invader) {
+        const dx = invader.pos.x - this.pos.x;
+        const dy = invader.pos.y - this.pos.y;
+        const angle = Math.atan2(dy, dx);
+        const speed = 9;
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed;
+        this.bullets.push(new Bullet(this.pos.x, this.pos.y, vx, vy, '#00ffff'));
+      }
+
+      draw(offsetX, offsetY) {
+        const x = this.pos.x - offsetX;
+        const y = this.pos.y - offsetY;
+        ctx.fillStyle = '#00ffff';
+        ctx.strokeStyle = '#00ffff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        this.bullets.forEach(b => b.draw(offsetX, offsetY));
+      }
+    }
+
+    class Invader {
+      constructor(x, y, size) {
+        this.pos = new Vector(x, y);
+        this.vel = new Vector((Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5);
+        this.size = size;
+        this.angle = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.08;
+        this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+        // NEW: Firing properties
+        this.fireRate = 200 + Math.random() * 100; // Slow fire: roughly every 3-5 seconds (60 FPS * 3.5 sec)
+        this.lastFire = gameTime + Math.random() * this.fireRate;
+      }
+
+      update() {
+        this.pos = this.pos.add(this.vel);
+        this.angle += this.rotSpeed;
+
+        // Wrap around world limits
+        if (this.pos.x < 0) this.pos.x = WORLD_SIZE;
+        if (this.pos.x > WORLD_SIZE) this.pos.x = 0;
+        if (this.pos.y < 0) this.pos.y = WORLD_SIZE;
+        if (this.pos.y > WORLD_SIZE) this.pos.y = 0;
+
+        // NEW: Firing logic
+        if (gameTime - this.lastFire > this.fireRate) {
+          this.fire();
+          this.lastFire = gameTime;
+        }
+      }
+
+      fire() {
+        const dx = ship.pos.x - this.pos.x;
+        const dy = ship.pos.y - this.pos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // Only fire if the ship is somewhat close (e.g., within 800 units)
+        if (dist < 800) {
+          const angle = Math.atan2(dy, dx);
+          const speed = 7;
+          const vx = Math.cos(angle) * speed;
+          const vy = Math.sin(angle) * speed;
+
+          invaderBullets.push(new InvaderBullet(this.pos.x, this.pos.y, vx, vy));
+        }
+      }
+
+      draw(offsetX, offsetY) {
+        ctx.save();
+        ctx.translate(this.pos.x - offsetX, this.pos.y - offsetY);
+        ctx.rotate(this.angle);
+        
+        ctx.fillStyle = this.color;
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+
+        const s = this.size;
+
+        // 1. Octopus Body (Square/Dome)
+        ctx.beginPath();
+        ctx.rect(-s/2, -s/2, s, s/2);
+        ctx.fill();
+
+        // 2. Head Dome
+        ctx.beginPath();
+        ctx.arc(0, -s/2, s/2, Math.PI, 2 * Math.PI);
+        ctx.fill();
+
+        // 3. Tentacles (simple lines/rects)
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2;
+        const tentacleCount = 4;
+        for(let i = 0; i < tentacleCount; i++) {
+          const xOffset = (i - tentacleCount/2 + 0.5) * s/4;
+          ctx.beginPath();
+          ctx.moveTo(xOffset, s/2);
+          ctx.lineTo(xOffset, s/2 + s/3);
+          ctx.stroke();
+        }
+
+        // 4. Eyes (small white dots)
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(-s/4, -s/4, s/8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(s/4, -s/4, s/8, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      split() {
+        if (this.size > 15) {
+          return [
+            new Invader(this.pos.x + Math.random() * 10 - 5, this.pos.y + Math.random() * 10 - 5, this.size / 2),
+            new Invader(this.pos.x + Math.random() * 10 - 5, this.pos.y + Math.random() * 10 - 5, this.size / 2)
+          ];
+        }
+        return [];
+      }
+    }
+
+    function startGame(mode) {
+      controlMode = mode;
+      document.getElementById('startScreen').style.display = 'none';
+      
+      if (mode === 'mobile') {
+        document.getElementById('joystick').style.display = 'block';
+        document.getElementById('fireBtn').style.display = 'flex';
+        setupTouchControls();
+      } else {
+        document.getElementById('controls').style.display = 'block';
+        setupKeyboardControls();
+      }
+
+      ship = new Ship(WORLD_SIZE / 2, WORLD_SIZE / 2, 'fighter');
+      
+      for (let i = 0; i < INVADER_COUNT; i++) {
+        const x = Math.random() * WORLD_SIZE;
+        const y = Math.random() * WORLD_SIZE;
+        const size = 20 + Math.random() * 25;
+        invaders.push(new Invader(x, y, size));
+      }
+
+      gameStarted = true;
+      gameLoop();
+    }
+
+    function setupTouchControls() {
+      const joystick = document.getElementById('joystick');
+      const knob = document.getElementById('joystick-knob');
+      
+      joystick.addEventListener('touchstart', handleJoystickStart);
+      joystick.addEventListener('touchmove', handleJoystickMove);
+      joystick.addEventListener('touchend', handleJoystickEnd);
+
+      function handleJoystickStart(e) {
+        e.preventDefault();
+        joystickActive = true;
+        handleJoystickMove(e);
+      }
+
+      function handleJoystickMove(e) {
+        if (!joystickActive) return;
+        e.preventDefault();
+        
+        const rect = joystick.getBoundingClientRect();
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const touch = e.touches[0];
+        const x = touch.clientX - rect.left - centerX;
+        const y = touch.clientY - rect.top - centerY;
+        
+        const distance = Math.sqrt(x * x + y * y);
+        const maxDistance = 35;
+        
+        if (distance > maxDistance) {
+          joystickDir.x = (x / distance);
+          joystickDir.y = (y / distance);
+          knob.style.transform = `translate(${(x / distance) * maxDistance}px, ${(y / distance) * maxDistance}px)`;
+        } else {
+          joystickDir.x = x / maxDistance;
+          joystickDir.y = y / maxDistance;
+          knob.style.transform = `translate(${x}px, ${y}px)`;
+        }
+      }
+
+      function handleJoystickEnd(e) {
+        e.preventDefault();
+        joystickActive = false;
+        joystickDir = {x: 0, y: 0};
+        knob.style.transform = 'translate(0, 0)';
+      }
+
+      const fireBtn = document.getElementById('fireBtn');
+      fireBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        firing = true;
+        fireBtn.classList.add('active');
+      });
+      fireBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        firing = false;
+        fireBtn.classList.remove('active');
+      });
+
+      function updateFireButtonText() {
+        if (ship && ship.type === 'carrier') {
+          fireBtn.textContent = 'BOOST';
+        } else {
+          fireBtn.textContent = 'FIRE';
+        }
+      }
+      updateFireButtonText();
+      window.updateFireButtonText = updateFireButtonText;
+    }
+
+    function setupKeyboardControls() {
+      window.addEventListener('keydown', e => {
+        keys[e.key] = true;
+        if (e.key === '1') switchShip('fighter');
+        if (e.key === '2') switchShip('carrier');
+        if (e.key === '3') switchShip('brute');
+      });
+      
+      window.addEventListener('keyup', e => keys[e.key] = false);
+    }
+
+    document.querySelectorAll('.ship-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchShip(btn.dataset.ship);
+      });
+    });
+
+    function switchShip(type) {
+      if (!ship) return;
+      const oldPos = ship.pos;
+      const oldVel = ship.vel;
+      ship = new Ship(oldPos.x, oldPos.y, type);
+      ship.vel = oldVel;
+      document.querySelectorAll('.ship-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`[data-ship="${type}"]`).classList.add('active');
+      
+      if (controlMode === 'mobile' && window.updateFireButtonText) {
+        window.updateFireButtonText();
+      }
+    }
+
+    function checkCollisions() {
+      // Remove dead bullets
+      invaderBullets = invaderBullets.filter(b => b.life > 0);
+
+      // --- 1. Friendly Bullets vs Invaders ---
+      ship.bullets = ship.bullets.filter(bullet => {
+        let hit = false;
+        invaders = invaders.filter(inv => {
+          const dx = bullet.pos.x - inv.pos.x;
+          const dy = bullet.pos.y - inv.pos.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < inv.size + bullet.radius) {
+            hit = true;
+            const newInvs = inv.split();
+            invaders.push(...newInvs);
+            score += 10;
+            if (Math.random() < 0.2) {
+              invaders.push(new Invader(Math.random() * WORLD_SIZE, Math.random() * WORLD_SIZE, 25));
+            }
+            return false; // Remove the hit invader
+          }
+          return true; // Keep the invader
+        });
+        return !hit; // Remove the bullet if it hit something
+      });
+
+      // --- 2. Drone Bullets vs Invaders ---
+      ship.drones.forEach(drone => {
+        drone.bullets = drone.bullets.filter(bullet => {
+          let hit = false;
+          invaders = invaders.filter(inv => {
+            const dx = bullet.pos.x - inv.pos.x;
+            const dy = bullet.pos.y - inv.pos.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < inv.size + bullet.radius) {
+              hit = true;
+              const newInvs = inv.split();
+              invaders.push(...newInvs);
+              score += 5;
+              return false;
+            }
+            return true;
+          });
+          return !hit;
+        });
+
+        // Drone collision with invaders
+        invaders.forEach((inv, idx) => {
+          const dx = drone.pos.x - inv.pos.x;
+          const dy = drone.pos.y - inv.pos.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < inv.size + drone.radius) {
+            invaders.splice(idx, 1);
+            invaders.push(...inv.split());
+            drone.life -= 50;
+            score += 3;
+          }
+        });
+      });
+
+      // --- 3. Invader Bullets vs Ship and Drones (NEW) ---
+      invaderBullets = invaderBullets.filter(ib => {
+        // Ship collision
+        const shipDx = ib.pos.x - ship.pos.x;
+        const shipDy = ib.pos.y - ship.pos.y;
+        const shipDist = Math.sqrt(shipDx * shipDx + shipDy * shipDy);
+        if (shipDist < ship.hitRadius + ib.radius) {
+          ship.health -= ib.damage;
+          if (ship.health < 0) ship.health = 0;
+          return false; // Remove invader bullet
+        }
+
+        // Drone collision
+        for (let i = 0; i < ship.drones.length; i++) {
+          const drone = ship.drones[i];
+          const droneDx = ib.pos.x - drone.pos.x;
+          const droneDy = ib.pos.y - drone.pos.y;
+          const droneDist = Math.sqrt(droneDx * droneDx + droneDy * droneDy);
+          if (droneDist < drone.radius + ib.radius) {
+            drone.life -= 20; // Drones take less damage
+            return false; // Remove invader bullet
+          }
+        }
+
+        return true; // Keep invader bullet
+      });
+
+      // --- 4. Ship collision with invaders (Contact Damage) ---
+      invaders.forEach(inv => {
+        const dx = ship.pos.x - inv.pos.x;
+        const dy = ship.pos.y - inv.pos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < inv.size + ship.hitRadius) {
+          ship.health -= 0.5;
+          if (ship.health < 0) ship.health = 0;
+        }
+      });
+    }
+
+    function drawMinimap() {
+      minimapCtx.fillStyle = '#000';
+      minimapCtx.fillRect(0, 0, 100, 100);
+      
+      const scale = 100 / WORLD_SIZE;
+      
+      // Draw Invaders
+      minimapCtx.fillStyle = '#f0f';
+      invaders.forEach(inv => {
+        minimapCtx.fillRect(inv.pos.x * scale - 1, inv.pos.y * scale - 1, 2, 2);
+      });
+      
+      // Draw Player Ship
+      minimapCtx.fillStyle = '#0f0';
+      minimapCtx.fillRect(ship.pos.x * scale - 2, ship.pos.y * scale - 2, 4, 4);
+    }
+
+    function gameLoop() {
+      if (!gameStarted) return;
+      
+      gameTime++;
+      
+      ship.update();
+      invaders.forEach(inv => inv.update());
+      invaderBullets.forEach(ib => ib.update()); // Update invader bullets
+      checkCollisions();
+
+      const offsetX = ship.pos.x - canvas.width / 2;
+      const offsetY = ship.pos.y - canvas.height / 2;
+
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw everything
+      invaders.forEach(inv => inv.draw(offsetX, offsetY));
+      invaderBullets.forEach(ib => ib.draw(offsetX, offsetY)); // Draw invader bullets
+      ship.draw(offsetX, offsetY);
+
+      document.getElementById('score').textContent = score;
+      document.getElementById('shipType').textContent = ship.type.toUpperCase();
+      document.getElementById('health').textContent = Math.round(ship.health);
+
+      drawMinimap();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
