@@ -1,854 +1,383 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FleetCommand: DOS Shooter</title>
-<script src="https://www.google.com/search?q=https://cdn.tailwindcss.com"></script>
+<title>FleetCommand: Tactical</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-/*
-* ------------------------------------
-* Global Styling
-* ------------------------------------
-/
-:root {
---dos-green: #00ff00;
---dos-dark: #000000;
---text-color: #ffffff;
---canvas-bg: #030712; / Darker background */
---ship-color: #3b82f6;
---bullet-color: #fde047;
---enemy-color: #ef4444;
---canvas-width: 800px;
---canvas-height: 600px;
-}
+    :root {
+        --dos-green: #00ff00;
+        --dos-bg: #000000;
+        --hud-bg: rgba(0, 20, 0, 0.8);
+        --game-width: 575px;
+        --game-height: 431px; /* Approx 4:3 ratio */
+    }
 
     body {
+        background-color: #111;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         min-height: 100vh;
-        background-color: #1f2937; /* Gray 800 */
-        color: var(--text-color);
-        font-family: 'Inter', monospace, sans-serif;
         margin: 0;
-        padding: 10px;
-        overflow-x: hidden;
+        font-family: 'Courier New', Courier, monospace;
+        color: white;
     }
 
-    #game-container {
+    /* Main Game Wrapper - Locked to 575px */
+    #game-wrapper {
         position: relative;
-        width: 100%;
-        max-width: var(--canvas-width);
-        aspect-ratio: 4/3;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-        border: 4px solid var(--dos-green); /* DOS Border */
-        border-radius: 6px;
+        width: var(--game-width);
+        height: var(--game-height);
+        border: 4px solid #333;
+        background-color: #000;
+        box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        overflow: hidden;
     }
 
     canvas {
-        background-color: var(--canvas-bg);
         display: block;
         width: 100%;
         height: 100%;
+        background-color: #020617;
     }
 
-    /*
-    * ------------------------------------
-    * DOS Title Screen Styling
-    * ------------------------------------
-    */
-    #title-screen {
+    /* UI Overlay - Handles HUD and Screens */
+    .ui-layer {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: var(--dos-dark);
+        pointer-events: none; /* Let clicks pass through to canvas */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    /* Top HUD Bar */
+    .hud-bar {
+        background-color: var(--hud-bg);
+        padding: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+        pointer-events: auto; /* Re-enable clicks for buttons */
+        height: 50px;
+    }
+
+    .hud-btn {
+        background: #374151;
+        border: 1px solid #6b7280;
+        color: white;
+        font-size: 12px;
+        padding: 4px 10px;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-weight: bold;
+        transition: background 0.2s;
+    }
+    .hud-btn:hover { background: #4b5563; }
+    .hud-btn:active { transform: translateY(1px); }
+
+    .score-display {
+        font-size: 18px;
         color: var(--dos-green);
+        font-weight: bold;
+    }
+
+    /* Screens (Title, Game Over, Map) */
+    .screen {
+        position: absolute;
+        top: 50px; /* Below HUD */
+        left: 0;
+        width: 100%;
+        height: calc(100% - 50px);
+        background: rgba(0, 0, 0, 0.9);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        text-align: center;
-        z-index: 100;
-        font-family: monospace; /* For that blocky DOS look */
+        pointer-events: auto;
+        z-index: 10;
     }
 
-    #title-screen h1 {
-        font-size: clamp(1.5rem, 8vw, 3.5rem);
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px #000;
-        animation: blink-text 1s step-end infinite;
-    }
+    .hidden { display: none !important; }
 
-    #title-screen p {
-        font-size: clamp(0.75rem, 3vw, 1.25rem);
-        margin-top: 2rem;
-    }
+    h1 { color: var(--dos-green); font-size: 32px; margin-bottom: 10px; text-transform: uppercase; text-shadow: 0 0 10px var(--dos-green); }
+    h2 { color: #ef4444; font-size: 28px; margin-bottom: 10px; }
+    p { color: #ccc; margin-bottom: 20px; font-size: 14px; text-align: center; padding: 0 20px; }
 
-    #start-button {
-        padding: 0.5rem 1.5rem;
-        margin-top: 1.5rem;
-        background-color: var(--dos-green);
-        color: var(--dos-dark);
-        border: 2px solid var(--dos-green);
-        font-family: monospace;
+    .action-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background: var(--dos-green);
+        color: black;
+        border: none;
         cursor: pointer;
-        box-shadow: 4px 4px 0px 0px var(--dos-green);
-        transition: all 0.1s;
+        font-weight: bold;
+        font-family: 'Courier New', monospace;
     }
+    .action-btn:hover { background: #fff; }
 
-    #start-button:hover {
-        box-shadow: 2px 2px 0px 0px var(--dos-green);
-        transform: translate(2px, 2px);
-    }
-
-    @keyframes blink-text {
-        50% { opacity: 0.2; }
-    }
-
-    /*
-    * ------------------------------------
-    * Mobile Controls Styling
-    * ------------------------------------
-    */
-    #controls {
+    /* Map Grid Styling */
+    #map-grid {
         display: grid;
-        grid-template-areas:
-            "up up shoot"
-            "left down right";
-        gap: 10px;
-        margin-top: 15px;
-        padding: 10px;
-        width: 100%;
-        max-width: var(--canvas-width);
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+        width: 80%;
+        height: 60%;
+        border: 1px solid #444;
+        padding: 5px;
     }
+    .map-cell { background: #111; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #444; }
+    .map-cell.active { background: #064e3b; color: #34d399; border-color: #059669; }
+    .map-cell.player-loc { background: #1e3a8a; color: white; border: 1px solid #3b82f6; }
 
-    .ctrl-btn {
-        background-color: #374151; /* Gray 700 */
-        color: var(--text-color);
-        border: 2px solid #9ca3af; /* Gray 400 */
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        user-select: none;
-        cursor: pointer;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.1s, transform 0.1s;
-    }
-
-    .ctrl-btn:active {
-        background-color: #4b5563; /* Gray 600 */
-        transform: scale(0.95);
-    }
-
-    #ctrl-up { grid-area: up; border-radius: 10px; }
-    #ctrl-down { grid-area: down; }
-    #ctrl-left { grid-area: left; }
-    #ctrl-right { grid-area: right; }
-    #ctrl-shoot {
-        grid-area: shoot;
-        background-color: var(--enemy-color);
-        border-color: #b91c1c;
-        border-radius: 10px;
-        width: 100%;
-        height: 100%;
-    }
-
-    /* Hide controls on desktop, show on small screens */
-    @media (min-width: 640px) {
-        #controls { display: none; }
-        body { padding: 0; }
-    }
-
-    @media (max-width: 640px) {
-        .ctrl-btn {
-            width: 70px;
-            height: 70px;
-        }
+    /* Helper text below game */
+    .controls-hint {
+        width: var(--game-width);
+        margin-top: 10px;
+        color: #666;
+        font-size: 12px;
+        text-align: center;
     }
 </style>
-
-
 </head>
 <body>
 
-<h1 class="text-xl font-bold mb-4 font-mono text-cyan-400">FLEETCOMMAND: ALIEN INVASION</h1>
+<div id="game-wrapper">
+    <canvas id="gameCanvas" width="575" height="431"></canvas>
+    
+    <div class="ui-layer">
+        <div class="hud-bar">
+            <div class="flex gap-2">
+                <button class="hud-btn" id="btn-map" onclick="toggleMap()">Map</button>
+                <button class="hud-btn" id="btn-switch" onclick="switchShip()">Switch Ship</button>
+            </div>
+            <div class="score-display">SCORE: <span id="score-val">0</span></div>
+            <div class="text-xs text-gray-400">LVL <span id="level-val">1</span></div>
+        </div>
 
-<div id="game-container">
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <!-- DOS Style Title Screen -->
-    <div id="title-screen" class="hidden">
-        <pre class="text-xs mb-4">
+        <div id="title-screen" class="screen">
+            <h1>FLEET COMMAND</h1>
+            <p>Sector 7 is under attack.<br>Initialize defense protocols.</p>
+            <button class="action-btn" onclick="startGame()">INITIALIZE</button>
+        </div>
 
+        <div id="game-over-screen" class="screen hidden">
+            <h2>SIGNAL LOST</h2>
+            <p>Your fleet has been decimated.</p>
+            <p>Final Score: <span id="final-score">0</span></p>
+            <button class="action-btn" onclick="resetGame()">REBOOT SYSTEM</button>
+        </div>
 
-88888888888888888888888888888888888888888888888888888888888888888888888888888888
-8                                                                            8
-8               ██████  ██      ██████  ███████ ███████ ██████  ██████        8
-8              ██      ██      ██    ██ ██      ██      ██   ██ ██   ██       8
-8              ██      ██      ██    ██ █████   █████   ██████  ██████        8
-8              ██      ██      ██    ██ ██      ██      ██   ██ ██   ██       8
-8               ██████  ██████  ██████  ███████ ███████ ██   ██ ██   ██       8
-8                                                                            8
-8                          COMMANDER, REPORT TO BRIDGE.                        8
-8                           ENGAGE HOSTILE CONTACT.                            8
-8                                                                            8
-88888888888888888888888888888888888888888888888888888888888888888888888888888888
-</pre>
-<h1>FLEETCOMMAND</h1>
-<p>DESTROY THE ALIEN SWARM</p>
-<button id="start-button">PRESS START TO BEGIN</button>
-<p class="mt-8 text-sm">Use WASD/Arrow Keys to Move, Spacebar to Shoot</p>
+        <div id="map-screen" class="screen hidden">
+            <h1 style="font-size: 20px; margin-bottom: 10px;">TACTICAL MAP</h1>
+            <div id="map-grid">
+                </div>
+            <p style="margin-top: 15px; margin-bottom: 5px;">PAUSED</p>
+            <button class="hud-btn" onclick="toggleMap()">RESUME</button>
+        </div>
+    </div>
 </div>
-<div id="game-over-screen" class="hidden absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 flex flex-col items-center justify-center z-50 rounded-md">
-<h2 class="text-4xl font-mono text-red-500 mb-4">-- GAME OVER --</h2>
-<p class="text-xl font-mono text-white mb-6">Final Score: <span id="final-score">0</span></p>
-<button id="restart-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-lg transition duration-150">RESTART GAME</button>
-</div>
-</div>
 
-<!-- Mobile Controls -->
-<div id="controls">
-    <button id="ctrl-up" class="ctrl-btn" ontouchstart="setMovement('up', true)" ontouchend="setMovement('up', false)">&#9650;</button>
-    <button id="ctrl-left" class="ctrl-btn" ontouchstart="setMovement('left', true)" ontouchend="setMovement('left', false)">&#9664;</button>
-    <button id="ctrl-down" class="ctrl-btn" ontouchstart="setMovement('down', true)" ontouchend="setMovement('down', false)">&#9660;</button>
-    <button id="ctrl-right" class="ctrl-btn" ontouchstart="setMovement('right', true)" ontouchend="setMovement('right', false)">&#9654;</button>
-    <button id="ctrl-shoot" class="ctrl-btn" ontouchstart="setMovement('shoot', true)" ontouchend="setMovement('shoot', false)">FIRE</button>
+<div class="controls-hint">
+    WASD / Arrows to Move &bull; SPACE to Shoot
 </div>
 
 <script>
-    // Set up the canvas and context
+    /**
+     * GAME CONFIGURATION
+     */
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    const gameContainer = document.getElementById('game-container');
+    
+    // UI Elements
+    const uiScore = document.getElementById('score-val');
+    const uiLevel = document.getElementById('level-val');
+    const uiFinalScore = document.getElementById('final-score');
     const titleScreen = document.getElementById('title-screen');
-    const startButton = document.getElementById('start-button');
     const gameOverScreen = document.getElementById('game-over-screen');
-    const restartButton = document.getElementById('restart-button');
-    const finalScoreDisplay = document.getElementById('final-score');
+    const mapScreen = document.getElementById('map-screen');
+    const mapGrid = document.getElementById('map-grid');
 
-    // Game Constants
-    const PLAYER_SPEED = 5;
-    const BULLET_SPEED = 7;
-    const ENEMY_SPEED = 2;
-
-    // Global Game State
+    // Game State
     let gameRunning = false;
+    let isPaused = false;
     let score = 0;
-    let lastSpawnTime = 0;
-    let enemies = [];
-    let playerBullets = [];
-    let enemyBullets = [];
-    let drones = []; // For Carrier-spawned drones
     let level = 1;
+    let lastTime = 0;
+    let spawnTimer = 0;
+    let spawnDelay = 2000;
 
-    // --- SPAWN RATE LOGIC ---
-    const BASE_SPAWN_DELAY = 2000; // milliseconds
-    let currentSpawnDelay = BASE_SPAWN_DELAY;
+    // Ships Configuration
+    const shipTypes = [
+        { name: 'Interceptor', color: '#3b82f6', width: 30, speed: 5, hp: 3, shotDelay: 200 }, // Balanced
+        { name: 'Bomber', color: '#ef4444', width: 40, speed: 3, hp: 5, shotDelay: 400 },      // Slow, Tanky
+        { name: 'Stealth', color: '#eab308', width: 20, speed: 7, hp: 2, shotDelay: 150 }      // Fast, Weak
+    ];
+    let currentShipIdx = 0;
 
-    // Player Object (Centered coordinates)
+    // Entities
     const player = {
         x: canvas.width / 2,
         y: canvas.height - 50,
-        width: 40,
-        height: 20,
-        color: 'var(--ship-color)',
-        health: 3,
-        shooting: false,
-        canShoot: true,
-        shootDelay: 200, // ms
-        lastShotTime: 0,
-        movingLeft: false,
-        movingRight: false,
-        movingUp: false,
-        movingDown: false,
+        width: 30,
+        height: 30,
+        dx: 0,
+        dy: 0,
+        hp: 3,
+        maxHp: 3,
+        lastShot: 0,
+        shooting: false
     };
 
-    // --- CORE CLASSES ---
+    let bullets = [];
+    let enemies = [];
+    let particles = [];
 
-    class Bullet {
-        constructor(x, y, vx, vy, color = 'var(--bullet-color)', damage = 1) {
-            this.x = x;
-            this.y = y;
-            this.vx = vx;
-            this.vy = vy;
-            this.radius = 3;
-            this.color = color;
-            this.damage = damage;
+    // Controls
+    const keys = { ArrowUp:false, ArrowDown:false, ArrowLeft:false, ArrowRight:false, w:false, s:false, a:false, d:false, " ":false };
+
+    /**
+     * INITIALIZATION
+     */
+    function init() {
+        // Generate Map Grid visual
+        mapGrid.innerHTML = '';
+        for(let i=0; i<16; i++) {
+            const div = document.createElement('div');
+            div.className = 'map-cell';
+            if(i === 13) div.classList.add('player-loc'); // Fake player location
+            else if(i < 4) div.classList.add('active');   // Fake enemies
+            div.innerText = i < 4 ? 'HOSTILE' : (i===13 ? 'YOU' : '.');
+            mapGrid.appendChild(div);
         }
 
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-        }
+        // Set initial ship stats
+        applyShipStats();
 
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = this.color;
-            ctx.fill();
-            ctx.closePath();
-        }
+        // Start Loop
+        requestAnimationFrame(gameLoop);
     }
 
-    class Enemy {
-        constructor(x, y, type, health, color, width, height, shootInterval = 1000) {
-            // Enemy coordinates are top-left
-            this.x = x;
-            this.y = y;
-            this.type = type;
-            this.health = health;
-            this.maxHealth = health;
-            this.color = color;
-            this.width = width;
-            this.height = height;
-            this.vx = ENEMY_SPEED;
-            this.vy = 0;
-            this.shootInterval = shootInterval;
-            this.lastShotTime = Date.now();
-        }
-
-        draw() {
-            // Draw enemy body
-            ctx.fillStyle = this.color;
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-
-            // Draw Health Bar
-            const healthRatio = this.health / this.maxHealth;
-            const healthBarWidth = this.width;
-            const healthBarHeight = 3;
-            ctx.fillStyle = '#333';
-            ctx.fillRect(this.x, this.y - 8, healthBarWidth, healthBarHeight);
-            ctx.fillStyle = healthRatio > 0.5 ? '#0f0' : healthRatio > 0.2 ? '#ff0' : '#f00';
-            ctx.fillRect(this.x, this.y - 8, healthBarWidth * healthRatio, healthBarHeight);
-        }
-
-        update() {
-            this.x += this.vx;
-
-            // Bounce off walls
-            if (this.x + this.width > canvas.width || this.x < 0) {
-                this.vx *= -1;
-                this.y += 20; // Move down a row
-            }
-
-            // Brute specific attack logic (fires 5 bullets)
-            if (this.type === 'Brute' && Date.now() - this.lastShotTime > this.shootInterval) {
-                this.shootBrute();
-                this.lastShotTime = Date.now();
-            }
-
-            // Carrier specific attack logic (spawns 4 drones)
-            if (this.type === 'Carrier' && Date.now() - this.lastShotTime > this.shootInterval * 1.5) {
-                this.spawnDrones();
-                this.lastShotTime = Date.now();
-            }
-
-            // Drone specific movement
-            if (this.type === 'Drone') {
-                // Drones track the player
-                const dx = player.x - this.x;
-                const dy = player.y - this.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                // Avoid division by zero if drone is exactly on player (highly unlikely)
-                if (dist > 1) {
-                    this.x += (dx / dist) * ENEMY_SPEED * 0.8;
-                    this.y += (dy / dist) * ENEMY_SPEED * 0.8;
-                }
-            }
-        }
-        
-        // Fires 5 bullets in a spread pattern
-        shootBrute() {
-            const bulletCount = 5;
-            // Base angle is down (Math.PI / 2). Spread angle is limited for focus.
-            const spreadAngle = Math.PI / 8; // 22.5 degrees total spread
-            const startAngle = Math.PI / 2 - spreadAngle;
-            const angleStep = (spreadAngle * 2) / (bulletCount - 1);
-            
-            for (let i = 0; i < bulletCount; i++) {
-                const angle = startAngle + i * angleStep;
-                const vx = Math.cos(angle) * BULLET_SPEED * 0.7;
-                const vy = Math.sin(angle) * BULLET_SPEED * 0.7;
-                enemyBullets.push(new Bullet(
-                    this.x + this.width / 2,
-                    this.y + this.height,
-                    vx,
-                    vy,
-                    '#ff00ff' // Purple bullets
-                ));
-            }
-        }
-
-        // Spawns 4 drones around the carrier
-        spawnDrones() {
-            const droneCount = 4;
-            // Offsets relative to the carrier's top-left (this.x, this.y)
-            const offsets = [
-                {x: -10, y: this.height + 5}, // Left side
-                {x: this.width - 5, y: this.height + 5}, // Right side
-                {x: -10, y: this.height * 2 + 5}, // Back-Left
-                {x: this.width - 5, y: this.height * 2 + 5} // Back-Right
-            ];
-
-            for (let i = 0; i < droneCount; i++) {
-                 // Drones are smaller, lower health, and the 'Drone' type
-                 drones.push(new Enemy(
-                    this.x + offsets[i].x,
-                    this.y + offsets[i].y,
-                    'Drone',
-                    1,
-                    '#4ade80', // Green Drone
-                    15, 15,
-                    1000 // Drones don't shoot in this simple version, but have interval property
-                ));
-            }
-        }
-    }
-
-    // --- GAME LOGIC FUNCTIONS ---
-
-    function initGame() {
-        // Reset state
-        score = 0;
-        level = 1;
-        enemies = [];
-        playerBullets = [];
-        enemyBullets = [];
-        drones = [];
-        currentSpawnDelay = BASE_SPAWN_DELAY;
-
-        player.health = 3;
-        player.x = canvas.width / 2;
-        player.y = canvas.height - 50;
-    }
-
-    function checkLevelClear() {
-        // Check if both main enemies and drones are cleared
-        if (enemies.length === 0 && drones.length === 0 && gameRunning) {
-            // Level cleared!
-            levelUp();
-        }
-    }
-
-    // --- LEVEL UP LOGIC (Increased spawn rate) ---
-    function levelUp() {
-        level++;
-        // Increase spawn rate by reducing delay. This makes spawning 10% faster per level.
-        currentSpawnDelay = BASE_SPAWN_DELAY * Math.pow(0.9, level - 1);
-        if (currentSpawnDelay < 500) currentSpawnDelay = 500; // Cap delay at 0.5s
-
-        showMessage(`LEVEL ${level} INCOMING! Spawn Rate Increased!`, 1500, 'var(--dos-green)');
-        setTimeout(spawnInitialEnemies, 1500); // Start new wave after message
-    }
-
-
-    function spawnEnemy(type) {
-        const x = Math.random() * (canvas.width - 80); // Ensure space for largest enemy (Carrier 80px)
-        let enemy;
-
-        switch (type) {
-            case 'Basic':
-                enemy = new Enemy(x, 20, 'Basic', 2, 'var(--enemy-color)', 40, 20);
-                break;
-            case 'Brute':
-                // Brutes are tougher and shoot
-                enemy = new Enemy(x, 20, 'Brute', 5 + level, '#ff6600', 60, 30, 1500 - (level * 50));
-                break;
-            case 'Carrier':
-                // Carriers are even tougher and spawn drones
-                enemy = new Enemy(x, 20, 'Carrier', 8 + level * 2, '#8000ff', 80, 40, 3000 - (level * 100));
-                break;
-        }
-
-        if (enemy) enemies.push(enemy);
-    }
-
-    function spawnInitialEnemies() {
-        // Basic wave generation for the start of a level
-        for (let i = 0; i < 5 + level; i++) {
-            spawnEnemy('Basic');
-        }
-        if (level >= 2) spawnEnemy('Brute');
-        if (level >= 3) spawnEnemy('Carrier');
-        if (level >= 5) spawnEnemy(Math.random() > 0.5 ? 'Brute' : 'Carrier');
-    }
-
-    function handleSpawning(timestamp) {
-        if (timestamp - lastSpawnTime > currentSpawnDelay) {
-            const rand = Math.random();
-            if (rand < 0.6) {
-                spawnEnemy('Basic');
-            } else if (rand < 0.8) {
-                spawnEnemy('Brute');
-            } else {
-                spawnEnemy('Carrier');
-            }
-            lastSpawnTime = timestamp;
-        }
-    }
-
-    function drawPlayer() {
-        // Player is drawn from its center point (player.x, player.y)
-        ctx.fillStyle = player.color;
-        ctx.fillRect(player.x - player.width / 2, player.y - player.height / 2, player.width, player.height);
-
-        // Draw Health
-        ctx.fillStyle = 'white';
-        ctx.font = '12px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText(`HP: ${player.health}`, player.x, player.y + 25);
-        ctx.textAlign = 'left'; // Reset alignment
-    }
-
-    function updatePlayer() {
-        if (player.movingLeft) player.x -= PLAYER_SPEED;
-        if (player.movingRight) player.x += PLAYER_SPEED;
-        if (player.movingUp) player.y -= PLAYER_SPEED;
-        if (player.movingDown) player.y += PLAYER_SPEED;
-
-        // Keep player within bounds (using center coordinates)
-        player.x = Math.max(player.width / 2, Math.min(canvas.width - player.width / 2, player.x));
-        player.y = Math.max(player.height / 2, Math.min(canvas.height - player.height / 2, player.y));
-
-        if (player.shooting) handlePlayerShoot();
-    }
-
-    function handlePlayerShoot() {
-        const now = Date.now();
-        if (player.canShoot && now - player.lastShotTime > player.shootDelay) {
-            // Fire a single bullet from the center of the player's top edge
-            playerBullets.push(new Bullet(player.x, player.y - player.height / 2, 0, -BULLET_SPEED));
-            player.lastShotTime = now;
-        }
-    }
-
-    // --- COLLISION UTILITIES (FIXED) ---
-
-    // Check AABB Collision (used for Player vs Enemy ramming)
-    // Note: rect1 is assumed to be the Player (centered), rect2 is the Enemy (top-left)
-    function checkAABBCollision(rect1, rect2) {
-        const rect1_X = rect1.x - rect1.width / 2;
-        const rect1_Y = rect1.y - rect1.height / 2;
-
-        return rect1_X < rect2.x + rect2.width &&
-               rect1_X + rect1.width > rect2.x &&
-               rect1_Y < rect2.y + rect2.height &&
-               rect1_Y + rect1.height > rect2.y;
-    }
-
-    // Check Bullet (Circle) vs Rectangular Object Collision
-    // Note: rect is assumed to be the Enemy (top-left) or Player (handled by its centered position)
-    function checkBulletRectCollision(bullet, rect) {
-        let rectX, rectY;
-        if (rect === player) {
-            // Adjust player's center coordinates to its top-left corner
-            rectX = rect.x - rect.width / 2;
-            rectY = rect.y - rect.height / 2;
-        } else {
-            // Enemy/Drone are already top-left
-            rectX = rect.x;
-            rectY = rect.y;
-        }
-
-        const closestX = Math.max(rectX, Math.min(bullet.x, rectX + rect.width));
-        const closestY = Math.max(rectY, Math.min(bullet.y, rectY + rect.height));
-
-        const distX = bullet.x - closestX;
-        const distY = bullet.y - closestY;
-
-        return (distX * distX + distY * distY) < (bullet.radius * bullet.radius);
-    }
-
-    // --- GAME UPDATE LOOP ---
-
-    function updateGame() {
-        if (!gameRunning) return;
-
-        updatePlayer();
-
-        // Update Bullets
-        playerBullets.forEach(b => b.update());
-        enemyBullets.forEach(b => b.update());
-
-        // Filter out-of-bounds bullets
-        playerBullets = playerBullets.filter(b => b.y > 0);
-        enemyBullets = enemyBullets.filter(b => b.y < canvas.height);
-
-        // Update Enemies
-        enemies.forEach(e => e.update());
-        drones.forEach(d => d.update());
-
-        handleCollisions();
-        checkLevelClear();
-
-        // Filter dead entities
-        enemies = enemies.filter(e => e.health > 0);
-        drones = drones.filter(d => d.health > 0);
-
-        // Check Game Over
-        if (player.health <= 0) {
-            gameOver();
-        }
-    }
-
-    function handleCollisions() {
-        // Player Bullet vs. Enemies
-        playerBullets.forEach((bullet, bIndex) => {
-            let hit = false;
-
-            // Check main enemies
-            enemies.forEach((enemy) => {
-                if (!hit && checkBulletRectCollision(bullet, enemy)) {
-                    enemy.health -= bullet.damage;
-                    score += 10;
-                    if (enemy.health <= 0) {
-                        score += enemy.maxHealth * 5;
-                    }
-                    hit = true;
-                }
-            });
-            // Check drones
-            drones.forEach((drone) => {
-                if (!hit && checkBulletRectCollision(bullet, drone)) {
-                    drone.health -= bullet.damage;
-                    score += 5;
-                    if (drone.health <= 0) {
-                        score += 15;
-                    }
-                    hit = true;
-                }
-            });
-
-            if (hit) {
-                playerBullets.splice(bIndex, 1);
-            }
-        });
-
-        // Enemy Bullet vs. Player
-        enemyBullets.forEach((bullet, bIndex) => {
-            if (checkBulletRectCollision(bullet, player)) {
-                player.health -= bullet.damage;
-                enemyBullets.splice(bIndex, 1);
-            }
-        });
-
-        // Enemy/Drone vs. Player (Ramming)
-        [...enemies, ...drones].forEach((enemy) => {
-            if (checkAABBCollision(player, enemy)) {
-                player.health -= 1; // Take ramming damage
-                enemy.health = 0; // Enemy is also destroyed
-            }
-        });
-    }
-
-    let messageTimeout;
-    function showMessage(text, duration, color = 'white') {
-        // Store text for redraw in the main loop
-        ctx.messageText = text;
-
-        // Clear any previous message timeout
-        if (messageTimeout) {
-            clearTimeout(messageTimeout);
-        }
-
-        // Schedule removal
-        messageTimeout = setTimeout(() => {
-            messageTimeout = null;
-            ctx.messageText = '';
-        }, duration);
-    }
-
-    function drawScore() {
-        ctx.fillStyle = 'var(--dos-green)';
-        ctx.font = '18px monospace';
-        ctx.textAlign = 'left';
-        ctx.fillText(`SCORE: ${score}`, 10, 25);
-        ctx.textAlign = 'right';
-        ctx.fillText(`LEVEL: ${level}`, canvas.width - 10, 25);
-        ctx.textAlign = 'left'; // Reset alignment
-    }
-
-    // --- GAME LOOP ---
-    function gameLoop(timestamp) {
-        // Clear the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (gameRunning) {
-            handleSpawning(timestamp);
-            updateGame();
-
-            drawPlayer();
-            playerBullets.forEach(b => b.draw());
-            enemyBullets.forEach(b => b.draw());
-            enemies.forEach(e => e.draw());
-            drones.forEach(d => d.draw());
-
-            drawScore();
-
-            // If a message is active, draw it over the game
-            if (ctx.messageText) {
-                ctx.save();
-                ctx.font = 'bold 30px monospace';
-                ctx.fillStyle = 'var(--dos-green)';
-                ctx.textAlign = 'center';
-                ctx.fillText(ctx.messageText, canvas.width / 2, canvas.height / 2);
-                ctx.restore();
-            }
-
-            requestAnimationFrame(gameLoop);
-        } else {
-            // Only show title screen if game is stopped and NOT showing game over screen
-            if (gameOverScreen.classList.contains('hidden')) {
-                 showTitleScreen();
-            }
-        }
+    function applyShipStats() {
+        const type = shipTypes[currentShipIdx];
+        player.width = type.width;
+        player.maxHp = type.hp; // Only applies on reset usually, but we'll keep current HP relative
+        // Update button text
+        document.getElementById('btn-switch').innerText = `SHIP: ${type.name}`;
     }
 
     function startGame() {
+        gameRunning = true;
+        isPaused = false;
+        score = 0;
+        level = 1;
+        player.hp = shipTypes[currentShipIdx].hp;
+        bullets = [];
+        enemies = [];
+        particles = [];
+        player.x = canvas.width / 2;
+        player.y = canvas.height - 50;
+        
         titleScreen.classList.add('hidden');
         gameOverScreen.classList.add('hidden');
-        gameRunning = true;
-        initGame();
-        // Start the main game loop
+        mapScreen.classList.add('hidden');
+        
+        updateHUD();
+    }
+
+    function resetGame() {
+        startGame();
+    }
+
+    function toggleMap() {
+        if(!gameRunning) return;
+        isPaused = !isPaused;
+        if(isPaused) {
+            mapScreen.classList.remove('hidden');
+        } else {
+            mapScreen.classList.add('hidden');
+        }
+    }
+
+    function switchShip() {
+        currentShipIdx = (currentShipIdx + 1) % shipTypes.length;
+        applyShipStats();
+        // If playing, flash message? (Optional)
+    }
+
+    function updateHUD() {
+        uiScore.innerText = score;
+        uiLevel.innerText = level;
+    }
+
+    /**
+     * GAME LOOP
+     */
+    function gameLoop(timestamp) {
+        const dt = timestamp - lastTime;
+        lastTime = timestamp;
+
+        if (gameRunning && !isPaused) {
+            update(dt);
+            draw();
+        }
+
         requestAnimationFrame(gameLoop);
-        // Spawn initial enemies after a brief delay
-        setTimeout(spawnInitialEnemies, 100);
     }
 
-    function gameOver() {
-        gameRunning = false;
-        finalScoreDisplay.textContent = score;
-        gameOverScreen.classList.remove('hidden');
-    }
+    function update(dt) {
+        // 1. Player Movement
+        const ship = shipTypes[currentShipIdx];
+        if (keys.ArrowLeft || keys.a) player.x -= ship.speed;
+        if (keys.ArrowRight || keys.d) player.x += ship.speed;
+        if (keys.ArrowUp || keys.w) player.y -= ship.speed;
+        if (keys.ArrowDown || keys.s) player.y += ship.speed;
 
-    function showTitleScreen() {
-        titleScreen.classList.remove('hidden');
-    }
+        // Clamp bounds
+        player.x = Math.max(player.width/2, Math.min(canvas.width - player.width/2, player.x));
+        player.y = Math.max(player.height/2, Math.min(canvas.height - player.height/2, player.y));
 
-    // --- INPUT HANDLING ---
-
-    function setMovement(direction, isMoving) {
-        switch (direction) {
-            case 'up':
-                player.movingUp = isMoving;
-                break;
-            case 'down':
-                player.movingDown = isMoving;
-                break;
-            case 'left':
-                player.movingLeft = isMoving;
-                break;
-            case 'right':
-                player.movingRight = isMoving;
-                break;
-            case 'shoot':
-                player.shooting = isMoving;
-                break;
+        // 2. Shooting
+        if (keys[" "] && Date.now() - player.lastShot > ship.shotDelay) {
+            bullets.push({ x: player.x, y: player.y - 20, width: 4, height: 10, color: '#ffff00' });
+            player.lastShot = Date.now();
         }
-    }
 
-    // Keyboard Event Listeners (for desktop/keyboard play)
-    document.addEventListener('keydown', (e) => {
-        if (!gameRunning) return;
-        switch (e.key) {
-            case 'a':
-            case 'A':
-            case 'ArrowLeft':
-                setMovement('left', true);
-                break;
-            case 'd':
-            case 'D':
-            case 'ArrowRight':
-                setMovement('right', true);
-                break;
-            case 'w':
-            case 'W':
-            case 'ArrowUp':
-                setMovement('up', true);
-                break;
-            case 's':
-            case 'S':
-            case 'ArrowDown':
-                setMovement('down', true);
-                break;
-            case ' ': // Spacebar
-                setMovement('shoot', true);
-                e.preventDefault(); // Prevent scrolling
-                break;
+        // 3. Bullets
+        bullets.forEach(b => b.y -= 8);
+        bullets = bullets.filter(b => b.y > -10);
+
+        // 4. Spawning Enemies
+        if (Date.now() - spawnTimer > spawnDelay) {
+            spawnEnemy();
+            spawnTimer = Date.now();
         }
-    });
 
-    document.addEventListener('keyup', (e) => {
-        if (!gameRunning) return;
-        switch (e.key) {
-            case 'a':
-            case 'A':
-            case 'ArrowLeft':
-                setMovement('left', false);
-                break;
-            case 'd':
-            case 'D':
-            case 'ArrowRight':
-                setMovement('right', false);
-                break;
-            case 'w':
-            case 'W':
-            case 'ArrowUp':
-                setMovement('up', false);
-                break;
-            case 's':
-            case 'S':
-            case 'ArrowDown':
-                setMovement('down', false);
-                break;
-            case ' ': // Spacebar
-                setMovement('shoot', false);
-                break;
-        }
-    });
+        // 5. Enemies Update
+        enemies.forEach(e => {
+            e.y += e.speed;
+            e.x += Math.sin(e.y * 0.05) * 2; // Wavy movement
+        });
 
-    // Button Event Listeners (Title/Game Over Screens)
-    startButton.addEventListener('click', startGame);
-    restartButton.addEventListener('click', startGame);
-
-    // Start the game by showing the Title Screen
-    window.onload = () => {
-         // Adapt canvas size to container for responsiveness
-        const resizeCanvas = () => {
-            const rect = gameContainer.getBoundingClientRect();
-            // Maintain the 4:3 aspect ratio based on the container width
-            canvas.width = rect.width;
-            canvas.height = rect.width * 0.75;
-
-            // Re-center player on resize if the game is running
-            if (gameRunning) {
-                player.x = canvas.width / 2;
-                player.y = canvas.height - 50;
-            }
-        };
-
-        // Initial sizing and listener setup
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        // Set initial canvas size before showing the title screen
-        canvas.width = gameContainer.offsetWidth;
-        canvas.height = gameContainer.offsetHeight;
-
-
-        showTitleScreen();
-    };
-
-</script>
-
-
-</body>
-</html>
+        // 6. Collision
+        bullets.forEach((b, bi) => {
+            enemies.forEach((e, ei) => {
+                if (rectIntersect(b.x, b.y, b.width, b.height, e.x, e.y, e.width, e.height)) {
+                    // Hit
+                    createParticles(e.x + e.width/2, e.y + e.height/2, e.color);
+                    enemies.splice(ei, 1);
+                    bullets.splice(bi, 1);
+                    score += 10;
+                    updateHUD();
+                    
+                    // Level up simple logic
+                    if(score % 100 === 0) {
+                        level++;
+                        spawnDelay = Math.max(500, spawnDelay - 2
