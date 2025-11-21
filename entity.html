@@ -1,450 +1,467 @@
-import React, { useState, useEffect, useRef } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entity - Virtual Pet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const SpaceInvader = ({ stage, wandering, frame }) => {
+          const sizes = [56, 72, 88];
+          const size = sizes[stage];
+          const tentacleWave = frame === 1 ? 1 : 0;
+          return (
+            <svg viewBox="0 0 14 14" style={{width: size, height: size, imageRendering: 'pixelated'}} className={!wandering ? "animate-bounce" : ""}>
+              {/* Head/body - rounded octopus shape */}
+              <rect x="4" y="2" width="6" height="1" fill="#9B59B6"/>
+              <rect x="3" y="3" width="8" height="1" fill="#9B59B6"/>
+              <rect x="2" y="4" width="10" height="4" fill="#9B59B6"/>
+              <rect x="3" y="8" width="8" height="1" fill="#9B59B6"/>
+              
+              {/* Eyes - large round */}
+              <rect x="4" y="5" width="2" height="2" fill="#FFF"/>
+              <rect x="8" y="5" width="2" height="2" fill="#FFF"/>
+              <rect x="5" y="6" width="1" height="1" fill="#000"/>
+              <rect x="9" y="6" width="1" height="1" fill="#000"/>
+              
+              {/* Tentacles - wavy animated */}
+              <rect x={2 - tentacleWave} y="9" width="1" height="2" fill="#8E44AD"/>
+              <rect x={1 - tentacleWave} y="11" width="1" height="2" fill="#8E44AD"/>
+              
+              <rect x="4" y="9" width="1" height="3" fill="#8E44AD"/>
+              <rect x={4 + (tentacleWave * -1)} y="12" width="1" height="1" fill="#8E44AD"/>
+              
+              <rect x="6" y="9" width="1" height="2" fill="#8E44AD"/>
+              <rect x={6 + tentacleWave} y="11" width="1" height="2" fill="#8E44AD"/>
+              
+              <rect x="8" y="9" width="1" height="3" fill="#8E44AD"/>
+              <rect x={8 + (tentacleWave * -1)} y="12" width="1" height="1" fill="#8E44AD"/>
+              
+              <rect x={11 + tentacleWave} y="9" width="1" height="2" fill="#8E44AD"/>
+              <rect x={12 + tentacleWave} y="11" width="1" height="2" fill="#8E44AD"/>
+              
+              {/* Highlights */}
+              <rect x="3" y="4" width="2" height="1" fill="#BB8FCE" opacity="0.6"/>
+            </svg>
+          );
+        };
 
-const SpaceInvader = ({ stage, wandering, frame }) => {
-  const sizes = [56, 72, 88];
-  const size = sizes[stage];
-  const tentacleWave = frame === 1 ? 1 : 0;
-  return (
-    <svg viewBox="0 0 14 14" style={{width: size, height: size, imageRendering: 'pixelated'}} className={!wandering ? "animate-bounce" : ""}>
-      {/* Head/body - rounded octopus shape */}
-      <rect x="4" y="2" width="6" height="1" fill="#9B59B6"/>
-      <rect x="3" y="3" width="8" height="1" fill="#9B59B6"/>
-      <rect x="2" y="4" width="10" height="4" fill="#9B59B6"/>
-      <rect x="3" y="8" width="8" height="1" fill="#9B59B6"/>
-      
-      {/* Eyes - large round */}
-      <rect x="4" y="5" width="2" height="2" fill="#FFF"/>
-      <rect x="8" y="5" width="2" height="2" fill="#FFF"/>
-      <rect x="5" y="6" width="1" height="1" fill="#000"/>
-      <rect x="9" y="6" width="1" height="1" fill="#000"/>
-      
-      {/* Tentacles - wavy animated */}
-      <rect x={2 - tentacleWave} y="9" width="1" height="2" fill="#8E44AD"/>
-      <rect x={1 - tentacleWave} y="11" width="1" height="2" fill="#8E44AD"/>
-      
-      <rect x="4" y="9" width="1" height="3" fill="#8E44AD"/>
-      <rect x={4 + (tentacleWave * -1)} y="12" width="1" height="1" fill="#8E44AD"/>
-      
-      <rect x="6" y="9" width="1" height="2" fill="#8E44AD"/>
-      <rect x={6 + tentacleWave} y="11" width="1" height="2" fill="#8E44AD"/>
-      
-      <rect x="8" y="9" width="1" height="3" fill="#8E44AD"/>
-      <rect x={8 + (tentacleWave * -1)} y="12" width="1" height="1" fill="#8E44AD"/>
-      
-      <rect x={11 + tentacleWave} y="9" width="1" height="2" fill="#8E44AD"/>
-      <rect x={12 + tentacleWave} y="11" width="1" height="2" fill="#8E44AD"/>
-      
-      {/* Highlights */}
-      <rect x="3" y="4" width="2" height="1" fill="#BB8FCE" opacity="0.6"/>
-    </svg>
-  );
-};
+        const CREATURES = {
+          invader: { name: 'Space Invader', component: SpaceInvader }
+        };
 
-const CREATURES = {
-  invader: { name: 'Space Invader', component: SpaceInvader }
-};
+        function Tamagotchi() {
+          const [selectedCreature, setSelectedCreature] = React.useState(null);
+          const [stage, setStage] = React.useState(0);
+          const [hunger, setHunger] = React.useState(100);
+          const [happiness, setHappiness] = React.useState(100);
+          const [cleanliness, setCleanliness] = React.useState(100);
+          const [age, setAge] = React.useState(0);
+          const [alive, setAlive] = React.useState(true);
+          const [message, setMessage] = React.useState('');
+          const [poopCount, setPoopCount] = React.useState(0);
+          const [wandering, setWandering] = React.useState(false);
+          const [position, setPosition] = React.useState({ x: 50, y: 50 });
+          const [petReaction, setPetReaction] = React.useState('');
+          const animationRef = React.useRef(null);
+          const [spriteFrame, setSpriteFrame] = React.useState(0);
+          const [isNapping, setIsNapping] = React.useState(false);
 
-export default function Tamagotchi() {
-  const [selectedCreature, setSelectedCreature] = useState(null);
-  const [stage, setStage] = useState(0);
-  const [hunger, setHunger] = useState(100);
-  const [happiness, setHappiness] = useState(100);
-  const [cleanliness, setCleanliness] = useState(100);
-  const [age, setAge] = useState(0);
-  const [alive, setAlive] = useState(true);
-  const [message, setMessage] = useState('');
-  const [poopCount, setPoopCount] = useState(0);
-  const [wandering, setWandering] = useState(false);
-  const [position, setPosition] = useState({ x: 50, y: 50 });
-  const [petReaction, setPetReaction] = useState('');
-  const animationRef = useRef(null);
-  const [spriteFrame, setSpriteFrame] = useState(0);
-  const [isNapping, setIsNapping] = useState(false);
+          React.useEffect(() => {
+            if (!alive) return;
+            const interval = setInterval(() => {
+              setSpriteFrame(prev => (prev + 1) % 2);
+            }, 500);
+            return () => clearInterval(interval);
+          }, [alive]);
 
-  useEffect(() => {
-    if (!alive) return;
-    const interval = setInterval(() => {
-      setSpriteFrame(prev => (prev + 1) % 2);
-    }, 500);
-    return () => clearInterval(interval);
-  }, [alive]);
+          React.useEffect(() => {
+            if (!alive) return;
+            const napCheck = setInterval(() => {
+              // 10% chance to nap if happiness is low
+              if (happiness < 40 && !isNapping && Math.random() < 0.1) {
+                setIsNapping(true);
+                setTimeout(() => setIsNapping(false), 5000); // Nap for 5 seconds
+              }
+            }, 3000);
+            return () => clearInterval(napCheck);
+          }, [alive, happiness, isNapping]);
 
-  useEffect(() => {
-    if (!alive) return;
-    const napCheck = setInterval(() => {
-      // 10% chance to nap if happiness is low
-      if (happiness < 40 && !isNapping && Math.random() < 0.1) {
-        setIsNapping(true);
-        setTimeout(() => setIsNapping(false), 5000); // Nap for 5 seconds
-      }
-    }, 3000);
-    return () => clearInterval(napCheck);
-  }, [alive, happiness, isNapping]);
+          React.useEffect(() => {
+            if (!selectedCreature || !alive) return;
+            const interval = setInterval(() => {
+              setAge(prev => prev + 1);
+              setHunger(prev => Math.max(0, prev - 2));
+              setHappiness(prev => Math.max(0, prev - 1));
+              setCleanliness(prev => Math.max(0, prev - 1.5));
+              if (Math.random() < 0.1 && poopCount < 3) {
+                setPoopCount(prev => prev + 1);
+                setCleanliness(prev => Math.max(0, prev - 15));
+              }
+            }, 3000);
+            return () => clearInterval(interval);
+          }, [selectedCreature, alive, poopCount]);
 
-  useEffect(() => {
-    if (!selectedCreature || !alive) return;
-    const interval = setInterval(() => {
-      setAge(prev => prev + 1);
-      setHunger(prev => Math.max(0, prev - 2));
-      setHappiness(prev => Math.max(0, prev - 1));
-      setCleanliness(prev => Math.max(0, prev - 1.5));
-      if (Math.random() < 0.1 && poopCount < 3) {
-        setPoopCount(prev => prev + 1);
-        setCleanliness(prev => Math.max(0, prev - 15));
-      }
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [selectedCreature, alive, poopCount]);
-
-  useEffect(() => {
-    if (!selectedCreature) return;
-    if (hunger <= 0 || happiness <= 0 || cleanliness <= 0) {
-      setAlive(false);
-      setWandering(false);
-      showMsg('💔 PET DIED');
-      return;
-    }
-    
-    const avgHealth = (hunger + happiness + cleanliness) / 3;
-    if (avgHealth < 30 && message === '') {
-      showMsg('⚠️ CRITICAL!');
-    } else if (avgHealth < 50 && avgHealth >= 30 && message === '') {
-      showMsg('😟 UNHAPPY');
-    }
-    
-    if (age > 50 && stage < 2) {
-      setStage(2);
-      showMsg('🎉 EVOLVED!');
-    } else if (age > 20 && stage < 1) {
-      setStage(1);
-      showMsg('🎉 GREW UP!');
-    }
-  }, [hunger, happiness, cleanliness, age, stage, selectedCreature]);
-
-  useEffect(() => {
-    if (!wandering || !alive) {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      return;
-    }
-
-    let targetX = Math.random() * 80 + 10;
-    let targetY = Math.random() * 80 + 10;
-    let lastTime = Date.now();
-    let velocityX = 0;
-    let velocityY = 0;
-
-    const animate = () => {
-      const now = Date.now();
-      const delta = (now - lastTime) / 1000;
-      lastTime = now;
-
-      setPosition(prev => {
-        const dx = targetX - prev.x;
-        const dy = targetY - prev.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        // Pick new target if reached or occasionally change direction
-        if (distance < 3 || Math.random() < 0.01) {
-          targetX = Math.random() * 80 + 10;
-          targetY = Math.random() * 80 + 10;
-        }
-
-        // Space physics - slower, floatier movement
-        const speed = 8;
-        const acceleration = 12;
-        const drag = 0.98; // Slight drag for space feel
-        
-        // Smooth acceleration towards target
-        const targetVelX = (dx / distance) * speed;
-        const targetVelY = (dy / distance) * speed;
-        
-        velocityX += (targetVelX - velocityX) * acceleration * delta;
-        velocityY += (targetVelY - velocityY) * acceleration * delta;
-        
-        // Apply drag
-        velocityX *= drag;
-        velocityY *= drag;
-
-        let newX = prev.x + velocityX * delta;
-        let newY = prev.y + velocityY * delta;
-
-        // Bounce off borders with space physics
-        if (newX < -5) {
-          newX = -5;
-          velocityX = Math.abs(velocityX) * 0.6; // Softer bounce
-          targetX = Math.random() * 40 + 30;
-        } else if (newX > 105) {
-          newX = 105;
-          velocityX = -Math.abs(velocityX) * 0.6;
-          targetX = Math.random() * 40 + 20;
-        }
-
-        if (newY < -5) {
-          newY = -5;
-          velocityY = Math.abs(velocityY) * 0.6;
-          targetY = Math.random() * 40 + 30;
-        } else if (newY > 105) {
-          newY = 105;
-          velocityY = -Math.abs(velocityY) * 0.6;
-          targetY = Math.random() * 40 + 20;
-        }
-
-        return { x: newX, y: newY };
-      });
-
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [wandering, alive]);
-
-  const showMsg = (msg) => {
-    setMessage(msg);
-    setTimeout(() => setMessage(''), 2000);
-  };
-
-  const handlePetClick = () => {
-    if (!alive || isNapping) return;
-    const reactions = ['♥', '★', '!', '^_^', '~'];
-    const reaction = reactions[Math.floor(Math.random() * reactions.length)];
-    setPetReaction(reaction);
-    setHappiness(prev => Math.min(100, prev + 5));
-    setTimeout(() => setPetReaction(''), 1000);
-  };
-
-  const toggleWandering = () => {
-    if (!alive) return;
-    setWandering(!wandering);
-    if (!wandering) {
-      showMsg('Let out!');
-    } else {
-      showMsg('Returned!');
-      setPosition({ x: 50, y: 50 });
-    }
-  };
-
-  if (!selectedCreature) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
-        <div className="bg-gray-800 rounded-lg p-4 shadow-2xl border-2 border-cyan-500" style={{width: 320, maxWidth: '95vw'}}>
-          <div className="bg-black rounded p-3 mb-3 border-2 border-cyan-500">
-            <div className="bg-black rounded p-2 mb-3 border border-cyan-700">
-              <h1 className="text-lg font-bold text-center text-cyan-400" style={{fontFamily: 'Courier New, monospace', letterSpacing: '2px'}}>
-                ═══ VIRTUAL PET ═══
-              </h1>
-              <div className="text-center text-cyan-600 text-xs mt-1" style={{fontFamily: 'Courier New, monospace'}}>
-                C:\PETS\SELECT.EXE
-              </div>
-            </div>
-            <div className="flex justify-center">
-              {Object.entries(CREATURES).map(([key, creature]) => {
-                const C = creature.component;
-                return (
-                  <button
-                    key={key}
-                    onClick={() => setSelectedCreature(key)}
-                    className="bg-black hover:bg-gray-900 rounded p-4 border-2 border-cyan-700 hover:border-cyan-400 transition-all"
-                  >
-                    <div className="flex justify-center mb-2">
-                      <C stage={0} wandering={false} frame={0} />
-                    </div>
-                    <div className="text-[10px] font-bold text-cyan-400 text-center" style={{fontFamily: 'Courier New, monospace'}}>
-                      [{creature.name}]
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const creature = CREATURES[selectedCreature];
-  const C = creature.component;
-
-  return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4 relative">
-      {wandering && alive && (
-        <div 
-          className="fixed cursor-pointer transition-all duration-100 z-50"
-          style={{
-            left: `${position.x}%`,
-            top: `${position.y}%`,
-            transform: 'translate(-50%, -50%)'
-          }}
-          onClick={handlePetClick}
-        >
-          <div className="relative">
-            <C stage={stage} wandering={true} frame={spriteFrame} />
-            {isNapping && (
-              <div className="absolute -top-8 -right-8 text-2xl">
-                💤
-              </div>
-            )}
-            {petReaction && (
-              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-2xl animate-bounce text-cyan-400">
-                {petReaction}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className="bg-gray-800 rounded-lg p-4 shadow-2xl border-2 border-cyan-500" style={{width: 320, maxWidth: '95vw'}}>
-        <div className="bg-black rounded p-3 border-2 border-cyan-500">
-          <div className="bg-black rounded p-2 border border-cyan-700">
-            <div className="flex justify-between mb-2 text-[10px] font-bold" style={{fontFamily: 'Courier New, monospace'}}>
-              <span className="text-cyan-400">AGE:{Math.floor(age/10)}d</span>
-              <span className="text-cyan-400">[{alive ? 'ALIVE' : 'DEAD'}]</span>
-            </div>
+          React.useEffect(() => {
+            if (!selectedCreature) return;
+            if (hunger <= 0 || happiness <= 0 || cleanliness <= 0) {
+              setAlive(false);
+              setWandering(false);
+              showMsg('💔 PET DIED');
+              return;
+            }
             
-            <div 
-              className="bg-gray-900 rounded p-4 mb-2 relative flex items-center justify-center cursor-pointer border border-cyan-800"
-              style={{minHeight: 130}}
-              onClick={!wandering ? handlePetClick : undefined}
-            >
-              {wandering ? (
-                <div className="text-[10px] font-bold text-cyan-600 text-center" style={{fontFamily: 'Courier New, monospace'}}>
-                  &gt; WANDERING...
-                </div>
-              ) : alive ? (
-                <div className="relative">
-                  <C stage={stage} wandering={false} frame={spriteFrame} />
-                  {isNapping && (
-                    <div className="absolute -top-8 -right-6 text-3xl">
-                      💤
+            const avgHealth = (hunger + happiness + cleanliness) / 3;
+            if (avgHealth < 30 && message === '') {
+              showMsg('⚠️ CRITICAL!');
+            } else if (avgHealth < 50 && avgHealth >= 30 && message === '') {
+              showMsg('😟 UNHAPPY');
+            }
+            
+            if (age > 50 && stage < 2) {
+              setStage(2);
+              showMsg('🎉 EVOLVED!');
+            } else if (age > 20 && stage < 1) {
+              setStage(1);
+              showMsg('🎉 GREW UP!');
+            }
+          }, [hunger, happiness, cleanliness, age, stage, selectedCreature]);
+
+          React.useEffect(() => {
+            if (!wandering || !alive) {
+              if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current);
+              }
+              return;
+            }
+
+            let targetX = Math.random() * 80 + 10;
+            let targetY = Math.random() * 80 + 10;
+            let lastTime = Date.now();
+            let velocityX = 0;
+            let velocityY = 0;
+
+            const animate = () => {
+              const now = Date.now();
+              const delta = (now - lastTime) / 1000;
+              lastTime = now;
+
+              setPosition(prev => {
+                const dx = targetX - prev.x;
+                const dy = targetY - prev.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                // Pick new target if reached or occasionally change direction
+                if (distance < 3 || Math.random() < 0.01) {
+                  targetX = Math.random() * 80 + 10;
+                  targetY = Math.random() * 80 + 10;
+                }
+
+                // Space physics - slower, floatier movement
+                const speed = 8;
+                const acceleration = 12;
+                const drag = 0.98; // Slight drag for space feel
+                
+                // Smooth acceleration towards target
+                const targetVelX = (dx / distance) * speed;
+                const targetVelY = (dy / distance) * speed;
+                
+                velocityX += (targetVelX - velocityX) * acceleration * delta;
+                velocityY += (targetVelY - velocityY) * acceleration * delta;
+                
+                // Apply drag
+                velocityX *= drag;
+                velocityY *= drag;
+
+                let newX = prev.x + velocityX * delta;
+                let newY = prev.y + velocityY * delta;
+
+                // Bounce off borders with space physics
+                if (newX < -5) {
+                  newX = -5;
+                  velocityX = Math.abs(velocityX) * 0.6; // Softer bounce
+                  targetX = Math.random() * 40 + 30;
+                } else if (newX > 105) {
+                  newX = 105;
+                  velocityX = -Math.abs(velocityX) * 0.6;
+                  targetX = Math.random() * 40 + 20;
+                }
+
+                if (newY < -5) {
+                  newY = -5;
+                  velocityY = Math.abs(velocityY) * 0.6;
+                  targetY = Math.random() * 40 + 30;
+                } else if (newY > 105) {
+                  newY = 105;
+                  velocityY = -Math.abs(velocityY) * 0.6;
+                  targetY = Math.random() * 40 + 20;
+                }
+
+                return { x: newX, y: newY };
+              });
+
+              animationRef.current = requestAnimationFrame(animate);
+            };
+
+            animate();
+
+            return () => {
+              if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current);
+              }
+            };
+          }, [wandering, alive]);
+
+          const showMsg = (msg) => {
+            setMessage(msg);
+            setTimeout(() => setMessage(''), 2000);
+          };
+
+          const handlePetClick = () => {
+            if (!alive || isNapping) return;
+            const reactions = ['♥', '★', '!', '^_^', '~'];
+            const reaction = reactions[Math.floor(Math.random() * reactions.length)];
+            setPetReaction(reaction);
+            setHappiness(prev => Math.min(100, prev + 5));
+            setTimeout(() => setPetReaction(''), 1000);
+          };
+
+          const toggleWandering = () => {
+            if (!alive) return;
+            setWandering(!wandering);
+            if (!wandering) {
+              showMsg('Let out!');
+            } else {
+              showMsg('Returned!');
+              setPosition({ x: 50, y: 50 });
+            }
+          };
+
+          if (!selectedCreature) {
+            return (
+              <div className="min-h-screen bg-black flex items-center justify-center p-4">
+                <div className="bg-gray-800 rounded-lg p-4 shadow-2xl border-2 border-cyan-500" style={{width: 320, maxWidth: '95vw'}}>
+                  <div className="bg-black rounded p-3 mb-3 border-2 border-cyan-500">
+                    <div className="bg-black rounded p-2 mb-3 border border-cyan-700">
+                      <h1 className="text-lg font-bold text-center text-cyan-400" style={{fontFamily: 'Courier New, monospace', letterSpacing: '2px'}}>
+                        ═══ VIRTUAL PET ═══
+                      </h1>
+                      <div className="text-center text-cyan-600 text-xs mt-1" style={{fontFamily: 'Courier New, monospace'}}>
+                        C:\PETS\SELECT.EXE
+                      </div>
                     </div>
-                  )}
-                  {petReaction && (
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-3xl animate-bounce text-cyan-400">
-                      {petReaction}
+                    <div className="flex justify-center">
+                      {Object.entries(CREATURES).map(([key, creature]) => {
+                        const C = creature.component;
+                        return (
+                          <button
+                            key={key}
+                            onClick={() => setSelectedCreature(key)}
+                            className="bg-black hover:bg-gray-900 rounded p-4 border-2 border-cyan-700 hover:border-cyan-400 transition-all"
+                          >
+                            <div className="flex justify-center mb-2">
+                              <C stage={0} wandering={false} frame={0} />
+                            </div>
+                            <div className="text-[10px] font-bold text-cyan-400 text-center" style={{fontFamily: 'Courier New, monospace'}}>
+                              [{creature.name}]
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
-                  )}
+                  </div>
                 </div>
-              ) : (
-                <div className="text-5xl">💀</div>
+              </div>
+            );
+          }
+
+          const creature = CREATURES[selectedCreature];
+          const C = creature.component;
+
+          return (
+            <div className="min-h-screen bg-black flex items-center justify-center p-4 relative">
+              {wandering && alive && (
+                <div 
+                  className="fixed cursor-pointer transition-all duration-100 z-50"
+                  style={{
+                    left: `${position.x}%`,
+                    top: `${position.y}%`,
+                    transform: 'translate(-50%, -50%)'
+                  }}
+                  onClick={handlePetClick}
+                >
+                  <div className="relative">
+                    <C stage={stage} wandering={true} frame={spriteFrame} />
+                    {isNapping && (
+                      <div className="absolute -top-8 -right-8 text-2xl">
+                        💤
+                      </div>
+                    )}
+                    {petReaction && (
+                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-2xl animate-bounce text-cyan-400">
+                        {petReaction}
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
-              {poopCount > 0 && !wandering && (
-                <div className="absolute bottom-1 left-1 flex gap-1">
-                  {[...Array(poopCount)].map((_, i) => <span key={i} className="text-xl">💩</span>)}
+
+              <div className="bg-gray-800 rounded-lg p-4 shadow-2xl border-2 border-cyan-500" style={{width: 320, maxWidth: '95vw'}}>
+                <div className="bg-black rounded p-3 border-2 border-cyan-500">
+                  <div className="bg-black rounded p-2 border border-cyan-700">
+                    <div className="flex justify-between mb-2 text-[10px] font-bold" style={{fontFamily: 'Courier New, monospace'}}>
+                      <span className="text-cyan-400">AGE:{Math.floor(age/10)}d</span>
+                      <span className="text-cyan-400">[{alive ? 'ALIVE' : 'DEAD'}]</span>
+                    </div>
+                    
+                    <div 
+                      className="bg-gray-900 rounded p-4 mb-2 relative flex items-center justify-center cursor-pointer border border-cyan-800"
+                      style={{minHeight: 130}}
+                      onClick={!wandering ? handlePetClick : undefined}
+                    >
+                      {wandering ? (
+                        <div className="text-[10px] font-bold text-cyan-600 text-center" style={{fontFamily: 'Courier New, monospace'}}>
+                          &gt; WANDERING...
+                        </div>
+                      ) : alive ? (
+                        <div className="relative">
+                          <C stage={stage} wandering={false} frame={spriteFrame} />
+                          {isNapping && (
+                            <div className="absolute -top-8 -right-6 text-3xl">
+                              💤
+                            </div>
+                          )}
+                          {petReaction && (
+                            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-3xl animate-bounce text-cyan-400">
+                              {petReaction}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-5xl">💀</div>
+                      )}
+                      {poopCount > 0 && !wandering && (
+                        <div className="absolute bottom-1 left-1 flex gap-1">
+                          {[...Array(poopCount)].map((_, i) => <span key={i} className="text-xl">💩</span>)}
+                        </div>
+                      )}
+                    </div>
+
+                    {message && (
+                      <div className="text-center text-[9px] font-bold text-cyan-400 mb-2 border border-cyan-800 py-1" style={{fontFamily: 'Courier New, monospace'}}>
+                        &gt; {message}
+                      </div>
+                    )}
+
+                    <div className="space-y-1 text-[8px] font-bold" style={{fontFamily: 'Courier New, monospace'}}>
+                      <div className="flex items-center gap-1">
+                        <span className="text-cyan-400 w-12">FOOD:</span>
+                        <div className="flex-1 bg-gray-900 h-3 rounded border border-cyan-800">
+                          <div 
+                            className="h-full rounded transition-all duration-500" 
+                            style={{
+                              width: `${Math.max(0, Math.min(100, hunger))}%`,
+                              backgroundColor: hunger > 50 ? '#fbbf24' : hunger > 20 ? '#f59e0b' : '#dc2626'
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-cyan-400 w-12">HAPPY:</span>
+                        <div className="flex-1 bg-gray-900 h-3 rounded border border-cyan-800">
+                          <div 
+                            className="h-full rounded transition-all duration-500" 
+                            style={{
+                              width: `${Math.max(0, Math.min(100, happiness))}%`,
+                              backgroundColor: happiness > 50 ? '#f472b6' : happiness > 20 ? '#f59e0b' : '#dc2626'
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-cyan-400 w-12">CLEAN:</span>
+                        <div className="flex-1 bg-gray-900 h-3 rounded border border-cyan-800">
+                          <div 
+                            className="h-full rounded transition-all duration-500" 
+                            style={{
+                              width: `${Math.max(0, Math.min(100, cleanliness))}%`,
+                              backgroundColor: cleanliness > 50 ? '#60a5fa' : cleanliness > 20 ? '#f59e0b' : '#dc2626'
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
+
+                <div className="grid grid-cols-3 gap-2 mt-3">
+                  <button
+                    onClick={() => { setHunger(Math.min(100, hunger + 20)); showMsg('YUM!'); }}
+                    disabled={!alive}
+                    className="bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-yellow-600 hover:border-yellow-400 disabled:border-gray-700 text-yellow-400 disabled:text-gray-600 font-bold py-3 rounded text-[9px]"
+                    style={{fontFamily: 'Courier New, monospace'}}
+                  >
+                    [FEED]
+                  </button>
+                  <button
+                    onClick={() => { setHappiness(Math.min(100, happiness + 25)); setHunger(Math.max(0, hunger - 10)); showMsg('FUN!'); }}
+                    disabled={!alive}
+                    className="bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-pink-600 hover:border-pink-400 disabled:border-gray-700 text-pink-400 disabled:text-gray-600 font-bold py-3 rounded text-[9px]"
+                    style={{fontFamily: 'Courier New, monospace'}}
+                  >
+                    [PLAY]
+                  </button>
+                  <button
+                    onClick={() => { setPoopCount(0); setCleanliness(100); showMsg('CLEAN!'); }}
+                    disabled={!alive || poopCount === 0}
+                    className="bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-blue-600 hover:border-blue-400 disabled:border-gray-700 text-blue-400 disabled:text-gray-600 font-bold py-3 rounded text-[9px]"
+                    style={{fontFamily: 'Courier New, monospace'}}
+                  >
+                    [WASH]
+                  </button>
+                </div>
+
+                <button
+                  onClick={toggleWandering}
+                  disabled={!alive}
+                  className="w-full mt-2 bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-purple-600 hover:border-purple-400 disabled:border-gray-700 text-purple-400 disabled:text-gray-600 font-bold py-1 rounded text-[8px]"
+                  style={{fontFamily: 'Courier New, monospace'}}
+                >
+                  {wandering ? '[RETURN]' : '[LET OUT]'}
+                </button>
+
+                <button
+                  onClick={() => {
+                    setSelectedCreature(null);
+                    setStage(0);
+                    setHunger(100);
+                    setHappiness(100);
+                    setCleanliness(100);
+                    setAge(0);
+                    setAlive(true);
+                    setMessage('');
+                    setPoopCount(0);
+                    setWandering(false);
+                    setPosition({ x: 50, y: 50 });
+                    setIsNapping(false);
+                  }}
+                  className="w-full mt-1 bg-black hover:bg-gray-900 border-2 border-red-600 hover:border-red-400 text-red-400 font-bold py-1 rounded text-[8px]"
+                  style={{fontFamily: 'Courier New, monospace'}}
+                >
+                  [RESET]
+                </button>
+              </div>
             </div>
+          );
+        }
 
-            {message && (
-              <div className="text-center text-[9px] font-bold text-cyan-400 mb-2 border border-cyan-800 py-1" style={{fontFamily: 'Courier New, monospace'}}>
-                &gt; {message}
-              </div>
-            )}
-
-            <div className="space-y-1 text-[8px] font-bold" style={{fontFamily: 'Courier New, monospace'}}>
-              <div className="flex items-center gap-1">
-                <span className="text-cyan-400 w-12">FOOD:</span>
-                <div className="flex-1 bg-gray-900 h-3 rounded border border-cyan-800">
-                  <div 
-                    className="h-full rounded transition-all duration-500" 
-                    style={{
-                      width: `${Math.max(0, Math.min(100, hunger))}%`,
-                      backgroundColor: hunger > 50 ? '#fbbf24' : hunger > 20 ? '#f59e0b' : '#dc2626'
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-cyan-400 w-12">HAPPY:</span>
-                <div className="flex-1 bg-gray-900 h-3 rounded border border-cyan-800">
-                  <div 
-                    className="h-full rounded transition-all duration-500" 
-                    style={{
-                      width: `${Math.max(0, Math.min(100, happiness))}%`,
-                      backgroundColor: happiness > 50 ? '#f472b6' : happiness > 20 ? '#f59e0b' : '#dc2626'
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-cyan-400 w-12">CLEAN:</span>
-                <div className="flex-1 bg-gray-900 h-3 rounded border border-cyan-800">
-                  <div 
-                    className="h-full rounded transition-all duration-500" 
-                    style={{
-                      width: `${Math.max(0, Math.min(100, cleanliness))}%`,
-                      backgroundColor: cleanliness > 50 ? '#60a5fa' : cleanliness > 20 ? '#f59e0b' : '#dc2626'
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2 mt-3">
-          <button
-            onClick={() => { setHunger(Math.min(100, hunger + 20)); showMsg('YUM!'); }}
-            disabled={!alive}
-            className="bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-yellow-600 hover:border-yellow-400 disabled:border-gray-700 text-yellow-400 disabled:text-gray-600 font-bold py-3 rounded text-[9px]"
-            style={{fontFamily: 'Courier New, monospace'}}
-          >
-            [FEED]
-          </button>
-          <button
-            onClick={() => { setHappiness(Math.min(100, happiness + 25)); setHunger(Math.max(0, hunger - 10)); showMsg('FUN!'); }}
-            disabled={!alive}
-            className="bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-pink-600 hover:border-pink-400 disabled:border-gray-700 text-pink-400 disabled:text-gray-600 font-bold py-3 rounded text-[9px]"
-            style={{fontFamily: 'Courier New, monospace'}}
-          >
-            [PLAY]
-          </button>
-          <button
-            onClick={() => { setPoopCount(0); setCleanliness(100); showMsg('CLEAN!'); }}
-            disabled={!alive || poopCount === 0}
-            className="bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-blue-600 hover:border-blue-400 disabled:border-gray-700 text-blue-400 disabled:text-gray-600 font-bold py-3 rounded text-[9px]"
-            style={{fontFamily: 'Courier New, monospace'}}
-          >
-            [WASH]
-          </button>
-        </div>
-
-        <button
-          onClick={toggleWandering}
-          disabled={!alive}
-          className="w-full mt-2 bg-black hover:bg-gray-900 disabled:bg-gray-900 border-2 border-purple-600 hover:border-purple-400 disabled:border-gray-700 text-purple-400 disabled:text-gray-600 font-bold py-1 rounded text-[8px]"
-          style={{fontFamily: 'Courier New, monospace'}}
-        >
-          {wandering ? '[RETURN]' : '[LET OUT]'}
-        </button>
-
-        <button
-          onClick={() => {
-            setSelectedCreature(null);
-            setStage(0);
-            setHunger(100);
-            setHappiness(100);
-            setCleanliness(100);
-            setAge(0);
-            setAlive(true);
-            setMessage('');
-            setPoopCount(0);
-            setWandering(false);
-            setPosition({ x: 50, y: 50 });
-            setIsNapping(false);
-          }}
-          className="w-full mt-1 bg-black hover:bg-gray-900 border-2 border-red-600 hover:border-red-400 text-red-400 font-bold py-1 rounded text-[8px]"
-          style={{fontFamily: 'Courier New, monospace'}}
-        >
-          [RESET]
-        </button>
-      </div>
-    </div>
-  );
-}
+        ReactDOM.render(<Tamagotchi />, document.getElementById('root'));
+    </script>
+</body>
+</html>
