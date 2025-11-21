@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Mind Game: The Inner Path</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #0f0f20;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .game-container {
+            background-color: #1a1a2e;
+            border: 2px solid #5a5a8a;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 800px;
+            box-shadow: 0 0 50px rgba(90, 90, 138, 0.6);
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            color: #bfa8e3;
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #bfa8e3;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #e3c4a8;
+            margin-top: 25px;
+        }
+        .voice {
+            font-style: italic;
+            color: #8c7ae6;
+            margin-bottom: 15px;
+        }
+        .scenario-text {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        /* Button Styling */
+        .choices button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 10px;
+            background-color: #4a4a86;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .choices button:hover {
+            background-color: #6a6ad9;
+        }
+        .choices button:active {
+            transform: scale(0.99);
+        }
+        .choices button span {
+            font-weight: bold;
+            display: inline-block;
+            width: 20px;
+        }
+        /* Analysis Styling */
+        .analysis h3 {
+            color: #a8e3c4;
+            border-bottom: 1px solid #a8e3c4;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+        .analysis ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .analysis li {
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px dotted #5a5a8a;
+        }
+        .dominant-path {
+            font-size: 1.4em;
+            color: #bfa8e3;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>The Mind Game: The Inner Path</h1>
+    <div id="game-content">
+        </div>
+</div>
+
+<script>
+    let currentScenario = 0;
+    let choicesMade = [];
+    
+    // NOTE: The figure names and paths are kept here ONLY for the final analysis logic.
+    const scenarios = [
+        // Core Philosophical Scenarios (S1-S3)
+        {
+            text: `You stand before a grove where ancient trees cast deep, unsettling shadows. You sense a presence within, both alluring and feared. What is your reaction?`,
+            options: [
+                { key: 'A', text: 'Cautiously enter the grove, determined to illuminate every hidden corner.', path: 'Action/Ego' },
+                { key: 'B', text: 'Approach the edge and call out, attempting communication without fully entering.', path: 'Wisdom/Reason' },
+                { key: 'C', text: 'Turn away and seek a different path, choosing avoidance.', path: 'Action/Ego' },
+                { key: 'D', text: 'Sit at the edge and simply observe, allowing the shadows to exist without intervention.', path: 'Surrender/Flow' }
+            ]
+        },
+        {
+            text: `You stand on the bank of a swift-flowing river. There is no bridge, and the current is strong. You must reach the opposite bank. How do you approach the crossing?`,
+            options: [
+                { key: 'A', text: 'Dive in and swim with all your strength, fighting the current to get directly across.', path: 'Action/Ego' },
+                { key: 'B', text: 'Allow yourself to be carried by the current, trusting the flow will eventually guide you to a suitable bank downstream.', path: 'Surrender/Flow' },
+                { key: 'C', text: 'Study the currents, calculate the precise entry and exit points, then swim efficiently with minimal resistance.', path: 'Wisdom/Reason' }
+            ]
+        },
+        {
+            text: `You encounter an elderly guide who is overcome with sorrow, weeping uncontrollably over the loss of a small, seemingly worthless possession. What is your immediate priority?`,
+            options: [
+                { key: 'A', text: 'Gently hold their hand and simply sit in silence with their sorrow, prioritizing shared presence over progress.', path: 'Surrender/Flow' },
+                { key: 'B', text: 'Logically explain that the item is worthless and they should focus on the important journey ahead.', path: 'Wisdom/Reason' },
+                { key: 'C', text: 'Begin searching frantically for the lost item, trying to fix the external problem as quickly as possible.', path: 'Action/Ego' }
+            ]
+        },
+
+        // Strategists & Statesmen (S4-S6)
+        {
+            text: `You command a smaller force facing a powerful, unified enemy. How do you proceed?`,
+            options: [
+                { key: 'A', text: 'Avoid confrontation, force the enemy to scatter and divide their power across multiple theaters.', path: 'Wisdom/Reason' },
+                { key: 'B', text: 'Attack their most critical weakness immediately, risking high casualties for a quick, decisive victory.', path: 'Action/Ego' }
+            ]
+        },
+        {
+            text: `Facing what appears to be certain defeat in the early stages of a conflict, your allies suggest surrender to save lives. What is your response?`,
+            options: [
+                { key: 'A', text: 'Never surrender; appeal to the deepest moral resolve of your people for ultimate, unwavering resistance.', path: 'Action/Ego' },
+                { key: 'B', text: 'Negotiate a temporary, strategic ceasefire or retreat to buy time and rebuild strength.', path: 'Wisdom/Reason' }
+            ]
+        },
+        {
+            text: `You have identified a major societal problem that requires immediate, forceful intervention against a powerful, corrupt, vested interest. How do you act?`,
+            options: [
+                { key: 'A', text: 'Use all legal and executive power at your disposal to force a change, regardless of public outcry from opponents.', path: 'Action/Ego' },
+                { key: 'B', text: 'Work tirelessly behind the scenes to build a political compromise and coalition among all parties involved.', path: 'Wisdom/Reason' }
+            ]
+        },
+
+        // Tyrants & Revolutionaries (S7-S8)
+        {
+            text: `You have achieved revolutionary power, but internal dissent and chaos threaten to break your fragile new state. What is the necessary action?`,
+            options: [
+                { key: 'A', text: 'Use extreme, centralized force to crush all opposition and secure the ideological gains of the revolution.', path: 'Action/Ego' },
+                { key: 'B', text: 'Step back and allow local, decentralized authorities to self-govern, risking ideological drift.', path: 'Surrender/Flow' }
+            ]
+        },
+        {
+            text: `You face widespread internal conflict regarding your vision for a new social order. How do you unify the people?`,
+            options: [
+                { key: 'A', text: 'Find a common, external enemy to blame for all national woes, generating mass resentment and singular loyalty.', path: 'Action/Ego' },
+                { key: 'B', text: 'Engage in open debate and rigorous public policy discussion to find a unifying consensus.', path: 'Wisdom/Reason' }
+            ]
+        },
+
+        // Classical Philosophers (S9-S10)
+        {
+            text: `You discover a truth that is universally unpopular but vital to the public good and future stability. How do you proceed?`,
+            options: [
+                { key: 'A', text: 'Speak the truth openly, employing rigorous debate, even if it leads to your persecution or death.', path: 'Wisdom/Reason' },
+                { key: 'B', text: 'Remain silent, recognizing the limits of what the people are ready or willing to understand, thereby preserving social peace.', path: 'Surrender/Flow' }
+            ]
+        },
+        {
+            text: `A catastrophic event destroys your home and reputation. You are left with nothing but your garments. How do you react?`,
+            options: [
+                { key: 'A', text: 'Recognize that external things are indifferent; your inner state and power of judgment remain untouched.', path: 'Wisdom/Reason' },
+                { key: 'B', text: 'Immediately begin planning the material reconstruction of your life, fortune, and reputation.', path: 'Action/Ego' }
+            ]
+        },
+
+        // Spiritual Masters (S11-S13)
+        {
+            text: `You are tasked with governing a region experiencing chaos and excessive bureaucracy/regulation. What is the best way to restore order?`,
+            options: [
+                { key: 'A', text: 'Embody simplicity and trust the natural order; reduce external interference (non-action) and let things correct themselves.', path: 'Surrender/Flow' },
+                { key: 'B', text: 'Implement strict, clear laws and a rigid bureaucratic structure to control all variables and ensure compliance.', path: 'Action/Ego' }
+            ]
+        },
+        {
+            text: `You are offered unlimited wealth and global power if you abandon your spiritual path. What is your response?`,
+            options: [
+                { key: 'A', text: 'Refuse the offer, recognizing that desire is the ultimate source of personal suffering.', path: 'Wisdom/Reason' },
+                { key: 'B', text: 'Accept the power, believing you can use it to force the end of suffering and solve the world’s problems.', path: 'Action/Ego' }
+            ]
+        },
+        {
+            text: `A catastrophic winter has struck the land. As the primary source of light, you feel exhausted and overwhelmed by the darkness. What is your primary duty?`,
+            options: [
+                { key: 'A', text: 'Withdraw and wait until your own spirit and energy are fully restored, letting the world wait for your return.', path: 'Surrender/Flow' },
+                { key: 'B', text: 'Force yourself to shine immediately, believing your immediate sacrifice is required to save the people from cold and darkness.', path: 'Action/Ego' }
+            ]
+        },
+
+        // The Maverick (S14)
+        {
+            text: `Seeking ultimate understanding, you encounter a seemingly arbitrary set of ancient, traditional moral and religious laws designed to guide all conduct. What is the true law?`,
+            options: [
+                { key: 'A', text: 'The priority is **personal will** and direct experience, even if it means violating conventional taboos.', path: 'Action/Ego' },
+                { key: 'B', text: 'The true path is to submit to the traditional laws without question, trusting the wisdom of the collective past.', path: 'Surrender/Flow' }
+            ]
+        }
+    ];
+
+    // --- Core Functions ---
+    
+    function loadScenario(index) {
+        const scenario = scenarios[index];
+        if (!scenario) {
+            showAnalysis();
+            return;
+        }
+
+        const contentDiv = document.getElementById('game-content');
+        let html = `
+            <h2>Question ${index + 1} of ${scenarios.length}</h2>
+            <div class="scenario-text">
+                <p>${scenario.text}</p>
+            </div>
+            <div class="choices">
+        `;
+
+        scenario.options.forEach((option, i) => {
+            const key = String.fromCharCode(65 + i); // A, B, C...
+            html += `<button onclick="makeChoice(${index}, '${key}')"><span>${key}.</span> ${option.text}</button>`;
+        });
+
+        html += '</div>';
+        contentDiv.innerHTML = html;
+    }
+
+    function makeChoice(scenarioIndex, choiceKey) {
+        const scenario = scenarios[scenarioIndex];
+        const selectedOption = scenario.options.find((opt, i) => String.fromCharCode(65 + i) === choiceKey);
+
+        if (selectedOption) {
+            choicesMade.push({
+                index: scenarioIndex,
+                key: choiceKey,
+                path: selectedOption.path
+            });
+            currentScenario++;
+            loadScenario(currentScenario);
+        }
+    }
+
+    function showAnalysis() {
+        const contentDiv = document.getElementById('game-content');
+        const results = { 'Action/Ego': 0, 'Wisdom/Reason': 0, 'Surrender/Flow': 0 };
+        
+        // Tally all choice paths
+        choicesMade.forEach(choice => {
+            results[choice.path]++;
+        });
+
+        // Determine the dominant theme
+        const pathScores = Object.entries(results).sort((a, b) => b[1] - a[1]);
+        const maxScore = pathScores[0][1];
+        const dominantThemes = pathScores.filter(p => p[1] === maxScore).map(p => p[0]);
+
+        let analysisHTML = `<div class="analysis"><h1>Analysis: The Path Revealed</h1>`;
+        
+        // --- Analysis Section ---
+        analysisHTML += `
+            <p><strong>Total Choices: ${choicesMade.length}</strong></p>
+            <h3>Score Tally</h3>
+            <ul>
+                <li><strong>⚔️ Action/Ego (The Willful Path):</strong> ${results['Action/Ego']}</li>
+                <li><strong>🧠 Wisdom/Reason (The Rational Path):</strong> ${results['Wisdom/Reason']}</li>
+                <li><strong>🌊 Surrender/Flow (The Non-Dual Path):</strong> ${results['Surrender/Flow']}</li>
+            </ul>
+            
+            <div class="dominant-path">
+                <h2>Your Dominant Path: ${dominantThemes.join(' & ')}</h2>
+            </div>
+            
+            <h3>Interpretation of Your Path</h3>
+        `;
+        
+        // Interpretations (Based on the figures and philosophies that align with each path)
+        if (dominantThemes.includes('Action/Ego')) {
+             analysisHTML += `
+                <h3>Action/Ego: The Willful Path</h3>
+                <p>This path echoes the spirits of **Churchill, Roosevelt, and the revolutionary leaders**. Your choices prioritize **volition, ambition, and direct action** to influence the external world. You believe in the power of the individual will to shape destiny and overcome obstacles. This mindset is defined by a readiness to lead aggressively and enforce one's vision, but it carries the risk of conflict, control, and attachment to external results.</p>
+            `;
+        }
+        if (dominantThemes.includes('Wisdom/Reason')) {
+             analysisHTML += `
+                <h3>Wisdom/Reason: The Rational Path</h3>
+                <p>This path echoes the spirits of the **Stoics (Epictetus, Seneca), Plato, and Sun Tzu**. Your choices prioritize **logic, objective truth, and inner state control**. You seek to understand the underlying structure of reality before you act, valuing strategy, rational detachment, and the control of one's judgments and reactions. This path offers resilience and clarity, but it risks intellectualizing emotional or spiritual challenges.</p>
+            `;
+        }
+        if (dominantThemes.includes('Surrender/Flow')) {
+             analysisHTML += `
+                <h3>Surrender/Flow: The Non-Dual Path</h3>
+                <p>This path echoes the spirits of **Lao Tzu, Buddha, and Ram Dass**. Your choices prioritize **non-action (Wu Wei), compassion, and trust in the natural order**. You seek harmony with the moment, recognizing that true change often happens through allowance, non-interference, and simplicity rather than force. This path leads to deep peace and presence, but it risks passivity or avoidance when direct, forceful intervention is ethically required.</p>
+            `;
+        }
+        
+        analysisHTML += `<p style="text-align: center; margin-top: 40px; color: #bfa8e3;"><em>The grand synthesis is complete.</em></p></div>`;
+        
+        contentDiv.innerHTML = analysisHTML;
+    }
+
+    // Initialize the game
+    document.getElementById('game-content').innerHTML = `
+        <p class="voice">Welcome to the Mind Game: The Inner Path. You will be presented with 14 scenarios that reflect fundamental philosophical and strategic conflicts. Choose the response that resonates most with your immediate intuition. Your choices will reveal your dominant path.</p>
+        <button onclick="loadScenario(0)" style="margin-top: 20px;">Begin The Game</button>
+    `;
+
+</script>
+
+</body>
+</html>
