@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Before Us Universe — BUU</title>
@@ -148,6 +150,11 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #controls {font-size: 14px;}
 .ship-btn {padding: 10px 15px; font-size: 14px;}
 }
+.message { margin-bottom: 10px; }
+.user { color: #ff0; }
+.bot { color: #0f0; }
+a { color: #0ff; text-decoration: underline; }
+.donate-flash { animation: flash 1s infinite; display: inline-block; margin-left: 5px; }
 </style>
 </head>
 <body>
@@ -177,8 +184,8 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div id="app">
 <div class="title-bar">
 <div class="logo">C//:BUU</div>
-<a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal</a>
-<a class="link-btn" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo</a>
+<a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal<span class="donate-flash">Donate</span></a>
+<a class="link-btn" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo<span class="donate-flash">Donate</span></a>
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
 <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
@@ -248,6 +255,13 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="fleetcommandBody">
+<iframe src="fleet.html" style="width:100%; height:100%; border:none;"></iframe>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="boardBody">
 <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
@@ -267,13 +281,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="fleetcommandBody">
-<iframe src="fleet.html" style="width:100%; height:100%; border:none;"></iframe>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
 </div>
 <div>
 <div class="panel" id="systemFeedPanel">
@@ -286,8 +293,11 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div id="dmList" style="margin-top:8px"></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<div id="ortegaPanel">
-<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
+<div id="ortegaPanel"><button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
+<div id="ortega-chat-container" style="display:none; max-height:300px; overflow-y:scroll; margin-top:10px; border:1px solid var(--border); padding:10px;"></div>
+<div id="ortega-input-container" style="display:none; margin-top:10px;">
+<input type="text" id="ortega-user-input" placeholder="Enter your command..." style="width:100%; padding:8px; background:#001f1f; border:2px solid var(--border); color:var(--fg);" onkeypress="checkOrtegaEnter(event)">
+</div>
 </div>
 <div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
 <div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
@@ -345,7 +355,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="sub-gallery collapsible collapsed panel">
-<div class="panel-title"><div class="title">//furmly guy</div><div class="toggle-btn">▼</div></div>
+<div class="panel-title"><div class="title">//frumly guy</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/YYCtbDyDJq" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
@@ -418,6 +428,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 </div>
 <div class="ticker" id="visitorPanel">
 <div id="visitorCounter">Visitors: Loading...</div>
+<div id="hitCounter">Hits: Loading...</div>
 </div>
 </div>
 </div>
@@ -460,6 +471,7 @@ let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null;
 let channelListeners = {};
 let feedCache = [];
 let boardListeners = {};
+let ortegaClickCount = 0;
 const bootLines = [
 "C:\\> INITIALIZING BEFORE US UNIVERSE...",
 "C:\\> Loading kernel.............[ONLINE]",
@@ -649,7 +661,11 @@ const b = await crypto.subtle.digest('SHA-256', e);
 return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
 }
 async function postMessage(ch, name, msg){
-if(!uid) return appendSystem('No UID - cannot post');
+if(!uid || !myHandle) {
+  bootOverlay.style.display = 'flex';
+  appRoot.style.display = 'none';
+  return;
+}
 const m = msg.trim();
 if(!m || m.length > 500) return;
 const ts = Date.now();
@@ -697,7 +713,11 @@ el.appendChild(reply);
 boardList.appendChild(el);
 }
 sendBtn.onclick = () => {
-if(!myHandle) return;
+if(!myHandle) {
+  bootOverlay.style.display = 'flex';
+  appRoot.style.display = 'none';
+  return;
+}
 const val = chatInput.value.trim();
 if(val.startsWith('/d6')){
 const roll = Math.floor(Math.random() * 6) + 1;
@@ -714,8 +734,16 @@ chatInput.addEventListener('keydown', e => {
 if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
 });
 postBoardBtn.onclick = async () => {
-if(!myHandle) return;
-if(!uid) return appendSystem('No UID - cannot post to board');
+if(!myHandle) {
+  bootOverlay.style.display = 'flex';
+  appRoot.style.display = 'none';
+  return;
+}
+if(!uid) {
+  bootOverlay.style.display = 'flex';
+  appRoot.style.display = 'none';
+  return;
+}
 const m = boardMsg.value.trim();
 if(!m || m.length > 1000) return;
 const r = push(ref(db, `board/${currentChannel}`));
@@ -737,7 +765,12 @@ document.body.classList.remove('glitch-transition');
 }, 1000);
 }
 };
-ortegaBtn.onclick = () => {};
+ortegaBtn.onclick = () => {
+  ortegaClickCount++;
+  if (ortegaClickCount >= 18) {
+    openOrtegaChat();
+  }
+};
 async function registerDMPair(tuid){
 if(uid.startsWith('offline_')) return;
 const pid = [uid, tuid].sort().join('_');
@@ -807,6 +840,13 @@ count++;
 set(visitorsRef, count);
 document.getElementById('visitorCounter').textContent = 'Visitors: ' + count;
 }).catch(() => {document.getElementById('visitorCounter').textContent = 'Visitors: Error';});
+const hitsRef = ref(db, 'hits/count');
+get(hitsRef).then(snap => {
+let count = snap.val() || 0;
+count++;
+set(hitsRef, count);
+document.getElementById('hitCounter').textContent = 'Hits: ' + count;
+}).catch(() => {document.getElementById('hitCounter').textContent = 'Hits: Error';});
 const logRef = push(ref(db, 'visitors/logs'));
 set(logRef, {ts: Date.now(), handle: myHandle || 'anonymous'});
 }).catch(e => appendSystem('Anonymous auth failed: ' + e.message));
@@ -977,6 +1017,69 @@ currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.lengt
 updateVideo();
 };
 updateVideo();
+// Ortega Chat Logic
+const ortegaChatContainer = document.getElementById('ortega-chat-container');
+const ortegaUserInput = document.getElementById('ortega-user-input');
+const geminiLink = 'https://gemini.google.com/gem/1jsVtqtW9h_HuvyG4tZTTA4pqcBXfAuWd?usp=sharing';
+let gatekeeperState = 'initial';
+let currentQuestion = null;
+let correctAnswer = null;
+function checkOrtegaEnter(event) {
+    if (event.key === 'Enter') {
+        sendOrtegaMessage();
+    }
+}
+function openOrtegaChat() {
+    document.getElementById('ortegaBtn').style.display = 'none';
+    ortegaChatContainer.style.display = 'block';
+    document.getElementById('ortega-input-container').style.display = 'block';
+    addOrtegaMessage('bot', `I am Ortega, the feminine gatekeeper sourced from your book, dear ${myHandle}. Prove your worth to unlock secrets. Type anything to begin verification.`);
+}
+function sendOrtegaMessage() {
+    const message = ortegaUserInput.value.trim();
+    if (message === '') return;
+    addOrtegaMessage('user', `> ${message}`);
+    ortegaUserInput.value = '';
+    const botResponse = generateOrtegaResponse(message);
+    addOrtegaMessage('bot', botResponse);
+}
+function addOrtegaMessage(sender, text) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', sender);
+    messageDiv.innerHTML = text;
+    ortegaChatContainer.appendChild(messageDiv);
+    ortegaChatContainer.scrollTop = ortegaChatContainer.scrollHeight;
+}
+function generateOrtegaResponse(userMessage) {
+    const lowerMessage = userMessage.toLowerCase();
+    if (gatekeeperState === 'initial') {
+        gatekeeperState = 'questioning';
+        currentQuestion = 'What is the key anomaly in the Before Us Universe? (Hint: Timeline stability)';
+        correctAnswer = 'mandela effect';
+        return `As Ortega, your gentle guide, I must verify your knowledge, dear ${myHandle}. Answer this: ${currentQuestion}. For full book integration, use the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
+    }
+    if (gatekeeperState === 'questioning') {
+        if (lowerMessage.includes(correctAnswer)) {
+            gatekeeperState = 'unlocked';
+            return 'Correct, my dear! Access granted. Timeline stability: 84%. What command do you seek? Try "help".';
+        } else {
+            return `Incorrect, sweet ${myHandle}. Try again, or consult your book via the <a href="${geminiLink}" target="_blank">Gemini Gem</a> for clues.`;
+        }
+    }
+    if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+        return `Greetings, dear ${myHandle}. I am Ortega, your feminine gatekeeper. What anomaly from your book brings you here? Use the <a href="${geminiLink}" target="_blank">Gemini Gem</a> for deeper lore.`;
+    } else if (lowerMessage.includes('time travel')) {
+        return 'Time Travel Tours unlocked! See dinosaurs for 999 credits. Beware of effects from your book, my dear.';
+    } else if (lowerMessage.includes('server') || lowerMessage.includes('sam')) {
+        return '//SAM server: 0 users online. Enter handle to join, gatekeeper approved.';
+    } else if (lowerMessage.includes('rpg') || lowerMessage.includes('adventure') || lowerMessage.includes('ai')) {
+        return `Launching book-sourced AI RPG: You awaken in the universe from your book, dear ${myHandle}. What do you do? (Commands: "explore", "fight"). Enhance with the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
+    } else if (lowerMessage.includes('help')) {
+        return 'Unlocked commands: hello, time travel, server, rpg, adventure. Gatekept by your book\'s knowledge via <a href="' + geminiLink + '" target="_blank">Gemini Gem</a>.';
+    } else {
+        return `Command not recognized, darling. As your gatekeeper Ortega, I suggest consulting your book. Try "help" or the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
+    }
+}
 </script>
 </body>
 </html>
