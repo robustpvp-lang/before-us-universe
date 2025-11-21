@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Wireframe Fleet Simulator — Prototype</title>
+<style>
+  html,body{height:100%;margin:0;background:#000;color:#0f0;font-family:monospace}
+  #ui{position:absolute;left:12px;top:12px;z-index:30;color:#9f9}
+  #canvas{display:block;width:100vw;height:100vh}
+  .panel{background:rgba(0,0,0,0.6);border:1px solid rgba(0,255,0,0.08);padding:8px;border-radius:6px}
+  button,input{background:transparent;border:1px solid rgba(0,255,0,0.12);color:#9f9;padding:6px;margin:2px;font-family:monospace}
+  .hint{opacity:0.8;font-size:13px;margin-top:6px}
+  .mini{position:absolute;right:12px;bottom:12px;width:220px;height:140px;border:1px solid rgba(0,255,0,0.08);z-index:22}
+  label{display:block;font-size:12px;margin-top:6px}
+</style>
+</head>
+<body>
+<div id="ui" class="panel">
+  <div style="font-weight:700">Wireframe Fleet Simulator — Prototype</div>
+  <div style="margin-top:6px">Selected: <span id="selCount">0</span> | Time: <span id="time">0.00</span>s</div>
+  <div style="margin-top:6px">
+    <button id="resetBtn">Reset</button>
+  </div>
+  <div class="hint">Controls: Click to select, drag to marquee-select, right-click to issue move commands. Space to pause. W/S to scroll vertically. Scroll to zoom.</div>
+</div>
+<canvas id="canvas"></canvas>
+<canvas id="mini" class="mini"></canvas>
+<script>
+// Configuration — map size: Medium (1600 x 900)
+const cfg={
+  shipCount:28,
+  enemyCount:80,
+  maxSpeed:80,
+  weaponRange:220,
+  projectileSpeed:420,
+  projectileLife:1.6,
+  damage:15,
+  allyDamage:40,
+  mapWidth:1600,
+  mapHeight:900,
+  spawnInterval:5,
+  allyMotherships:5
+};
+
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
+let W=0,H=0; function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight} window.addEventListener('resize',resize);resize();
+const cam={x:0,y:0,zoom:1}; let paused=false, simTime=0,victory=null;
+function rand(a,b){return Math.random()*(b-a)+a}
+function dist(a,b){const dx=a.x-b.x,dy=a.y-b.y;return Math.hypot(dx,dy)}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+
+const ships=[],enemies=[];
+const motherships={friend:[], enemy:null};
+
+function makeShip(x,y,team='friend',size='small'){ 
+  let spd=rand(40,70),hp=150;
+  if(size==='frigate'){spd=rand(25,45); hp=350;}
+  return {x,y,team,selected:false,id:Math.random().toString(36).slice(2),speed:spd,hp,maxHp:hp,weaponCooldown:rand(0,0.6),size};
+}
+
+function spawnShip(team){
+  if(victory) return;
+  let ms;
+  if(team==='friend'){ if(motherships.friend.length===0) return; ms = motherships.friend[Math.floor(Math.random()*motherships.friend.length)]; }
+  else ms = motherships.enemy;
+  if(!ms || ms.hp<=0) return;
+  let size = Math.random()<0.12?'frigate':'small';
+  let ship = makeShip(ms.x+rand(-120,120), ms.y+rand(-60,60), team, size);
+  if(team==='friend') ships.push(ship); else enemies.push(ship);
+}
+
+function spawnWorld(){
+  ships.length=0; enemies.length=0; simTime=0; victory=null;
+  motherships.friend.length=0;
+
+  // Padding from edges so motherships sit firmly in endzones
+  const paddingX = 120; // distance from left/right edge
+  const leftX = -cfg.mapWidth/2 + paddingX;    // allied endzone (far left)
+  const rightX = cfg.mapWidth/2 - paddingX;    // enemy endzone (far right)
+  const paddingY = 80;
+
+  // Enemy mothership at far-right center
+  motherships.enemy = {x:rightX, y:0, hp:1500*1.6, maxHp:1500*1.6, spawnTimer:0};
+
+  // Allied motherships: evenly spaced vertically at far-left
+  for(let i=0;i<cfg.allyMotherships;i++){
+    const t = (cfg.allyMotherships===1)?0.5:(i/(cfg.allyMotherships-1));
+    const yPos = -cfg.mapHeight/2 + paddingY + t*(cfg.mapHeight - 2*paddingY);
+    motherships.friend.push({x:leftX, y:yPos, hp:1500, maxHp:1500, spawnTimer:0});
+  }
+
+  // initial allied ships spawn near their motherships
+  for(let i=0;i<cfg.shipCount;i++){
+    let size = i<3?'frigate':'small';
+    let ms = motherships.friend[i % motherships.friend.length];
+    ships.push(makeShip(ms.x+rand(-120,120), ms.y+rand(-60,60),'friend',size));
+  }
+
+  // initial enemy ships spawn around enemy mothership (far right)
+  for(let i=0;i<cfg.enemyCount;i++){
+    enemies.push(makeShip(motherships.enemy.x + rand(-160,160), motherships.enemy.y + rand(-120,120),'enemy'));
+  }
+}
+spawnWorld();
+
+document.getElementById('resetBtn').addEventListener('click',()=>{ spawnWorld(); cam.x=0; cam.y=0; cam.zoom=1; paused=false; });
+
+let mouse={x:0,y:0,down:false,start:null,end:null};
+canvas.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect(); mouse.x=(e.clientX-r.left-W/2)/cam.zoom+cam.x; mouse.y=(e.clientY-r.top-H/2)/cam.zoom+cam.y; if(mouse.down&&mouse.start) mouse.end={x:mouse.x,y:mouse.y};});
+canvas.addEventListener('mousedown',e=>{ if(e.button!==2){mouse.down=true; mouse.start={x:mouse.x,y:mouse.y}; mouse.end=null;} });
+canvas.addEventListener('mouseup',e=>{ mouse.down=false; if(mouse.start&&mouse.end){ const x1=Math.min(mouse.start.x,mouse.end.x), x2=Math.max(mouse.start.x,mouse.end.x), y1=Math.min(mouse.start.y,mouse.end.y), y2=Math.max(mouse.start.y,mouse.end.y); for(const s of ships){s.selected=s.x>=x1&&s.x<=x2&&s.y>=y1&&s.y<=y2;} } mouse.start=null; mouse.end=null; });
+canvas.addEventListener('contextmenu',e=>{e.preventDefault(); const target={x:mouse.x,y:mouse.y}; for(const s of ships) if(s.selected) s.target={x:target.x,y:target.y};});
+window.addEventListener('keydown',e=>{ if(e.key===' ') paused=!paused; if(e.key==='w') cam.y-=120/cam.zoom; if(e.key==='s') cam.y+=120/cam.zoom; if(e.key==='r') spawnWorld(); });
+canvas.addEventListener('wheel',e=>{ e.preventDefault(); cam.zoom*=(Math.sign(e.deltaY)>0?0.92:1.08); cam.zoom=clamp(cam.zoom,0.3,2); });
+
+function update(dt){ if(victory) return; simTime+=dt;
+  // spawn timers for both sides
+  for(const team of ['friend','enemy']){
+    let msList = team==='friend'?motherships.friend:[motherships.enemy];
+    for(const ms of msList){ ms.spawnTimer+=dt; if(ms.spawnTimer>=cfg.spawnInterval){ spawnShip(team); ms.spawnTimer=0; } }
+  }
+
+  // Allies: seek enemy mothership first, otherwise nearest enemy
+  for(const s of ships){ if(s.hp<=0) continue; s.weaponCooldown-=dt; let target=null;
+    if(motherships.enemy && motherships.enemy.hp>0) target = motherships.enemy;
+    else{ let md=Infinity; for(const e of enemies){ if(e.hp<=0) continue; const d=dist(s,e); if(d<md){md=d; target=e;}} }
+    if(target){ const dx=target.x-s.x, dy=target.y-s.y, d=Math.hypot(dx,dy); if(d>1){ s.x += dx/d * s.speed * dt; s.y += dy/d * s.speed * dt; }
+      if(d<=cfg.weaponRange && s.weaponCooldown<=0){ let dmg = s.size==='frigate' ? cfg.allyDamage*2 : cfg.allyDamage; if(target===motherships.enemy) target.hp -= dmg; else target.hp -= dmg; s.weaponCooldown=0.5;
+        if(s.size==='frigate' && target!==motherships.enemy){ for(const other of enemies){ if(other!==target && dist(target,other)<45) other.hp -= dmg*0.5; }} }
+    }
+  }
+
+  // Enemies: prioritize any alive allied mothership (choose nearest), otherwise nearest ship
+  for(const e of enemies){ if(e.hp<=0) continue; e.weaponCooldown-=dt; let target=null;
+    let aliveAllies = motherships.friend.filter(ms=>ms.hp>0);
+    if(aliveAllies.length>0){ let md=Infinity; for(const ms of aliveAllies){ const d=dist(e,ms); if(d<md){md=d; target=ms;}} }
+    else{ let md=Infinity; for(const s of ships){ if(s.hp<=0) continue; const d=dist(e,s); if(d<md){md=d; target=s;}} }
+    if(target){ const dx=target.x-e.x, dy=target.y-e.y, d=Math.hypot(dx,dy); if(d>1){ e.x += dx/d * 30 * dt; e.y += dy/d * 30 * dt; }
+      if(d<=cfg.weaponRange && e.weaponCooldown<=0){ target.hp -= cfg.damage; e.weaponCooldown=0.5; }
+    }
+  }
+
+  // cleanup destroyed units
+  for(let i=ships.length-1;i>=0;i--) if(ships[i].hp<=0) ships.splice(i,1);
+  for(let i=enemies.length-1;i>=0;i--) if(enemies[i].hp<=0) enemies.splice(i,1);
+
+  if(motherships.enemy && motherships.enemy.hp<=0) victory='Victory!';
+  if(!motherships.friend.some(ms=>ms.hp>0)) victory='Enemy Victory!';
+}
+
+function draw(){ ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,W,H); ctx.translate(W/2,H/2); ctx.scale(cam.zoom,cam.zoom); ctx.translate(-cam.x,-cam.y);
+  // draw map boundary (for reference)
+  ctx.strokeStyle='rgba(0,255,0,0.06)'; ctx.strokeRect(-cfg.mapWidth/2,-cfg.mapHeight/2,cfg.mapWidth,cfg.mapHeight);
+
+  // draw allied motherships (left endzone)
+  for(const ms of motherships.friend){ ctx.strokeStyle='#0f0'; ctx.beginPath(); ctx.arc(ms.x,ms.y,22,0,Math.PI*2); ctx.stroke(); ctx.fillStyle='#0f0'; ctx.fillRect(ms.x-22,ms.y-34,44*(ms.hp/ms.maxHp),6); ctx.strokeRect(ms.x-22,ms.y-34,44,6); }
+
+  // draw enemy mothership (right endzone) — larger
+  if(motherships.enemy){ ctx.strokeStyle='#f00'; let ems=motherships.enemy; ctx.beginPath(); ctx.arc(ems.x,ems.y,36,0,Math.PI*2); ctx.stroke(); ctx.fillStyle='#f00'; ctx.fillRect(ems.x-36,ems.y-46,72*(ems.hp/ems.maxHp),6); ctx.strokeRect(ems.x-36,ems.y-46,72,6); }
+
+  // marquee selection box (transparent)
+  if(mouse.down&&mouse.start&&mouse.end){ ctx.strokeStyle='rgba(0,255,0,0.35)'; ctx.lineWidth=1; ctx.strokeRect(mouse.start.x,mouse.start.y,mouse.end.x-mouse.start.x,mouse.end.y-mouse.start.y); }
+
+  // draw ships
+  for(const s of ships){ ctx.strokeStyle=s.selected?'#ff0':'#0f0'; ctx.beginPath(); if(s.size==='frigate'){ ctx.rect(s.x-8,s.y-12,16,24); } else { ctx.moveTo(s.x, s.y-8); ctx.lineTo(s.x-6,s.y+8); ctx.lineTo(s.x+6,s.y+8); ctx.closePath(); } ctx.stroke();
+    ctx.fillStyle='#0f0'; ctx.fillRect(s.x-12,s.y-16,24*(s.hp/s.maxHp),4); ctx.fillStyle='#f00'; ctx.fillRect(s.x-12,s.y-16,24,4);
+    // laser visuals
+    for(const e of enemies){ if(dist(s,e)<=cfg.weaponRange){ ctx.strokeStyle=s.size==='frigate'?'magenta':'cyan'; ctx.lineWidth=s.size==='frigate'?3:1; ctx.beginPath(); ctx.moveTo(s.x,s.y); ctx.lineTo(e.x,e.y); ctx.stroke(); ctx.lineWidth=1; }} }
+
+  // draw enemy octopus ships
+  for(const e of enemies){ ctx.strokeStyle='#f00'; ctx.beginPath(); ctx.moveTo(e.x,e.y-7); for(let i=0;i<8;i++){ const a=i*Math.PI/4; ctx.lineTo(e.x+7*Math.cos(a),e.y+7*Math.sin(a)); ctx.moveTo(e.x,e.y);} ctx.stroke(); ctx.fillStyle='#0f0'; ctx.fillRect(e.x-10,e.y-14,20*(e.hp/e.maxHp),3); ctx.fillStyle='#f00'; ctx.fillRect(e.x-10,e.y-14,20,3); }
+
+  if(victory){ ctx.fillStyle='#ff0'; ctx.font='30px monospace'; ctx.fillText(victory, -40, - (cfg.mapHeight/2) - 10); }
+}
+
+requestAnimationFrame(function loop(t){ const dt=Math.min(0.05,(t-(window.last||t))/1000); if(!paused) update(dt); draw(); window.last=t; requestAnimationFrame(loop); document.getElementById('time').innerText=simTime.toFixed(2); });
+</script>
+</body>
+</html>
