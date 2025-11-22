@@ -118,23 +118,6 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 ::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
 ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
 #revivalSitesPanel .panel-body{max-height:100px;overflow:auto;}
-#emailPanel{margin-bottom:12px;padding:8px;}
-#emailForm{display:flex;gap:8px;align-items:center;}
-#emailInput{flex:1;padding:8px;background:#001f1f;border:2px solid var(--border);color:var(--fg);font-family:monospace;}
-#emailSubmit{background:var(--accent);color:#000;padding:8px 12px;border:2px solid #000;cursor:pointer;font-weight:700;}
-#shortstreams-wrap{display:flex;justify-content:center;margin:8px auto;}
-#shortstreams-wrap iframe{width:360px;height:640px;border:4px solid var(--border);}
-@media(max-width:600px){#shortstreams-wrap iframe{width:100%;height:560px;}}
-#vine-wrap{display:flex;justify-content:center;align-items:center;flex-direction:column;}
-#slideshow-container{width:360px;height:640px;border:4px solid var(--border);margin:8px auto;}
-@media(max-width:600px){#slideshow-container{width:100%;height:560px;}}
-#slideshow-controls{display:flex;gap:8px;justify-content:center;margin-top:8px;}
-#slideshow-controls button{background:var(--accent);color:#000;padding:6px 12px;border:2px solid #000;cursor:pointer;}
-.sub-gallery .panel-title{font-size:11px;}
-.sub-gallery .panel-body{height:400px;}
-.ticker{background:var(--accent);border:2px solid #000;color:#000;font-size:12px;text-align:center;padding:8px;cursor:pointer;border-radius:4px;}
-.toggle-btn{margin-left:auto;}
-.toggle-btn.bottom-toggle{margin-left:auto;}
 #emailPanel .panel-body{height:auto;padding:4px;}
 #ytBody .panel-body{height:auto;}
 #soraBody .panel-body{height:auto;}
@@ -142,6 +125,8 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 #emailPanel iframe{height:200px;}
 #stumbleBtn{width:200px;}
 #fleetcommandBody{height:80vh;}
+#entityBody{height:80vh;}
+#tacticalBody{height:80vh;}
 @media(max-width:600px){#fleetcommandBody{height:70vh;}}
 @media (min-width: 601px) {
 #startScreen h1 {font-size: 48px;}
@@ -197,13 +182,11 @@ a { color: #0ff; text-decoration: underline; }
 <div class="controls-right">
 </div>
 </div>
-<div id="emailPanel" class="panel">
-<div class="panel-title"><div class="title">Join Our Email List for Updates</div></div>
-<div class="panel-body">
-<iframe src="https://forms.gle/LBAkMsnVT7xrraYT8" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+<div style="text-align:center; margin:12px 0;">
+<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Stumble</button>
+<button id="emailBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Join Email List</button>
+<button id="mindGameBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">//Mind Game (Under Construction)</button>
 </div>
-</div>
-<button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:block;margin:12px auto;width:200px;">Stumble</button>
 <div class="panel" id="serverSelectPanel">
 <div class="small">SELECT SERVER</div>
 <div class="controls">
@@ -281,6 +264,13 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//TACTICALCOMMAND (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="tacticalBody">
+<iframe src="tacticalcommand.html" style="width:100%; height:100%; border:none;"></iframe>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
 </div>
 <div>
 <div class="panel" id="systemFeedPanel">
@@ -294,9 +284,8 @@ a { color: #0ff; text-decoration: underline; }
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div id="ortegaPanel"><button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-<div id="ortega-chat-container" style="display:none; max-height:300px; overflow-y:scroll; margin-top:10px; border:1px solid var(--border); padding:10px;"></div>
-<div id="ortega-input-container" style="display:none; margin-top:10px;">
-<input type="text" id="ortega-user-input" placeholder="Enter your command..." style="width:100%; padding:8px; background:#001f1f; border:2px solid var(--border); color:var(--fg);" onkeypress="checkOrtegaEnter(event)">
+<div id="ortegaIframeContainer" style="display:none; max-height:300px; overflow-y:scroll; margin-top:10px; border:1px solid var(--border); padding:10px;">
+<iframe id="ortegaIframe" src="" style="width:100%; height:100%;"></iframe>
 </div>
 </div>
 <div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
@@ -610,11 +599,11 @@ const channels = ['sam','exuro','nero','nora','loktal'];
 channels.forEach(ch => {
 onChildAdded(ref(db, `online/${ch}`), snap => {
 const u = snap.val();
-if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
+if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
 });
 onChildRemoved(ref(db, `online/${ch}`), snap => {
 const u = snap.val();
-if (u && u.uid !== uid) appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
+if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
 });
 });
 }
@@ -768,7 +757,12 @@ document.body.classList.remove('glitch-transition');
 ortegaBtn.onclick = () => {
   ortegaClickCount++;
   if (ortegaClickCount >= 18) {
-    openOrtegaChat();
+    document.body.classList.add('glitch-transition');
+    setTimeout(() => {
+      document.getElementById('ortegaIframeContainer').style.display = 'block';
+      document.getElementById('ortegaIframe').src = 'ortega.html';
+    }, 500);
+    setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
   }
 };
 async function registerDMPair(tuid){
@@ -976,6 +970,14 @@ const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)]
 const timestamp = Date.now();
 window.open(`${randomLink}?t=${timestamp}`, '_blank');
 };
+document.getElementById('emailBtn').onclick = () => {
+window.open('https://forms.gle/LBAkMsnVT7xrraYT8', '_blank');
+};
+document.getElementById('mindGameBtn').onclick = () => {
+document.body.classList.add('glitch-transition');
+setTimeout(() => window.open('mindgame.html', '_blank'), 500);
+setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
+};
 const videoUrls = [
 "https://sendvid.com/embed/0c8dl0bv",
 "https://sendvid.com/embed/xxixiywf",
@@ -1017,69 +1019,6 @@ currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.lengt
 updateVideo();
 };
 updateVideo();
-// Ortega Chat Logic
-const ortegaChatContainer = document.getElementById('ortega-chat-container');
-const ortegaUserInput = document.getElementById('ortega-user-input');
-const geminiLink = 'https://gemini.google.com/gem/1jsVtqtW9h_HuvyG4tZTTA4pqcBXfAuWd?usp=sharing';
-let gatekeeperState = 'initial';
-let currentQuestion = null;
-let correctAnswer = null;
-function checkOrtegaEnter(event) {
-    if (event.key === 'Enter') {
-        sendOrtegaMessage();
-    }
-}
-function openOrtegaChat() {
-    document.getElementById('ortegaBtn').style.display = 'none';
-    ortegaChatContainer.style.display = 'block';
-    document.getElementById('ortega-input-container').style.display = 'block';
-    addOrtegaMessage('bot', `I am Ortega, the feminine gatekeeper sourced from your book, dear ${myHandle}. Prove your worth to unlock secrets. Type anything to begin verification.`);
-}
-function sendOrtegaMessage() {
-    const message = ortegaUserInput.value.trim();
-    if (message === '') return;
-    addOrtegaMessage('user', `> ${message}`);
-    ortegaUserInput.value = '';
-    const botResponse = generateOrtegaResponse(message);
-    addOrtegaMessage('bot', botResponse);
-}
-function addOrtegaMessage(sender, text) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', sender);
-    messageDiv.innerHTML = text;
-    ortegaChatContainer.appendChild(messageDiv);
-    ortegaChatContainer.scrollTop = ortegaChatContainer.scrollHeight;
-}
-function generateOrtegaResponse(userMessage) {
-    const lowerMessage = userMessage.toLowerCase();
-    if (gatekeeperState === 'initial') {
-        gatekeeperState = 'questioning';
-        currentQuestion = 'What is the key anomaly in the Before Us Universe? (Hint: Timeline stability)';
-        correctAnswer = 'mandela effect';
-        return `As Ortega, your gentle guide, I must verify your knowledge, dear ${myHandle}. Answer this: ${currentQuestion}. For full book integration, use the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
-    }
-    if (gatekeeperState === 'questioning') {
-        if (lowerMessage.includes(correctAnswer)) {
-            gatekeeperState = 'unlocked';
-            return 'Correct, my dear! Access granted. Timeline stability: 84%. What command do you seek? Try "help".';
-        } else {
-            return `Incorrect, sweet ${myHandle}. Try again, or consult your book via the <a href="${geminiLink}" target="_blank">Gemini Gem</a> for clues.`;
-        }
-    }
-    if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-        return `Greetings, dear ${myHandle}. I am Ortega, your feminine gatekeeper. What anomaly from your book brings you here? Use the <a href="${geminiLink}" target="_blank">Gemini Gem</a> for deeper lore.`;
-    } else if (lowerMessage.includes('time travel')) {
-        return 'Time Travel Tours unlocked! See dinosaurs for 999 credits. Beware of effects from your book, my dear.';
-    } else if (lowerMessage.includes('server') || lowerMessage.includes('sam')) {
-        return '//SAM server: 0 users online. Enter handle to join, gatekeeper approved.';
-    } else if (lowerMessage.includes('rpg') || lowerMessage.includes('adventure') || lowerMessage.includes('ai')) {
-        return `Launching book-sourced AI RPG: You awaken in the universe from your book, dear ${myHandle}. What do you do? (Commands: "explore", "fight"). Enhance with the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
-    } else if (lowerMessage.includes('help')) {
-        return 'Unlocked commands: hello, time travel, server, rpg, adventure. Gatekept by your book\'s knowledge via <a href="' + geminiLink + '" target="_blank">Gemini Gem</a>.';
-    } else {
-        return `Command not recognized, darling. As your gatekeeper Ortega, I suggest consulting your book. Try "help" or the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
-    }
-}
 </script>
 </body>
 </html>
