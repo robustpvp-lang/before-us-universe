@@ -124,7 +124,7 @@
             document.getElementById('ortegaBtn').style.display = 'none';
             ortegaChatContainer.style.display = 'block';
             document.getElementById('ortega-input-container').style.display = 'block';
-            addOrtegaMessage('bot', `I am Ortega, the feminine gatekeeper sourced from your book, dear ${myHandle}. Prove your worth to unlock secrets. Type anything to begin verification.`);
+            addOrtegaMessage('bot', `I am Ortega, the gatekeeper sourced to be your liason, dear ${myHandle}. Prove your worth to unlock secrets. Type anything to begin verification.`);
         }
 
         function sendOrtegaMessage() {
@@ -148,8 +148,8 @@
             const lowerMessage = userMessage.toLowerCase();
             if (gatekeeperState === 'initial') {
                 gatekeeperState = 'questioning';
-                currentQuestion = 'What is the key anomaly in the Before Us Universe? (Hint: Timeline stability)';
-                correctAnswer = 'mandela effect';
+                currentQuestion = 'What is the key anomaly in the Before Us Universe? (Hint: nero made sams.)';
+                correctAnswer = 'the stone loop';
                 return `As Ortega, your gentle guide, I must verify your knowledge, dear ${myHandle}. Answer this: ${currentQuestion}. For full book integration, use the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
             }
             if (gatekeeperState === 'questioning') {
@@ -157,21 +157,21 @@
                     gatekeeperState = 'unlocked';
                     return 'Correct, my dear! Access granted. Timeline stability: 84%. What command do you seek? Try "help".';
                 } else {
-                    return `Incorrect, sweet ${myHandle}. Try again, or consult your book via the <a href="${geminiLink}" target="_blank">Gemini Gem</a> for clues.`;
+                    return `Incorrect, sweet ${myHandle}. Try again, or consult the book via <a href="${geminiLink}" target="_blank">Gemini Gem</a> for clues.`;
                 }
             }
             if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-                return `Greetings, dear ${myHandle}. I am Ortega, your feminine gatekeeper. What anomaly from your book brings you here? Use the <a href="${geminiLink}" target="_blank">Gemini Gem</a> for deeper lore.`;
+                return `Greetings, dear ${myHandle}. I am Ortega, your liason here. What anomaly from the book brings you here? Use the <a href="${geminiLink}" target="_blank">Gemini Gem</a> for deeper lore.`;
             } else if (lowerMessage.includes('time travel')) {
-                return 'Time Travel Tours unlocked! See dinosaurs for 999 credits. Beware of effects from your book, my dear.';
+                return 'Time Travel Tours unlocked! See dinosaurs for 999 credits. Beware of effects from the book, my dear.';
             } else if (lowerMessage.includes('server') || lowerMessage.includes('sam')) {
                 return '//SAM server: 0 users online. Enter handle to join, gatekeeper approved.';
             } else if (lowerMessage.includes('rpg') || lowerMessage.includes('adventure') || lowerMessage.includes('ai')) {
-                return `Launching book-sourced AI RPG: You awaken in the universe from your book, dear ${myHandle}. What do you do? (Commands: "explore", "fight"). Enhance with the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
+                return `Launching book-sourced AI RPG: You awaken in the universe from the book, dear ${myHandle}. What do you do? (Commands: "explore", "fight"). Enhance with the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
             } else if (lowerMessage.includes('help')) {
-                return 'Unlocked commands: hello, time travel, server, rpg, adventure. Gatekept by your book\'s knowledge via <a href="' + geminiLink + '" target="_blank">Gemini Gem</a>.';
+                return 'Unlocked commands: hello, time travel, server, rpg, adventure. Gatekept by the book's knowledge via <a href="' + geminiLink + '" target="_blank">Gemini Gem</a>.';
             } else {
-                return `Command not recognized, darling. As your gatekeeper Ortega, I suggest consulting your book. Try "help" or the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
+                return `Command not recognized, darling. As your liason Ortega, I suggest consulting the book. Try "help" or the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
             }
         }
 
