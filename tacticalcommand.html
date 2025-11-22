@@ -8,21 +8,35 @@
 <title>Wireframe Fleet Simulator — Enhanced</title>
 <style>
   html,body{height:100%;margin:0;background:#000;color:#0f0;font-family:monospace;overflow:hidden;touch-action:none}
-  #ui{position:absolute;left:12px;top:12px;z-index:30;color:#9f9;pointer-events:none}
+  #ui{position:absolute;left:12px;top:12px;z-index:30;color:#9f9}
   #canvas{display:block;width:100vw;height:100vh;touch-action:none}
-  .panel{background:rgba(0,0,0,0.6);border:1px solid rgba(0,255,0,0.08);padding:8px;border-radius:6px;pointer-events:auto}
-  button,input{background:transparent;border:1px solid rgba(0,255,0,0.12);color:#9f9;padding:8px 12px;margin:2px;font-family:monospace;font-size:14px;touch-action:manipulation}
+  .panel{background:rgba(0,0,0,0.6);border:1px solid rgba(0,255,0,0.08);padding:8px;border-radius:6px}
+  button,input{background:transparent;border:1px solid rgba(0,255,0,0.12);color:#9f9;padding:8px 12px;margin:2px;font-family:monospace;font-size:14px;touch-action:manipulation;cursor:pointer;pointer-events:auto}
+  button:hover{background:rgba(0,255,0,0.1);border-color:rgba(0,255,0,0.3)}
   .hint{opacity:0.8;font-size:11px;margin-top:6px}
   .mini{position:absolute;right:12px;bottom:12px;width:220px;height:140px;border:1px solid rgba(0,255,0,0.08);z-index:22}
   label{display:block;font-size:12px;margin-top:6px}
+  
+  #titleScreen{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  #titleScreen h1{font-size:48px;color:#0f0;margin:20px;text-shadow:0 0 10px #0f0}
+  #titleScreen h2{font-size:24px;color:#0f0;margin:10px;font-weight:normal}
+  #titleScreen .credits{font-size:14px;color:#9f9;margin:30px;opacity:0.8}
+  #titleScreen button{font-size:20px;padding:15px 40px;margin:20px;border:2px solid #0f0;color:#0f0;background:transparent}
+  #titleScreen button:hover{background:#0f0;color:#000}
 </style>
 </head>
 <body>
-<div id="ui" class="panel">
+<div id="titleScreen">
+  <h1>WIREFRAME FLEET SIMULATOR</h1>
+  <h2>Command your fleet against the enemy titan</h2>
+  <button id="startBtn">START GAME</button>
+  <div class="credits">Created by Patrick McDonald and Claude</div>
+</div>
+<div id="ui" class="panel" style="display:none">
   <div style="font-weight:700">Wireframe Fleet Simulator — Enhanced</div>
   <div style="margin-top:6px">Ships: <span id="shipCount">0</span> | Enemies: <span id="enemyCount">0</span> | Time: <span id="time">0.00</span>s</div>
   <div style="margin-top:6px">
-    <button id="resetBtn">Reset</button>
+    <button id="resetBtn">Restart</button>
   </div>
   <div class="hint">Controls: Tap to select ships, drag to marquee. Tap destination to attack-move. Pinch to zoom. Two-finger drag to pan.</div>
 </div>
@@ -59,8 +73,8 @@ function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
 window.addEventListener('resize',resize);
 resize();
 
-const cam={x:0,y:0,zoom:1}; 
-let paused=false, simTime=0, victory=null, frameCount=0;
+const cam={x:0,y:0,zoom:0.5}; // Start zoomed out
+let paused=false, simTime=0, victory=null, frameCount=0, gameStarted=false;
 
 // Optimized math functions
 const rand=(a,b)=>Math.random()*(b-a)+a;
@@ -183,12 +197,22 @@ function spawnWorld(){
 }
 spawnWorld();
 
-document.getElementById('resetBtn').addEventListener('click',()=>{ 
+// Title screen and game start
+document.getElementById('startBtn').addEventListener('click', () => {
+  document.getElementById('titleScreen').style.display = 'none';
+  document.getElementById('ui').style.display = 'block';
+  gameStarted = true;
+  paused = false;
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => { 
   spawnWorld(); 
-  cam.x=0; 
-  cam.y=0; 
-  cam.zoom=1; 
-  paused=false; 
+  cam.x = 0; 
+  cam.y = 0; 
+  cam.zoom = 0.5; // Reset to zoomed out view
+  paused = false;
+  frameCount = 0;
+  gameStarted = true;
 });
 
 let mouse={x:0,y:0,down:false,start:null,end:null};
@@ -601,7 +625,7 @@ function updateEnemyAI(e, dt) {
 }
 
 function update(dt) { 
-  if(victory) return; 
+  if(victory || !gameStarted) return; 
   simTime += dt;
   frameCount++;
   
@@ -871,14 +895,16 @@ function draw() {
 
 requestAnimationFrame(function loop(t) { 
   const dt = Math.min(0.05,(t-(window.last||t))/1000); 
-  if(!paused) update(dt); 
+  if(!paused && gameStarted) update(dt); 
   draw(); 
   window.last = t; 
   requestAnimationFrame(loop); 
   
-  document.getElementById('time').innerText = simTime.toFixed(2); 
-  document.getElementById('shipCount').innerText = ships.length;
-  document.getElementById('enemyCount').innerText = enemies.length;
+  if(gameStarted) {
+    document.getElementById('time').innerText = simTime.toFixed(2); 
+    document.getElementById('shipCount').innerText = ships.length;
+    document.getElementById('enemyCount').innerText = enemies.length;
+  }
 });
 </script>
 </body>
