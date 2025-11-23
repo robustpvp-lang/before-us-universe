@@ -7,13 +7,14 @@
     <style>
         :root {
             --bg: #000000;
-            --fg: #ff0000; /* Red for evil feel */
+            --fg: #ff0000;
             --accent: #ffcc00;
-            --border: #cc0000; /* Dark red border */
-            --panel-bg: #110000; /* Dark red-black */
-            --text-gray: #aa0000; /* Dim red */
+            --border: #cc0000;
+            --panel-bg: #110000;
+            --text-gray: #aa0000;
             --muted: #880000;
         }
+
         body {
             background: var(--bg);
             color: var(--fg);
@@ -25,11 +26,13 @@
             align-items: center;
             justify-content: center;
         }
+
         #ortegaPanel {
             width: 100%;
             max-width: 600px;
             padding: 20px;
         }
+
         #ortegaBtn {
             width: 100%;
             background: var(--accent);
@@ -41,48 +44,65 @@
             cursor: pointer;
             font-size: 14px;
         }
+
         #ortega-chat-container {
             max-height: 300px;
-            overflow-y: scroll;
+            overflow-y: auto;
             margin-top: 10px;
             border: 1px solid var(--border);
             padding: 10px;
             background: var(--panel-bg);
             color: var(--text-gray);
+            display: none;
         }
+
         #ortega-input-container {
             margin-top: 10px;
+            display: none;
+            display: flex;
+            gap: 8px;
         }
+
         #ortega-user-input {
-            width: 100%;
+            flex: 1;
             padding: 8px;
             background: #001f1f;
             border: 2px solid var(--border);
             color: var(--fg);
             font-family: monospace;
         }
+
+        #ortegaSendBtn {
+            padding: 8px 14px;
+            background: var(--accent);
+            border: 2px solid #000;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
         .message {
             margin-bottom: 10px;
-            animation: glitch 0.5s infinite; /* Glitch on all messages */
+            animation: glitch 0.5s infinite;
         }
+
         .user {
             color: #ff0;
         }
+
         .bot {
-            color: #ff0000; /* Red for bot - evil feel */
-        }
-        a {
             color: #ff0000;
-            text-decoration: underline;
         }
+
         @keyframes glitch {
             2%, 64% { transform: translate(2px, 0) skew(5deg); }
             4%, 60% { transform: translate(-2px, 0) skew(-5deg); }
             62% { transform: translate(0, 0) skew(3deg); }
         }
+
         body.evil-activation {
             animation: evil-glitch 2s linear;
         }
+
         @keyframes evil-glitch {
             0% { filter: brightness(1) contrast(1); }
             20% { filter: brightness(0.5) contrast(2); transform: skew(0.5deg); }
@@ -93,89 +113,131 @@
         }
     </style>
 </head>
+
 <body>
     <div id="ortegaPanel">
-        <button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-        <div id="ortega-chat-container" style="display:none;"></div>
-        <div id="ortega-input-container" style="display:none;">
-            <input type="text" id="ortega-user-input" placeholder="Enter your command..." onkeypress="checkOrtegaEnter(event)">
+        <button id="ortegaBtn">Project ://ORTEGA (Under Maintenance)</button>
+
+        <div id="ortega-chat-container"></div>
+
+        <div id="ortega-input-container">
+            <input type="text" id="ortega-user-input" placeholder="Enter your command...">
+            <button id="ortegaSendBtn">SEND</button>
         </div>
     </div>
+
     <script>
-        const ortegaChatContainer = document.getElementById('ortega-chat-container');
-        const ortegaUserInput = document.getElementById('ortega-user-input');
-        const geminiLink = 'https://gemini.google.com/gem/1jsVtqtW9h_HuvyG4tZTTA4pqcBXfAuWd?usp=sharing';
-        let gatekeeperState = 'initial';
-        let currentQuestion = null;
-        let correctAnswer = null;
-        let myHandle = 'User';  // Default, can be passed or fetched if needed
+        document.addEventListener("DOMContentLoaded", () => {
+            const ortegaBtn = document.getElementById('ortegaBtn');
+            const ortegaChatContainer = document.getElementById('ortega-chat-container');
+            const ortegaUserInput = document.getElementById('ortega-user-input');
+            const sendBtn = document.getElementById('ortegaSendBtn');
 
-        function checkOrtegaEnter(event) {
-            if (event.key === 'Enter') {
-                sendOrtegaMessage();
-            }
-        }
+            let gatekeeperState = 'initial';
+            let currentQuestion = null;
+            let correctAnswer = null;
+            let myHandle = 'User';
+            const geminiLink = 'https://gemini.google.com/gem/1jsVtqtW9h_HuvyG4tZTTA4pqcBXfAuWd?usp=sharing';
 
-        function openOrtegaChat() {
-            document.body.classList.add('evil-activation');
-            setTimeout(() => {
-                document.body.classList.remove('evil-activation');
-            }, 2000);
-            document.getElementById('ortegaBtn').style.display = 'none';
-            ortegaChatContainer.style.display = 'block';
-            document.getElementById('ortega-input-container').style.display = 'block';
-            addOrtegaMessage('bot', `I am Ortega, the gatekeeper sourced to be your liason, dear ${myHandle}. Prove your worth to unlock secrets. Type anything to begin verification.`);
-        }
+            //------------------------------------
+            // ORTEGA OPEN
+            //------------------------------------
+            ortegaBtn.addEventListener('click', () => {
+                document.body.classList.add('evil-activation');
+                setTimeout(() => {
+                    document.body.classList.remove('evil-activation');
+                }, 2000);
 
-        function sendOrtegaMessage() {
-            const message = ortegaUserInput.value.trim();
-            if (message === '') return;
-            addOrtegaMessage('user', `> ${message}`);
-            ortegaUserInput.value = '';
-            const botResponse = generateOrtegaResponse(message);
-            addOrtegaMessage('bot', botResponse);
-        }
+                ortegaBtn.style.display = 'none';
+                ortegaChatContainer.style.display = 'block';
+                document.getElementById('ortega-input-container').style.display = 'flex';
 
-        function addOrtegaMessage(sender, text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender);
-            messageDiv.innerHTML = text;
-            ortegaChatContainer.appendChild(messageDiv);
-            ortegaChatContainer.scrollTop = ortegaChatContainer.scrollHeight;
-        }
+                addMessage('bot', `I am Ortega, the gatekeeper sourced to be your liaison, dear ${myHandle}. Type anything to begin verification.`);
+            });
 
-        function generateOrtegaResponse(userMessage) {
-            const lowerMessage = userMessage.toLowerCase();
-            if (gatekeeperState === 'initial') {
-                gatekeeperState = 'questioning';
-                currentQuestion = 'What is the key anomaly in the Before Us Universe? (Hint: nero made sams.)';
-                correctAnswer = 'the stone loop';
-                return `As Ortega, your gentle guide, I must verify your knowledge, dear ${myHandle}. Answer this: ${currentQuestion}. For full book integration, use the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
-            }
-            if (gatekeeperState === 'questioning') {
-                if (lowerMessage.includes(correctAnswer)) {
-                    gatekeeperState = 'unlocked';
-                    return 'Correct, my dear! Access granted. Timeline stability: 84%. What command do you seek? Try "help".';
-                } else {
-                    return `Incorrect, sweet ${myHandle}. Try again, or consult the book via <a href="${geminiLink}" target="_blank">Gemini Gem</a> for clues.`;
+            //------------------------------------
+            // SEND BUTTON
+            //------------------------------------
+            sendBtn.addEventListener('click', () => {
+                handleUserMessage();
+            });
+
+            //------------------------------------
+            // ENTER KEY
+            //------------------------------------
+            ortegaUserInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleUserMessage();
                 }
-            }
-            if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-                return `Greetings, dear ${myHandle}. I am Ortega, your liason here. What anomaly from the book brings you here? Use the <a href="${geminiLink}" target="_blank">Gemini Gem</a> for deeper lore.`;
-            } else if (lowerMessage.includes('time travel')) {
-                return 'Time Travel Tours unlocked! See dinosaurs for 999 credits. Beware of effects from the book, my dear.';
-            } else if (lowerMessage.includes('server') || lowerMessage.includes('sam')) {
-                return '//SAM server: 0 users online. Enter handle to join, gatekeeper approved.';
-            } else if (lowerMessage.includes('rpg') || lowerMessage.includes('adventure') || lowerMessage.includes('ai')) {
-                return `Launching book-sourced AI RPG: You awaken in the universe from the book, dear ${myHandle}. What do you do? (Commands: "explore", "fight"). Enhance with the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
-            } else if (lowerMessage.includes('help')) {
-                return 'Unlocked commands: hello, time travel, server, rpg, adventure. Gatekept by the book's knowledge via <a href="' + geminiLink + '" target="_blank">Gemini Gem</a>.';
-            } else {
-                return `Command not recognized, darling. As your liason Ortega, I suggest consulting the book. Try "help" or the <a href="${geminiLink}" target="_blank">Gemini Gem</a>.`;
-            }
-        }
+            });
 
-        document.getElementById('ortegaBtn').onclick = openOrtegaChat;
+            //------------------------------------
+            // ADD MESSAGE
+            //------------------------------------
+            function addMessage(sender, text) {
+                const div = document.createElement('div');
+                div.classList.add('message', sender);
+                div.innerHTML = text;
+                ortegaChatContainer.appendChild(div);
+                ortegaChatContainer.scrollTop = ortegaChatContainer.scrollHeight;
+            }
+
+            //------------------------------------
+            // HANDLE USER INPUT
+            //------------------------------------
+            function handleUserMessage() {
+                const message = ortegaUserInput.value.trim();
+                if (message === '') return;
+                
+                addMessage('user', `> ${message}`);
+                ortegaUserInput.value = '';
+
+                const botReply = generateResponse(message);
+                addMessage('bot', botReply);
+            }
+
+            //------------------------------------
+            // CHAT LOGIC
+            //------------------------------------
+            function generateResponse(userMessage) {
+                const lower = userMessage.toLowerCase();
+
+                if (gatekeeperState === 'initial') {
+                    gatekeeperState = 'questioning';
+                    currentQuestion = 'What is the key anomaly in the Before Us Universe? (Hint: nero made sams.)';
+                    correctAnswer = 'the stone loop';
+
+                    return `Answer this to authenticate: ${currentQuestion}.<br><br>Reference: <a href="${geminiLink}" target="_blank">Gemini Gem</a>`;
+                }
+
+                if (gatekeeperState === 'questioning') {
+                    if (lower.includes(correctAnswer)) {
+                        gatekeeperState = 'unlocked';
+                        return `Correct. Access granted. Timeline stability: 84%.<br>Try command: "help".`;
+                    } else {
+                        return `Incorrect. Try again, or consult <a href="${geminiLink}" target="_blank">Gemini Gem</a>`;
+                    }
+                }
+
+                if (lower.includes('help')) {
+                    return `Available commands: hello, time travel, server, rpg, adventure.`;
+                }
+                if (lower.includes('hello')) {
+                    return `Greetings, dear ${myHandle}. What anomaly calls you?`;
+                }
+                if (lower.includes('time travel')) {
+                    return `Time Travel Tours unlocked. Price: 999 credits. Refunds not available.`;
+                }
+                if (lower.includes('server') || lower.includes('sam')) {
+                    return `//SAM server: 0 users online. Enter handle to join.`;
+                }
+                if (lower.includes('rpg') || lower.includes('adventure')) {
+                    return `Launching simulation: You awaken in Before Us Universe. What do you do? (explore / fight)`;
+                }
+
+                return `Command not recognized. Try “help.”`;
+            }
+        });
     </script>
 </body>
 </html>
