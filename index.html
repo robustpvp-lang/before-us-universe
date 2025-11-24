@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -147,25 +148,7 @@ a { color: #0ff; text-decoration: underline; }
 <div id="marqueeLabel">SYSTEM:</div>
 <div id="marquee" aria-live="polite"><div id="marqueeInner">C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — — Site Under Construction —</div></div>
 </div>
-<div id="bootOverlay">
-<div id="bootPanel">
-<div id="bootLog" class="small"></div>
-<div id="bootPrompt">> ENTER HANDLE & SELECT SERVER</div>
-<div id="bootInputs">
-<input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (required)" aria-label="Enter your handle">
-<select id="bootChannel" aria-label="Select server">
-<option value="sam">//Sam</option>
-<option value="exuro">//Exuro</option>
-<option value="nero">//Nero</option>
-<option value="nora">//Nora</option>
-<option value="loktal">//Loktal</option>
-</select>
-<button id="bootBtn" aria-label="Enter Network">ENTER NETWORK</button>
-</div>
-<div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
-<div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Timeline stability.. 84%</span></div>
-</div>
-</div>
+<iframe src="bootpage.html" style="position:fixed;inset:0;z-index:99998;width:100%;height:100%;border:none;"></iframe>
 <div id="app">
 <div class="title-bar">
 <div class="logo">C//:BUU</div>
@@ -183,38 +166,9 @@ a { color: #0ff; text-decoration: underline; }
 <button id="emailBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Join Email List</button>
 <button id="mindGameBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">//Mind Game (Under Construction)</button>
 </div>
-<div class="panel" id="serverSelectPanel">
-<div class="small">SELECT SERVER</div>
-<div class="controls">
-<select id="channelSelect" aria-label="Choose server">
-<option value="sam">//Sam</option>
-<option value="exuro">//Exuro</option>
-<option value="nero">//Nero</option>
-<option value="nora">//Nora</option>
-<option value="loktal">//Loktal</option>
-</select>
-<button id="serverConfirm" aria-label="Switch server">Switch Server</button>
-</div>
-</div>
 <div class="layout">
 <div>
-<div class="panel">
-<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
-<div class="panel-body chat-win" id="chatBody">
-<div class="chat-main">
-<div class="chat-messages" id="chatMessages" aria-live="polite"></div>
-<div class="chat-users">
-<div class="small" style="margin-bottom:6px">USERS ONLINE</div>
-<div id="activeUsersList"></div>
-</div>
-</div>
-<div id="typingIndicator" class="typing-indicator"></div>
-<div class="chat-controls">
-<input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
-<button id="sendBtn" aria-label="Send message">SEND</button>
-</div>
-</div>
-</div>
+<iframe src="chatservers.html" style="width:100%; height:600px; border:none;"></iframe>
 <div class="panel">
 <div class="panel-title"><div class="title">//Discord</div></div>
 <div class="panel-body">
@@ -247,19 +201,7 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="boardBody">
-<div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
-<input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
-<div id="boardList" style="overflow:auto;margin:8px 0"></div>
-<div style="margin:8px">
-<textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
-<button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
+<iframe src="messageboards.html" style="width:100%; height:600px; border:none;"></iframe>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//ENTITY (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="entityBody">
@@ -349,60 +291,15 @@ const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDom
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
-const bootOverlay = document.getElementById('bootOverlay');
-const bootLog = document.getElementById('bootLog');
-const bootInput = document.getElementById('bootInput');
-const bootBtn = document.getElementById('bootBtn');
-const bootStatus = document.getElementById('bootStatus');
-const bootBroadcast = document.getElementById('bootBroadcast');
-const bootChannel = document.getElementById('bootChannel');
 const appRoot = document.getElementById('app');
-const chatMessages = document.getElementById('chatMessages');
-const chatInput = document.getElementById('chatInput');
-const sendBtn = document.getElementById('sendBtn');
-const channelSelect = document.getElementById('channelSelect');
-const serverConfirm = document.getElementById('serverConfirm');
-const userCountSmall = document.getElementById('userCountSmall');
-const activeUsersList = document.getElementById('activeUsersList');
-const serverTrackingList = document.getElementById('serverTrackingList');
-const boardList = document.getElementById('boardList');
-const boardMsg = document.getElementById('boardMsg');
-const postBoardBtn = document.getElementById('postBoardBtn');
 const systemFeed = document.getElementById('systemFeed');
 const dmList = document.getElementById('dmList');
 const ortegaBtn = document.getElementById('ortegaBtn');
-const chatTitle = document.getElementById('chatTitle');
-const boardTitle = document.getElementById('boardTitle');
 const marqueeInner = document.getElementById('marqueeInner');
 const marqueeWrap = document.getElementById('marquee');
-const boardSearch = document.getElementById('boardSearch');
 let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null;
-let channelListeners = {};
 let feedCache = [];
-let boardListeners = {};
 let ortegaClickCount = 0;
-const bootLines = [
-"C:\\> INITIALIZING BEFORE US UNIVERSE...",
-"C:\\> Loading kernel.............[ONLINE]",
-"C:\\> Checking Ra'Norric link....[ONLINE]",
-"C:\\> Accessing Pre-Universe Archives... [GRANTED]",
-"C:\\> Loading Melphia's Game Protocols... [ACTIVE]",
-"C:\\> Detecting Temporal Anomalies... [STABLE]",
-"C:\\> MEMORY CHECK PASSED",
-"C:\\> DISK VERIFIED",
-"C:\\> NETWORK ACTIVE",
-"C:\\> System is .....[ONLINE]",
-"C:\\> Ready for authentication..."
-];
-let lineIdx = 0;
-function typeBootLine(){
-if(lineIdx < bootLines.length){
-bootLog.textContent += bootLines[lineIdx] + "\n";
-lineIdx++;
-setTimeout(typeBootLine, 240 + Math.random()*360);
-}
-}
-typeBootLine();
 onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
 function prependFeedEntry(text){
 const el = document.createElement('div');
@@ -447,33 +344,17 @@ feedCache.unshift(obj);
 if(feedCache.length > 40) feedCache.pop();
 prependFeedEntry(obj.text);
 updateMarqueeFromCache();
-bootBroadcast.textContent = obj.text;
 });
 get(feedRef).then(snap => {
 const data = snap.val() || {};
 feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
 updateMarqueeFromCache();
 });
-function setPresence(h,ch){
-if(!uid) return;
-try {
-if(presenceRef) remove(presenceRef).catch(()=>{});
-presenceRef = ref(db, `online/${ch}/${uid}`);
-set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid, typing:false}).then(()=>{
-onDisconnect(presenceRef).remove();
-}).catch(e => appendSystem('Presence error: ' + e.message));
-} catch(e){
-appendSystem('Presence failed: ' + e.message);
-}
-}
 let onlineWatchRef = ref(db, 'online');
 function watchOnline(){
 onValue(onlineWatchRef, snap => {
 const data = snap.val() || {};
 renderServerTracking(data);
-renderActiveUsers(data[currentChannel] || {});
-updateUserCount(data);
-updateTypingIndicator(data[currentChannel] || {});
 });
 }
 function renderServerTracking(data){
@@ -500,23 +381,6 @@ userList.appendChild(div);
 serverTrackingList.appendChild(branch);
 });
 }
-function renderActiveUsers(obj){
-activeUsersList.innerHTML = '';
-Object.values(obj || {}).forEach(u => {
-const row = document.createElement('div'); row.className = 'user-row';
-const dot = document.createElement('div'); dot.className = 'status-dot';
-const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name || 'Anonymous';
-name.onclick = () => openDMInline(u.uid, u.name);
-row.append(dot, name);
-activeUsersList.appendChild(row);
-});
-}
-function updateUserCount(data){
-const count = Object.keys(data[currentChannel] || {}).length;
-userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
-chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
-boardTitle.innerHTML = `//${currentChannel.toUpperCase()} MESSAGE BOARD`;
-}
 function watchPresenceEvents() {
 const channels = ['sam','exuro','nero','nora','loktal'];
 channels.forEach(ch => {
@@ -530,153 +394,6 @@ if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '
 });
 });
 }
-function listenChannel(ch){
-for(const k in channelListeners){
-if(channelListeners[k].ref) off(channelListeners[k].ref);
-}
-channelListeners = {};
-currentChannel = ch;
-chatMessages.innerHTML = '';
-const r = ref(db, `chat/${ch}`);
-const q = query(r, orderByChild('ts'));
-const fn = snap => {
-const o = snap.val();
-if(o && !o.deleted) renderChatMessage(o, snap.key);
-};
-onChildAdded(q, fn, e => appendSystem('Chat listen error: ' + e.message));
-channelListeners[ch] = {ref: r, fn};
-listenBoard(ch);
-}
-function renderChatMessage(o, key){
-const row = document.createElement('div'); row.className = 'chat-row';
-const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
-const bub = document.createElement('div'); bub.className = 'chat-bubble';
-if(o.uid === uid) bub.classList.add('me');
-bub.innerHTML = `<div class="chat-meta">${o.name || 'Anonymous'} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
-if(o.uid === uid){
-const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
-edit.onclick = () => { /* edit logic */ };
-const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
-del.onclick = () => {
-update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => appendSystem('Delete failed: ' + e.message));
-row.style.display = 'none';
-};
-bub.append(edit, del);
-}
-row.append(av, bub);
-chatMessages.appendChild(row);
-chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-async function hash(str){
-const e = new TextEncoder().encode(str);
-const b = await crypto.subtle.digest('SHA-256', e);
-return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
-}
-async function postMessage(ch, name, msg){
-if(!uid || !myHandle) {
-  bootOverlay.style.display = 'flex';
-  appRoot.style.display = 'none';
-  return;
-}
-const m = msg.trim();
-if(!m || m.length > 500) return;
-const ts = Date.now();
-const h = await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
-const key = push(ref(db, `chat/${ch}`)).key;
-const updates = {};
-updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
-updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
-await update(ref(db), updates).catch(e => appendSystem('Chat post error: ' + e.message));
-set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
-}
-function listenBoard(ch){
-for(const k in boardListeners){
-if(boardListeners[k].ref) off(boardListeners[k].ref);
-}
-boardListeners = {};
-boardList.innerHTML = '';
-const r = ref(db, `board/${ch}`);
-get(r).then(snap => {
-const data = snap.val() || {};
-Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
-renderBoardPost(o, id);
-});
-}).catch(e => appendSystem('Board load error: ' + e.message));
-const fn = snap => {
-const o = snap.val();
-renderBoardPost(o, snap.key);
-boardList.scrollTop = boardList.scrollHeight;
-};
-onChildAdded(r, fn, e => appendSystem('Board listen error: ' + e.message));
-boardListeners[ch] = {ref: r, fn};
-}
-function renderBoardPost(p, id){
-const el = document.createElement('div'); el.className = 'board-thread';
-el.innerHTML = `<strong>${esc(p.name || 'Anonymous')}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
-const reply = document.createElement('span');
-reply.textContent = '[Reply]';
-reply.style.cursor = 'pointer';
-reply.style.color = 'var(--accent)';
-reply.onclick = () => {
-boardMsg.value = `>>${id}\n` + boardMsg.value;
-boardMsg.focus();
-};
-el.appendChild(reply);
-boardList.appendChild(el);
-}
-sendBtn.onclick = () => {
-if(!myHandle) {
-  bootOverlay.style.display = 'flex';
-  appRoot.style.display = 'none';
-  return;
-}
-const val = chatInput.value.trim();
-if(val.startsWith('/d6')){
-const roll = Math.floor(Math.random() * 6) + 1;
-postMessage(currentChannel, myHandle, `rolled d6: ${roll}`);
-} else if(val.startsWith('/d20')){
-const roll = Math.floor(Math.random() * 20) + 1;
-postMessage(currentChannel, myHandle, `rolled d20: ${roll}`);
-} else {
-postMessage(currentChannel, myHandle, val);
-}
-chatInput.value = '';
-};
-chatInput.addEventListener('keydown', e => {
-if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
-});
-postBoardBtn.onclick = async () => {
-if(!myHandle) {
-  bootOverlay.style.display = 'flex';
-  appRoot.style.display = 'none';
-  return;
-}
-if(!uid) {
-  bootOverlay.style.display = 'flex';
-  appRoot.style.display = 'none';
-  return;
-}
-const m = boardMsg.value.trim();
-if(!m || m.length > 1000) return;
-const r = push(ref(db, `board/${currentChannel}`));
-await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
-boardMsg.value = '';
-};
-boardMsg.addEventListener('keydown', e => {
-if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
-});
-serverConfirm.onclick = () => {
-const newCh = channelSelect.value;
-if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
-document.body.classList.add('glitch-transition');
-setTimeout(() => {
-listenChannel(newCh);
-setPresence(myHandle, newCh);
-currentChannel = newCh;
-document.body.classList.remove('glitch-transition');
-}, 1000);
-}
-};
 ortegaBtn.onclick = () => {
   ortegaClickCount++;
   if (ortegaClickCount >= 18) {
@@ -728,78 +445,12 @@ await update(ref(db), updates).catch(() => {});
 inp.value = '';
 };
 }
-let typingTimeout = null;
-chatInput.addEventListener('input', () => {
-if(!uid) return;
-const isTyping = chatInput.value.trim().length > 0;
-set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
-clearTimeout(typingTimeout);
-typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
-resetIdleTimer();
-});
-function updateTypingIndicator(obj){
-const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name || 'Anonymous');
-document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
-}
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function appendSystem(t){
 const d = document.createElement('div');
 d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
 d.style.fontSize = '12px';
 systemFeed.prepend(d);
-}
-bootBtn.addEventListener('click', async () => {
-let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
-if(!raw){
-bootStatus.textContent = "Please enter a handle.";
-return;
-}
-bootStatus.textContent = "Entering network...";
-try {
-const credential = await signInAnonymously(auth);
-uid = credential.user.uid;
-const visitorsRef = ref(db, 'visitors/count');
-get(visitorsRef).then(snap => {
-let count = snap.val() || 0;
-count++;
-set(visitorsRef, count);
-document.getElementById('visitorCounter').textContent = 'Visitors: ' + count;
-}).catch(() => {document.getElementById('visitorCounter').textContent = 'Visitors: Error';});
-const hitsRef = ref(db, 'hits/count');
-get(hitsRef).then(snap => {
-let count = snap.val() || 0;
-count++;
-set(hitsRef, count);
-document.getElementById('hitCounter').textContent = 'Hits: ' + count;
-}).catch(() => {document.getElementById('hitCounter').textContent = 'Hits: Error';});
-const logRef = push(ref(db, 'visitors/logs'));
-set(logRef, {ts: Date.now(), handle: raw || 'anonymous'});
-myHandle = raw;
-currentChannel = bootChannel.value || 'exuro';
-// Try DB in background - never block load
-setTimeout(() => {
-set(ref(db, `users/${uid}`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
-appendSystem('Profile save failed: ' + e.message);
-});
-setPresence(myHandle, currentChannel);
-}, 500);
-finishBoot();
-resetIdleTimer();
-} catch(e) {
-bootStatus.textContent = "Failed to enter network: " + e.message;
-appendSystem('Authentication failed: ' + e.message);
-}
-});
-function finishBoot(){
-bootStatus.textContent = `Welcome, ${myHandle}!`;
-setTimeout(() => {
-bootOverlay.style.display = 'none';
-appRoot.style.display = 'block';
-channelSelect.value = currentChannel;
-initializePanels();
-appendSystem('System ready');
-listenChannel(currentChannel);
-}, 900);
 }
 function initializePanels(){
 document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
@@ -826,12 +477,6 @@ marqueeWrap.appendChild(p);
 document.querySelectorAll('.collapsible .toggle-btn:not(.bottom-toggle)').forEach(btn => {
 btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
 });
-boardSearch.addEventListener('input', () => {
-const term = boardSearch.value.toLowerCase();
-Array.from(boardList.children).forEach(el => {
-el.style.display = el.textContent.toLowerCase().includes(term) ? '' : 'none';
-});
-});
 setInterval(() => {
 activeUsersList.classList.add('glitch-update');
 setTimeout(() => activeUsersList.classList.remove('glitch-update'), 500);
@@ -839,36 +484,6 @@ setTimeout(() => activeUsersList.classList.remove('glitch-update'), 500);
 window.addEventListener('beforeunload', () => {
 if(presenceRef) remove(presenceRef);
 });
-setInterval(async () => {
-try {
-const snap = await get(ref(db,'chat'));
-const data = snap.val()||{};
-for(const ch in data){
-for(const id in data[ch]){
-if(data[ch][id].ts && Date.now() - data[ch][id].ts > 24*60*60*1000){
-await remove(ref(db, `chat/${ch}/${id}`));
-}
-}
-}
-} catch(e){ appendSystem('Purge error'); }
-}, 60*60*1000);
-setInterval(() => {
-if (uid && currentChannel) {
-set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
-}
-}, 300000);
-let idleTimer;
-function resetIdleTimer() {
-clearTimeout(idleTimer);
-idleTimer = setTimeout(() => {
-bootOverlay.style.display = 'flex';
-appRoot.style.display = 'none';
-appendSystem('Idle timeout - returned to boot screen.');
-}, 600000); // 10 minutes
-}
-document.addEventListener('mousemove', resetIdleTimer);
-document.addEventListener('keydown', resetIdleTimer);
-document.addEventListener('touchstart', resetIdleTimer);
 const revivalLinks = Array.from(document.querySelectorAll('#revivalSitesPanel .panel-body a'))
 .map(a => a.href)
 .filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com') && !href.includes('robustpvp-lang.github.io'));
@@ -895,3 +510,4 @@ setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
 </script>
 </body>
 </html>
+```
