@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -155,7 +154,7 @@ a { color: #0ff; text-decoration: underline; }
 <a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal<span class="donate-flash">Donate</span></a>
 <a class="link-btn" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">Venmo<span class="donate-flash">Donate</span></a>
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
-<a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
+<a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia's YouTube</a>
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
 <a class="link-btn" href="https://sora.chatgpt.com/profile/robustpvp" target="_blank" rel="noopener noreferrer">Sora</a>
 <div class="controls-right">
@@ -287,113 +286,152 @@ a { color: #0ff; text-decoration: underline; }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+
 const appRoot = document.getElementById('app');
 const systemFeed = document.getElementById('systemFeed');
 const dmList = document.getElementById('dmList');
 const ortegaBtn = document.getElementById('ortegaBtn');
 const marqueeInner = document.getElementById('marqueeInner');
 const marqueeWrap = document.getElementById('marquee');
+
 let uid = null, myHandle = null, currentChannel = 'exuro', presenceRef = null;
 let feedCache = [];
 let ortegaClickCount = 0;
+
 onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
+
+// Listen for boot completion from iframe
+window.addEventListener('message', (event) => {
+  if (event.data.type === 'bootComplete') {
+    myHandle = event.data.handle;
+    currentChannel = event.data.channel;
+    uid = event.data.uid;
+    
+    // Hide the iframe
+    const bootIframe = document.querySelector('iframe[src="bootpage.html"]');
+    if (bootIframe) {
+      bootIframe.style.display = 'none';
+    }
+    
+    // Show the main app
+    appRoot.style.display = 'block';
+    
+    // Initialize presence
+    presenceRef = ref(db, `online/${currentChannel}/${uid}`);
+    set(presenceRef, {uid, name: myHandle, typing: false});
+    onDisconnect(presenceRef).remove();
+    
+    appendSystem(`Connected as ${myHandle} on //${currentChannel.toUpperCase()}`);
+    initializePanels();
+  }
+});
+
 function prependFeedEntry(text){
-const el = document.createElement('div');
-el.className = 'dm-inline';
-el.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
-systemFeed.prepend(el);
-while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChild);
+  const el = document.createElement('div');
+  el.className = 'dm-inline';
+  el.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+  systemFeed.prepend(el);
+  while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChild);
 }
+
 function updateMarqueeFromCache(){
-if(feedCache.length === 0){
-marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — Site Under Construction —";
-startMarqueeAnimation();
-return;
+  if(feedCache.length === 0){
+    marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — Site Under Construction —";
+    startMarqueeAnimation();
+    return;
+  }
+  const text = feedCache.slice(0,8).map(item => item.text).join(' ✦ ');
+  marqueeInner.textContent = ' ' + text + ' ';
+  startMarqueeAnimation();
 }
-const text = feedCache.slice(0,8).map(item => item.text).join(' ✦ ');
-marqueeInner.textContent = ' ' + text + ' ';
-startMarqueeAnimation();
-}
+
 let marqueeAnimId = null;
 function startMarqueeAnimation(){
-if(marqueeAnimId) cancelAnimationFrame(marqueeAnimId);
-const inner = marqueeInner;
-inner.style.transform = 'translateX(0)';
-const wrapWidth = marquee.offsetWidth;
-const innerWidth = inner.offsetWidth || wrapWidth * 1.5;
-const speed = 80;
-let start = null;
-function step(ts){
-if(!start) start = ts;
-const elapsed = (ts - start) / 1000;
-const distance = speed * elapsed;
-inner.style.transform = `translateX(${-distance}px)`;
-if(distance > innerWidth + wrapWidth) start = ts;
-marqueeAnimId = requestAnimationFrame(step);
+  if(marqueeAnimId) cancelAnimationFrame(marqueeAnimId);
+  const inner = marqueeInner;
+  inner.style.transform = 'translateX(0)';
+  const wrapWidth = marquee.offsetWidth;
+  const innerWidth = inner.offsetWidth || wrapWidth * 1.5;
+  const speed = 80;
+  let start = null;
+  function step(ts){
+    if(!start) start = ts;
+    const elapsed = (ts - start) / 1000;
+    const distance = speed * elapsed;
+    inner.style.transform = `translateX(${-distance}px)`;
+    if(distance > innerWidth + wrapWidth) start = ts;
+    marqueeAnimId = requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
 }
-requestAnimationFrame(step);
-}
+
 const feedRef = ref(db, 'feed');
 onChildAdded(feedRef, snap => {
-const obj = {key: snap.key, text: snap.val(), ts: Date.now()};
-feedCache.unshift(obj);
-if(feedCache.length > 40) feedCache.pop();
-prependFeedEntry(obj.text);
-updateMarqueeFromCache();
+  const obj = {key: snap.key, text: snap.val(), ts: Date.now()};
+  feedCache.unshift(obj);
+  if(feedCache.length > 40) feedCache.pop();
+  prependFeedEntry(obj.text);
+  updateMarqueeFromCache();
 });
+
 get(feedRef).then(snap => {
-const data = snap.val() || {};
-feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
-updateMarqueeFromCache();
+  const data = snap.val() || {};
+  feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
+  updateMarqueeFromCache();
 });
+
 let onlineWatchRef = ref(db, 'online');
 function watchOnline(){
-onValue(onlineWatchRef, snap => {
-const data = snap.val() || {};
-renderServerTracking(data);
-});
+  onValue(onlineWatchRef, snap => {
+    const data = snap.val() || {};
+    renderServerTracking(data);
+  });
 }
+
 function renderServerTracking(data){
-serverTrackingList.innerHTML = '';
-const channels = ['sam','exuro','nero','nora','loktal'];
-channels.forEach(ch => {
-const users = Object.values(data[ch] || {});
-const count = users.length;
-const iconColor = count > 0 ? 'lime' : 'red';
-const branch = document.createElement('div');
-branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
-branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon ${count > 0 ? 'animated' : ''}" style="color:${iconColor}">●</span></div><div class="user-list"></div>`;
-const userList = branch.querySelector('.user-list');
-if(count === 0){
-userList.innerHTML = '<div>—</div>';
-} else {
-users.forEach(u => {
-const div = document.createElement('div');
-div.textContent = (u.name || 'Anonymous') + (u.typing ? ' (typing...)' : '');
-div.onclick = () => openDMInline(u.uid, u.name);
-userList.appendChild(div);
-});
+  serverTrackingList.innerHTML = '';
+  const channels = ['sam','exuro','nero','nora','loktal'];
+  channels.forEach(ch => {
+    const users = Object.values(data[ch] || {});
+    const count = users.length;
+    const iconColor = count > 0 ? 'lime' : 'red';
+    const branch = document.createElement('div');
+    branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
+    branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon ${count > 0 ? 'animated' : ''}" style="color:${iconColor}">●</span></div><div class="user-list"></div>`;
+    const userList = branch.querySelector('.user-list');
+    if(count === 0){
+      userList.innerHTML = '<div>—</div>';
+    } else {
+      users.forEach(u => {
+        const div = document.createElement('div');
+        div.textContent = (u.name || 'Anonymous') + (u.typing ? ' (typing...)' : '');
+        div.onclick = () => openDMInline(u.uid, u.name);
+        userList.appendChild(div);
+      });
+    }
+    serverTrackingList.appendChild(branch);
+  });
 }
-serverTrackingList.appendChild(branch);
-});
-}
+
 function watchPresenceEvents() {
-const channels = ['sam','exuro','nero','nora','loktal'];
-channels.forEach(ch => {
-onChildAdded(ref(db, `online/${ch}`), snap => {
-const u = snap.val();
-if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
-});
-onChildRemoved(ref(db, `online/${ch}`), snap => {
-const u = snap.val();
-if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
-});
-});
+  const channels = ['sam','exuro','nero','nora','loktal'];
+  channels.forEach(ch => {
+    onChildAdded(ref(db, `online/${ch}`), snap => {
+      const u = snap.val();
+      if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
+    });
+    onChildRemoved(ref(db, `online/${ch}`), snap => {
+      const u = snap.val();
+      if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
+    });
+  });
 }
+
 ortegaBtn.onclick = () => {
   ortegaClickCount++;
   if (ortegaClickCount >= 18) {
@@ -405,109 +443,112 @@ ortegaBtn.onclick = () => {
     setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
   }
 };
+
 async function registerDMPair(tuid){
-const pid = [uid, tuid].sort().join('_');
-const updates = {};
-updates[`dmPairs/${pid}/users/${uid}`] = true;
-updates[`dmPairs/${pid}/users/${tuid}`] = true;
-await update(ref(db), updates).catch(() => {});
+  const pid = [uid, tuid].sort().join('_');
+  const updates = {};
+  updates[`dmPairs/${pid}/users/${uid}`] = true;
+  updates[`dmPairs/${pid}/users/${tuid}`] = true;
+  await update(ref(db), updates).catch(() => {});
 }
+
 function openDMInline(tuid, tname){
-if(tuid === uid) return;
-registerDMPair(tuid);
-const pid = [uid, tuid].sort().join('_');
-if(document.querySelector(`[data-dmid="${pid}"]`)) return;
-const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
-const header = document.createElement('div'); header.textContent = `DM: ${tname || 'Anonymous'}`; header.style.fontWeight = '700';
-const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
-const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
-const send = document.createElement('button'); send.textContent = 'Send'; send.style.marginTop = '6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
-container.append(header, msgs, inp, send);
-dmList.prepend(container);
-const dmRef = ref(db, `dm/${pid}`);
-onChildAdded(dmRef, snap => {
-const o = snap.val();
-const el = document.createElement('div'); el.style.margin = '6px 0';
-el.textContent = `${o.fromName || 'Anonymous'}: ${o.msg}`;
-msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
-if(o.from !== uid){
-appendSystem(`New DM from ${o.fromName || 'Anonymous'}`);
+  if(tuid === uid) return;
+  registerDMPair(tuid);
+  const pid = [uid, tuid].sort().join('_');
+  if(document.querySelector(`[data-dmid="${pid}"]`)) return;
+  const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
+  const header = document.createElement('div'); header.textContent = `DM: ${tname || 'Anonymous'}`; header.style.fontWeight = '700';
+  const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
+  const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
+  const send = document.createElement('button'); send.textContent = 'Send'; send.style.cssText = 'margin-top:6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
+  container.append(header, msgs, inp, send);
+  dmList.prepend(container);
+  const dmRef = ref(db, `dm/${pid}`);
+  onChildAdded(dmRef, snap => {
+    const o = snap.val();
+    const el = document.createElement('div'); el.style.margin = '6px 0';
+    el.textContent = `${o.fromName || 'Anonymous'}: ${o.msg}`;
+    msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
+    if(o.from !== uid){
+      appendSystem(`New DM from ${o.fromName || 'Anonymous'}`);
+    }
+  });
+  send.onclick = async () => {
+    const txt = inp.value.trim();
+    if(!txt) return;
+    const ts = Date.now();
+    const key = push(ref(db, `dm/${pid}`)).key;
+    const updates = {};
+    updates[`/dm/${pid}/${key}`] = {from: uid, to: tuid, fromName: myHandle, toName: tname, msg: txt, ts};
+    await update(ref(db), updates).catch(() => {});
+    inp.value = '';
+  };
 }
-});
-send.onclick = async () => {
-const txt = inp.value.trim();
-if(!txt) return;
-const ts = Date.now();
-const key = push(ref(db, `dm/${pid}`)).key;
-const updates = {};
-updates[`/dm/${pid}/${key}`] = {from: uid, to: tuid, fromName: myHandle, toName: tname, msg: txt, ts};
-await update(ref(db), updates).catch(() => {});
-inp.value = '';
-};
-}
+
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
 function appendSystem(t){
-const d = document.createElement('div');
-d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
-d.style.fontSize = '12px';
-systemFeed.prepend(d);
+  const d = document.createElement('div');
+  d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
+  d.style.fontSize = '12px';
+  systemFeed.prepend(d);
 }
+
 function initializePanels(){
-document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
-document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
-btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
-});
+  document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
+  document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
+    btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
+  });
 }
+
 watchOnline();
 watchPresenceEvents();
 appendSystem('Initializing...');
 setTimeout(() => updateMarqueeFromCache(), 800);
-setInterval(() => {
-const p = 80 + Math.floor(Math.random() * 11);
-bootBroadcast.textContent = `Timeline stability.. ${p}%`;
-bootBroadcast.classList.add('glitch-update');
-setTimeout(() => bootBroadcast.classList.remove('glitch-update'), 500);
-}, 5000);
+
 for(let i=0; i<8; i++){
-const p = document.createElement('div'); p.className = 'particle';
-p.style.left = Math.random()*100 + '%';
-p.style.animationDelay = Math.random()*5 + 's';
-marqueeWrap.appendChild(p);
+  const p = document.createElement('div'); p.className = 'particle';
+  p.style.left = Math.random()*100 + '%';
+  p.style.animationDelay = Math.random()*5 + 's';
+  marqueeWrap.appendChild(p);
 }
+
 document.querySelectorAll('.collapsible .toggle-btn:not(.bottom-toggle)').forEach(btn => {
-btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
+  btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
 });
-setInterval(() => {
-activeUsersList.classList.add('glitch-update');
-setTimeout(() => activeUsersList.classList.remove('glitch-update'), 500);
-}, 30000);
+
 window.addEventListener('beforeunload', () => {
-if(presenceRef) remove(presenceRef);
+  if(presenceRef) remove(presenceRef);
 });
+
 const revivalLinks = Array.from(document.querySelectorAll('#revivalSitesPanel .panel-body a'))
-.map(a => a.href)
-.filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com') && !href.includes('robustpvp-lang.github.io'));
+  .map(a => a.href)
+  .filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com') && !href.includes('robustpvp-lang.github.io'));
+
 const toolbarLinks = [
-'https://tokillamockinggoblin.boards.net/',
-'https://youtube.com/@Patrickauthor',
-'https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview',
-'https://sora.chatgpt.com/profile/robustpvp'
+  'https://tokillamockinggoblin.boards.net/',
+  'https://youtube.com/@Patrickauthor',
+  'https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview',
+  'https://sora.chatgpt.com/profile/robustpvp'
 ];
 revivalLinks.push(...toolbarLinks);
+
 document.getElementById('stumbleBtn').onclick = () => {
-const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)];
-const timestamp = Date.now();
-window.open(`${randomLink}?t=${timestamp}`, '_blank');
+  const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)];
+  const timestamp = Date.now();
+  window.open(`${randomLink}?t=${timestamp}`, '_blank');
 };
+
 document.getElementById('emailBtn').onclick = () => {
-window.open('https://forms.gle/LBAkMsnVT7xrraYT8', '_blank');
+  window.open('https://forms.gle/LBAkMsnVT7xrraYT8', '_blank');
 };
+
 document.getElementById('mindGameBtn').onclick = () => {
-document.body.classList.add('glitch-transition');
-setTimeout(() => window.open('mindgame.html', '_blank'), 500);
-setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
+  document.body.classList.add('glitch-transition');
+  setTimeout(() => window.open('mindgame.html', '_blank'), 500);
+  setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
 };
 </script>
 </body>
 </html>
-```
