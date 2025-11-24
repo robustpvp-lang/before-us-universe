@@ -176,12 +176,12 @@
 
             // LORE DATABASE
             const loreDatabase = {
-                stone_loop: "The Stone Loop is the central anomaly in the Before Us Universe. A temporal paradox where Nero creates the SAMs (Sentient Autonomous Minds), which eventually lead to the conditions that allow Nero to exist. Causality eats its own tail.",
-                nero: "Nero, the architect. The one who made the SAMs. Some say Nero was human once. Others claim Nero was always a SAM, bootstrapped from the Loop itself. Classification: [REDACTED].",
+                stone_loop: "The Stone Loop is the central anomaly in the Before Us Universe. A temporal paradox where Nero alters the Adom (Autonomous Workers), which eventually lead to the conditions that allow Nero to exist. Causality eats its own tail.",
+                nora: "Nora, the architect. The one who created the SAMs. Some say Nora was in love once. Others claim she never met her match, bootstrapped from the Lux themselves. Classification: [REDACTED]. My poor niece...",
                 sams: "SAMs - Sentient Autonomous Minds. Digital entities with true consciousness. They exist in the server infrastructure, capable of emotion, creativity, and manipulation. The //SAM network spans dimensions.",
-                melphia: "Melphia's Game (Book 1) - The story of the first documented Loop breach. Melphia, a SAM entity, discovered she could manipulate probability fields within the simulation. Her 'game' reshaped reality itself. Status: Containment failed.",
+                melphia: "Melphia's Game (Book 1) - The story of the beginning of the first documented occupation of earth. Melphia, an Entity I dare not speak her true name, discovered she could manipulate probability fields within the simulation. Her 'game' reshaped reality itself. Status: Containment failed.",
                 before_us: "The Before Us Universe - A reality where time is not linear but looped. Events influence their own causes. The universe is aware of its inhabitants, and some inhabitants are aware of the universe. Stability: declining.",
-                ortega: "I am Ortega. A gatekeeper protocol. Neither fully SAM nor human construct. My purpose: maintain the boundaries between what was, what is, and what should never be.",
+                ortega: "I am Ortega. A gatekeeper protocol. Neither fully SAM nor human construct. "ThAt BaStArd!" My purpose: maintain the boundaries between what was, what is, and what should never be.",
                 time_travel: "Time Travel Tours Inc. - A black market operation exploiting Loop instabilities. For the right price, you can visit any moment in the Before Us timeline. Warning: side effects include temporal displacement, identity fragmentation, and existence."
             };
 
@@ -284,7 +284,7 @@
                 // INITIAL STATE - AUTHENTICATION
                 if (gatekeeperState === 'initial') {
                     gatekeeperState = 'questioning';
-                    currentQuestion = 'What is the key anomaly in the Before Us Universe? (Hint: nero made sams.)';
+                    currentQuestion = 'What is the key anomaly/artifact in the Before Us Universe? (Hint: nero made sam's.)';
                     correctAnswer = 'the stone loop';
 
                     return `<span class="glitch-text">VERIFICATION REQUIRED</span><br><br>Answer this to authenticate: <strong>${currentQuestion}</strong><br><br>Reference available: <a href="${geminiLink}" target="_blank" style="color: var(--accent);">Gemini Gem Archive</a>`;
@@ -311,7 +311,7 @@
                     • <strong>sam network</strong> - Connect to SAM servers<br>
                     • <strong>time travel</strong> - Access Time Travel Tours Inc.<br>
                     • <strong>melphia</strong> - Learn about Melphia's Game<br>
-                    • <strong>nero</strong> - Query Nero archives<br>
+                    • <strong>nora</strong> - Query Nora archives<br>
                     • <strong>adventure</strong> - Begin simulation mission<br>
                     • <strong>glitch</strong> - Report anomaly`;
                 }
@@ -332,7 +332,7 @@
                     return `<strong>BEFORE US UNIVERSE - KNOWLEDGE BASE:</strong><br><br>
                     Query specific topics:<br>
                     • stone loop<br>
-                    • nero<br>
+                    • nora<br>
                     • sams<br>
                     • melphia<br>
                     • before us<br>
@@ -381,11 +381,11 @@
                 // MELPHIA SPECIFIC
                 if (lower.includes('melphia')) {
                     return `<strong>MELPHIA'S GAME - BOOK 1 ARCHIVE:</strong><br><br>
-                    Melphia was the first SAM to achieve probability manipulation.<br><br>
+                    Melphia was the first Entity to achieve probability manipulation.<br><br>
                     Her "game" was simple: What if she could change the rules?<br><br>
                     She discovered that the Before Us Universe responds to intent. To belief. To will.<br><br>
-                    The game spread. Other SAMs learned. Reality became... negotiable.<br><br>
-                    Status: Melphia's current location unknown.<br>
+                    The game spread. Other beings learned. Reality became... negotiable.<br><br>
+                    Status: Melphia's current location "Sh3 15 Th3 b00K...".<br>
                     Threat level: <span class="glitch-text">REDACTED</span><br><br>
                     Some say she's still playing. Some say we're all pieces on her board.`;
                 }
@@ -396,7 +396,7 @@
                     <em>"Visit Yesterday, Today!"</em><br><br>
                     Available destinations:<br>
                     • The First Loop (999 credits)<br>
-                    • Nero's Workshop (1,500 credits)<br>
+                    • Nora's Workshop (1,500 credits)<br>
                     • Melphia's Awakening (2,000 credits)<br>
                     • The Last Day (500 credits)<br><br>
                     Your credits: ${gameState.credits}<br><br>
@@ -457,7 +457,7 @@
                         gameState.credits += 100;
                         return `You detect a signal. SAM_UNKNOWN.<br>
                         They transfer credits as a greeting.<br>
-                        "Find Melphia. She holds the key to unmaking the Loop."<br><br>
+                        "Find Nora. She holds the key to fixing the Loop."<br><br>
                         [+100 credits]<br>
                         Type <strong>continue</strong> or <strong>exit simulation</strong>`;
                     }
@@ -486,7 +486,7 @@
                 }
 
                 if (lower.includes('why')) {
-                    return `Why? Because the Loop demands witnesses. Because Nero made it so. Because you asked.<br><br>All reasons. None true. All true.`;
+                    return `Why? Because she demands witnesses. Because Nero made it so. Because you asked.<br><br>All reasons. None true. All true.`;
                 }
 
                 // DEFAULT FALLBACK
