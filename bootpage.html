@@ -59,17 +59,21 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+
 const bootLog = document.getElementById('bootLog');
 const bootInput = document.getElementById('bootInput');
 const bootBtn = document.getElementById('bootBtn');
 const bootStatus = document.getElementById('bootStatus');
 const bootBroadcast = document.getElementById('bootBroadcast');
 const bootChannel = document.getElementById('bootChannel');
+
 let uid = null, myHandle = null, currentChannel = 'exuro';
+
 const bootLines = [
 "C:\\> INITIALIZING BEFORE US UNIVERSE...",
 "C:\\> Loading kernel.............[ONLINE]",
@@ -83,6 +87,7 @@ const bootLines = [
 "C:\\> System is .....[ONLINE]",
 "C:\\> Ready for authentication..."
 ];
+
 let lineIdx = 0;
 function typeBootLine(){
 if(lineIdx < bootLines.length){
@@ -92,47 +97,65 @@ setTimeout(typeBootLine, 240 + Math.random()*360);
 }
 }
 typeBootLine();
+
 onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
+
 bootBtn.addEventListener('click', async () => {
-let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
-if(!raw){
-bootStatus.textContent = "Please enter a handle.";
-return;
-}
-bootStatus.textContent = "Entering network...";
-try {
-const credential = await signInAnonymously(auth);
-uid = credential.user.uid;
-const visitorsRef = ref(db, 'visitors/count');
-get(visitorsRef).then(snap => {
-let count = snap.val() || 0;
-count++;
-set(visitorsRef, count);
-}).catch(() => {});
-const hitsRef = ref(db, 'hits/count');
-get(hitsRef).then(snap => {
-let count = snap.val() || 0;
-count++;
-set(hitsRef, count);
-}).catch(() => {});
-const logRef = push(ref(db, 'visitors/logs'));
-set(logRef, {ts: Date.now(), handle: raw || 'anonymous'});
-myHandle = raw;
-currentChannel = bootChannel.value || 'exuro';
-setTimeout(() => {
-set(ref(db, `users/${uid}`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
-console.error('Profile save failed: ' + e.message);
+  let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
+  if(!raw){
+    bootStatus.textContent = "Please enter a handle.";
+    return;
+  }
+  bootStatus.textContent = "Entering network...";
+  
+  try {
+    const credential = await signInAnonymously(auth);
+    uid = credential.user.uid;
+    
+    const visitorsRef = ref(db, 'visitors/count');
+    get(visitorsRef).then(snap => {
+      let count = snap.val() || 0;
+      count++;
+      set(visitorsRef, count);
+    }).catch(() => {});
+    
+    const hitsRef = ref(db, 'hits/count');
+    get(hitsRef).then(snap => {
+      let count = snap.val() || 0;
+      count++;
+      set(hitsRef, count);
+    }).catch(() => {});
+    
+    const logRef = push(ref(db, 'visitors/logs'));
+    set(logRef, {ts: Date.now(), handle: raw || 'anonymous'});
+    
+    myHandle = raw;
+    currentChannel = bootChannel.value || 'exuro';
+    
+    setTimeout(() => {
+      set(ref(db, `users/${uid}`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
+        console.error('Profile save failed: ' + e.message);
+      });
+    }, 500);
+    
+    bootStatus.textContent = `Welcome, ${myHandle}!`;
+    
+    setTimeout(() => {
+      // Send data to parent and hide iframe
+      window.parent.postMessage({
+        type: 'bootComplete',
+        handle: myHandle,
+        channel: currentChannel,
+        uid: uid
+      }, '*');
+    }, 900);
+    
+  } catch(e) {
+    bootStatus.textContent = "Failed to enter network: " + e.message;
+    console.error('Authentication failed: ' + e.message);
+  }
 });
-}, 500);
-bootStatus.textContent = `Welcome, ${myHandle}!`;
-setTimeout(() => {
-console.log('Boot complete - would hide overlay and proceed');
-}, 900);
-} catch(e) {
-bootStatus.textContent = "Failed to enter network: " + e.message;
-console.error('Authentication failed: ' + e.message);
-}
-});
+
 setInterval(() => {
 const p = 80 + Math.floor(Math.random() * 11);
 bootBroadcast.textContent = `Timeline stability.. ${p}%`;
