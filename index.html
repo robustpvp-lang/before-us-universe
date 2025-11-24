@@ -174,11 +174,7 @@ a { color: #0ff; text-decoration: underline; }
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
 <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
-<a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
-<a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
 <a class="link-btn" href="https://sora.chatgpt.com/profile/robustpvp" target="_blank" rel="noopener noreferrer">Sora</a>
-<a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
-<a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
 <div class="controls-right">
 </div>
 </div>
@@ -217,6 +213,12 @@ a { color: #0ff; text-decoration: underline; }
 <input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
 <button id="sendBtn" aria-label="Send message">SEND</button>
 </div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title"><div class="title">//Discord</div></div>
+<div class="panel-body">
+<a class="link-btn" href="https://discord.gg/kWkPH8d9" target="_blank" rel="noopener noreferrer">Join Discord</a>
 </div>
 </div>
 <div class="panel collapsible collapsed">
@@ -292,6 +294,11 @@ a { color: #0ff; text-decoration: underline; }
 <div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
 <div class="ad-banner">Do you need more arms? Try Hexapro!</div>
 <div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
+<div style="text-align:center; margin:12px 0;">
+<a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
+<a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
+<a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
+</div>
 </div>
 </div>
 <div class="bottom-section">
@@ -495,7 +502,7 @@ feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
 updateMarqueeFromCache();
 });
 function setPresence(h,ch){
-if(!uid || uid.startsWith('offline_')) return;
+if(!uid) return;
 try {
 if(presenceRef) remove(presenceRef).catch(()=>{});
 presenceRef = ref(db, `online/${ch}/${uid}`);
@@ -613,8 +620,9 @@ const b = await crypto.subtle.digest('SHA-256', e);
 return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
 }
 async function postMessage(ch, name, msg){
-if(!uid || uid.startsWith('offline_')) {
-  appendSystem('Offline mode: messages not sent.');
+if(!uid || !myHandle) {
+  bootOverlay.style.display = 'flex';
+  appRoot.style.display = 'none';
   return;
 }
 const m = msg.trim();
@@ -629,10 +637,6 @@ await update(ref(db), updates).catch(e => appendSystem('Chat post error: ' + e.m
 set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
 }
 function listenBoard(ch){
-if(uid.startsWith('offline_')) {
-  appendSystem('Offline mode: board not loaded.');
-  return;
-}
 for(const k in boardListeners){
 if(boardListeners[k].ref) off(boardListeners[k].ref);
 }
@@ -694,8 +698,9 @@ if(!myHandle) {
   appRoot.style.display = 'none';
   return;
 }
-if(!uid || uid.startsWith('offline_')) {
-  appendSystem('Offline mode: posts not sent.');
+if(!uid) {
+  bootOverlay.style.display = 'flex';
+  appRoot.style.display = 'none';
   return;
 }
 const m = boardMsg.value.trim();
@@ -731,7 +736,6 @@ ortegaBtn.onclick = () => {
   }
 };
 async function registerDMPair(tuid){
-if(uid.startsWith('offline_')) return;
 const pid = [uid, tuid].sort().join('_');
 const updates = {};
 updates[`dmPairs/${pid}/users/${uid}`] = true;
@@ -773,7 +777,7 @@ inp.value = '';
 }
 let typingTimeout = null;
 chatInput.addEventListener('input', () => {
-if(!uid || uid.startsWith('offline_')) return;
+if(!uid) return;
 const isTyping = chatInput.value.trim().length > 0;
 set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
 clearTimeout(typingTimeout);
@@ -798,9 +802,8 @@ bootStatus.textContent = "Please enter a handle.";
 return;
 }
 bootStatus.textContent = "Entering network...";
-let credential;
 try {
-credential = await signInAnonymously(auth);
+const credential = await signInAnonymously(auth);
 uid = credential.user.uid;
 const visitorsRef = ref(db, 'visitors/count');
 get(visitorsRef).then(snap => {
@@ -817,14 +820,7 @@ set(hitsRef, count);
 document.getElementById('hitCounter').textContent = 'Hits: ' + count;
 }).catch(() => {document.getElementById('hitCounter').textContent = 'Hits: Error';});
 const logRef = push(ref(db, 'visitors/logs'));
-set(logRef, {ts: Date.now(), handle: myHandle || 'anonymous'});
-} catch(e) {
-bootStatus.textContent = "Auth error: " + e.message;
-appendSystem('Authentication failed: ' + e.message);
-uid = 'offline_' + Math.random().toString(36).slice(2);
-document.getElementById('visitorCounter').textContent = 'Visitors: Offline';
-document.getElementById('hitCounter').textContent = 'Hits: Offline';
-}
+set(logRef, {ts: Date.now(), handle: raw || 'anonymous'});
 myHandle = raw;
 currentChannel = bootChannel.value || 'exuro';
 // Try DB in background - never block load
@@ -836,6 +832,10 @@ setPresence(myHandle, currentChannel);
 }, 500);
 finishBoot();
 resetIdleTimer();
+} catch(e) {
+bootStatus.textContent = "Failed to enter network: " + e.message;
+appendSystem('Authentication failed: ' + e.message);
+}
 });
 function finishBoot(){
 bootStatus.textContent = `Welcome, ${myHandle}!`;
@@ -900,7 +900,7 @@ await remove(ref(db, `chat/${ch}/${id}`));
 } catch(e){ appendSystem('Purge error'); }
 }, 60*60*1000);
 setInterval(() => {
-if (uid && currentChannel && !uid.startsWith('offline_')) {
+if (uid && currentChannel) {
 set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
 }
 }, 300000);
@@ -923,11 +923,7 @@ const toolbarLinks = [
 'https://tokillamockinggoblin.boards.net/',
 'https://youtube.com/@Patrickauthor',
 'https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview',
-'https://spacehey.com/profile?id=4317004',
-'https://www.phpbb.com/',
-'https://sora.chatgpt.com/profile/robustpvp',
-'https://web.archive.org/',
-'https://www.oldversion.com/'
+'https://sora.chatgpt.com/profile/robustpvp'
 ];
 revivalLinks.push(...toolbarLinks);
 document.getElementById('stumbleBtn').onclick = () => {
