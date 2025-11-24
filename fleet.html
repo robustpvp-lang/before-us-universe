@@ -278,15 +278,15 @@
         this.drones = [];
       
         if (type === 'fighter') {
-          this.maxSpeed = 6;
-          this.accel = 0.25;
+          this.maxSpeed = 3;
+          this.accel = 0.15;
           this.health = 100;
           this.maxHealth = 100;
           this.fireRate = 5;
           this.size = 12;
           this.hitRadius = 10;
         } else if (type === 'carrier') {
-          this.maxSpeed = 3;
+          this.maxSpeed = 2;
           this.accel = 0.12;
           this.health = 250;
           this.maxHealth = 250;
@@ -296,7 +296,7 @@
           this.boostPower = 0.5;
           this.maxBoostSpeed = 7;
         } else if (type === 'brute') {
-          this.maxSpeed = 5;
+          this.maxSpeed = 2;
           this.accel = 0.2;
           this.health = 150;
           this.maxHealth = 150;
@@ -364,7 +364,7 @@
           d.update(this.pos);
           return d.life > 0;
         });
-        if (this.type === 'carrier' && this.drones.length < 3 && gameTime % 150 === 0) {
+        if (this.type === 'carrier' && this.drones.length < 5 && gameTime % 150 === 0) {
           this.drones.push(new Drone(this.pos.x, this.pos.y));
         }
       }
@@ -565,7 +565,7 @@
         this.color = '#800080';
         this.fireRate = 200 + Math.random() * 100;
         this.lastFire = gameTime + Math.random() * this.fireRate;
-        this.maxSpeed = 2;
+        this.maxSpeed = 1;
       }
       update() {
         // Pursue the player
