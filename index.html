@@ -305,8 +305,9 @@ let ortegaClickCount = 0;
 
 onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
 
-// Listen for boot completion from iframe
+// Listen for messages from iframes
 window.addEventListener('message', (event) => {
+  // Handle boot completion from bootpage iframe
   if (event.data.type === 'bootComplete') {
     myHandle = event.data.handle;
     currentChannel = event.data.channel;
@@ -328,6 +329,17 @@ window.addEventListener('message', (event) => {
     
     appendSystem(`Connected as ${myHandle} on //${currentChannel.toUpperCase()}`);
     initializePanels();
+  }
+  
+  // Send user data to chatservers iframe when requested
+  if (event.data.type === 'requestUserData') {
+    // Send user data to the iframe that requested it
+    event.source.postMessage({
+      type: 'userData',
+      handle: myHandle,
+      uid: uid,
+      channel: currentChannel
+    }, '*');
   }
 });
 
