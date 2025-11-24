@@ -1,1 +1,128 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Message Board — BUU</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
+--text-gray:#e6f7f7; --muted:#00aaaa; --online:#00ff9d; --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
+}
+html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:auto}
+body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
+.panel-title::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.03),rgba(0,0,0,0.03) 1px,transparent 1px,transparent 2px);pointer-events:none;opacity:0.5;}
+.panel{border:3px solid var(--border); background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFElEQVR42mNk+A8AAwUBAScAAAQq9gD31A+6AAAAAElFTkSuQmCC') repeat; margin-bottom:20px;}
+@keyframes glitch{2%,64%{transform:translate(2px,0) skew(5deg);}4%,60%{transform:translate(-2px,0) skew(-5deg);}62%{transform:translate(0,0) skew(3deg);}}
+.glitch{animation:glitch 1s linear infinite;}
+.glitch-update{animation:glitch 0.5s linear;}
+.panel-title{animation:warp 1s ease-in;}
+@keyframes warp{0%{transform:skewX(10deg);}100%{transform:skewX(0);}}
+.toggle-btn{background:var(--accent);color:#000;border:2px solid #000;padding:4px 8px;cursor:pointer;font-size:10px;margin-left:auto;animation:flicker 0.5s infinite alternate;}
+@keyframes flicker{0%{opacity:1;}100%{opacity:0.7;}}
+.panel-body{display:block;}
+.collapsed .panel-body{display:none;}
+#boardSearch{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;width:100%;font-family:monospace;margin-bottom:8px;}
+.panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
+.panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
+.panel-body{padding:8px;color:var(--text-gray)}
+.board-thread{background:#f0f8ff;border:1px solid #ccc;padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:#000;white-space:pre-wrap;}
+.board-thread:nth-child(even) {background: #f0f0f0;}
+.board-thread strong{color:#000080;font-size:14px}
+.board-thread .small{color:#808080;font-style:italic;margin-top:4px;display:block}
+.small{font-size:11px;color:var(--muted)}
+@media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
+body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
+@keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
+body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
+::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+#boardBody{height:80vh;overflow:auto;}
+</style>
+</head>
+<body>
+<div class="panel-body" id="boardBody">
+<div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
+<input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
+<div id="boardList" style="overflow:auto;margin:8px 0"></div>
+<div style="margin:8px">
+<textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
+<button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
+</div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, push, set, onChildAdded, get, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+const boardList = document.getElementById('boardList');
+const boardMsg = document.getElementById('boardMsg');
+const postBoardBtn = document.getElementById('postBoardBtn');
+const boardSearch = document.getElementById('boardSearch');
+let uid = null, myHandle = null, currentChannel = 'sam'; // Default channel; adjust if needed
+onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
+async function initBoard() {
+  try {
+    const credential = await signInAnonymously(auth);
+    uid = credential.user.uid;
+    myHandle = prompt('Enter your handle:') || 'Anonymous'; // Simple prompt for standalone
+    listenBoard(currentChannel);
+  } catch(e) {
+    console.error('Auth failed:', e);
+  }
+}
+function listenBoard(ch) {
+  boardList.innerHTML = '';
+  const r = ref(db, `board/${ch}`);
+  get(r).then(snap => {
+    const data = snap.val() || {};
+    Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
+      renderBoardPost(o, id);
+    });
+  }).catch(e => console.error('Board load error:', e));
+  onChildAdded(r, snap => {
+    const o = snap.val();
+    renderBoardPost(o, snap.key);
+    boardList.scrollTop = boardList.scrollHeight;
+  }, e => console.error('Board listen error:', e));
+}
+function renderBoardPost(p, id) {
+  const el = document.createElement('div'); el.className = 'board-thread';
+  el.innerHTML = `<strong>${esc(p.name || 'Anonymous')}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
+  const reply = document.createElement('span');
+  reply.textContent = '[Reply]';
+  reply.style.cursor = 'pointer';
+  reply.style.color = 'var(--accent)';
+  reply.onclick = () => {
+    boardMsg.value = `>>${id}\n` + boardMsg.value;
+    boardMsg.focus();
+  };
+  el.appendChild(reply);
+  boardList.appendChild(el);
+}
+postBoardBtn.onclick = async () => {
+  if(!uid || !myHandle) return alert('Please initialize board');
+  const m = boardMsg.value.trim();
+  if(!m || m.length > 1000) return;
+  const r = push(ref(db, `board/${currentChannel}`));
+  await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => console.error('Board error:', e));
+  boardMsg.value = '';
+};
+boardSearch.addEventListener('input', () => {
+  const term = boardSearch.value.toLowerCase();
+  Array.from(boardList.children).forEach(el => {
+    el.style.display = el.textContent.toLowerCase().includes(term) ? '' : 'none';
+  });
+});
+boardMsg.addEventListener('keydown', e => {
+  if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
+});
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+initBoard();
+</script>
+</body>
+</html>
