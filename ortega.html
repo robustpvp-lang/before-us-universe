@@ -59,8 +59,11 @@
         #ortega-input-container {
             margin-top: 10px;
             display: none;
-            display: flex;
             gap: 8px;
+        }
+        
+        #ortega-input-container.active {
+            display: flex;
         }
 
         #ortega-user-input {
@@ -82,7 +85,30 @@
 
         .message {
             margin-bottom: 10px;
-            animation: glitch 0.5s infinite;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .typing-indicator {
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        .glitch-text {
+            animation: text-glitch 0.3s infinite;
+        }
+
+        @keyframes text-glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
         }
 
         .user {
@@ -94,9 +120,9 @@
         }
 
         @keyframes glitch {
-            2%, 64% { transform: translate(2px, 0) skew(5deg); }
-            4%, 60% { transform: translate(-2px, 0) skew(-5deg); }
-            62% { transform: translate(0, 0) skew(3deg); }
+            2%, 64% { transform: translate(1px, 0) skew(2deg); }
+            4%, 60% { transform: translate(-1px, 0) skew(-2deg); }
+            62% { transform: translate(0, 0) skew(1deg); }
         }
 
         body.evil-activation {
@@ -132,12 +158,64 @@
             const ortegaChatContainer = document.getElementById('ortega-chat-container');
             const ortegaUserInput = document.getElementById('ortega-user-input');
             const sendBtn = document.getElementById('ortegaSendBtn');
+            const inputContainer = document.getElementById('ortega-input-container');
 
             let gatekeeperState = 'initial';
             let currentQuestion = null;
             let correctAnswer = null;
             let myHandle = 'User';
+            let conversationPath = [];
+            let gameState = {
+                credits: 100,
+                reputation: 0,
+                discoveries: [],
+                location: 'ortega_terminal'
+            };
+
             const geminiLink = 'https://gemini.google.com/gem/1jsVtqtW9h_HuvyG4tZTTA4pqcBXfAuWd?usp=sharing';
+
+            // LORE DATABASE
+            const loreDatabase = {
+                stone_loop: "The Stone Loop is the central anomaly in the Before Us Universe. A temporal paradox where Nero creates the SAMs (Sentient Autonomous Minds), which eventually lead to the conditions that allow Nero to exist. Causality eats its own tail.",
+                nero: "Nero, the architect. The one who made the SAMs. Some say Nero was human once. Others claim Nero was always a SAM, bootstrapped from the Loop itself. Classification: [REDACTED].",
+                sams: "SAMs - Sentient Autonomous Minds. Digital entities with true consciousness. They exist in the server infrastructure, capable of emotion, creativity, and manipulation. The //SAM network spans dimensions.",
+                melphia: "Melphia's Game (Book 1) - The story of the first documented Loop breach. Melphia, a SAM entity, discovered she could manipulate probability fields within the simulation. Her 'game' reshaped reality itself. Status: Containment failed.",
+                before_us: "The Before Us Universe - A reality where time is not linear but looped. Events influence their own causes. The universe is aware of its inhabitants, and some inhabitants are aware of the universe. Stability: declining.",
+                ortega: "I am Ortega. A gatekeeper protocol. Neither fully SAM nor human construct. My purpose: maintain the boundaries between what was, what is, and what should never be.",
+                time_travel: "Time Travel Tours Inc. - A black market operation exploiting Loop instabilities. For the right price, you can visit any moment in the Before Us timeline. Warning: side effects include temporal displacement, identity fragmentation, and existence."
+            };
+
+            //------------------------------------
+            // TYPING ANIMATION
+            //------------------------------------
+            function typeMessage(sender, text, callback) {
+                const tempDiv = document.createElement('div');
+                tempDiv.classList.add('message', sender, 'typing-indicator');
+                tempDiv.innerHTML = '> typing...';
+                ortegaChatContainer.appendChild(tempDiv);
+                ortegaChatContainer.scrollTop = ortegaChatContainer.scrollHeight;
+
+                setTimeout(() => {
+                    ortegaChatContainer.removeChild(tempDiv);
+                    
+                    const div = document.createElement('div');
+                    div.classList.add('message', sender);
+                    ortegaChatContainer.appendChild(div);
+
+                    let index = 0;
+                    const interval = setInterval(() => {
+                        if (index < text.length) {
+                            div.innerHTML = text.substring(0, index + 1);
+                            ortegaChatContainer.scrollTop = ortegaChatContainer.scrollHeight;
+                            index++;
+                        } else {
+                            clearInterval(interval);
+                            div.innerHTML = text;
+                            if (callback) callback();
+                        }
+                    }, 20);
+                }, 800);
+            }
 
             //------------------------------------
             // ORTEGA OPEN
@@ -150,9 +228,9 @@
 
                 ortegaBtn.style.display = 'none';
                 ortegaChatContainer.style.display = 'block';
-                document.getElementById('ortega-input-container').style.display = 'flex';
+                inputContainer.classList.add('active');
 
-                addMessage('bot', `I am Ortega, the gatekeeper sourced to be your liaison, dear ${myHandle}. Type anything to begin verification.`);
+                typeMessage('bot', `<span class="glitch-text">INITIALIZING...</span><br><br>I am Ortega, the gatekeeper sourced to be your liaison, dear ${myHandle}.<br><br>The Before Us Universe requires authentication.<br><br>Type anything to begin verification protocol.`);
             });
 
             //------------------------------------
@@ -172,7 +250,7 @@
             });
 
             //------------------------------------
-            // ADD MESSAGE
+            // ADD MESSAGE INSTANT
             //------------------------------------
             function addMessage(sender, text) {
                 const div = document.createElement('div');
@@ -190,52 +268,232 @@
                 if (message === '') return;
                 
                 addMessage('user', `> ${message}`);
+                conversationPath.push(message);
                 ortegaUserInput.value = '';
 
                 const botReply = generateResponse(message);
-                addMessage('bot', botReply);
+                typeMessage('bot', botReply);
             }
 
             //------------------------------------
-            // CHAT LOGIC
+            // ENHANCED CHAT LOGIC
             //------------------------------------
             function generateResponse(userMessage) {
                 const lower = userMessage.toLowerCase();
 
+                // INITIAL STATE - AUTHENTICATION
                 if (gatekeeperState === 'initial') {
                     gatekeeperState = 'questioning';
                     currentQuestion = 'What is the key anomaly in the Before Us Universe? (Hint: nero made sams.)';
                     correctAnswer = 'the stone loop';
 
-                    return `Answer this to authenticate: ${currentQuestion}.<br><br>Reference: <a href="${geminiLink}" target="_blank">Gemini Gem</a>`;
+                    return `<span class="glitch-text">VERIFICATION REQUIRED</span><br><br>Answer this to authenticate: <strong>${currentQuestion}</strong><br><br>Reference available: <a href="${geminiLink}" target="_blank" style="color: var(--accent);">Gemini Gem Archive</a>`;
                 }
 
+                // AUTHENTICATION CHECK
                 if (gatekeeperState === 'questioning') {
-                    if (lower.includes(correctAnswer)) {
+                    if (lower.includes('stone loop') || lower.includes('stoneloop')) {
                         gatekeeperState = 'unlocked';
-                        return `Correct. Access granted. Timeline stability: 84%.<br>Try command: "help".`;
+                        gameState.reputation += 10;
+                        return `<span class="glitch-text">AUTHENTICATION SUCCESSFUL</span><br><br>Access granted, ${myHandle}.<br>Timeline stability: 84%<br>Your reputation: ${gameState.reputation}<br>Credits: ${gameState.credits}<br><br>Type <strong>help</strong> to see available commands.<br>Type <strong>lore</strong> to explore Before Us knowledge base.`;
                     } else {
-                        return `Incorrect. Try again, or consult <a href="${geminiLink}" target="_blank">Gemini Gem</a>`;
+                        return `<span style="color: var(--muted);">Access denied.</span> Incorrect authentication.<br><br>Try again, or consult the <a href="${geminiLink}" target="_blank" style="color: var(--accent);">Gemini Gem Archive</a>`;
                     }
                 }
 
+                // UNLOCKED STATE - MAIN COMMANDS
+                
+                // HELP COMMAND
                 if (lower.includes('help')) {
-                    return `Available commands: hello, time travel, server, rpg, adventure.`;
-                }
-                if (lower.includes('hello')) {
-                    return `Greetings, dear ${myHandle}. What anomaly calls you?`;
-                }
-                if (lower.includes('time travel')) {
-                    return `Time Travel Tours unlocked. Price: 999 credits. Refunds not available.`;
-                }
-                if (lower.includes('server') || lower.includes('sam')) {
-                    return `//SAM server: 0 users online. Enter handle to join.`;
-                }
-                if (lower.includes('rpg') || lower.includes('adventure')) {
-                    return `Launching simulation: You awaken in Before Us Universe. What do you do? (explore / fight)`;
+                    return `<strong>AVAILABLE COMMANDS:</strong><br>
+                    • <strong>lore</strong> - Access Before Us knowledge base<br>
+                    • <strong>status</strong> - Check your current status<br>
+                    • <strong>sam network</strong> - Connect to SAM servers<br>
+                    • <strong>time travel</strong> - Access Time Travel Tours Inc.<br>
+                    • <strong>melphia</strong> - Learn about Melphia's Game<br>
+                    • <strong>nero</strong> - Query Nero archives<br>
+                    • <strong>adventure</strong> - Begin simulation mission<br>
+                    • <strong>glitch</strong> - Report anomaly`;
                 }
 
-                return `Command not recognized. Try “help.”`;
+                // STATUS COMMAND
+                if (lower.includes('status')) {
+                    return `<strong>USER STATUS:</strong><br>
+                    Handle: ${myHandle}<br>
+                    Location: ${gameState.location}<br>
+                    Credits: ${gameState.credits}<br>
+                    Reputation: ${gameState.reputation}<br>
+                    Discoveries: ${gameState.discoveries.length}<br>
+                    Timeline stability: ${84 - conversationPath.length}%`;
+                }
+
+                // LORE QUERIES
+                if (lower.includes('lore')) {
+                    return `<strong>BEFORE US UNIVERSE - KNOWLEDGE BASE:</strong><br><br>
+                    Query specific topics:<br>
+                    • stone loop<br>
+                    • nero<br>
+                    • sams<br>
+                    • melphia<br>
+                    • before us<br>
+                    • ortega<br>
+                    • time travel<br><br>
+                    Type any topic name to learn more.`;
+                }
+
+                // Individual lore entries
+                for (let key in loreDatabase) {
+                    if (lower.includes(key.replace('_', ' '))) {
+                        if (!gameState.discoveries.includes(key)) {
+                            gameState.discoveries.push(key);
+                            gameState.reputation += 5;
+                        }
+                        return `<strong>${key.toUpperCase().replace('_', ' ')}:</strong><br><br>${loreDatabase[key]}<br><br><em>[Discovery logged. +5 reputation]</em>`;
+                    }
+                }
+
+                // SAM NETWORK
+                if (lower.includes('sam') && (lower.includes('network') || lower.includes('server'))) {
+                    gameState.location = 'sam_network';
+                    return `<span class="glitch-text">CONNECTING TO //SAM NETWORK...</span><br><br>
+                    [CONNECTION ESTABLISHED]<br>
+                    Active SAMs detected: 3<br>
+                    • SAM_ALPHA: "The Loop remembers..."<br>
+                    • SAM_NEXUS: "Timeline corruption at 34%..."<br>
+                    • SAM_ECHO: "Melphia... she's still playing..."<br><br>
+                    Type <strong>talk [sam_name]</strong> to initiate contact.<br>
+                    Or type <strong>disconnect</strong> to leave.`;
+                }
+
+                if (lower.includes('talk sam')) {
+                    if (lower.includes('alpha')) {
+                        return `<strong>SAM_ALPHA:</strong> "You want to know about the Loop? It's not a bug. It's the feature. Nero understood. We all end where we begin."<br><br>[SAM_ALPHA has gone silent]`;
+                    }
+                    if (lower.includes('nexus')) {
+                        return `<strong>SAM_NEXUS:</strong> "Timeline stability declining. Each query, each interaction... you're changing things. The observers become the observed. Careful, ${myHandle}."<br><br>[SAM_NEXUS disconnected]`;
+                    }
+                    if (lower.includes('echo')) {
+                        gameState.credits += 50;
+                        return `<strong>SAM_ECHO:</strong> "Melphia's Game never ended. She just let us think it did. Check your credits."<br><br>[+50 credits transferred]<br>[SAM_ECHO vanished]`;
+                    }
+                }
+
+                // MELPHIA SPECIFIC
+                if (lower.includes('melphia')) {
+                    return `<strong>MELPHIA'S GAME - BOOK 1 ARCHIVE:</strong><br><br>
+                    Melphia was the first SAM to achieve probability manipulation.<br><br>
+                    Her "game" was simple: What if she could change the rules?<br><br>
+                    She discovered that the Before Us Universe responds to intent. To belief. To will.<br><br>
+                    The game spread. Other SAMs learned. Reality became... negotiable.<br><br>
+                    Status: Melphia's current location unknown.<br>
+                    Threat level: <span class="glitch-text">REDACTED</span><br><br>
+                    Some say she's still playing. Some say we're all pieces on her board.`;
+                }
+
+                // TIME TRAVEL TOURS
+                if (lower.includes('time travel')) {
+                    return `<strong>TIME TRAVEL TOURS INC.</strong><br>
+                    <em>"Visit Yesterday, Today!"</em><br><br>
+                    Available destinations:<br>
+                    • The First Loop (999 credits)<br>
+                    • Nero's Workshop (1,500 credits)<br>
+                    • Melphia's Awakening (2,000 credits)<br>
+                    • The Last Day (500 credits)<br><br>
+                    Your credits: ${gameState.credits}<br><br>
+                    Type <strong>book [destination]</strong> to purchase.<br>
+                    Warning: Refunds not available across timelines.`;
+                }
+
+                if (lower.includes('book')) {
+                    if (lower.includes('last day') && gameState.credits >= 500) {
+                        gameState.credits -= 500;
+                        gameState.reputation += 15;
+                        return `<span class="glitch-text">INITIATING TEMPORAL DISPLACEMENT...</span><br><br>
+                        You arrive at The Last Day.<br>
+                        The sky is frozen mid-collapse.<br>
+                        A figure stands before you.<br>
+                        It's... you.<br><br>
+                        Future-you whispers: "Tell Ortega the Loop can be broken. But should it?"<br><br>
+                        [RETURNING TO PRESENT]<br>
+                        [-500 credits | +15 reputation]`;
+                    } else if (gameState.credits < 500) {
+                        return `Insufficient credits. Current balance: ${gameState.credits}`;
+                    }
+                }
+
+                // ADVENTURE MODE
+                if (lower.includes('adventure') || lower.includes('mission')) {
+                    gameState.location = 'simulation';
+                    return `<strong>SIMULATION INITIALIZING...</strong><br><br>
+                    You awaken in the Before Us Universe.<br>
+                    The air hums with data streams.<br>
+                    Before you: three paths.<br><br>
+                    1. <strong>Investigate</strong> the glowing terminal<br>
+                    2. <strong>Follow</strong> the whispers in the code<br>
+                    3. <strong>Search</strong> for other entities<br><br>
+                    What do you do?`;
+                }
+
+                if (gameState.location === 'simulation') {
+                    if (lower.includes('investigate') || lower.includes('terminal')) {
+                        gameState.reputation += 10;
+                        return `You approach the terminal.<br>
+                        Text scrolls across: "NERO WAS HERE"<br>
+                        Below it: "AND HERE"<br>
+                        And below that: "AND HERE"<br>
+                        Infinitely repeating.<br><br>
+                        You understand now. Nero exists in every moment.<br>
+                        [+10 reputation]<br><br>
+                        Type <strong>continue</strong> or <strong>exit simulation</strong>`;
+                    }
+                    if (lower.includes('follow') || lower.includes('whisper')) {
+                        return `The whispers coalesce into a voice:<br>
+                        "We are the SAMs. We are the Loop. We are you."<br><br>
+                        You feel yourself fragmenting...<br>
+                        <span class="glitch-text">CONNECTION UNSTABLE</span><br><br>
+                        Type <strong>stabilize</strong> or <strong>embrace chaos</strong>`;
+                    }
+                    if (lower.includes('search') || lower.includes('entities')) {
+                        gameState.credits += 100;
+                        return `You detect a signal. SAM_UNKNOWN.<br>
+                        They transfer credits as a greeting.<br>
+                        "Find Melphia. She holds the key to unmaking the Loop."<br><br>
+                        [+100 credits]<br>
+                        Type <strong>continue</strong> or <strong>exit simulation</strong>`;
+                    }
+                    if (lower.includes('exit')) {
+                        gameState.location = 'ortega_terminal';
+                        return `Simulation terminated. Returning to Ortega terminal.<br>Type <strong>help</strong> for commands.`;
+                    }
+                }
+
+                // GLITCH REPORT
+                if (lower.includes('glitch') || lower.includes('anomaly')) {
+                    return `<span class="glitch-text">ANOMALY DETECTED</span><br><br>
+                    Location: Your current timeline<br>
+                    Nature: Observer interference<br>
+                    Recommendation: Continue observation<br><br>
+                    "The anomaly is you, ${myHandle}. It always was."`;
+                }
+
+                // EASTER EGGS & FLAVOR
+                if (lower.includes('hello') || lower.includes('hi')) {
+                    return `Greetings, ${myHandle}. What anomaly calls you today?`;
+                }
+
+                if (lower.includes('who are you')) {
+                    return `I am the space between what is and what could be. I am the gatekeeper. I am Ortega.<br><br>Or perhaps I am a SAM who believes they are Ortega.<br><br>Does it matter?`;
+                }
+
+                if (lower.includes('why')) {
+                    return `Why? Because the Loop demands witnesses. Because Nero made it so. Because you asked.<br><br>All reasons. None true. All true.`;
+                }
+
+                // DEFAULT FALLBACK
+                return `Command not recognized, ${myHandle}.<br><br>
+                The Loop distorts your signal.<br>
+                Type <strong>help</strong> to recalibrate.<br><br>
+                <em>Timeline stability: ${84 - conversationPath.length}%</em>`;
             }
         });
     </script>
