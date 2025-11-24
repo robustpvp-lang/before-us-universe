@@ -1,72 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Creepy Rotating Player</title>
-  <link rel="stylesheet" href="https://unpkg.com/aplayer/dist/APlayer.min.css" />
-  <style>
+<meta charset="UTF-8">
+<title>BUU Media Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css">
+
+<style>
     body {
-      background: #1a1a2e;
-      color: #fff;
-      font-family: "Courier New", monospace;
-      padding: 20px;
+        margin: 0;
+        background: #000;
+        font-family: 'Roboto Mono', monospace;
+        color: #0ff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+        transition: filter 0.4s;
     }
 
-    #player {
-      margin-top: 20px;
+    #player-container {
+        width: 90%;
+        max-width: 600px;
+        border: 2px solid #0ff;
+        border-radius: 10px;
+        padding: 20px;
+        background: rgba(0, 20, 40, 0.8);
+        box-shadow: 0 0 20px #0ff;
+        position: relative;
+        z-index: 10;
     }
 
-    input[type="file"] {
-      margin-bottom: 10px;
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #0ff;
+        text-shadow: 0 0 15px #0ff;
+        font-size: 24px;
     }
-  </style>
+
+    .aplayer {
+        border: 1px solid #0ff;
+        border-radius: 8px;
+    }
+
+    .aplayer-bar, .aplayer-played {
+        background-color: #0ff !important;
+    }
+    .aplayer-play .aplayer-icon, 
+    .aplayer-pause .aplayer-icon {
+        fill: #0ff !important;
+    }
+
+    /* static render layer */
+    #static-overlay {
+        position: fixed;
+        inset: 0;
+        background: url('https://i.imgur.com/o5R7bkG.gif');
+        opacity: 0;
+        pointer-events: none;
+        mix-blend-mode: screen;
+        z-index: 50;
+        transition: opacity 0.3s linear;
+    }
+
+    /* glitch keyframes */
+    @keyframes glitchshake {
+        0% { transform: translate(0,0); }
+        20% { transform: translate(3px,-2px); }
+        40% { transform: translate(-3px,1px); }
+        60% { transform: translate(2px,2px); }
+        80% { transform: translate(-2px,-3px); }
+        100% { transform: translate(0,0); }
+    }
+
+    @keyframes luxpulse {
+        0% { box-shadow: 0 0 10px #0ff; }
+        50% { box-shadow: 0 0 25px #0ff; }
+        100% { box-shadow: 0 0 10px #0ff; }
+    }
+
+    .glitching {
+        animation: glitchshake 0.25s infinite;
+    }
+    .luxpulse {
+        animation: luxpulse 1s infinite;
+    }
+
+    /* hidden whisper popup */
+    #whisper {
+        position: fixed;
+        bottom: 10%;
+        width: 100%;
+        text-align: center;
+        color: #f0f;
+        font-size: 24px;
+        text-shadow: 0 0 20px #f0f;
+        opacity: 0;
+        transition: opacity 1.2s;
+        z-index: 200;
+        pointer-events: none;
+        font-family: Georgia, serif;
+        letter-spacing: 2px;
+    }
+</style>
 </head>
+
 <body>
 
-  <h2>Creepy Rotating Playlist — Upload Enabled</h2>
-  <p>Upload your own tracks or enjoy the randomized playlist.</p>
-  <input type="file" id="audioFile" accept="audio/*">
+<div id="player-container">
+    <h1>BUU Audio Archive</h1>
+    <div id="aplayer"></div>
+</div>
 
-  <div id="player"></div>
+<div id="static-overlay"></div>
+<div id="whisper">“…you should not be here…”</div>
 
-  <script src="https://unpkg.com/aplayer/dist/APlayer.min.js"></script>
-  <script>
-    async function loadPlaylist() {
-      const response = await fetch("https://robustpvp-lang.github.io/before-us-universe/playlist.json");
-      const data = await response.json();
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script>
 
-      // Fisher-Yates Shuffle
-      for (let i = data.tracks.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [data.tracks[i], data.tracks[j]] = [data.tracks[j], data.tracks[i]];
-      }
+<script>
+async function loadPlaylist() {
+    const response = await fetch("playlist.json");
+    const playlist = await response.json();
 
-      return data.tracks;
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+    shuffle(playlist);
+
+    const player = new APlayer({
+        container: document.getElementById('aplayer'),
+        audio: playlist,
+        autoplay: false,
+        theme: '#0ff',
+        loop: 'all',
+        order: 'random'
+    });
+
+    //----------------------------
+    // DISTORTION + GLITCH ENGINE
+    //----------------------------
+    let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let trackSource = null;
+    let staticNoise = null;
+    let distortionActive = false;
+    let distortionTimer = null;
+
+    const staticOverlay = document.getElementById("static-overlay");
+    const whisper = document.getElementById("whisper");
+    const container = document.getElementById("player-container");
+
+    function createStaticNoise() {
+        const bufferSize = audioCtx.sampleRate * 3;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * 0.07;
+        }
+
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+        noise.loop = true;
+
+        const gain = audioCtx.createGain();
+        gain.gain.value = 0.12;
+
+        noise.connect(gain).connect(audioCtx.destination);
+        return { noise, gain };
     }
 
-    loadPlaylist().then((tracks) => {
-      const player = new APlayer({
-        container: document.getElementById("player"),
-        theme: "#e94560",
-        audio: tracks
-      });
+    function whisperEvent() {
+        whisper.textContent = (Math.random() > 0.5)
+            ? "“…you opened the wrong door…”"
+            : "“…Tiamat is awake…”";
 
-      // Upload handler
-      document.getElementById("audioFile").addEventListener("change", function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        const url = URL.createObjectURL(file);
+        whisper.style.opacity = 1;
+        setTimeout(() => whisper.style.opacity = 0, 2500);
+    }
 
-        player.list.add({
-          name: file.name,
-          artist: "Uploaded",
-          url: url
-        });
+    function activateDistortionMode() {
+        if (distortionActive) return;
+        distortionActive = true;
 
-        player.play();
-      });
+        // static overlay
+        staticOverlay.style.opacity = 0.25;
+
+        // neon pulse
+        container.classList.add("luxpulse");
+
+        // occasional UI glitching
+        setInterval(() => {
+            if (!distortionActive) return;
+            container.classList.add("glitching");
+            setTimeout(() => container.classList.remove("glitching"), 300);
+        }, 4000);
+
+        // random inversion pulses
+        setInterval(() => {
+            if (!distortionActive) return;
+            document.body.style.filter = "invert(1)";
+            setTimeout(() => document.body.style.filter = "invert(0)", 500);
+        }, 10000);
+
+        // whisper event
+        setInterval(() => {
+            if (!distortionActive) return;
+            if (Math.random() < 0.33) whisperEvent();
+        }, 12000);
+
+        // static audio
+        const sn = createStaticNoise();
+        sn.noise.start();
+        staticNoise = sn;
+
+        // pitch + volume mod
+        setInterval(() => {
+            if (!distortionActive || !trackSource) return;
+
+            player.audio.volume = 0.7 + Math.random() * 0.25;
+            trackSource.playbackRate.value = 1 + (Math.random() * 0.07 - 0.035);
+
+        }, 8000);
+    }
+
+    function resetDistortion() {
+        distortionActive = false;
+        staticOverlay.style.opacity = 0;
+        container.classList.remove("luxpulse");
+        container.classList.remove("glitching");
+        document.body.style.filter = "invert(0)";
+
+        if (staticNoise) {
+            staticNoise.noise.stop();
+            staticNoise = null;
+        }
+        if (trackSource) trackSource.playbackRate.value = 1.0;
+        player.audio.volume = 1.0;
+
+        if (distortionTimer) clearTimeout(distortionTimer);
+    }
+
+    //----------------------------
+    // PLAYER HOOKS
+    //----------------------------
+    player.on('play', () => {
+        resetDistortion();
+        audioCtx.resume();
+
+        const audioEl = player.audio;
+        trackSource = audioCtx.createMediaElementSource(audioEl);
+        trackSource.connect(audioCtx.destination);
+
+        distortionTimer = setTimeout(() => {
+            activateDistortionMode();
+        }, 30000);
     });
-  </script>
+
+    player.on('pause', resetDistortion);
+    player.on('ended', resetDistortion);
+    player.on('listswitch', resetDistortion);
+}
+
+loadPlaylist();
+</script>
 
 </body>
 </html>
