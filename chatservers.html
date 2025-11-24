@@ -95,11 +95,13 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
@@ -108,202 +110,235 @@ const serverConfirm = document.getElementById('serverConfirm');
 const userCountSmall = document.getElementById('userCountSmall');
 const activeUsersList = document.getElementById('activeUsersList');
 const chatTitle = document.getElementById('chatTitle');
+
 let uid = null, myHandle = null, currentChannel = 'sam', presenceRef = null;
 let channelListeners = {};
-onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
-async function initChat() {
+
+// Listen for user data from parent window
+window.addEventListener('message', (event) => {
+  if (event.data.type === 'userData') {
+    myHandle = event.data.handle;
+    uid = event.data.uid;
+    currentChannel = event.data.channel || 'sam';
+    channelSelect.value = currentChannel;
+    initChat();
+  }
+});
+
+// Request user data from parent on load
+window.parent.postMessage({ type: 'requestUserData' }, '*');
+
+onAuthStateChanged(auth, u => { 
+  if(u && !uid) uid = u.uid; 
+});
+
+function initChat() {
+  if (!uid || !myHandle) {
+    console.log('Waiting for user data...');
+    return;
+  }
+  
+  setPresence(myHandle, currentChannel);
+  listenChannel(currentChannel);
+  watchOnline();
+  watchPresenceEvents();
+  resetIdleTimer();
+}
+
+function setPresence(h,ch){
+  if(!uid) return;
   try {
-    const credential = await signInAnonymously(auth);
-    uid = credential.user.uid;
-    myHandle = prompt('Enter your handle:') || 'Anonymous'; // Simple prompt for standalone
-    currentChannel = channelSelect.value;
-    setPresence(myHandle, currentChannel);
-    listenChannel(currentChannel);
-    watchOnline();
-    watchPresenceEvents();
-    resetIdleTimer();
-  } catch(e) {
-    console.error('Auth failed:', e);
+    if(presenceRef) remove(presenceRef).catch(()=>{});
+    presenceRef = ref(db, `online/${ch}/${uid}`);
+    set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid, typing:false}).then(()=>{
+      onDisconnect(presenceRef).remove();
+    }).catch(e => console.error('Presence error: ' + e.message));
+  } catch(e){
+    console.error('Presence failed: ' + e.message);
   }
 }
-function setPresence(h,ch){
-if(!uid) return;
-try {
-if(presenceRef) remove(presenceRef).catch(()=>{});
-presenceRef = ref(db, `online/${ch}/${uid}`);
-set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid, typing:false}).then(()=>{
-onDisconnect(presenceRef).remove();
-}).catch(e => console.error('Presence error: ' + e.message));
-} catch(e){
-console.error('Presence failed: ' + e.message);
-}
-}
+
 let onlineWatchRef = ref(db, 'online');
 function watchOnline(){
-onValue(onlineWatchRef, snap => {
-const data = snap.val() || {};
-renderActiveUsers(data[currentChannel] || {});
-updateUserCount(data);
-updateTypingIndicator(data[currentChannel] || {});
-});
+  onValue(onlineWatchRef, snap => {
+    const data = snap.val() || {};
+    renderActiveUsers(data[currentChannel] || {});
+    updateUserCount(data);
+    updateTypingIndicator(data[currentChannel] || {});
+  });
 }
+
 function renderActiveUsers(obj){
-activeUsersList.innerHTML = '';
-Object.values(obj || {}).forEach(u => {
-const row = document.createElement('div'); row.className = 'user-row';
-const dot = document.createElement('div'); dot.className = 'status-dot';
-const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name || 'Anonymous';
-name.onclick = () => openDMInline(u.uid, u.name); // If DMs needed, but for chat only, perhaps omit or implement
-row.append(dot, name);
-activeUsersList.appendChild(row);
-});
+  activeUsersList.innerHTML = '';
+  Object.values(obj || {}).forEach(u => {
+    const row = document.createElement('div'); row.className = 'user-row';
+    const dot = document.createElement('div'); dot.className = 'status-dot';
+    const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name || 'Anonymous';
+    row.append(dot, name);
+    activeUsersList.appendChild(row);
+  });
 }
+
 function updateUserCount(data){
-const count = Object.keys(data[currentChannel] || {}).length;
-userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
-chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
+  const count = Object.keys(data[currentChannel] || {}).length;
+  userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
+  chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
 }
+
 function updateTypingIndicator(obj){
-const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name || 'Anonymous');
-document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
+  const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name || 'Anonymous');
+  document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
 }
+
 function watchPresenceEvents() {
-const channels = ['sam','exuro','nero','nora','loktal'];
-channels.forEach(ch => {
-onChildAdded(ref(db, `online/${ch}`), snap => {
-const u = snap.val();
-if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') console.log(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
-});
-onChildRemoved(ref(db, `online/${ch}`), snap => {
-const u = snap.val();
-if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') console.log(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
-});
-});
+  const channels = ['sam','exuro','nero','nora','loktal'];
+  channels.forEach(ch => {
+    onChildAdded(ref(db, `online/${ch}`), snap => {
+      const u = snap.val();
+      if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') console.log(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
+    });
+    onChildRemoved(ref(db, `online/${ch}`), snap => {
+      const u = snap.val();
+      if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') console.log(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
+    });
+  });
 }
+
 function listenChannel(ch){
-if(channelListeners[currentChannel]) {
-  const listener = channelListeners[currentChannel];
-  if(listener.ref) off(listener.ref, 'child_added', listener.fn);
+  if(channelListeners[currentChannel]) {
+    const listener = channelListeners[currentChannel];
+    if(listener.ref) off(listener.ref, 'child_added', listener.fn);
+  }
+  channelListeners = {};
+  currentChannel = ch;
+  chatMessages.innerHTML = '';
+  const r = ref(db, `chat/${ch}`);
+  const q = query(r, orderByChild('ts'));
+  const fn = snap => {
+    const o = snap.val();
+    if(o && !o.deleted) renderChatMessage(o, snap.key);
+  };
+  onChildAdded(q, fn, e => console.error('Chat listen error: ' + e.message));
+  channelListeners[ch] = {ref: r, fn};
 }
-channelListeners = {};
-currentChannel = ch;
-chatMessages.innerHTML = '';
-const r = ref(db, `chat/${ch}`);
-const q = query(r, orderByChild('ts'));
-const fn = snap => {
-const o = snap.val();
-if(o && !o.deleted) renderChatMessage(o, snap.key);
-};
-onChildAdded(q, fn, e => console.error('Chat listen error: ' + e.message));
-channelListeners[ch] = {ref: r, fn};
-}
+
 function renderChatMessage(o, key){
-const row = document.createElement('div'); row.className = 'chat-row';
-const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
-const bub = document.createElement('div'); bub.className = 'chat-bubble';
-if(o.uid === uid) bub.classList.add('me');
-bub.innerHTML = `<div class="chat-meta">${o.name || 'Anonymous'} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
-if(o.uid === uid){
-const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
-edit.onclick = () => { /* edit logic */ };
-const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
-del.onclick = () => {
-update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => console.error('Delete failed: ' + e.message));
-row.style.display = 'none';
-};
-bub.append(edit, del);
+  const row = document.createElement('div'); row.className = 'chat-row';
+  const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
+  const bub = document.createElement('div'); bub.className = 'chat-bubble';
+  if(o.uid === uid) bub.classList.add('me');
+  bub.innerHTML = `<div class="chat-meta">${o.name || 'Anonymous'} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+  if(o.uid === uid){
+    const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
+    edit.onclick = () => { /* edit logic */ };
+    const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
+    del.onclick = () => {
+      update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => console.error('Delete failed: ' + e.message));
+      row.style.display = 'none';
+    };
+    bub.append(edit, del);
+  }
+  row.append(av, bub);
+  chatMessages.appendChild(row);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
-row.append(av, bub);
-chatMessages.appendChild(row);
-chatMessages.scrollTop = chatMessages.scrollHeight;
-}
+
 async function hash(str){
-const e = new TextEncoder().encode(str);
-const b = await crypto.subtle.digest('SHA-256', e);
-return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
+  const e = new TextEncoder().encode(str);
+  const b = await crypto.subtle.digest('SHA-256', e);
+  return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
 }
+
 async function postMessage(ch, name, msg){
-if(!uid || !myHandle) return;
-const m = msg.trim();
-if(!m || m.length > 500) return;
-const ts = Date.now();
-const h = await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
-const key = push(ref(db, `chat/${ch}`)).key;
-const updates = {};
-updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
-updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
-await update(ref(db), updates).catch(e => console.error('Chat post error: ' + e.message));
-set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
+  if(!uid || !myHandle) return;
+  const m = msg.trim();
+  if(!m || m.length > 500) return;
+  const ts = Date.now();
+  const h = await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
+  const key = push(ref(db, `chat/${ch}`)).key;
+  const updates = {};
+  updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
+  updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
+  await update(ref(db), updates).catch(e => console.error('Chat post error: ' + e.message));
+  set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
 }
+
 sendBtn.onclick = () => {
-const val = chatInput.value.trim();
-if(val.startsWith('/d6')){
-const roll = Math.floor(Math.random() * 6) + 1;
-postMessage(currentChannel, myHandle, `rolled d6: ${roll}`);
-} else if(val.startsWith('/d20')){
-const roll = Math.floor(Math.random() * 20) + 1;
-postMessage(currentChannel, myHandle, `rolled d20: ${roll}`);
-} else {
-postMessage(currentChannel, myHandle, val);
-}
-chatInput.value = '';
+  const val = chatInput.value.trim();
+  if(val.startsWith('/d6')){
+    const roll = Math.floor(Math.random() * 6) + 1;
+    postMessage(currentChannel, myHandle, `rolled d6: ${roll}`);
+  } else if(val.startsWith('/d20')){
+    const roll = Math.floor(Math.random() * 20) + 1;
+    postMessage(currentChannel, myHandle, `rolled d20: ${roll}`);
+  } else {
+    postMessage(currentChannel, myHandle, val);
+  }
+  chatInput.value = '';
 };
+
 chatInput.addEventListener('keydown', e => {
-if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
+  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
 });
+
 serverConfirm.onclick = () => {
-const newCh = channelSelect.value;
-if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
-document.body.classList.add('glitch-transition');
-setTimeout(() => {
-listenChannel(newCh);
-setPresence(myHandle, newCh);
-currentChannel = newCh;
-document.body.classList.remove('glitch-transition');
-}, 1000);
-}
+  const newCh = channelSelect.value;
+  if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
+    document.body.classList.add('glitch-transition');
+    setTimeout(() => {
+      listenChannel(newCh);
+      setPresence(myHandle, newCh);
+      currentChannel = newCh;
+      document.body.classList.remove('glitch-transition');
+    }, 1000);
+  }
 };
+
 let typingTimeout = null;
 chatInput.addEventListener('input', () => {
-if(!uid) return;
-const isTyping = chatInput.value.trim().length > 0;
-set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
-clearTimeout(typingTimeout);
-typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
+  if(!uid) return;
+  const isTyping = chatInput.value.trim().length > 0;
+  set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
 });
+
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
 window.addEventListener('beforeunload', () => {
-if(presenceRef) remove(presenceRef);
+  if(presenceRef) remove(presenceRef);
 });
+
 setInterval(() => {
-if (uid && currentChannel) {
-set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
-}
+  if (uid && currentChannel) {
+    set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
+  }
 }, 300000);
+
 let idleTimer;
 function resetIdleTimer() {
-clearTimeout(idleTimer);
-idleTimer = setTimeout(() => {
-console.log('Idle timeout');
-}, 600000); // 10 minutes
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => {
+    console.log('Idle timeout');
+  }, 600000); // 10 minutes
 }
 document.addEventListener('mousemove', resetIdleTimer);
 document.addEventListener('keydown', resetIdleTimer);
 document.addEventListener('touchstart', resetIdleTimer);
+
 setInterval(async () => {
-try {
-const snap = await get(ref(db,'chat'));
-const data = snap.val()||{};
-for(const ch in data){
-for(const id in data[ch]){
-if(data[ch][id].ts && Date.now() - data[ch][id].ts > 24*60*60*1000){
-await remove(ref(db, `chat/${ch}/${id}`));
-}
-}
-}
-} catch(e){ console.error('Purge error'); }
+  try {
+    const snap = await get(ref(db,'chat'));
+    const data = snap.val()||{};
+    for(const ch in data){
+      for(const id in data[ch]){
+        if(data[ch][id].ts && Date.now() - data[ch][id].ts > 24*60*60*1000){
+          await remove(ref(db, `chat/${ch}/${id}`));
+        }
+      }
+    }
+  } catch(e){ console.error('Purge error'); }
 }, 60*60*1000);
-initChat();
 </script>
 </body>
 </html>
