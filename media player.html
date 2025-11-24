@@ -1,84 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Creepy Audio Player</title>
+  <meta charset="UTF-8">
+  <title>Creepy Rotating Player</title>
   <link rel="stylesheet" href="https://unpkg.com/aplayer/dist/APlayer.min.css" />
   <style>
     body {
-      background-color: #1a1a2e; /* adjust to match your site’s bg */
+      background: #1a1a2e;
       color: #fff;
-      font-family: sans-serif;
+      font-family: "Courier New", monospace;
       padding: 20px;
     }
+
     #player {
       margin-top: 20px;
     }
+
     input[type="file"] {
       margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
-  <h2>Upload or Play Creepy Tracks</h2>
-  <input type="file" id="audioFile" accept="audio/*" />
+
+  <h2>Creepy Rotating Playlist — Upload Enabled</h2>
+  <p>Upload your own tracks or enjoy the randomized playlist.</p>
+  <input type="file" id="audioFile" accept="audio/*">
 
   <div id="player"></div>
 
   <script src="https://unpkg.com/aplayer/dist/APlayer.min.js"></script>
   <script>
-    // Preload some creepy / public domain songs
-    const initialAudio = [
-      {
-        name: "Footsteps in the Attic",
-        artist: "Arthur Fordsworthy",
-        url: "https://freepd.com/horror.php?track=Footsteps%20in%20the%20Attic"
-      },
-      {
-        name: "Mysterious Lights",
-        artist: "Bryan Teoh",
-        url: "https://freepd.com/horror.php?track=Mysterious%20Lights"
-      },
-      {
-        name: "Alien Spaceship Atmosphere",
-        artist: "Kevin MacLeod",
-        url: "https://freepd.com/horror.php?track=Alien%20Spaceship%20Atmosphere"
-      },
-      {
-        name: "Horroriffic",
-        artist: "Kevin MacLeod",
-        url: "https://freepd.com/horror.php?track=Horroriffic"
-      },
-      {
-        name: "Night on Bald Mountain",
-        artist: "Modest Mussorgsky (orchestral)",
-        url: "https://orangefreesounds.com/wp-content/uploads/2024/03/Creepy-classical-music-night-on-bald-mountain.mp3"
-      },
-      {
-        name: "Ominous Space Intro",
-        artist: "Public Domain Sounds",
-        url: "https://www.dropbox.com/s/xhw164wa9kylgn9/Ominous%20Space%20Intro.mp3?raw=1"
+    async function loadPlaylist() {
+      const response = await fetch("https://robustpvp-lang.github.io/before-us-universe/playlist.json");
+      const data = await response.json();
+
+      // Fisher-Yates Shuffle
+      for (let i = data.tracks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [data.tracks[i], data.tracks[j]] = [data.tracks[j], data.tracks[i]];
       }
-    ];
 
-    const player = new APlayer({
-      container: document.getElementById('player'),
-      theme: '#e94560', // accent color from your site
-      audio: initialAudio
-    });
+      return data.tracks;
+    }
 
-    // Handle user uploads
-    document.getElementById('audioFile').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const url = URL.createObjectURL(file);
-      player.list.add({
-        name: file.name,
-        artist: 'Uploaded',
-        url: url
+    loadPlaylist().then((tracks) => {
+      const player = new APlayer({
+        container: document.getElementById("player"),
+        theme: "#e94560",
+        audio: tracks
       });
-      player.play();
+
+      // Upload handler
+      document.getElementById("audioFile").addEventListener("change", function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+
+        player.list.add({
+          name: file.name,
+          artist: "Uploaded",
+          url: url
+        });
+
+        player.play();
+      });
     });
   </script>
+
 </body>
 </html>
