@@ -1,1 +1,309 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chat Servers — BUU</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
+--text-gray:#e6f7f7; --muted:#00aaaa; --online:#00ff9d; --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
+}
+html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:auto}
+body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
+.panel-title::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.03),rgba(0,0,0,0.03) 1px,transparent 1px,transparent 2px);pointer-events:none;opacity:0.5;}
+.panel{border:3px solid var(--border); background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFElEQVR42mNk+A8AAwUBAScAAAQq9gD31A+6AAAAAElFTkSuQmCC') repeat; margin-bottom:20px;}
+@keyframes glitch{2%,64%{transform:translate(2px,0) skew(5deg);}4%,60%{transform:translate(-2px,0) skew(-5deg);}62%{transform:translate(0,0) skew(3deg);}}
+.glitch{animation:glitch 1s linear infinite;}
+.glitch-update{animation:glitch 0.5s linear;}
+.panel-title{animation:warp 1s ease-in;}
+@keyframes warp{0%{transform:skewX(10deg);}100%{transform:skewX(0);}}
+.toggle-btn{background:var(--accent);color:#000;border:2px solid #000;padding:4px 8px;cursor:pointer;font-size:10px;margin-left:auto;animation:flicker 0.5s infinite alternate;}
+@keyframes flicker{0%{opacity:1;}100%{opacity:0.7;}}
+.panel-body{display:block;}
+.collapsed .panel-body{display:none;}
+.panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
+.panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
+.panel-body{padding:8px;color:var(--text-gray)}
+.chat-win{display:flex;flex-direction:column;height:80vh}
+@media(max-width:600px){.chat-win{height:70vh;}}
+.chat-main{display:flex;flex:1;overflow:hidden}
+.chat-messages{flex:1;overflow:auto;background:#e6e6fa;border-right:1px solid rgba(0,0,0,0.1);padding:8px;color:#000}
+.chat-users{background:#fffacd;border-left:1px solid rgba(0,0,0,0.1);padding:8px;overflow:auto;width:200px}
+@media(max-width:700px){.chat-main{flex-direction:column}.chat-users{width:auto;border-left:0;border-top:1px solid rgba(0,0,0,0.1)}}
+.chat-row{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
+.chat-avatar{width:36px;height:36px;border-radius:50%;background:#add8e6;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#001a1a}
+@media(max-width:600px){.chat-avatar{width:24px;height:24px;font-size:10px;}}
+.chat-bubble{max-width:78%;padding:10px;border-radius:8px;background:#e6e6fa;border:1px solid rgba(0,0,0,0.1);font-family:Arial;color:#000}
+.chat-bubble.me{background:#fffacd;border:1px solid #f0d280;text-align:right;color:#222}
+.chat-meta{font-size:11px;color:#808080;font-weight:700;margin-bottom:4px}
+@media(max-width:600px){.chat-meta{font-size:9px;}}
+.user-row{display:flex;gap:8px;align-items:center;padding:6px;font-size:12px;cursor:pointer}
+@media(max-width:600px){.user-row{font-size:10px;}}
+.status-dot{width:9px;height:9px;border-radius:50%;background:var(--online)}
+.uname{font-family:'Press Start 2P';color:#ff0000;font-size:12px}
+@media(max-width:600px){.uname{font-size:10px;}}
+.chat-controls{display:flex;gap:6px;padding:8px;background:#fffacd;border-top:1px solid rgba(0,0,0,0.1)}
+.chat-controls input{flex:1;padding:8px;border:2px inset rgba(0,0,0,0.1);background:#fff;color:#000}
+.chat-controls button{padding:8px;border:2px outset rgba(0,0,0,0.1);background:#add8e6;cursor:pointer;color:#000}
+.small{font-size:11px;color:var(--muted)}
+.typing-indicator { font-size: 12px; color: var(--muted); padding: 6px; font-style: italic; }
+@media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
+body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
+@keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
+body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
+::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+#serverSelectPanel{margin-bottom:12px;padding:8px}
+#serverSelectPanel .controls{display:flex;gap:8px;align-items:center}
+#serverSelectPanel select{flex:1;padding:12px;background:#001f1f;border:3px solid var(--border);color:var(--fg);font-weight:700;font-size:14px;border-radius:6px}
+#serverConfirm{background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;box-shadow:0 0 10px var(--accent)}
+</style>
+</head>
+<body>
+<div class="panel" id="serverSelectPanel">
+<div class="small">SELECT SERVER</div>
+<div class="controls">
+<select id="channelSelect" aria-label="Choose server">
+<option value="sam">//Sam</option>
+<option value="exuro">//Exuro</option>
+<option value="nero">//Nero</option>
+<option value="nora">//Nora</option>
+<option value="loktal">//Loktal</option>
+</select>
+<button id="serverConfirm" aria-label="Switch server">Switch Server</button>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
+<div class="panel-body chat-win" id="chatBody">
+<div class="chat-main">
+<div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+<div class="chat-users">
+<div class="small" style="margin-bottom:6px">USERS ONLINE</div>
+<div id="activeUsersList"></div>
+</div>
+</div>
+<div id="typingIndicator" class="typing-indicator"></div>
+<div class="chat-controls">
+<input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
+<button id="sendBtn" aria-label="Send message">SEND</button>
+</div>
+</div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const channelSelect = document.getElementById('channelSelect');
+const serverConfirm = document.getElementById('serverConfirm');
+const userCountSmall = document.getElementById('userCountSmall');
+const activeUsersList = document.getElementById('activeUsersList');
+const chatTitle = document.getElementById('chatTitle');
+let uid = null, myHandle = null, currentChannel = 'sam', presenceRef = null;
+let channelListeners = {};
+onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
+async function initChat() {
+  try {
+    const credential = await signInAnonymously(auth);
+    uid = credential.user.uid;
+    myHandle = prompt('Enter your handle:') || 'Anonymous'; // Simple prompt for standalone
+    currentChannel = channelSelect.value;
+    setPresence(myHandle, currentChannel);
+    listenChannel(currentChannel);
+    watchOnline();
+    watchPresenceEvents();
+    resetIdleTimer();
+  } catch(e) {
+    console.error('Auth failed:', e);
+  }
+}
+function setPresence(h,ch){
+if(!uid) return;
+try {
+if(presenceRef) remove(presenceRef).catch(()=>{});
+presenceRef = ref(db, `online/${ch}/${uid}`);
+set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid, typing:false}).then(()=>{
+onDisconnect(presenceRef).remove();
+}).catch(e => console.error('Presence error: ' + e.message));
+} catch(e){
+console.error('Presence failed: ' + e.message);
+}
+}
+let onlineWatchRef = ref(db, 'online');
+function watchOnline(){
+onValue(onlineWatchRef, snap => {
+const data = snap.val() || {};
+renderActiveUsers(data[currentChannel] || {});
+updateUserCount(data);
+updateTypingIndicator(data[currentChannel] || {});
+});
+}
+function renderActiveUsers(obj){
+activeUsersList.innerHTML = '';
+Object.values(obj || {}).forEach(u => {
+const row = document.createElement('div'); row.className = 'user-row';
+const dot = document.createElement('div'); dot.className = 'status-dot';
+const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name || 'Anonymous';
+name.onclick = () => openDMInline(u.uid, u.name); // If DMs needed, but for chat only, perhaps omit or implement
+row.append(dot, name);
+activeUsersList.appendChild(row);
+});
+}
+function updateUserCount(data){
+const count = Object.keys(data[currentChannel] || {}).length;
+userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
+chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
+}
+function updateTypingIndicator(obj){
+const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name || 'Anonymous');
+document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
+}
+function watchPresenceEvents() {
+const channels = ['sam','exuro','nero','nora','loktal'];
+channels.forEach(ch => {
+onChildAdded(ref(db, `online/${ch}`), snap => {
+const u = snap.val();
+if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') console.log(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
+});
+onChildRemoved(ref(db, `online/${ch}`), snap => {
+const u = snap.val();
+if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') console.log(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
+});
+});
+}
+function listenChannel(ch){
+if(channelListeners[currentChannel]) {
+  const listener = channelListeners[currentChannel];
+  if(listener.ref) off(listener.ref, 'child_added', listener.fn);
+}
+channelListeners = {};
+currentChannel = ch;
+chatMessages.innerHTML = '';
+const r = ref(db, `chat/${ch}`);
+const q = query(r, orderByChild('ts'));
+const fn = snap => {
+const o = snap.val();
+if(o && !o.deleted) renderChatMessage(o, snap.key);
+};
+onChildAdded(q, fn, e => console.error('Chat listen error: ' + e.message));
+channelListeners[ch] = {ref: r, fn};
+}
+function renderChatMessage(o, key){
+const row = document.createElement('div'); row.className = 'chat-row';
+const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
+const bub = document.createElement('div'); bub.className = 'chat-bubble';
+if(o.uid === uid) bub.classList.add('me');
+bub.innerHTML = `<div class="chat-meta">${o.name || 'Anonymous'} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+if(o.uid === uid){
+const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
+edit.onclick = () => { /* edit logic */ };
+const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
+del.onclick = () => {
+update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => console.error('Delete failed: ' + e.message));
+row.style.display = 'none';
+};
+bub.append(edit, del);
+}
+row.append(av, bub);
+chatMessages.appendChild(row);
+chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+async function hash(str){
+const e = new TextEncoder().encode(str);
+const b = await crypto.subtle.digest('SHA-256', e);
+return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
+}
+async function postMessage(ch, name, msg){
+if(!uid || !myHandle) return;
+const m = msg.trim();
+if(!m || m.length > 500) return;
+const ts = Date.now();
+const h = await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
+const key = push(ref(db, `chat/${ch}`)).key;
+const updates = {};
+updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
+updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
+await update(ref(db), updates).catch(e => console.error('Chat post error: ' + e.message));
+set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
+}
+sendBtn.onclick = () => {
+const val = chatInput.value.trim();
+if(val.startsWith('/d6')){
+const roll = Math.floor(Math.random() * 6) + 1;
+postMessage(currentChannel, myHandle, `rolled d6: ${roll}`);
+} else if(val.startsWith('/d20')){
+const roll = Math.floor(Math.random() * 20) + 1;
+postMessage(currentChannel, myHandle, `rolled d20: ${roll}`);
+} else {
+postMessage(currentChannel, myHandle, val);
+}
+chatInput.value = '';
+};
+chatInput.addEventListener('keydown', e => {
+if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
+});
+serverConfirm.onclick = () => {
+const newCh = channelSelect.value;
+if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
+document.body.classList.add('glitch-transition');
+setTimeout(() => {
+listenChannel(newCh);
+setPresence(myHandle, newCh);
+currentChannel = newCh;
+document.body.classList.remove('glitch-transition');
+}, 1000);
+}
+};
+let typingTimeout = null;
+chatInput.addEventListener('input', () => {
+if(!uid) return;
+const isTyping = chatInput.value.trim().length > 0;
+set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
+clearTimeout(typingTimeout);
+typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
+});
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+window.addEventListener('beforeunload', () => {
+if(presenceRef) remove(presenceRef);
+});
+setInterval(() => {
+if (uid && currentChannel) {
+set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
+}
+}, 300000);
+let idleTimer;
+function resetIdleTimer() {
+clearTimeout(idleTimer);
+idleTimer = setTimeout(() => {
+console.log('Idle timeout');
+}, 600000); // 10 minutes
+}
+document.addEventListener('mousemove', resetIdleTimer);
+document.addEventListener('keydown', resetIdleTimer);
+document.addEventListener('touchstart', resetIdleTimer);
+setInterval(async () => {
+try {
+const snap = await get(ref(db,'chat'));
+const data = snap.val()||{};
+for(const ch in data){
+for(const id in data[ch]){
+if(data[ch][id].ts && Date.now() - data[ch][id].ts > 24*60*60*1000){
+await remove(ref(db, `chat/${ch}/${id}`));
+}
+}
+}
+} catch(e){ console.error('Purge error'); }
+}, 60*60*1000);
+initChat();
+</script>
+</body>
+</html>
