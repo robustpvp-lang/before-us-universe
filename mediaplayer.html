@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Creepy Rotating Player</title>
+  <link rel="stylesheet" href="https://unpkg.com/aplayer/dist/APlayer.min.css" />
+  <style>
+    body {
+      background: #1a1a2e;
+      color: #fff;
+      font-family: "Courier New", monospace;
+      padding: 20px;
+    }
+
+    #player {
+      margin-top: 20px;
+    }
+
+    input[type="file"] {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Creepy Rotating Playlist — Upload Enabled</h2>
+  <p>Upload your own tracks or enjoy the randomized playlist.</p>
+  <input type="file" id="audioFile" accept="audio/*">
+
+  <div id="player"></div>
+
+  <script src="https://unpkg.com/aplayer/dist/APlayer.min.js"></script>
+  <script>
+    async function loadPlaylist() {
+      const response = await fetch("https://robustpvp-lang.github.io/before-us-universe/playlist.json");
+      const data = await response.json();
+
+      // Fisher-Yates Shuffle
+      for (let i = data.tracks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [data.tracks[i], data.tracks[j]] = [data.tracks[j], data.tracks[i]];
+      }
+
+      return data.tracks;
+    }
+
+    loadPlaylist().then((tracks) => {
+      const player = new APlayer({
+        container: document.getElementById("player"),
+        theme: "#e94560",
+        audio: tracks
+      });
+
+      // Upload handler
+      document.getElementById("audioFile").addEventListener("change", function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+
+        player.list.add({
+          name: file.name,
+          artist: "Uploaded",
+          url: url
+        });
+
+        player.play();
+      });
+    });
+  </script>
+
+</body>
+</html>
