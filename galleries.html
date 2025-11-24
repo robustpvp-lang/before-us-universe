@@ -1,1 +1,110 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Galleries — BUU</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
+--text-gray:#e6f7f7; --muted:#00aaaa; --online:#00ff9d; --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
+}
+html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:auto}
+body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
+.panel-title::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.03),rgba(0,0,0,0.03) 1px,transparent 1px,transparent 2px);pointer-events:none;opacity:0.5;}
+.panel{border:3px solid var(--border); background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFElEQVR42mNk+A8AAwUBAScAAAQq9gD31A+6AAAAAElFTkSuQmCC') repeat; margin-bottom:20px;}
+@keyframes glitch{2%,64%{transform:translate(2px,0) skew(5deg);}4%,60%{transform:translate(-2px,0) skew(-5deg);}62%{transform:translate(0,0) skew(3deg);}}
+.glitch{animation:glitch 1s linear infinite;}
+.glitch-update{animation:glitch 0.5s linear;}
+.panel-title{animation:warp 1s ease-in;}
+@keyframes warp{0%{transform:skewX(10deg);}100%{transform:skewX(0);}}
+.toggle-btn{background:var(--accent);color:#000;border:2px solid #000;padding:4px 8px;cursor:pointer;font-size:10px;margin-left:auto;animation:flicker 0.5s infinite alternate;}
+@keyframes flicker{0%{opacity:1;}100%{opacity:0.7;}}
+.panel-body{display:block;}
+.collapsed .panel-body{display:none;}
+.panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
+.panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
+.panel-body{padding:8px;color:var(--text-gray)}
+@media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
+body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
+@keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
+body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
+::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+.sub-gallery .panel-body{height:80vh;}
+</style>
+</head>
+<body>
+<div class="panel-body">
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//pronkerwronkers</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/7spAtXSkFi" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//othertoons</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/0m2TljGOPp" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//oldertoons</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/vag2TToeTw" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//mylittlehorse</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/MHC5RFn0it" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//HannahBananaH</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/jaCSMGh4a1" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//invaderzurm</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/lQHM6EY0pf" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//farkyoddpurents</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/8sSK8RALYq" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//futurobama</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/S1MHwynxPs" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//frapjack</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/lpmSp9KPyW" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//frumly guy</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/YYCtbDyDJq" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//ahhkindareal</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/sAStLCtCjU" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="sub-gallery collapsible collapsed panel">
+<div class="panel-title"><div class="title">//aquacrap</div><div class="toggle-btn">▼</div></div>
+<div class="panel-body"><iframe src="https://imgbox.com/g/RU0DGepWyI" style="width:100%;height:100%;"></iframe></div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+</div>
+<script>
+document.querySelectorAll('.collapsible .toggle-btn:not(.bottom-toggle)').forEach(btn => {
+btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
+});
+document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
+btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
+});
+</script>
+</body>
+</html>
