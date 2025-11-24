@@ -58,7 +58,7 @@
     #static-overlay {
         position: fixed;
         inset: 0;
-        background: url('https://i.imgur.com/o5R7bkG.gif');
+        background: url('https://i.imgur.com/o5R7bkG.gif'); /* optional: replace with stable local static GIF */
         opacity: 0;
         pointer-events: none;
         mix-blend-mode: screen;
@@ -150,6 +150,7 @@ async function loadPlaylist() {
     let staticNoise = null;
     let distortionActive = false;
     let distortionTimer = null;
+    let intervals = [];
 
     const staticOverlay = document.getElementById("static-overlay");
     const whisper = document.getElementById("whisper");
@@ -159,26 +160,20 @@ async function loadPlaylist() {
         const bufferSize = audioCtx.sampleRate * 3;
         const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
         const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * 0.07;
-        }
-
+        for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.07;
         const noise = audioCtx.createBufferSource();
         noise.buffer = buffer;
         noise.loop = true;
-
         const gain = audioCtx.createGain();
         gain.gain.value = 0.12;
-
         noise.connect(gain).connect(audioCtx.destination);
         return { noise, gain };
     }
 
     function whisperEvent() {
-        whisper.textContent = (Math.random() > 0.5)
+        whisper.textContent = Math.random() > 0.5
             ? "“…you opened the wrong door…”"
             : "“…Tiamat is awake…”";
-
         whisper.style.opacity = 1;
         setTimeout(() => whisper.style.opacity = 0, 2500);
     }
@@ -187,62 +182,38 @@ async function loadPlaylist() {
         if (distortionActive) return;
         distortionActive = true;
 
-        // static overlay
         staticOverlay.style.opacity = 0.25;
-
-        // neon pulse
         container.classList.add("luxpulse");
 
-        // occasional UI glitching
-        setInterval(() => {
-            if (!distortionActive) return;
-            container.classList.add("glitching");
-            setTimeout(() => container.classList.remove("glitching"), 300);
-        }, 4000);
+        intervals.push(setInterval(() => { container.classList.add("glitching"); setTimeout(()=>container.classList.remove("glitching"),300); }, 4000));
+        intervals.push(setInterval(() => { document.body.style.filter="invert(1)"; setTimeout(()=>document.body.style.filter="invert(0)",500); }, 10000));
+        intervals.push(setInterval(()=>{ if(Math.random()<0.33) whisperEvent(); },12000));
 
-        // random inversion pulses
-        setInterval(() => {
-            if (!distortionActive) return;
-            document.body.style.filter = "invert(1)";
-            setTimeout(() => document.body.style.filter = "invert(0)", 500);
-        }, 10000);
-
-        // whisper event
-        setInterval(() => {
-            if (!distortionActive) return;
-            if (Math.random() < 0.33) whisperEvent();
-        }, 12000);
-
-        // static audio
         const sn = createStaticNoise();
         sn.noise.start();
         staticNoise = sn;
 
-        // pitch + volume mod
-        setInterval(() => {
-            if (!distortionActive || !trackSource) return;
-
-            player.audio.volume = 0.7 + Math.random() * 0.25;
-            trackSource.playbackRate.value = 1 + (Math.random() * 0.07 - 0.035);
-
-        }, 8000);
+        intervals.push(setInterval(() => {
+            if(!trackSource) return;
+            player.audio.audio.volume = 0.7 + Math.random()*0.25;
+            trackSource.playbackRate.value = 1 + (Math.random()*0.07-0.035);
+        }, 8000));
     }
 
     function resetDistortion() {
         distortionActive = false;
-        staticOverlay.style.opacity = 0;
-        container.classList.remove("luxpulse");
-        container.classList.remove("glitching");
-        document.body.style.filter = "invert(0)";
+        staticOverlay.style.opacity=0;
+        container.classList.remove("luxpulse","glitching");
+        document.body.style.filter="invert(0)";
 
-        if (staticNoise) {
-            staticNoise.noise.stop();
-            staticNoise = null;
-        }
-        if (trackSource) trackSource.playbackRate.value = 1.0;
-        player.audio.volume = 1.0;
+        if(staticNoise){ staticNoise.noise.stop(); staticNoise=null; }
+        if(trackSource) trackSource.playbackRate.value=1.0;
+        player.audio.audio.volume=1.0;
 
-        if (distortionTimer) clearTimeout(distortionTimer);
+        if(distortionTimer){ clearTimeout(distortionTimer); distortionTimer=null; }
+
+        intervals.forEach(i=>clearInterval(i));
+        intervals=[];
     }
 
     //----------------------------
@@ -251,14 +222,10 @@ async function loadPlaylist() {
     player.on('play', () => {
         resetDistortion();
         audioCtx.resume();
-
-        const audioEl = player.audio;
-        trackSource = audioCtx.createMediaElementSource(audioEl);
+        trackSource = audioCtx.createMediaElementSource(player.audio.audio);
         trackSource.connect(audioCtx.destination);
 
-        distortionTimer = setTimeout(() => {
-            activateDistortionMode();
-        }, 30000);
+        distortionTimer = setTimeout(()=>{ activateDistortionMode(); }, 30000);
     });
 
     player.on('pause', resetDistortion);
