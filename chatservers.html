@@ -14,7 +14,7 @@ html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:va
 body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
 .panel{border:3px solid var(--border); background: var(--panel-bg); border-radius:6px; box-shadow:0 0 14px rgba(0,255,255,0.06); padding:8px}
 .panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
-.chat-win{display:flex;flex-direction:column;height:calc(100vh - 100px);margin:12px}
+.chat-win{display:flex;flex-direction:column;height:calc(100vh - 120px);margin:12px}
 .chat-main{display:flex;flex:1;overflow:hidden;background:rgba(255,255,255,0.02);border-radius:4px}
 .chat-messages{flex:1;overflow:auto;padding:12px;color:#000;background:rgba(255,255,255,0.95);border-right:1px solid rgba(0,0,0,0.06)}
 .chat-users{width:220px;overflow:auto;padding:8px;background:#fffacd}
@@ -30,55 +30,57 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .chat-controls input{flex:1;padding:8px;border:2px inset rgba(0,0,0,0.06);background:#fff;color:#000}
 .chat-controls button{padding:10px;border:none;background:var(--accent);color:#000;font-weight:700;flex:1;cursor:pointer;border-radius:4px}
 .server-select{display:flex;gap:6px;margin:12px;align-items:center}
-.server-select button{flex:1; padding:12px; border:none; cursor:pointer; border-radius:4px; font-weight:700;}
-.server-join{background:var(--yahoo-blue); color:#fff}
-.server-switch{background:var(--yahoo-dark); color:#fff}
+.server-select select{flex:2; padding:12px; border-radius:4px; border:2px solid var(--border); background:var(--panel-bg); color:var(--fg);}
+.server-select button{flex:1; padding:12px; border:none; border-radius:4px; background:var(--accent); color:#000; font-weight:700; cursor:pointer;}
 .small{font-size:11px;color:var(--muted)}
 .typing-indicator { font-size: 12px; color: var(--muted); padding: 6px; font-style: italic; }
 @media(max-width:900px){ 
   .chat-users{display:none} 
   .chat-controls{flex-direction:column} 
-  .server-select{flex-direction:column} 
+  .server-select{flex-direction:row}
 }
 </style>
 </head>
 <body>
-  <!-- Server selection -->
-  <div class="server-select panel">
-    <button class="server-join" id="joinBtn">JOIN CHAT</button>
-    <button class="server-switch" id="switchBtn">SWITCH SERVER</button>
-    <select id="serverSelect">
-      <option value="sam">//Sam</option>
-      <option value="exuro">//Exuro</option>
-      <option value="nero">//Nero</option>
-      <option value="nora">//Nora</option>
-      <option value="loktal">//Loktal</option>
-    </select>
-  </div>
 
-  <div class="panel" style="margin:12px">
-    <div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
-  </div>
+<!-- Server selection -->
+<div class="server-select panel">
+  <select id="serverSelect">
+    <option value="sam">//Sam</option>
+    <option value="exuro">//Exuro</option>
+    <option value="nero">//Nero</option>
+    <option value="nora">//Nora</option>
+    <option value="loktal">//Loktal</option>
+  </select>
+  <button id="joinBtn">JOIN CHAT</button>
+</div>
 
-  <div class="chat-win panel" id="chatBody" style="margin:12px;padding:0">
-    <div class="chat-main">
-      <div class="chat-messages panel" id="chatMessages" aria-live="polite"></div>
-      <div class="chat-users panel">
-        <div class="small" style="margin-bottom:6px">USERS ONLINE</div>
-        <div id="activeUsersList"></div>
-      </div>
-    </div>
-    <div id="typingIndicator" class="typing-indicator"></div>
-    <div class="chat-controls">
-      <input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
-      <button id="sendBtn" aria-label="Send message">SEND</button>
+<!-- Chat header -->
+<div class="panel" style="margin:12px">
+  <div class="panel-title">
+    <div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div>
+  </div>
+</div>
+
+<!-- Chat window -->
+<div class="chat-win panel" id="chatBody" style="margin:12px;padding:0">
+  <div class="chat-main">
+    <div class="chat-messages panel" id="chatMessages" aria-live="polite"></div>
+    <div class="chat-users panel">
+      <div class="small" style="margin-bottom:6px">USERS ONLINE</div>
+      <div id="activeUsersList"></div>
     </div>
   </div>
+  <div id="typingIndicator" class="typing-indicator"></div>
+  <div class="chat-controls">
+    <input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
+    <button id="sendBtn" aria-label="Send message">SEND</button>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, push, set, onChildAdded, onValue, off, query, orderByChild, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
@@ -92,9 +94,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const auth = getAuth(app);
 
-/* ---------- DOM ---------- */
+/* DOM elements */
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
@@ -102,24 +103,23 @@ const userCountSmall = document.getElementById('userCountSmall');
 const activeUsersList = document.getElementById('activeUsersList');
 const chatTitle = document.getElementById('chatTitle');
 const typingIndicator = document.getElementById('typingIndicator');
-
 const serverSelect = document.getElementById('serverSelect');
 const joinBtn = document.getElementById('joinBtn');
-const switchBtn = document.getElementById('switchBtn');
 
-/* ---------- State ---------- */
+/* State */
 let uid=null,myHandle=null,currentChannel='sam',presenceRef=null;
 let channelListeners={},typingTimeout=null;
 
-/* ---------- Utilities ---------- */
+/* Utilities */
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
-/* ---------- Presence & online ---------- */
+/* Presence & online */
 function setPresence(h,ch){
   if(!uid) return;
   if(presenceRef) remove(presenceRef).catch(()=>{});
   presenceRef = ref(db,`online/${ch}/${uid}`);
-  set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid,typing:false}).then(()=>{onDisconnect(presenceRef).remove();});
+  set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid,typing:false});
+  onDisconnect(presenceRef).remove();
 }
 
 function watchOnline(){
@@ -139,7 +139,7 @@ function watchOnline(){
   });
 }
 
-/* ---------- Chat listeners ---------- */
+/* Chat listeners */
 function listenChannel(ch){
   if(channelListeners[currentChannel]){
     const l=channelListeners[currentChannel];
@@ -163,7 +163,7 @@ function renderChatMessage(o,key){
   setTimeout(()=>{chatMessages.scrollTop=chatMessages.scrollHeight;},30);
 }
 
-/* ---------- Posting ---------- */
+/* Posting */
 async function postChatMessage(ch,name,msg){
   if(!uid||!name) return;
   const m=msg.trim(); if(!m) return;
@@ -172,26 +172,25 @@ async function postChatMessage(ch,name,msg){
   set(ref(db,`online/${ch}/${uid}/ts`),Date.now()).catch(()=>{});
 }
 
-/* ---------- Input handlers ---------- */
+/* Input handlers */
 sendBtn.onclick=()=>{const val=chatInput.value.trim(); if(!val) return; postChatMessage(currentChannel,myHandle,val); chatInput.value=''; set(ref(db,`online/${currentChannel}/${uid}/typing`),false).catch(()=>{});};
 chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
 chatInput.addEventListener('input',()=>{if(!uid) return; set(ref(db,`online/${currentChannel}/${uid}/typing`),chatInput.value.trim().length>0).catch(()=>{}); clearTimeout(typingTimeout); typingTimeout=setTimeout(()=>{set(ref(db,`online/${currentChannel}/${uid}/typing`),false).catch(()=>{});},2200);});
 
-/* ---------- Init ---------- */
-async function initChat(channel){
-  try{
-    uid = window.BUU.uid;
-    myHandle = window.BUU.myHandle;
-    currentChannel = channel||window.BUU.currentChannel||'sam';
-    setPresence(myHandle,currentChannel);
-    listenChannel(currentChannel);
-    watchOnline();
-  }catch(e){console.error('Chat init failed',e);}
+/* Init */
+function initChat(channel){
+  if(!window.BUU || !window.BUU.uid || !window.BUU.myHandle) return alert('Boot system not initialized');
+  uid = window.BUU.uid;
+  myHandle = window.BUU.myHandle;
+  currentChannel = channel;
+  setPresence(myHandle,currentChannel);
+  listenChannel(currentChannel);
+  watchOnline();
 }
 
-/* ---------- Buttons ---------- */
-joinBtn.onclick = ()=>{initChat(serverSelect.value)};
-switchBtn.onclick = ()=>{initChat(serverSelect.value)};
+/* Button */
+joinBtn.onclick = ()=>{initChat(serverSelect.value);};
 </script>
 </body>
 </html>
+
