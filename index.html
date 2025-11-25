@@ -284,7 +284,7 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, push, set, onChildAdded,onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
@@ -409,7 +409,8 @@ function renderServerTracking(data){
   serverTrackingList.innerHTML = '';
   const channels = ['sam','exuro','nero','nora','loktal'];
   channels.forEach(ch => {
-    const users = Object.values(data[ch] || {});
+    // Filter out users without names
+    const users = Object.values(data[ch] || {}).filter(u => u.name);
     const count = users.length;
     const iconColor = count > 0 ? 'lime' : 'red';
     const branch = document.createElement('div');
@@ -421,7 +422,7 @@ function renderServerTracking(data){
     } else {
       users.forEach(u => {
         const div = document.createElement('div');
-        div.textContent = (u.name || 'Anonymous') + (u.typing ? ' (typing...)' : '');
+        div.textContent = u.name + (u.typing ? ' (typing...)' : '');
         div.onclick = () => openDMInline(u.uid, u.name);
         userList.appendChild(div);
       });
@@ -435,11 +436,11 @@ function watchPresenceEvents() {
   channels.forEach(ch => {
     onChildAdded(ref(db, `online/${ch}`), snap => {
       const u = snap.val();
-      if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
+      if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' joined //${ch.toUpperCase()}`);
     });
     onChildRemoved(ref(db, `online/${ch}`), snap => {
       const u = snap.val();
-      if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
+      if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' left //${ch.toUpperCase()}`);
     });
   });
 }
@@ -465,12 +466,12 @@ async function registerDMPair(tuid){
 }
 
 function openDMInline(tuid, tname){
-  if(tuid === uid) return;
+  if(tuid === uid || !tname) return;
   registerDMPair(tuid);
   const pid = [uid, tuid].sort().join('_');
   if(document.querySelector(`[data-dmid="${pid}"]`)) return;
   const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
-  const header = document.createElement('div'); header.textContent = `DM: ${tname || 'Anonymous'}`; header.style.fontWeight = '700';
+  const header = document.createElement('div'); header.textContent = `DM: ${tname}`; header.style.fontWeight = '700';
   const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
   const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
   const send = document.createElement('button'); send.textContent = 'Send'; send.style.cssText = 'margin-top:6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
@@ -479,11 +480,12 @@ function openDMInline(tuid, tname){
   const dmRef = ref(db, `dm/${pid}`);
   onChildAdded(dmRef, snap => {
     const o = snap.val();
+    if (!o.fromName) return; // Skip messages without names
     const el = document.createElement('div'); el.style.margin = '6px 0';
-    el.textContent = `${o.fromName || 'Anonymous'}: ${o.msg}`;
+    el.textContent = `${o.fromName}: ${o.msg}`;
     msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
     if(o.from !== uid){
-      appendSystem(`New DM from ${o.fromName || 'Anonymous'}`);
+      appendSystem(`New DM from ${o.fromName}`);
     }
   });
   send.onclick = async () => {
@@ -512,10 +514,13 @@ function initializePanels(){
   document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
     btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
   });
+  
+  // Initialize online tracking after boot complete
+  watchOnline();
+  watchPresenceEvents();
 }
 
-watchOnline();
-watchPresenceEvents();
+// Don't call these immediately - wait for boot
 appendSystem('Initializing...');
 setTimeout(() => updateMarqueeFromCache(), 800);
 
