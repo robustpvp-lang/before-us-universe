@@ -36,7 +36,7 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 <div id="bootLog" class="small"></div>
 <div id="bootPrompt">> ENTER HANDLE & SELECT SERVER</div>
 <div id="bootInputs">
-<input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (required)">
+<input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (required)" autocomplete="off">
 <select id="bootChannel">
 <option value="sam">//Sam</option>
 <option value="exuro">//Exuro</option>
@@ -53,23 +53,27 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDomain:"before-us-universe.firebaseapp.com",databaseURL:"https://before-us-universe-default-rtdb.firebaseio.com",projectId:"before-us-universe",storageBucket:"before-us-universe.firebasestorage.app",messagingSenderId:"477103463228",appId:"1:477103463228:web:01b53b6b29cb9d54315c39"};
+const firebaseConfig = {
+  apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
+  authDomain: "before-us-universe.firebaseapp.com",
+  databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
+  projectId: "before-us-universe",
+  storageBucket: "before-us-universe.firebasestorage.app",
+  messagingSenderId: "477103463228",
+  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
+};
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 const auth = getAuth(app);
 
 const bootLog = document.getElementById('bootLog');
 const bootInput = document.getElementById('bootInput');
+const bootChannel = document.getElementById('bootChannel');
 const bootBtn = document.getElementById('bootBtn');
 const bootStatus = document.getElementById('bootStatus');
 const bootBroadcast = document.getElementById('bootBroadcast');
-const bootChannel = document.getElementById('bootChannel');
-
-let uid = null, myHandle = null, currentChannel = 'exuro';
 
 const bootLines = [
 "C:\\> INITIALIZING BEFORE US UNIVERSE...",
@@ -85,52 +89,11 @@ const bootLines = [
 "C:\\> Ready for authentication..."
 ];
 
-
-    // Increment visitor and hit counters
-    const visitorsRef = ref(db, 'visitors/count');
-    get(visitorsRef).then(snap => {
-      let count = snap.val() || 0;
-      count++;
-      set(visitorsRef, count);
-    }).catch(() => {});
-
-    const hitsRef = ref(db, 'hits/count');
-    get(hitsRef).then(snap => {
-      let count = snap.val() || 0;
-      count++;
-      set(hitsRef, count);
-    }).catch(() => {});
-
-    // Log the visitor with their handle
-    const logRef = push(ref(db, 'visitors/logs'));
-    set(logRef, {ts: Date.now(), handle: raw});
-
-    myHandle = raw;
-    currentChannel = bootChannel.value || 'exuro';
-
-    // Save user profile
-    setTimeout(() => {
-      set(ref(db, `users/${uid}`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
-        console.error('Profile save failed: ' + e.message);
-      });
-    }, 500);
-
-    bootStatus.textContent = `Welcome, ${myHandle}!`;
-
-    setTimeout(() => {
-      // Send data to parent and hide iframe
-      window.parent.postMessage({
-        type: 'bootComplete',
-        handle: myHandle,
-        channel: currentChannel,
-        uid: uid
-      }, '*');
-    }, 900);
-
-  } catch(e) {
-    bootStatus.textContent = "Failed to enter network: " + e.message;
-    console.error('Authentication failed: ' + e.message);
-  }
+bootLines.forEach((line, i) => {
+  setTimeout(() => {
+    bootLog.textContent += line + "\n";
+    bootLog.scrollTop = bootLog.scrollHeight;
+  }, 200 + i * 220);
 });
 
 setInterval(() => {
@@ -139,6 +102,41 @@ setInterval(() => {
   bootBroadcast.classList.add('glitch-update');
   setTimeout(() => bootBroadcast.classList.remove('glitch-update'), 500);
 }, 5000);
+
+bootBtn.onclick = async () => {
+  let handle = bootInput.value.trim();
+  
+  if (!handle) {
+    bootStatus.textContent = "Handle required, wanderer.";
+    return;
+  }
+  
+  if (handle.length > 30) handle = handle.substring(0, 30);
+  handle = handle.replace(/[.#$/[\]]/g, "_");
+
+  bootStatus.textContent = "Authenticating through the Ra'Norric link...";
+
+  try {
+    const userCredential = await signInAnonymously(auth);
+    const uid = userCredential.user.uid;
+    const channel = bootChannel.value || "exuro";
+
+    bootStatus.textContent = `Welcome, ${handle}. Entering //${channel.toUpperCase()}...`;
+
+    setTimeout(() => {
+      window.parent.postMessage({
+        type: 'bootComplete',
+        handle: handle,
+        channel: channel,
+        uid: uid
+      }, '*');
+    }, 1200);
+
+  } catch (err) {
+    bootStatus.textContent = "ACCESS DENIED: " + err.message;
+    console.error(err);
+  }
+};
 </script>
 </body>
 </html>
