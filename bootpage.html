@@ -123,9 +123,9 @@ bootBtn.addEventListener('click', async () => {
       set(hitsRef, count);
     }).catch(() => {});
 
-    // Log the visitor
+    // Log the visitor with their handle
     const logRef = push(ref(db, 'visitors/logs'));
-    set(logRef, {ts: Date.now(), handle: raw || 'anonymous'});
+    set(logRef, {ts: Date.now(), handle: raw});
 
     myHandle = raw;
     currentChannel = bootChannel.value || 'exuro';
