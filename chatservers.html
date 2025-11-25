@@ -9,11 +9,13 @@
     body { font-family: 'Roboto Mono', monospace; background: #000; color: #fff; margin:0; padding:0; }
     #servers, #dms { display: flex; flex-direction: column; padding: 10px; max-width: 300px; }
     .server, .dm { padding: 8px; margin: 4px 0; background: #111; cursor: pointer; border-radius: 4px; }
-    .chat-window { position: fixed; right: 10px; bottom: 10px; width: 300px; height: 400px; background: #222; display: flex; flex-direction: column; border: 1px solid #555; border-radius: 6px; }
+    .chat-window { position: fixed; bottom: 10px; width: 300px; height: 400px; background: #222; display: flex; flex-direction: column; border: 1px solid #555; border-radius: 6px; }
+    .chat-header { background: #333; padding: 5px; display: flex; justify-content: space-between; align-items: center; }
     .chat-messages { flex: 1; overflow-y: auto; padding: 5px; }
     .chat-input { display: flex; }
     .chat-input input { flex: 1; padding: 5px; background: #111; border: none; color: #fff; }
     .chat-input button { padding: 5px; background: #333; color: #fff; border: none; cursor: pointer; }
+    .close-btn { cursor: pointer; color: #fff; }
 </style>
 </head>
 <body>
@@ -24,33 +26,27 @@
 <div id="dms">
     <h3>Direct Messages</h3>
 </div>
-
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded, remove, set } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
-
+import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 // Firebase config
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_DOMAIN",
-    databaseURL: "YOUR_DB_URL",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_BUCKET",
-    messagingSenderId: "YOUR_SENDER",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
+  authDomain: "before-us-universe.firebaseapp.com",
+  databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
+  projectId: "before-us-universe",
+  storageBucket: "before-us-universe.firebasestorage.app",
+  messagingSenderId: "477103463228",
+  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
 };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
-// Dummy user/session
-const uid = "user123";
-const username = "Commander";
-
+// Dummy user/session - in a real app, use Firebase Auth
+const username = "Commander"; // Change this for different users in testing
 // Sample servers and users
 const servers = ["Alpha", "Beta", "Gamma"];
 const users = ["Sam", "Nora", "Don", "Maria"];
-
 // Populate server list
 const serverDiv = document.getElementById("servers");
 servers.forEach(server => {
@@ -60,47 +56,57 @@ servers.forEach(server => {
     el.addEventListener("click", () => openServerChat(server));
     serverDiv.appendChild(el);
 });
-
 // Populate DM list
 const dmDiv = document.getElementById("dms");
 users.forEach(user => {
-    if(user === username) return; // Skip self
+    if (user.toLowerCase() === username.toLowerCase()) return; // Skip self
     const el = document.createElement("div");
     el.className = "dm";
     el.textContent = user;
     el.addEventListener("click", () => openDM(user));
     dmDiv.appendChild(el);
 });
-
+// Array to track open chat windows
+let openChats = [];
+// Reposition open chats
+function repositionChats() {
+    openChats.forEach((win, i) => {
+        win.style.right = (10 + 310 * i) + 'px';
+    });
+}
 // Open server chat
 function openServerChat(serverName) {
     openChatWindow(`server-${serverName}`, `Server: ${serverName}`, ref(db, `servers/${serverName}`));
 }
-
 // Open DM
 function openDM(user) {
-    const path = [uid, user].sort().join("_"); // consistent key
+    const path = [username, user].sort().join("_"); // Use usernames for consistent path
     openChatWindow(`dm-${user}`, `DM: ${user}`, ref(db, `dms/${path}`));
 }
-
 // Create chat window
 function openChatWindow(id, title, dbRef) {
-    if(document.getElementById(id)) return; // already open
-
+    if (document.getElementById(id)) return; // already open
     const chatWin = document.createElement("div");
     chatWin.className = "chat-window";
     chatWin.id = id;
-
     const header = document.createElement("div");
-    header.textContent = title;
-    header.style.background = "#333";
-    header.style.padding = "5px";
+    header.className = "chat-header";
+    const titleSpan = document.createElement("span");
+    titleSpan.textContent = title;
+    const closeBtn = document.createElement("span");
+    closeBtn.className = "close-btn";
+    closeBtn.textContent = "X";
+    closeBtn.addEventListener("click", () => {
+        chatWin.remove();
+        openChats = openChats.filter(win => win.id !== id);
+        repositionChats();
+    });
+    header.appendChild(titleSpan);
+    header.appendChild(closeBtn);
     chatWin.appendChild(header);
-
     const messages = document.createElement("div");
     messages.className = "chat-messages";
     chatWin.appendChild(messages);
-
     const inputDiv = document.createElement("div");
     inputDiv.className = "chat-input";
     const input = document.createElement("input");
@@ -111,14 +117,14 @@ function openChatWindow(id, title, dbRef) {
     inputDiv.appendChild(sendBtn);
     chatWin.appendChild(inputDiv);
     document.body.appendChild(chatWin);
-
+    openChats.push(chatWin);
+    repositionChats();
     // Send message
     sendBtn.addEventListener("click", () => {
-        if(input.value.trim() === "") return;
+        if (input.value.trim() === "") return;
         push(dbRef, { user: username, text: input.value.trim(), timestamp: Date.now() });
         input.value = "";
     });
-
     // Load messages
     onChildAdded(dbRef, (snapshot) => {
         const msg = snapshot.val();
