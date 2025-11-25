@@ -123,14 +123,22 @@ bootBtn.onclick = async () => {
 
     bootStatus.textContent = `Welcome, ${handle}. Entering //${channel.toUpperCase()}...`;
 
-    setTimeout(() => {
-      window.parent.postMessage({
-        type: 'bootComplete',
-        handle: handle,
-        channel: channel,
-        uid: uid
-      }, '*');
-    }, 1200);
+   setTimeout(() => {
+  if (window !== window.parent) {
+    // Only send the message if loaded inside an iframe
+    window.parent.postMessage({
+      type: 'bootComplete',
+      handle: handle,
+      channel: channel,
+      uid: uid
+    }, '*');
+  } else {
+    // If not inside an iframe, load chatservers.html directly
+    window.location.href = "chatservers.html?handle=" + encodeURIComponent(handle) +
+                           "&channel=" + encodeURIComponent(channel) +
+                           "&uid=" + encodeURIComponent(uid);
+  }
+}, 1200);
 
   } catch (err) {
     bootStatus.textContent = "ACCESS DENIED: " + err.message;
