@@ -170,10 +170,11 @@ function watchOnline(){
 
 function renderActiveUsers(obj){
   activeUsersList.innerHTML = '';
-  Object.values(obj || {}).forEach(u => {
+  // Filter out users without names
+  Object.values(obj || {}).filter(u => u.name).forEach(u => {
     const row = document.createElement('div'); row.className = 'user-row';
     const dot = document.createElement('div'); dot.className = 'status-dot';
-    const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name || 'Anonymous';
+    const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name;
     row.append(dot, name);
     activeUsersList.appendChild(row);
   });
@@ -186,7 +187,8 @@ function updateUserCount(data){
 }
 
 function updateTypingIndicator(obj){
-  const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name || 'Anonymous');
+  // Filter out users without names
+  const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid && u.name).map(u => u.name);
   document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
 }
 
@@ -195,11 +197,11 @@ function watchPresenceEvents() {
   channels.forEach(ch => {
     onChildAdded(ref(db, `online/${ch}`), snap => {
       const u = snap.val();
-      if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') console.log(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
+      if (u && u.uid !== uid && u.name) console.log(`User '${u.name}' joined //${ch.toUpperCase()}`);
     });
     onChildRemoved(ref(db, `online/${ch}`), snap => {
       const u = snap.val();
-      if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') console.log(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
+      if (u && u.uid !== uid && u.name) console.log(`User '${u.name}' left //${ch.toUpperCase()}`);
     });
   });
 }
@@ -223,11 +225,14 @@ function listenChannel(ch){
 }
 
 function renderChatMessage(o, key){
+  // Skip messages without names
+  if (!o.name) return;
+  
   const row = document.createElement('div'); row.className = 'chat-row';
-  const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
+  const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = o.name.slice(0,2).toUpperCase();
   const bub = document.createElement('div'); bub.className = 'chat-bubble';
   if(o.uid === uid) bub.classList.add('me');
-  bub.innerHTML = `<div class="chat-meta">${o.name || 'Anonymous'} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+  bub.innerHTML = `<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
   if(o.uid === uid){
     const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
     edit.onclick = () => { /* edit logic */ };
