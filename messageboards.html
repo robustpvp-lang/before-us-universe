@@ -1,32 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Message Board — BUU</title>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-:root{
---bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
---text-gray:#e6f7f7; --muted:#00aaaa; --online:#00ff9d; --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
-}
-html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:auto}
-body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
-.panel-body{display:block;padding:12px;}
-.small{font-size:11px;color:var(--muted)}
-#boardSearch{background:#001f1f;border:2px solid var(--border);color:var(--fg);padding:8px;width:100%;font-family:monospace;margin-bottom:8px;}
-.board-thread{background:#f0f8ff;border:1px solid #ccc;padding:10px;margin-bottom:10px;border-radius:4px;font-family:Arial;color:#000;white-space:pre-wrap;}
-.board-thread:nth-child(even) {background: #f0f0f0;}
-.board-thread strong{color:#000080;font-size:14px}
-.board-thread .small{color:#808080;font-style:italic;margin-top:4px;display:block}
-</style>
-</head>
-<body>
-<div class="panel-body" id="boardBody">
-  <div class="small" style="margin:8px 0">Posts persist – chat deletes after 24h</div>
-  <input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
-  <div id="boardList" style="overflow:auto;margin:8px 0"></div>
-  <div style="margin:8px">
+<div class="panel">
+  <div class="panel-title" style="cursor:pointer" onclick="boardBody.style.display = boardBody.style.display==='none'?'block':'none'">
+    <span>//MESSAGE BOARD</span>
+    <span class="small">Posts persist – chat deletes after 24h</span>
+  </div>
+  <div class="panel-body" id="boardBody">
+    <input id="boardSearch" placeholder="//search posts" aria-label="Search message board">
+    <div id="boardList" style="overflow:auto;max-height:300px;margin:8px 0;"></div>
     <textarea id="boardMsg" placeholder="Message (max 1000)" style="width:100%;min-height:80px;margin-top:4px" aria-label="Message board input"></textarea>
     <button id="postBoardBtn" style="margin-top:6px;padding:8px 12px;background:var(--accent);border:3px solid #000;cursor:pointer" aria-label="Post to message board">POST</button>
   </div>
@@ -55,6 +34,7 @@ const boardList = document.getElementById('boardList');
 const boardMsg = document.getElementById('boardMsg');
 const postBoardBtn = document.getElementById('postBoardBtn');
 const boardSearch = document.getElementById('boardSearch');
+const boardBody = document.getElementById('boardBody');
 
 let uid = null, myHandle = null;
 let currentChannel = null, channelRef = null;
@@ -77,7 +57,7 @@ function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&l
 function renderBoardPost(p, id){
   const el = document.createElement('div'); el.className = 'board-thread';
   el.innerHTML = `<strong>${esc(p.name || 'Anonymous')}</strong><pre>${esc(p.msg)}</pre>
-  <div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
+    <div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
   const reply = document.createElement('span');
   reply.textContent = '[Reply]';
   reply.style.cursor = 'pointer';
@@ -140,5 +120,3 @@ currentChannel = window.BUU.currentChannel || 'sam';
 listenBoard(currentChannel);
 monitorChannelChanges();
 </script>
-</body>
-</html>
