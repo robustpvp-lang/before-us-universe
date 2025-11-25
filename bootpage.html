@@ -85,28 +85,6 @@ const bootLines = [
 "C:\\> Ready for authentication..."
 ];
 
-let lineIdx = 0;
-function typeBootLine(){
-  if(lineIdx < bootLines.length){
-    bootLog.textContent += bootLines[lineIdx] + "\n";
-    lineIdx++;
-    setTimeout(typeBootLine, 240 + Math.random()*360);
-  }
-}
-typeBootLine();
-
-bootBtn.addEventListener('click', async () => {
-  let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
-  if(!raw){
-    bootStatus.textContent = "Please enter a handle.";
-    return;
-  }
-
-  bootStatus.textContent = "Entering network...";
-
-  try {
-    const credential = await signInAnonymously(auth);
-    uid = credential.user.uid;
 
     // Increment visitor and hit counters
     const visitorsRef = ref(db, 'visitors/count');
