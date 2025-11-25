@@ -14,7 +14,7 @@ html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:va
 body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
 .panel{border:3px solid var(--border); background: var(--panel-bg); border-radius:6px; box-shadow:0 0 14px rgba(0,255,255,0.06); padding:8px}
 .panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
-.chat-win{display:flex;flex-direction:column;height:calc(100vh - 40px);margin:20px}
+.chat-win{display:flex;flex-direction:column;height:calc(100vh - 100px);margin:12px}
 .chat-main{display:flex;flex:1;overflow:hidden;background:rgba(255,255,255,0.02);border-radius:4px}
 .chat-messages{flex:1;overflow:auto;padding:12px;color:#000;background:rgba(255,255,255,0.95);border-right:1px solid rgba(0,0,0,0.06)}
 .chat-users{width:220px;overflow:auto;padding:8px;background:#fffacd}
@@ -29,12 +29,26 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 .chat-controls{display:flex;gap:6px;padding:8px;background:#fffacd;border-top:1px solid rgba(0,0,0,0.06)}
 .chat-controls input{flex:1;padding:8px;border:2px inset rgba(0,0,0,0.06);background:#fff;color:#000}
 .chat-controls button{padding:8px;border:2px outset rgba(0,0,0,0.06);background:#add8e6;cursor:pointer;color:#000}
+.server-select{display:flex;gap:6px;margin:12px;align-items:center}
 .small{font-size:11px;color:var(--muted)}
 .typing-indicator { font-size: 12px; color: var(--muted); padding: 6px; font-style: italic; }
 @media(max-width:900px){ .chat-users{display:none} .chat-controls{flex-direction:column} }
 </style>
 </head>
 <body>
+  <!-- Handle + Server selection -->
+  <div class="server-select panel">
+    <input id="handleInput" type="text" maxlength="30" placeholder="//YourHandle">
+    <select id="serverSelect">
+      <option value="sam">//Sam</option>
+      <option value="exuro">//Exuro</option>
+      <option value="nero">//Nero</option>
+      <option value="nora">//Nora</option>
+      <option value="loktal">//Loktal</option>
+    </select>
+    <button id="joinBtn">JOIN CHAT</button>
+  </div>
+
   <div class="panel" style="margin:12px">
     <div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
   </div>
@@ -56,8 +70,8 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, set, onChildAdded, onValue, update, get, off, query, orderByChild, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, push, set, onChildAdded, onValue, update, off, query, orderByChild, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
@@ -82,66 +96,64 @@ const activeUsersList = document.getElementById('activeUsersList');
 const chatTitle = document.getElementById('chatTitle');
 const typingIndicator = document.getElementById('typingIndicator');
 
+const handleInput = document.getElementById('handleInput');
+const serverSelect = document.getElementById('serverSelect');
+const joinBtn = document.getElementById('joinBtn');
+
 /* ---------- State ---------- */
-let uid = null, myHandle = null, currentChannel = 'sam', presenceRef = null;
-let channelListeners = {};
-let typingTimeout = null;
+let uid=null,myHandle=null,currentChannel='sam',presenceRef=null;
+let channelListeners={},typingTimeout=null;
 
-/* ---------- Utility ---------- */
-function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+/* ---------- Utilities ---------- */
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
-/* ---------- Presence ---------- */
+/* ---------- Presence & online ---------- */
 function setPresence(h,ch){
   if(!uid) return;
   if(presenceRef) remove(presenceRef).catch(()=>{});
-  presenceRef = ref(db, `online/${ch}/${uid}`);
-  set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid, typing:false}).then(()=>{ onDisconnect(presenceRef).remove(); });
+  presenceRef = ref(db,`online/${ch}/${uid}`);
+  set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid,typing:false}).then(()=>{onDisconnect(presenceRef).remove();});
 }
 
 function watchOnline(){
-  onValue(ref(db, `online/${currentChannel}`), snap => {
-    const data = snap.val() || {};
-    activeUsersList.innerHTML = '';
-    Object.values(data).forEach(u => {
-      const row = document.createElement('div'); row.className='user-row';
-      const dot = document.createElement('div'); dot.className='status-dot';
-      const name = document.createElement('div'); name.className='uname'; name.textContent=u.name;
+  onValue(ref(db,`online/${currentChannel}`),snap=>{
+    const data=snap.val()||{};
+    activeUsersList.innerHTML='';
+    Object.values(data).forEach(u=>{
+      const row=document.createElement('div'); row.className='user-row';
+      const dot=document.createElement('div'); dot.className='status-dot';
+      const name=document.createElement('div'); name.className='uname'; name.textContent=u.name;
       row.append(dot,name); activeUsersList.appendChild(row);
     });
-    const count = Object.keys(data).length;
-    userCountSmall.textContent = count + (count===1?' user':' users');
-    chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count===1?'':'s'}</span>`;
-    typingIndicator.textContent = Object.values(data).filter(u=>u.typing && u.uid!==uid).map(u=>u.name).join(', ');
+    const count=Object.keys(data).length;
+    userCountSmall.textContent=count+(count===1?' user':' users');
+    chatTitle.innerHTML=`//${currentChannel.toUpperCase()} <span class="small">${count} user${count===1?'':'s'}</span>`;
+    typingIndicator.textContent=Object.values(data).filter(u=>u.typing&&u.uid!==uid).map(u=>u.name).join(', ');
   });
 }
 
 /* ---------- Chat listeners ---------- */
 function listenChannel(ch){
   if(channelListeners[currentChannel]){
-    const l = channelListeners[currentChannel];
+    const l=channelListeners[currentChannel];
     off(l.ref,'child_added',l.fn);
   }
-  channelListeners = {};
-  currentChannel = ch;
-  chatMessages.innerHTML = '';
-  const r = ref(db, `chat/${ch}`);
-  const q = query(r, orderByChild('ts'));
-  const fn = snap => {
-    const o = snap.val();
-    if(o && !o.deleted) renderChatMessage(o,snap.key);
-  };
-  onChildAdded(q, fn);
-  channelListeners[ch]={ref:r, fn};
+  channelListeners={}; currentChannel=ch; chatMessages.innerHTML='';
+  const r=ref(db,`chat/${ch}`);
+  const q=query(r,orderByChild('ts'));
+  const fn=snap=>{const o=snap.val(); if(o&&!o.deleted) renderChatMessage(o,snap.key);};
+  onChildAdded(q,fn);
+  channelListeners[ch]={ref:r,fn};
 }
 
 function renderChatMessage(o,key){
-  const row = document.createElement('div'); row.className='chat-row';
-  const av = document.createElement('div'); av.className='chat-avatar'; av.textContent=(o.name||'').slice(0,2).toUpperCase();
-  const bub = document.createElement('div'); bub.className='chat-bubble';
+  const row=document.createElement('div'); row.className='chat-row';
+  const av=document.createElement('div'); av.className='chat-avatar'; av.textContent=(o.name||'').slice(0,2).toUpperCase();
+  const bub=document.createElement('div'); bub.className='chat-bubble';
   if(o.uid===uid)bub.classList.add('me');
   bub.innerHTML=`<div class="chat-meta">${esc(o.name)} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
   row.append(av,bub); chatMessages.appendChild(row);
-  setTimeout(()=>{ chatMessages.scrollTop=chatMessages.scrollHeight; },30);
+  setTimeout(()=>{chatMessages.scrollTop=chatMessages.scrollHeight;},30);
 }
 
 /* ---------- Posting ---------- */
@@ -150,32 +162,25 @@ async function postChatMessage(ch,name,msg){
   const m=msg.trim(); if(!m) return;
   const ts=Date.now(); const key=push(ref(db,`chat/${ch}`)).key;
   set(ref(db,`chat/${ch}/${key}`),{name,msg:m,ts,uid}).catch(console.error);
-  set(ref(db,`online/${ch}/${uid}/ts`), Date.now()).catch(()=>{});
+  set(ref(db,`online/${ch}/${uid}/ts`),Date.now()).catch(()=>{});
 }
 
-sendBtn.onclick = ()=>{ const val=chatInput.value.trim(); if(!val) return; postChatMessage(currentChannel,myHandle,val); chatInput.value=''; set(ref(db,`online/${currentChannel}/${uid}/typing`),false).catch(()=>{}); };
-chatInput.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendBtn.click(); } });
-chatInput.addEventListener('input',()=>{ if(!uid) return; set(ref(db,`online/${currentChannel}/${uid}/typing`),chatInput.value.trim().length>0).catch(()=>{}); clearTimeout(typingTimeout); typingTimeout=setTimeout(()=>{ set(ref(db,`online/${currentChannel}/${uid}/typing`),false).catch(()=>{}); },2200); });
+/* ---------- Input handlers ---------- */
+sendBtn.onclick=()=>{const val=chatInput.value.trim(); if(!val) return; postChatMessage(currentChannel,myHandle,val); chatInput.value=''; set(ref(db,`online/${currentChannel}/${uid}/typing`),false).catch(()=>{});};
+chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendBtn.click();}});
+chatInput.addEventListener('input',()=>{if(!uid) return; set(ref(db,`online/${currentChannel}/${uid}/typing`),chatInput.value.trim().length>0).catch(()=>{}); clearTimeout(typingTimeout); typingTimeout=setTimeout(()=>{set(ref(db,`online/${currentChannel}/${uid}/typing`),false).catch(()=>{});},2200);});
 
 /* ---------- Init ---------- */
-async function initChat(handle, channel){
-  try {
-    const cred = await signInAnonymously(auth);
-    uid = cred.user.uid;
-    myHandle = handle||'Anonymous';
-    currentChannel = channel||'sam';
-    setPresence(myHandle,currentChannel);
-    listenChannel(currentChannel);
-    watchOnline();
-  } catch(e){ console.error('Chat init failed', e); }
+async function initChat(handle,channel){
+  try{
+    const cred=await signInAnonymously(auth);
+    uid=cred.user.uid; myHandle=handle||'Anonymous'; currentChannel=channel||'sam';
+    setPresence(myHandle,currentChannel); listenChannel(currentChannel); watchOnline();
+  }catch(e){console.error('Chat init failed',e);}
 }
 
-/* ---------- Auto init from parent or query ---------- */
-const params = new URLSearchParams(window.location.search);
-const h = params.get('handle') || (window.BUU && window.BUU.myHandle) || 'Anonymous';
-const ch = params.get('channel') || (window.BUU && window.BUU.currentChannel) || 'sam';
-initChat(h,ch);
-
+/* ---------- Join button ---------- */
+joinBtn.onclick=()=>{const h=handleInput.value.trim(); const ch=serverSelect.value; if(!h) return alert('Enter a handle'); initChat(h,ch);};
 </script>
 </body>
 </html>
