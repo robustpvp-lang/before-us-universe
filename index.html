@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -15,7 +14,7 @@
 --text-gray:#e6f7f7; --muted:#00aaaa; --online:#00ff9d; --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
 }
 html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:auto}
-body{background:url('https://images7.alphacoders.com/528/528302.jpg') center/cover no-repeat}
+body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
 #crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06) 2px,transparent 2px,transparent 4px);pointer-events:none;z-index:999}
 a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4px;font-weight:700;cursor:pointer;border:2px solid #000;margin:2px;font-size:11px;text-decoration:none;display:inline-block}
 .panel-title::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.03),rgba(0,0,0,0.03) 1px,transparent 1px,transparent 2px);pointer-events:none;opacity:0.5;}
@@ -234,16 +233,16 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 </div>
 <a href="https://sora.chatgpt.com/p/s_692415bc74c08191a0a5348aee788ebc?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.h1JfPIVieaPG" target="_blank">
-    <div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
+<div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
 </a>
 <a href="https://sora.chatgpt.com/p/s_692415a63f0081918d36fcfb2535670c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kJdH5e8d4z6b" target="_blank">
-    <div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
+<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
 </a>
 <a href="https://sora.chatgpt.com/p/s_6917fddaa4288191b1f8ebac4e791e56?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.Sigsv6ochclj" target="_blank">
-    <div class="ad-banner">Do you need more arms? Try Hexapro!</div>
+<div class="ad-banner">Do you need more arms? Try Hexapro!</div>
 </a>
 <a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank">
-    <div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
+<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
 </a>
 <div style="text-align:center; margin:12px 0;">
 <a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
@@ -282,6 +281,13 @@ const firebaseConfig = {apiKey:"AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",authDom
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+signInAnonymously(auth)
+.then(() => {
+console.log('Signed in anonymously');
+})
+.catch((error) => {
+console.error('Auth error:', error);
+});
 const appRoot = document.getElementById('app');
 const systemFeed = document.getElementById('systemFeed');
 const dmList = document.getElementById('dmList');
@@ -294,279 +300,273 @@ let ortegaClickCount = 0;
 onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
 // Listen for messages from iframes
 window.addEventListener('message', (event) => {
-  // Handle boot completion from bootpage iframe
-  if (event.data.type === 'bootComplete') {
-    myHandle = event.data.handle;
-    currentChannel = event.data.channel;
-    uid = event.data.uid;
-   
-    // Hide the iframe
-    const bootIframe = document.querySelector('iframe[src="bootpage.html"]');
-    if (bootIframe) {
-      bootIframe.style.display = 'none';
-    }
-   
-    // Show the main app
-    appRoot.style.display = 'block';
-   
-    // Initialize presence
-    presenceRef = ref(db, `online/${currentChannel}/${uid}`);
-    set(presenceRef, {uid, name: myHandle, typing: false});
-    onDisconnect(presenceRef).remove();
-   
-    appendSystem(`Connected as ${myHandle} on //${currentChannel.toUpperCase()}`);
-    initializePanels();
-  }
- 
-  // Send user data to chatservers iframe when requested
-  if (event.data.type === 'requestUserData') {
-    // Send user data to the iframe that requested it
-    event.source.postMessage({
-      type: 'userData',
-      handle: myHandle,
-      uid: uid,
-      channel: currentChannel
-    }, '*');
-  }
+// Handle boot completion from bootpage iframe
+if (event.data.type === 'bootComplete') {
+myHandle = event.data.handle;
+currentChannel = event.data.channel;
+uid = event.data.uid;
+// Hide the iframe
+const bootIframe = document.querySelector('iframe[src="bootpage.html"]');
+if (bootIframe) {
+bootIframe.style.display = 'none';
+}
+// Show the main app
+appRoot.style.display = 'block';
+// Initialize presence
+presenceRef = ref(db, online/${currentChannel}/${uid});
+set(presenceRef, {uid, name: myHandle, typing: false});
+onDisconnect(presenceRef).remove();
+appendSystem(Connected as ${myHandle} on //${currentChannel.toUpperCase()});
+initializePanels();
+}
+// Send user data to chatservers iframe when requested
+if (event.data.type === 'requestUserData') {
+// Send user data to the iframe that requested it
+event.source.postMessage({
+type: 'userData',
+handle: myHandle,
+uid: uid,
+channel: currentChannel
+}, '*');
+}
 });
 function prependFeedEntry(text){
-  const el = document.createElement('div');
-  el.className = 'dm-inline';
-  el.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
-  systemFeed.prepend(el);
-  while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChild);
+const el = document.createElement('div');
+el.className = 'dm-inline';
+el.textContent = [${new Date().toLocaleTimeString()}] ${text};
+systemFeed.prepend(el);
+while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChild);
 }
 function updateMarqueeFromCache(){
-  if(feedCache.length === 0){
-    marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — Site Under Construction —";
-    startMarqueeAnimation();
-    return;
-  }
-  const text = feedCache.slice(0,8).map(item => item.text).join(' ✦ ');
-  marqueeInner.textContent = ' ' + text + ' ';
-  startMarqueeAnimation();
+if(feedCache.length === 0){
+marqueeInner.textContent = "C:\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — Site Under Construction —";
+startMarqueeAnimation();
+return;
+}
+const text = feedCache.slice(0,8).map(item => item.text).join(' ✦ ');
+marqueeInner.textContent = ' ' + text + ' ';
+startMarqueeAnimation();
 }
 let marqueeAnimId = null;
 function startMarqueeAnimation(){
-  if(marqueeAnimId) cancelAnimationFrame(marqueeAnimId);
-  const inner = marqueeInner;
-  inner.style.transform = 'translateX(0)';
-  const wrapWidth = marquee.offsetWidth;
-  const innerWidth = inner.offsetWidth || wrapWidth * 1.5;
-  const speed = 80;
-  let start = null;
-  function step(ts){
-    if(!start) start = ts;
-    const elapsed = (ts - start) / 1000;
-    const distance = speed * elapsed;
-    inner.style.transform = `translateX(${-distance}px)`;
-    if(distance > innerWidth + wrapWidth) start = ts;
-    marqueeAnimId = requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
+if(marqueeAnimId) cancelAnimationFrame(marqueeAnimId);
+const inner = marqueeInner;
+inner.style.transform = 'translateX(0)';
+const wrapWidth = marquee.offsetWidth;
+const innerWidth = inner.offsetWidth || wrapWidth * 1.5;
+const speed = 80;
+let start = null;
+function step(ts){
+if(!start) start = ts;
+const elapsed = (ts - start) / 1000;
+const distance = speed * elapsed;
+inner.style.transform = translateX(${-distance}px);
+if(distance > innerWidth + wrapWidth) start = ts;
+marqueeAnimId = requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
 }
 const feedRef = ref(db, 'feed');
 onChildAdded(feedRef, snap => {
-  const obj = {key: snap.key, text: snap.val(), ts: Date.now()};
-  feedCache.unshift(obj);
-  if(feedCache.length > 40) feedCache.pop();
-  prependFeedEntry(obj.text);
-  updateMarqueeFromCache();
+const obj = {key: snap.key, text: snap.val(), ts: Date.now()};
+feedCache.unshift(obj);
+if(feedCache.length > 40) feedCache.pop();
+prependFeedEntry(obj.text);
+updateMarqueeFromCache();
 });
 get(feedRef).then(snap => {
-  const data = snap.val() || {};
-  feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
-  updateMarqueeFromCache();
+const data = snap.val() || {};
+feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
+updateMarqueeFromCache();
 });
 let onlineWatchRef = ref(db, 'online');
 function watchOnline(){
-  onValue(onlineWatchRef, snap => {
-    const data = snap.val() || {};
-    renderServerTracking(data);
-  });
+onValue(onlineWatchRef, snap => {
+const data = snap.val() || {};
+renderServerTracking(data);
+});
 }
 function renderServerTracking(data){
-  serverTrackingList.innerHTML = '';
-  const channels = ['sam','exuro','nero','nora','loktal'];
-  channels.forEach(ch => {
-    // Filter out users without names
-    const users = Object.values(data[ch] || {}).filter(u => u.name);
-    const count = users.length;
-    const iconColor = count > 0 ? 'lime' : 'red';
-    const branch = document.createElement('div');
-    branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
-    branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon ${count > 0 ? 'animated' : ''}" style="color:${iconColor}">●</span></div><div class="user-list"></div>`;
-    const userList = branch.querySelector('.user-list');
-    if(count === 0){
-      userList.innerHTML = '<div>—</div>';
-    } else {
-      users.forEach(u => {
-        const div = document.createElement('div');
-        div.textContent = u.name + (u.typing ? ' (typing...)' : '');
-        div.onclick = () => openDMInline(u.uid, u.name);
-        userList.appendChild(div);
-      });
-    }
-    serverTrackingList.appendChild(branch);
-  });
+serverTrackingList.innerHTML = '';
+const channels = ['sam','exuro','nero','nora','loktal'];
+channels.forEach(ch => {
+// Filter out users without names
+const users = Object.values(data[ch] || {}).filter(u => u.name);
+const count = users.length;
+const iconColor = count > 0 ? 'lime' : 'red';
+const branch = document.createElement('div');
+branch.className = server-branch ${ch === currentChannel ? 'current-server' : ''};
+branch.innerHTML = <div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon ${count > 0 ? 'animated' : ''}" style="color:${iconColor}">●</span></div><div class="user-list"></div>;
+const userList = branch.querySelector('.user-list');
+if(count === 0){
+userList.innerHTML = '—';
+} else {
+users.forEach(u => {
+const div = document.createElement('div');
+div.textContent = u.name + (u.typing ? ' (typing...)' : '');
+div.onclick = () => openDMInline(u.uid, u.name);
+userList.appendChild(div);
+});
+}
+serverTrackingList.appendChild(branch);
+});
 }
 function watchPresenceEvents() {
-  const channels = ['sam','exuro','nero','nora','loktal'];
-  channels.forEach(ch => {
-    onChildAdded(ref(db, `online/${ch}`), snap => {
-      const u = snap.val();
-      if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' joined //${ch.toUpperCase()}`);
-    });
-    onChildRemoved(ref(db, `online/${ch}`), snap => {
-      const u = snap.val();
-      if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' left //${ch.toUpperCase()}`);
-    });
-  });
+const channels = ['sam','exuro','nero','nora','loktal'];
+channels.forEach(ch => {
+onChildAdded(ref(db, online/${ch}), snap => {
+const u = snap.val();
+if (u && u.uid !== uid && u.name) appendSystem(User '${u.name}' joined //${ch.toUpperCase()});
+});
+onChildRemoved(ref(db, online/${ch}), snap => {
+const u = snap.val();
+if (u && u.uid !== uid && u.name) appendSystem(User '${u.name}' left //${ch.toUpperCase()});
+});
+});
 }
 ortegaBtn.onclick = () => {
-  ortegaClickCount++;
-  if (ortegaClickCount >= 18) {
-    document.body.classList.add('glitch-transition');
-    setTimeout(() => {
-      document.getElementById('ortegaIframeContainer').style.display = 'block';
-      document.getElementById('ortegaIframe').src = 'ortega.html';
-    }, 500);
-    setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
-  }
+ortegaClickCount++;
+if (ortegaClickCount >= 18) {
+document.body.classList.add('glitch-transition');
+setTimeout(() => {
+document.getElementById('ortegaIframeContainer').style.display = 'block';
+document.getElementById('ortegaIframe').src = 'ortega.html';
+}, 500);
+setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
+}
 };
 async function registerDMPair(tuid){
-  const pid = [uid, tuid].sort().join('_');
-  const updates = {};
-  updates[`dmPairs/${pid}/users/${uid}`] = true;
-  updates[`dmPairs/${pid}/users/${tuid}`] = true;
-  await update(ref(db), updates).catch(() => {});
+const pid = [uid, tuid].sort().join('');
+const updates = {};
+updates[dmPairs/${pid}/users/${uid}] = true;
+updates[dmPairs/${pid}/users/${tuid}] = true;
+await update(ref(db), updates).catch(() => {});
 }
 function openDMInline(tuid, tname){
-  if(tuid === uid || !tname) return;
-  registerDMPair(tuid);
-  const pid = [uid, tuid].sort().join('_');
-  if(document.querySelector(`[data-dmid="${pid}"]`)) return;
-  const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
-  const header = document.createElement('div'); header.textContent = `DM: ${tname}`; header.style.fontWeight = '700';
-  const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
-  const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
-  const send = document.createElement('button'); send.textContent = 'Send'; send.style.cssText = 'margin-top:6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
-  container.append(header, msgs, inp, send);
-  dmList.prepend(container);
-  const dmRef = ref(db, `dm/${pid}`);
-  onChildAdded(dmRef, snap => {
-    const o = snap.val();
-    if (!o.fromName) return; // Skip messages without names
-    const el = document.createElement('div'); el.style.margin = '6px 0';
-    el.textContent = `${o.fromName}: ${o.msg}`;
-    msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
-    if(o.from !== uid){
-      appendSystem(`New DM from ${o.fromName}`);
-    }
-  });
-  send.onclick = async () => {
-    const txt = inp.value.trim();
-    if(!txt) return;
-    const ts = Date.now();
-    const key = push(ref(db, `dm/${pid}`)).key;
-    const updates = {};
-    updates[`/dm/${pid}/${key}`] = {from: uid, to: tuid, fromName: myHandle, toName: tname, msg: txt, ts};
-    await update(ref(db), updates).catch(() => {});
-    inp.value = '';
-  };
+if(tuid === uid || !tname) return;
+registerDMPair(tuid);
+const pid = [uid, tuid].sort().join('');
+if(document.querySelector([data-dmid="${pid}"])) return;
+const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
+const header = document.createElement('div'); header.textContent = DM: ${tname}; header.style.fontWeight = '700';
+const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
+const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
+const send = document.createElement('button'); send.textContent = 'Send'; send.style.cssText = 'margin-top:6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
+container.append(header, msgs, inp, send);
+dmList.prepend(container);
+const dmRef = ref(db, dm/${pid});
+onChildAdded(dmRef, snap => {
+const o = snap.val();
+if (!o.fromName) return; // Skip messages without names
+const el = document.createElement('div'); el.style.margin = '6px 0';
+el.textContent = ${o.fromName}: ${o.msg};
+msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
+if(o.from !== uid){
+appendSystem(New DM from ${o.fromName});
 }
-function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+});
+send.onclick = async () => {
+const txt = inp.value.trim();
+if(!txt) return;
+const ts = Date.now();
+const key = push(ref(db, dm/${pid})).key;
+const updates = {};
+updates[/dm/${pid}/${key}] = {from: uid, to: tuid, fromName: myHandle, toName: tname, msg: txt, ts};
+await update(ref(db), updates).catch(() => {});
+inp.value = '';
+};
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&','<':'<','>':'>','"':'"',"'":'''}[c])); }
 function appendSystem(t){
-  const d = document.createElement('div');
-  d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
-  d.style.fontSize = '12px';
-  systemFeed.prepend(d);
+const d = document.createElement('div');
+d.textContent = [${new Date().toLocaleTimeString()}] ${t};
+d.style.fontSize = '12px';
+systemFeed.prepend(d);
 }
 function initializePanels(){
-  document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
-  document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
-    btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
-  });
- 
-  // Initialize online tracking after boot complete
-  watchOnline();
-  watchPresenceEvents();
+document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
+document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
+btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
+});
+// Initialize online tracking after boot complete
+watchOnline();
+watchPresenceEvents();
 }
 // Don't call these immediately - wait for boot
 appendSystem('Initializing...');
 setTimeout(() => updateMarqueeFromCache(), 800);
 for(let i=0; i<8; i++){
-  const p = document.createElement('div'); p.className = 'particle';
-  p.style.left = Math.random()*100 + '%';
-  p.style.animationDelay = Math.random()*5 + 's';
-  marqueeWrap.appendChild(p);
+const p = document.createElement('div'); p.className = 'particle';
+p.style.left = Math.random()*100 + '%';
+p.style.animationDelay = Math.random()*5 + 's';
+marqueeWrap.appendChild(p);
 }
 document.querySelectorAll('.collapsible .toggle-btn:not(.bottom-toggle)').forEach(btn => {
-  btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
+btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
 });
 window.addEventListener('beforeunload', () => {
-  if(presenceRef) remove(presenceRef);
+if(presenceRef) remove(presenceRef);
 });
 const revivalLinks = Array.from(document.querySelectorAll('#revivalSitesPanel .panel-body a'))
-  .map(a => a.href)
-  .filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com') && !href.includes('robustpvp-lang.github.io'));
+.map(a => a.href)
+.filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com') && !href.includes('robustpvp-lang.github.io'));
 const toolbarLinks = [
-  'https://tokillamockinggoblin.boards.net/',
-  'https://youtube.com/@Patrickauthor',
+'https://tokillamockinggoblin.boards.net/',
+'https://youtube.com/@Patrickauthor',
 ];
 revivalLinks.push(...toolbarLinks);
 document.getElementById('stumbleBtn').onclick = () => {
-  const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)];
-  const timestamp = Date.now();
-  window.open(`${randomLink}?t=${timestamp}`, '_blank');
+const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)];
+const timestamp = Date.now();
+window.open(${randomLink}?t=${timestamp}, '_blank');
 };
 document.getElementById('buyBookBtn').onclick = () => {
-  window.open('bookpage.html', '_blank');
+window.open('bookpage.html', '_blank');
 };
 document.getElementById('emailBtn').onclick = () => {
-  window.open('https://forms.gle/LBAkMsnVT7xrraYT8', '_blank');
+window.open('https://forms.gle/LBAkMsnVT7xrraYT8', '_blank');
 };
 document.getElementById('mindGameBtn').onclick = () => {
-  document.body.classList.add('glitch-transition');
-  setTimeout(() => window.open('mindgame.html', '_blank'), 500);
-  setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
+document.body.classList.add('glitch-transition');
+setTimeout(() => window.open('mindgame.html', '_blank'), 500);
+setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
 };
 // Hit counter
 const hitRef = ref(db, 'hits');
 get(hitRef).then(snap => {
-  let hits = snap.val() || 0;
-  hits++;
-  set(hitRef, hits);
-  document.getElementById('hitCounter').textContent = `Hits: ${hits}`;
+let hits = snap.val() || 0;
+hits++;
+set(hitRef, hits);
+document.getElementById('hitCounter').textContent = Hits: ${hits};
 });
 // Visitor counter
 const visitorRef = ref(db, 'visitors');
 if (!localStorage.getItem('visited')) {
-  get(visitorRef).then(snap => {
-    let visitors = snap.val() || 0;
-    visitors++;
-    set(visitorRef, visitors);
-    localStorage.setItem('visited', 'true');
-    document.getElementById('visitorCounter').textContent = `Visitors: ${visitors}`;
-  });
+get(visitorRef).then(snap => {
+let visitors = snap.val() || 0;
+visitors++;
+set(visitorRef, visitors);
+localStorage.setItem('visited', 'true');
+document.getElementById('visitorCounter').textContent = Visitors: ${visitors};
+});
 } else {
-  get(visitorRef).then(snap => {
-    document.getElementById('visitorCounter').textContent = `Visitors: ${snap.val() || 0}`;
-  });
+get(visitorRef).then(snap => {
+document.getElementById('visitorCounter').textContent = Visitors: ${snap.val() || 0};
+});
 }
 // Idle revert
 let idleTimer;
 function resetIdle() {
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(revertToBoot, 300000); // 5 minutes
+clearTimeout(idleTimer);
+idleTimer = setTimeout(revertToBoot, 300000); // 5 minutes
 }
 function revertToBoot() {
-  const bootIframe = document.querySelector('iframe[src="bootpage.html"]');
-  if (bootIframe) {
-    bootIframe.style.display = 'block';
-  }
-  appRoot.style.display = 'none';
-  // Optional: reset presence or other states if needed
+const bootIframe = document.querySelector('iframe[src="bootpage.html"]');
+if (bootIframe) {
+bootIframe.style.display = 'block';
+}
+appRoot.style.display = 'none';
+// Optional: reset presence or other states if needed
 }
 window.addEventListener('mousemove', resetIdle);
 window.addEventListener('keydown', resetIdle);
