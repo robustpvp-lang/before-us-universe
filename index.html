@@ -141,8 +141,11 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 a { color: #0ff; text-decoration: underline; }
 .donate-flash { animation: flash 1s infinite; display: inline-block; margin-left: 5px; }
 #visitorCounter, #hitCounter {opacity: 1;}
-#buyBookBtn {animation: blink 1s step-end infinite;}
-@keyframes blink{50%{opacity:0;}}
+#buyBookBtn {animation: flash 2s infinite;}
+@keyframes flash{0%{opacity:1;}50%{opacity:0.8;}100%{opacity:1;}}
+#mindGameBtn {margin: 6px 0;}
+#ortegaIframeContainer {max-height: 300px; z-index: 1; position: relative;}
+.bottom-section {position: relative; z-index: 0;}
 </style>
 </head>
 <body>
@@ -177,10 +180,6 @@ a { color: #0ff; text-decoration: underline; }
 <a class="link-btn" href="https://tokillamockinggoblin.boards.net/" target="_blank" rel="noopener noreferrer" title="Join Sam's DND Realm">To Kill a Mocking Goblin</a>
 <a class="link-btn" href="https://youtube.com/@Patrickauthor" target="_blank" rel="noopener noreferrer">Melphia’s YouTube</a>
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
-<a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
-<a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
-<a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
-<a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
 <div class="controls-right">
 </div>
 </div>
@@ -284,9 +283,9 @@ a { color: #0ff; text-decoration: underline; }
 <div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<button id="mindGameBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:100%;margin:0 6px;">//Mind Game (Under Construction)</button>
+<button id="mindGameBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:100%;margin:0 0;">//Mind Game (Under Construction)</button>
 <div id="ortegaPanel"><button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-<div id="ortegaIframeContainer" style="display:none; max-height:600px; overflow-y:scroll; margin-top:10px; border:1px solid var(--border); padding:10px;">
+<div id="ortegaIframeContainer" style="display:none; max-height:300px; overflow-y:scroll; margin-top:10px; border:1px solid var(--border); padding:10px;">
 <iframe id="ortegaIframe" src="" style="width:100%; height:100%;"></iframe>
 </div>
 </div>
@@ -294,6 +293,9 @@ a { color: #0ff; text-decoration: underline; }
 <a href="https://sora.chatgpt.com/p/s_692415a63f0081918d36fcfb2535670c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kJdH5e8d4z6b" target="_blank"><div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div></a>
 <a href="https://sora.chatgpt.com/p/s_6917fddaa4288191b1f8ebac4e791e56?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.Sigsv6ochclj" target="_blank"><div class="ad-banner">Do you need more arms? Try Hexapro!</div></a>
 <a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank"><div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div></a>
+<a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
+<a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
+<a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
 </div>
 </div>
 <div class="bottom-section">
@@ -557,8 +559,7 @@ userList.innerHTML = '<div>—</div>';
 } else {
 users.forEach(u => {
 const div = document.createElement('div');
-div.textContent = (u.name || 'Anonymous') + (u.typing ? ' (typing...)' : '');
-div.onclick = () => openDMInline(u.uid, u.name);
+div.textContent = u.name + (u.typing ? ' (typing...)' : '');
 userList.appendChild(div);
 });
 }
@@ -570,8 +571,7 @@ activeUsersList.innerHTML = '';
 Object.values(obj || {}).forEach(u => {
 const row = document.createElement('div'); row.className = 'user-row';
 const dot = document.createElement('div'); dot.className = 'status-dot';
-const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name || 'Anonymous';
-name.onclick = () => openDMInline(u.uid, u.name);
+const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name;
 row.append(dot, name);
 activeUsersList.appendChild(row);
 });
@@ -587,11 +587,11 @@ const channels = ['sam','exuro','nero','nora','loktal'];
 channels.forEach(ch => {
 onChildAdded(ref(db, `online/${ch}`), snap => {
 const u = snap.val();
-if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '${u.name || 'Anonymous'}' joined //${ch.toUpperCase()}`);
+if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' joined //${ch.toUpperCase()}`);
 });
 onChildRemoved(ref(db, `online/${ch}`), snap => {
 const u = snap.val();
-if (u && u.uid !== uid && u.name && u.name !== 'Anonymous') appendSystem(`User '${u.name || 'Anonymous'}' left //${ch.toUpperCase()}`);
+if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' left //${ch.toUpperCase()}`);
 });
 });
 }
@@ -617,7 +617,7 @@ const row = document.createElement('div'); row.className = 'chat-row';
 const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
 const bub = document.createElement('div'); bub.className = 'chat-bubble';
 if(o.uid === uid) bub.classList.add('me');
-bub.innerHTML = `<div class="chat-meta">${o.name || 'Anonymous'} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+bub.innerHTML = `<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
 if(o.uid === uid){
 const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
 edit.onclick = () => { /* edit logic */ };
@@ -677,7 +677,7 @@ boardListeners[ch] = {ref: r, fn};
 }
 function renderBoardPost(p, id){
 const el = document.createElement('div'); el.className = 'board-thread';
-el.innerHTML = `<strong>${esc(p.name || 'Anonymous')}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
+el.innerHTML = `<strong>${esc(p.name)}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
 const reply = document.createElement('span');
 reply.textContent = '[Reply]';
 reply.style.cursor = 'pointer';
@@ -764,7 +764,7 @@ typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/ty
 resetIdleTimer();
 });
 function updateTypingIndicator(obj){
-const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name || 'Anonymous');
+const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name);
 document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
 }
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -905,7 +905,6 @@ const toolbarLinks = [
 'https://youtube.com/@Patrickauthor',
 'https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview',
 'https://spacehey.com/profile?id=4317004',
-'https://www.phpbb.com/',
 'https://web.archive.org/',
 'https://www.oldversion.com/'
 ];
