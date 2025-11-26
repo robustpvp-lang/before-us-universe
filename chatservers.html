@@ -25,81 +25,6 @@
         margin: 0; 
         padding: 0; 
     }
-    #bootOverlay {
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.95));
-        color: var(--fg);
-        z-index: 99998;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        font-family: 'Roboto Mono', monospace;
-    }
-    #bootPanel {
-        width: 92%;
-        max-width: 820px;
-        background: var(--panel-bg);
-        border: 4px solid var(--border);
-        padding: 18px;
-        box-shadow: 0 0 30px rgba(0,255,255,0.06);
-    }
-    #bootLog {
-        line-height: 1.6;
-        white-space: pre-wrap;
-        margin-bottom: 12px;
-        font-size: 13px;
-        color: var(--text-gray);
-    }
-    #bootPrompt {
-        color: var(--accent);
-        margin-bottom: 6px;
-        animation: blink 1s step-end infinite;
-    }
-    @keyframes blink {
-        50% { opacity: 0; }
-    }
-    #bootInputs {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-    #bootInput {
-        background: #001f1f;
-        border: 2px solid var(--border);
-        color: var(--fg);
-        padding: 8px;
-        width: 48%;
-        min-width: 160px;
-        font-family: monospace;
-    }
-    #bootChannel {
-        background: #001f1f;
-        border: 2px solid var(--border);
-        color: var(--fg);
-        padding: 8px;
-        font-family: monospace;
-        width: 48%;
-        min-width: 160px;
-    }
-    #bootBtn {
-        background: var(--accent);
-        border: 2px solid #000;
-        color: #000;
-        padding: 8px 14px;
-        cursor: pointer;
-        font-weight: 700;
-    }
-    #bootStatus {
-        margin-top: 8px;
-        color: var(--accent);
-    }
-    #app {
-        display: none;
-        padding: 20px;
-    }
     .panel {
         background: var(--panel-bg);
         border: 3px solid var(--border);
@@ -325,59 +250,39 @@
 </style>
 </head>
 <body>
-<div id="bootOverlay">
-    <div id="bootPanel">
-        <div id="bootLog" class="small"></div>
-        <div id="bootPrompt">> ENTER HANDLE & SELECT SERVER</div>
-        <div id="bootInputs">
-            <input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (required)" aria-label="Enter your handle">
-            <select id="bootChannel" aria-label="Select server">
-                <option value="sam">//Sam</option>
-                <option value="exuro">//Exuro</option>
-                <option value="nero">//Nero</option>
-                <option value="nora">//Nora</option>
-                <option value="loktal">//Loktal</option>
-            </select>
-            <button id="bootBtn" aria-label="Enter Network">ENTER NETWORK</button>
-        </div>
-        <div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
+<div id="serverSelectPanel" class="panel">
+    <div class="small">SELECT SERVER</div>
+    <div class="controls">
+        <select id="channelSelect" aria-label="Choose server">
+            <option value="sam">//Sam</option>
+            <option value="exuro">//Exuro</option>
+            <option value="nero">//Nero</option>
+            <option value="nora">//Nora</option>
+            <option value="loktal">//Loktal</option>
+        </select>
+        <button id="serverConfirm" aria-label="Switch server">Switch Server</button>
     </div>
 </div>
-<div id="app">
-    <div id="serverSelectPanel" class="panel">
-        <div class="small">SELECT SERVER</div>
-        <div class="controls">
-            <select id="channelSelect" aria-label="Choose server">
-                <option value="sam">//Sam</option>
-                <option value="exuro">//Exuro</option>
-                <option value="nero">//Nero</option>
-                <option value="nora">//Nora</option>
-                <option value="loktal">//Loktal</option>
-            </select>
-            <button id="serverConfirm" aria-label="Switch server">Switch Server</button>
-        </div>
-    </div>
-    <div class="panel">
-        <div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
-        <div class="panel-body chat-win" id="chatBody">
-            <div class="chat-main">
-                <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
-                <div class="chat-users">
-                    <div class="small" style="margin-bottom:6px">USERS ONLINE</div>
-                    <div id="activeUsersList"></div>
-                </div>
-            </div>
-            <div id="typingIndicator" class="typing-indicator"></div>
-            <div class="chat-controls">
-                <input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
-                <button id="sendBtn" aria-label="Send message">SEND</button>
+<div class="panel">
+    <div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
+    <div class="panel-body chat-win" id="chatBody">
+        <div class="chat-main">
+            <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+            <div class="chat-users">
+                <div class="small" style="margin-bottom:6px">USERS ONLINE</div>
+                <div id="activeUsersList"></div>
             </div>
         </div>
+        <div id="typingIndicator" class="typing-indicator"></div>
+        <div class="chat-controls">
+            <input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
+            <button id="sendBtn" aria-label="Send message">SEND</button>
+        </div>
     </div>
-    <div class="panel" id="serverTrackingPanel">
-        <div class="panel-title"><div class="small">SERVER LIST</div></div>
-        <div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
-    </div>
+</div>
+<div class="panel" id="serverTrackingPanel">
+    <div class="panel-title"><div class="small">SERVER LIST</div></div>
+    <div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
 </div>
 <!-- Firebase -->
 <script type="module">
@@ -398,13 +303,6 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
-const bootOverlay = document.getElementById('bootOverlay');
-const bootLog = document.getElementById('bootLog');
-const bootInput = document.getElementById('bootInput');
-const bootBtn = document.getElementById('bootBtn');
-const bootStatus = document.getElementById('bootStatus');
-const bootChannel = document.getElementById('bootChannel');
-const appRoot = document.getElementById('app');
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
@@ -415,29 +313,24 @@ const activeUsersList = document.getElementById('activeUsersList');
 const serverTrackingList = document.getElementById('serverTrackingList');
 const chatTitle = document.getElementById('chatTitle');
 
-let uid = null, myHandle = null, currentChannel = 'sam', presenceRef = null;
+let uid = null, username = "Commander", currentChannel = 'sam', presenceRef = null;
 let channelListeners = {};
 let typingTimeout = null;
 
-const bootLines = [
-    "C:\\> INITIALIZING BEFORE US UNIVERSE...",
-    "C:\\> Loading kernel.............[ONLINE]",
-    "C:\\> Checking Ra'Norric link....[ONLINE]",
-    "C:\\> MEMORY CHECK PASSED",
-    "C:\\> DISK VERIFIED",
-    "C:\\> NETWORK ACTIVE",
-    "C:\\> System is .....[ONLINE]",
-    "C:\\> Ready for authentication..."
-];
-let lineIdx = 0;
-function typeBootLine() {
-    if (lineIdx < bootLines.length) {
-        bootLog.textContent += bootLines[lineIdx] + "\n";
-        lineIdx++;
-        setTimeout(typeBootLine, 240 + Math.random() * 360);
+// Request user data from parent (main index)
+window.parent.postMessage({ type: 'requestUserData' }, '*');
+
+// Listen for user data from parent
+window.addEventListener('message', (event) => {
+    if (event.data.type === 'userData') {
+        username = event.data.handle || "Commander";
+        uid = event.data.uid;
+        currentChannel = event.data.channel || 'sam';
+        setPresence(username, currentChannel);
+        listenChannel(currentChannel);
+        watchOnline();
     }
-}
-typeBootLine();
+});
 
 onAuthStateChanged(auth, u => { if (u) uid = u.uid; });
 
@@ -527,7 +420,7 @@ function listenChannel(ch) {
     });
     channelListeners = { ref: chatRef };
     channelSelect.value = ch;
-    setPresence(myHandle, ch);
+    setPresence(username, ch);
 }
 
 function renderChatMessage(o) {
@@ -552,28 +445,10 @@ function esc(s) {
 
 signInAnonymously(auth);
 
-bootBtn.addEventListener('click', () => {
-    const handle = bootInput.value.trim();
-    if (!handle) {
-        bootStatus.textContent = 'Enter a handle.';
-        return;
-    }
-    myHandle = handle;
-    currentChannel = bootChannel.value;
-    bootStatus.textContent = 'Connecting...';
-    setTimeout(() => {
-        bootOverlay.style.display = 'none';
-        appRoot.style.display = 'block';
-        setPresence(myHandle, currentChannel);
-        listenChannel(currentChannel);
-        watchOnline();
-    }, 1000);
-});
-
 sendBtn.addEventListener('click', () => {
     const msg = chatInput.value.trim();
     if (msg) {
-        push(ref(db, `chat/${currentChannel}`), { name: myHandle, msg, ts: Date.now(), uid });
+        push(ref(db, `chat/${currentChannel}`), { name: username, msg, ts: Date.now(), uid });
         chatInput.value = '';
     }
 });
@@ -596,6 +471,11 @@ serverConfirm.addEventListener('click', () => {
         listenChannel(newCh);
     }
 });
+
+// Initial setup (using dummy if no parent data)
+setPresence(username, currentChannel);
+listenChannel(currentChannel);
+watchOnline();
 </script>
 </body>
 </html>
