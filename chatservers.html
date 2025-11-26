@@ -270,7 +270,7 @@ const userCountSmall = document.getElementById('userCountSmall');
 const activeUsersList = document.getElementById('activeUsersList');
 const chatTitle = document.getElementById('chatTitle');
 
-let uid = null, username = "Commander", currentChannel = 'sam', presenceRef = null;
+let uid = null, username = null, currentChannel = null, presenceRef = null;
 let channelListeners = {};
 let typingTimeout = null;
 
@@ -280,16 +280,21 @@ window.parent.postMessage({ type: 'requestUserData' }, '*');
 // Listen for user data from parent
 window.addEventListener('message', (event) => {
     if (event.data.type === 'userData') {
-        username = event.data.handle || "Commander";
+        username = event.data.handle;
         uid = event.data.uid;
-        currentChannel = event.data.channel || 'sam';
-        setPresence(username, currentChannel);
-        listenChannel(currentChannel);
-        watchOnline();
+        currentChannel = event.data.channel;
+        initializeChat();
     }
 });
 
 onAuthStateChanged(auth, u => { if (u) uid = u.uid; });
+
+function initializeChat() {
+    if (!username || !currentChannel) return;
+    setPresence(username, currentChannel);
+    listenChannel(currentChannel);
+    watchOnline();
+}
 
 function setPresence(h, ch) {
     if (presenceRef) remove(presenceRef);
@@ -403,11 +408,6 @@ serverConfirm.addEventListener('click', () => {
         listenChannel(newCh);
     }
 });
-
-// Initial setup (using dummy if no parent data)
-setPresence(username, currentChannel);
-listenChannel(currentChannel);
-watchOnline();
 </script>
 </body>
 </html>
