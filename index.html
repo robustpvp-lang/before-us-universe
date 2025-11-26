@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -109,6 +108,7 @@ body,html{overflow-x:hidden}
 a, button, .user-row{ -webkit-tap-highlight-color: transparent;}
 a:active, button:active, .user-row:active{animation:glitch 0.2s;}
 #revivalSitesPanel a {color: #ffffff;}
+#revivalSitesPanel .panel-body {color: #ffffff;}
 @media(max-width:600px){.panel{margin-bottom:12px;}.panel-title{font-size:10px;}.panel-body{padding:6px;font-size:12px;}}
 body.glitch-transition{animation:glitch 1s linear, vhs 1s linear;}
 @keyframes vhs{0%,100%{filter:brightness(1) contrast(1);}20%{filter:brightness(1.2) contrast(1.5);transform:skew(0.5deg);}40%{filter:brightness(0.8) contrast(0.8);transform:translate(2px,1px);}60%{filter:brightness(1.1) contrast(1.2);transform:skew(-0.5deg);}80%{filter:brightness(0.9) contrast(1);transform:translate(-2px,-1px);}}
@@ -140,6 +140,9 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 .bot { color: #0f0; }
 a { color: #0ff; text-decoration: underline; }
 .donate-flash { animation: flash 1s infinite; display: inline-block; margin-left: 5px; }
+#visitorCounter, #hitCounter {opacity: 1;}
+#buyBookBtn {animation: blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
 </style>
 </head>
 <body>
@@ -176,16 +179,15 @@ a { color: #0ff; text-decoration: underline; }
 <a class="link-btn" href="https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview" target="_blank" rel="noopener noreferrer" title="on reedsy">Read Sam's First Chapter</a>
 <a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
 <a class="link-btn" href="https://www.phpbb.com/" target="_blank" rel="noopener noreferrer">phpBB</a>
-<a class="link-btn" href="https://sora.chatgpt.com/profile/robustpvp" target="_blank" rel="noopener noreferrer">Sora</a>
 <a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
 <a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
 <div class="controls-right">
 </div>
 </div>
 <div style="text-align:center; margin:12px 0;">
+<button id="buyBookBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Buy book 1 now!</button>
 <button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Stumble</button>
 <button id="emailBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Join Email List</button>
-<button id="mindGameBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">//Mind Game (Under Construction)</button>
 </div>
 <div class="panel" id="serverSelectPanel">
 <div class="small">SELECT SERVER</div>
@@ -280,18 +282,18 @@ a { color: #0ff; text-decoration: underline; }
 <div class="panel" id="serverTrackingPanel">
 <div class="panel-title"><div class="small">SERVER LIST</div></div>
 <div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
-<div id="dmList" style="margin-top:8px"></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+<button id="mindGameBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:100%;margin:0 6px;">//Mind Game (Under Construction)</button>
 <div id="ortegaPanel"><button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-<div id="ortegaIframeContainer" style="display:none; max-height:300px; overflow-y:scroll; margin-top:10px; border:1px solid var(--border); padding:10px;">
+<div id="ortegaIframeContainer" style="display:none; max-height:600px; overflow-y:scroll; margin-top:10px; border:1px solid var(--border); padding:10px;">
 <iframe id="ortegaIframe" src="" style="width:100%; height:100%;"></iframe>
 </div>
 </div>
-<div class="ad-banner">Teleportors and Syntheizers only 999 credits</div>
-<div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div>
-<div class="ad-banner">Do you need more arms? Try Hexapro!</div>
-<div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div>
+<a href="https://sora.chatgpt.com/p/s_692415bc74c08191a0a5348aee788ebc?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.h1JfPIVieaPG" target="_blank"><div class="ad-banner">Teleportors and Syntheizers only 999 credits</div></a>
+<a href="https://sora.chatgpt.com/p/s_692415a63f0081918d36fcfb2535670c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kJdH5e8d4z6b" target="_blank"><div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div></a>
+<a href="https://sora.chatgpt.com/p/s_6917fddaa4288191b1f8ebac4e791e56?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.Sigsv6ochclj" target="_blank"><div class="ad-banner">Do you need more arms? Try Hexapro!</div></a>
+<a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank"><div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div></a>
 </div>
 </div>
 <div class="bottom-section">
@@ -357,19 +359,6 @@ a { color: #0ff; text-decoration: underline; }
 <div class="panel-title"><div class="title">//aquacrap</div><div class="toggle-btn">▼</div></div>
 <div class="panel-body"><iframe src="https://imgbox.com/g/RU0DGepWyI" style="width:100%;height:100%;"></iframe></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//sora.ai (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="vineBody">
-<div id="slideshow-container">
-<iframe id="slideshow-iframe" src="" allowfullscreen allow="autoplay; fullscreen" style="width:100%;height:100%;"></iframe>
-</div>
-<div id="slideshow-controls">
-<button id="prevVid">Prev</button>
-<button id="nextVid">Next</button>
 </div>
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
@@ -449,7 +438,6 @@ const boardList = document.getElementById('boardList');
 const boardMsg = document.getElementById('boardMsg');
 const postBoardBtn = document.getElementById('postBoardBtn');
 const systemFeed = document.getElementById('systemFeed');
-const dmList = document.getElementById('dmList');
 const ortegaBtn = document.getElementById('ortegaBtn');
 const chatTitle = document.getElementById('chatTitle');
 const boardTitle = document.getElementById('boardTitle');
@@ -532,7 +520,7 @@ feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
 updateMarqueeFromCache();
 });
 function setPresence(h,ch){
-if(!uid || uid.startsWith('offline_')) return;
+if(!uid || !h) return;
 try {
 if(presenceRef) remove(presenceRef).catch(()=>{});
 presenceRef = ref(db, `online/${ch}/${uid}`);
@@ -651,9 +639,9 @@ return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).jo
 }
 async function postMessage(ch, name, msg){
 if(!uid || !myHandle) {
-  bootOverlay.style.display = 'flex';
-  appRoot.style.display = 'none';
-  return;
+bootOverlay.style.display = 'flex';
+appRoot.style.display = 'none';
+return;
 }
 const m = msg.trim();
 if(!m || m.length > 500) return;
@@ -703,9 +691,9 @@ boardList.appendChild(el);
 }
 sendBtn.onclick = () => {
 if(!myHandle) {
-  bootOverlay.style.display = 'flex';
-  appRoot.style.display = 'none';
-  return;
+bootOverlay.style.display = 'flex';
+appRoot.style.display = 'none';
+return;
 }
 const val = chatInput.value.trim();
 if(val.startsWith('/d6')){
@@ -724,14 +712,14 @@ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
 });
 postBoardBtn.onclick = async () => {
 if(!myHandle) {
-  bootOverlay.style.display = 'flex';
-  appRoot.style.display = 'none';
-  return;
+bootOverlay.style.display = 'flex';
+appRoot.style.display = 'none';
+return;
 }
 if(!uid) {
-  bootOverlay.style.display = 'flex';
-  appRoot.style.display = 'none';
-  return;
+bootOverlay.style.display = 'flex';
+appRoot.style.display = 'none';
+return;
 }
 const m = boardMsg.value.trim();
 if(!m || m.length > 1000) return;
@@ -752,60 +740,20 @@ setPresence(myHandle, newCh);
 currentChannel = newCh;
 document.body.classList.remove('glitch-transition');
 }, 1000);
+appendSystem(`User '${myHandle}' switched to //${newCh.toUpperCase()}`);
 }
 };
 ortegaBtn.onclick = () => {
-  ortegaClickCount++;
-  if (ortegaClickCount >= 18) {
-    document.body.classList.add('glitch-transition');
-    setTimeout(() => {
-      document.getElementById('ortegaIframeContainer').style.display = 'block';
-      document.getElementById('ortegaIframe').src = 'ortega.html';
-    }, 500);
-    setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
-  }
+ortegaClickCount++;
+if (ortegaClickCount >= 18) {
+document.body.classList.add('glitch-transition');
+setTimeout(() => {
+document.getElementById('ortegaIframeContainer').style.display = 'block';
+document.getElementById('ortegaIframe').src = 'ortega.html';
+}, 500);
+setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
+}
 };
-async function registerDMPair(tuid){
-if(uid.startsWith('offline_')) return;
-const pid = [uid, tuid].sort().join('_');
-const updates = {};
-updates[`dmPairs/${pid}/users/${uid}`] = true;
-updates[`dmPairs/${pid}/users/${tuid}`] = true;
-await update(ref(db), updates).catch(() => {});
-}
-function openDMInline(tuid, tname){
-if(tuid === uid) return;
-registerDMPair(tuid);
-const pid = [uid, tuid].sort().join('_');
-if(document.querySelector(`[data-dmid="${pid}"]`)) return;
-const container = document.createElement('div'); container.className = 'dm-inline'; container.dataset.dmid = pid;
-const header = document.createElement('div'); header.textContent = `DM: ${tname || 'Anonymous'}`; header.style.fontWeight = '700';
-const msgs = document.createElement('div'); msgs.style.cssText = 'max-height:160px;overflow:auto;margin-top:6px;padding:6px;background:#001f1f;border-radius:4px';
-const inp = document.createElement('input'); inp.placeholder = 'Type…'; inp.style.cssText = 'width:100%;padding:6px;margin-top:6px;background:#001818;border:1px solid rgba(255,255,255,0.03);color:var(--text-gray)';
-const send = document.createElement('button'); send.textContent = 'Send'; send.style.marginTop = '6px;padding:6px;background:#006080;color:#fff;border:0;cursor:pointer';
-container.append(header, msgs, inp, send);
-dmList.prepend(container);
-const dmRef = ref(db, `dm/${pid}`);
-onChildAdded(dmRef, snap => {
-const o = snap.val();
-const el = document.createElement('div'); el.style.margin = '6px 0';
-el.textContent = `${o.fromName || 'Anonymous'}: ${o.msg}`;
-msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight;
-if(o.from !== uid){
-appendSystem(`New DM from ${o.fromName || 'Anonymous'}`);
-}
-});
-send.onclick = async () => {
-const txt = inp.value.trim();
-if(!txt) return;
-const ts = Date.now();
-const key = push(ref(db, `dm/${pid}`)).key;
-const updates = {};
-updates[`/dm/${pid}/${key}`] = {from: uid, to: tuid, fromName: myHandle, toName: tname, msg: txt, ts};
-await update(ref(db), updates).catch(() => {});
-inp.value = '';
-};
-}
 let typingTimeout = null;
 chatInput.addEventListener('input', () => {
 if(!uid || uid.startsWith('offline_')) return;
@@ -826,7 +774,17 @@ d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
 d.style.fontSize = '12px';
 systemFeed.prepend(d);
 }
-signInAnonymously(auth).then(() => {
+bootBtn.addEventListener('click', async () => {
+let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
+if(!raw){
+bootStatus.textContent = "Please enter a handle.";
+return;
+}
+bootStatus.textContent = "Entering network...";
+let credential;
+try {
+credential = await signInAnonymously(auth);
+uid = credential.user.uid;
 const visitorsRef = ref(db, 'visitors/count');
 get(visitorsRef).then(snap => {
 let count = snap.val() || 0;
@@ -842,19 +800,7 @@ set(hitsRef, count);
 document.getElementById('hitCounter').textContent = 'Hits: ' + count;
 }).catch(() => {document.getElementById('hitCounter').textContent = 'Hits: Error';});
 const logRef = push(ref(db, 'visitors/logs'));
-set(logRef, {ts: Date.now(), handle: myHandle || 'anonymous'});
-}).catch(e => appendSystem('Anonymous auth failed: ' + e.message));
-bootBtn.addEventListener('click', async () => {
-let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
-if(!raw){
-bootStatus.textContent = "Please enter a handle.";
-return;
-}
-bootStatus.textContent = "Entering network...";
-let credential;
-try {
-credential = await signInAnonymously(auth);
-uid = credential.user.uid;
+set(logRef, {ts: Date.now(), handle: raw});
 } catch(e) {
 bootStatus.textContent = "Auth error: " + e.message;
 appendSystem('Authentication failed: ' + e.message);
@@ -960,7 +906,6 @@ const toolbarLinks = [
 'https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview',
 'https://spacehey.com/profile?id=4317004',
 'https://www.phpbb.com/',
-'https://sora.chatgpt.com/profile/robustpvp',
 'https://web.archive.org/',
 'https://www.oldversion.com/'
 ];
@@ -978,47 +923,9 @@ document.body.classList.add('glitch-transition');
 setTimeout(() => window.open('mindgame.html', '_blank'), 500);
 setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
 };
-const videoUrls = [
-"https://sendvid.com/embed/0c8dl0bv",
-"https://sendvid.com/embed/xxixiywf",
-"https://sendvid.com/embed/usocjxvk",
-"https://sendvid.com/embed/2d59hgkv",
-"https://sendvid.com/embed/i2hzp3nt",
-"https://sendvid.com/embed/307idtnc",
-"https://sendvid.com/embed/jq9sr48s",
-"https://sendvid.com/embed/8ew7k1xz",
-"https://sendvid.com/embed/2mia7yat",
-"https://sendvid.com/embed/0m0vjefo",
-"https://sendvid.com/embed/gp6oh3w7",
-"https://sendvid.com/embed/pv63vm21",
-"https://sendvid.com/embed/iv60r8he",
-"https://sendvid.com/embed/pk7zb18c",
-"https://sendvid.com/embed/o7djkxku",
-"https://sendvid.com/embed/nfccmiqb",
-"https://sendvid.com/embed/89nunxww",
-"https://sendvid.com/embed/7no2540r",
-"https://sendvid.com/embed/weuus52x",
-"https://sendvid.com/embed/oqixh9i0",
-"https://sendvid.com/embed/x3jo7qhs",
-"https://sendvid.com/embed/tbrhbmk2",
-"https://sendvid.com/embed/i9to7i9k",
-"https://sendvid.com/embed/7z9yljep",
-"https://sendvid.com/embed/vxo3hv19"
-];
-let currentVideoIndex = 0;
-const slideshowIframe = document.getElementById('slideshow-iframe');
-function updateVideo() {
-slideshowIframe.src = videoUrls[currentVideoIndex];
-}
-document.getElementById('nextVid').onclick = () => {
-currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
-updateVideo();
+document.getElementById('buyBookBtn').onclick = () => {
+window.open('bookpage.html', '_blank');
 };
-document.getElementById('prevVid').onclick = () => {
-currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.length;
-updateVideo();
-};
-updateVideo();
 </script>
 </body>
 </html>
