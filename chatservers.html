@@ -33,9 +33,6 @@
         overflow: hidden;
     }
     .panel-title {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
         padding: 6px;
         background: linear-gradient(90deg, var(--yahoo-blue), var(--yahoo-dark));
         color: #fff;
@@ -45,36 +42,6 @@
     .panel-body {
         padding: 8px;
         color: var(--text-gray);
-    }
-    #serverSelectPanel {
-        margin-bottom: 12px;
-        padding: 8px;
-    }
-    #serverSelectPanel .controls {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
-    #serverSelectPanel select {
-        flex: 1;
-        padding: 12px;
-        background: #001f1f;
-        border: 3px solid var(--border);
-        color: var(--fg);
-        font-weight: 700;
-        font-size: 14px;
-        border-radius: 6px;
-    }
-    #serverConfirm {
-        background: var(--accent);
-        color: #000;
-        padding: 10px;
-        border: 3px solid #000;
-        cursor: pointer;
-        font-weight: 900;
-        border-radius: 6px;
-        font-size: 14px;
-        box-shadow: 0 0 10px var(--accent);
     }
     .chat-win {
         display: flex;
@@ -103,10 +70,7 @@
         padding: 8px;
         overflow: auto;
         width: 200px;
-    }
-    @media (max-width: 700px) {
-        .chat-main { flex-direction: column; }
-        .chat-users { width: auto; border-left: 0; border-top: 1px solid rgba(0,0,0,0.1); }
+        flex-shrink: 0;
     }
     .chat-row {
         display: flex;
@@ -125,9 +89,7 @@
         font-weight: 700;
         font-size: 12px;
         color: #001a1a;
-    }
-    @media (max-width: 600px) {
-        .chat-avatar { width: 24px; height: 24px; font-size: 10px; }
+        flex-shrink: 0;
     }
     .chat-bubble {
         max-width: 78%;
@@ -150,19 +112,12 @@
         font-weight: 700;
         margin-bottom: 4px;
     }
-    @media (max-width: 600px) {
-        .chat-meta { font-size: 9px; }
-    }
     .user-row {
         display: flex;
         gap: 8px;
         align-items: center;
-        padding: 6px;
+        padding: 6px 4px;
         font-size: 12px;
-        cursor: pointer;
-    }
-    @media (max-width: 600px) {
-        .user-row { font-size: 10px; }
     }
     .status-dot {
         width: 9px;
@@ -174,9 +129,6 @@
         font-family: 'Press Start 2P';
         color: #ff0000;
         font-size: 12px;
-    }
-    @media (max-width: 600px) {
-        .uname { font-size: 10px; }
     }
     .chat-controls {
         display: flex;
@@ -193,17 +145,19 @@
         color: #000;
     }
     .chat-controls button {
-        padding: 8px;
+        padding: 8px 16px;
         border: 2px outset rgba(0,0,0,0.1);
         background: #add8e6;
         cursor: pointer;
         color: #000;
+        font-weight: bold;
     }
     .typing-indicator {
         font-size: 12px;
         color: var(--muted);
-        padding: 6px;
+        padding: 6px 8px;
         font-style: italic;
+        min-height: 24px;
     }
     .small {
         font-size: 11px;
@@ -212,24 +166,28 @@
 </style>
 </head>
 <body>
-<div id="serverSelectPanel" class="panel">
-    <div class="small">SELECT SERVER</div>
+
+<div id="serverSelectPanel" class="panel" style="display:none;"> <!-- hidden until needed, but kept if you want manual switch -->
+    <div class="small">SELECT SERVER (auto-selected from boot)</div>
     <div class="controls">
-        <select id="channelSelect" aria-label="Choose server">
+        <select id="channelSelect">
             <option value="sam">//Sam</option>
             <option value="exuro">//Exuro</option>
             <option value="nero">//Nero</option>
             <option value="nora">//Nora</option>
             <option value="loktal">//Loktal</option>
         </select>
-        <button id="serverConfirm" aria-label="Switch server">Switch Server</button>
+        <button id="serverConfirm">Switch</button>
     </div>
 </div>
+
 <div class="panel">
-    <div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
-    <div class="panel-body chat-win" id="chatBody">
+    <div class="panel-title">
+        //<span id="channelName">LOADING...</span> <span class="small" id="userCountSmall">0 users</span>
+    </div>
+    <div class="panel-body chat-win">
         <div class="chat-main">
-            <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+            <div class="chat-messages" id="chatMessages"></div>
             <div class="chat-users">
                 <div class="small" style="margin-bottom:6px">USERS ONLINE</div>
                 <div id="activeUsersList"></div>
@@ -237,26 +195,24 @@
         </div>
         <div id="typingIndicator" class="typing-indicator"></div>
         <div class="chat-controls">
-            <input id="chatInput" placeholder="Say something..." maxlength="500" autocomplete="off" aria-label="Chat input">
-            <button id="sendBtn" aria-label="Send message">SEND</button>
+            <input id="chatInput" placeholder="Waiting for boot data..." disabled>
+            <button id="sendBtn" disabled>SEND</button>
         </div>
     </div>
 </div>
-<!-- Firebase -->
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, push, onValue, remove, onDisconnect, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
   authDomain: "before-us-universe.firebaseapp.com",
   databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
   projectId: "before-us-universe",
-  storageBucket: "before-us-universe.firebasestorage.app",
-  messagingSenderId: "477103463228",
-  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
@@ -268,146 +224,159 @@ const channelSelect = document.getElementById('channelSelect');
 const serverConfirm = document.getElementById('serverConfirm');
 const userCountSmall = document.getElementById('userCountSmall');
 const activeUsersList = document.getElementById('activeUsersList');
-const chatTitle = document.getElementById('chatTitle');
+const channelName = document.getElementById('channelName');
+const typingIndicator = document.getElementById('typingIndicator');
 
-let uid = null, username = null, currentChannel = null, presenceRef = null;
-let channelListeners = {};
-let typingTimeout = null;
+let uid = null;
+let username = null;
+let currentChannel = null;
+let presenceRef = null;
+let isTyping = false; // tracks local typing state to prevent unnecessary DB writes
 
-// Request user data from parent (main index)
 window.parent.postMessage({ type: 'requestUserData' }, '*');
 
-// Listen for user data from parent
 window.addEventListener('message', (event) => {
     if (event.data.type === 'userData') {
-        username = event.data.handle;
+        username = event.data.handle?.trim() || null;
         uid = event.data.uid;
-        currentChannel = event.data.channel;
+        currentChannel = event.data.channel?.trim() || 'sam';
+
+        if (!username) {
+            channelName.textContent = 'NO HANDLE';
+            chatInput.placeholder = "Set handle on boot page";
+            return;
+        }
+
+        channelName.textContent = currentChannel.toUpperCase();
+        channelSelect.value = currentChannel;
+
+        chatInput.disabled = false;
+        sendBtn.disabled = false;
+        chatInput.placeholder = "Say something...";
+
         initializeChat();
     }
 });
 
-onAuthStateChanged(auth, u => { if (u) uid = u.uid; });
-
 function initializeChat() {
-    if (!username || !currentChannel) return;
-    setPresence(username, currentChannel);
-    listenChannel(currentChannel);
+    setPresence();
+    listenMessages();
     watchOnline();
 }
 
-function setPresence(h, ch) {
+function setPresence() {
     if (presenceRef) remove(presenceRef);
-    presenceRef = ref(db, `online/${ch}/${uid}`);
-    set(presenceRef, { name: h, ts: Date.now(), uid, typing: false });
+    presenceRef = ref(db, `online/${currentChannel}/${uid}`);
+    const payload = { name: username, ts: Date.now(), uid, typing: false };
+    set(presenceRef, payload);
     onDisconnect(presenceRef).remove();
 }
 
-let onlineWatchRef = ref(db, 'online');
 function watchOnline() {
-    onValue(onlineWatchRef, snap => {
+    const onlineRef = ref(db, `online/${currentChannel}`);
+    onValue(onlineRef, snap => {
         const data = snap.val() || {};
-        renderActiveUsers(data[currentChannel] || {});
-        updateUserCount(data[currentChannel] || {});
-        updateTypingIndicator(data[currentChannel] || {});
+        const users = Object.values(data);
+        users.sort((a, b) => a.name.localeCompare(b.name));
+
+        activeUsersList.innerHTML = '';
+        users.forEach(u => {
+            const row = document.createElement('div');
+            row.className = 'user-row';
+            row.innerHTML = `<div class="status-dot"></div><div class="uname">${esc(u.name)}</div>`;
+            activeUsersList.appendChild(row);
+        });
+
+        const count = users.length;
+        userCountSmall.textContent = `${count} ${count === 1 ? 'user' : 'users'}`;
+
+        // Typing indicator - stable as long as someone has text in their box
+        const typingUsers = users.filter(u => u.typing && u.uid !== uid).map(u => u.name);
+        if (typingUsers.length > 0) {
+            typingIndicator.textContent = typingUsers.length === 1 
+                ? `${typingUsers[0]} is typing...`
+                : `${typingUsers.slice(0,3).join(', ')}${typingUsers.length > 3 ? ' and others' : ''} are typing...`;
+        } else {
+            typingIndicator.textContent = '';
+        }
     });
 }
 
-function renderActiveUsers(data) {
-    activeUsersList.innerHTML = '';
-    Object.values(data).forEach(u => {
-        const row = document.createElement('div');
-        row.className = 'user-row';
-        const dot = document.createElement('div');
-        dot.className = 'status-dot';
-        const name = document.createElement('div');
-        name.className = 'uname';
-        name.textContent = u.name;
-        row.appendChild(dot);
-        row.appendChild(name);
-        activeUsersList.appendChild(row);
+function listenMessages() {
+    const chatRef = ref(db, `chat/${currentChannel}`);
+    onValue(chatRef, snap => {
+        chatMessages.innerHTML = '';
+        const data = snap.val() || {};
+        Object.values(data)
+            .sort((a, b) => a.ts - b.ts)
+            .forEach(msg => renderMessage(msg));
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     });
 }
 
-function updateUserCount(data) {
-    const count = Object.keys(data).length;
-    userCountSmall.textContent = `${count} users`;
-    chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small" id="userCountSmall">${count} users</span>`;
-}
-
-function updateTypingIndicator(data) {
-    const typingUsers = Object.values(data).filter(u => u.typing && u.uid !== uid).map(u => u.name);
-    const indicator = document.getElementById('typingIndicator');
-    if (typingUsers.length > 0) {
-        indicator.textContent = `${typingUsers.join(', ')} ${typingUsers.length > 1 ? 'are' : 'is'} typing...`;
-    } else {
-        indicator.textContent = '';
-    }
-}
-
-function listenChannel(ch) {
-    if (channelListeners.ref) off(channelListeners.ref);
-    currentChannel = ch;
-    chatMessages.innerHTML = '';
-    const chatRef = ref(db, `chat/${ch}`);
-    const q = query(chatRef, orderByChild('ts'));
-    onChildAdded(q, snap => {
-        const o = snap.val();
-        if (o) renderChatMessage(o);
-    });
-    channelListeners = { ref: chatRef };
-    channelSelect.value = ch;
-    setPresence(username, ch);
-}
-
-function renderChatMessage(o) {
+function renderMessage(o) {
     const row = document.createElement('div');
     row.className = 'chat-row';
     const avatar = document.createElement('div');
     avatar.className = 'chat-avatar';
-    avatar.textContent = (o.name || 'A').slice(0, 2).toUpperCase();
+    avatar.textContent = (o.name || '?').slice(0,2).toUpperCase();
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble';
     if (o.uid === uid) bubble.classList.add('me');
-    bubble.innerHTML = `<div class="chat-meta">${o.name || 'Anonymous'} · ${new Date(o.ts).toLocaleTimeString()}</div>${esc(o.msg)}`;
+    bubble.innerHTML = `<div class="chat-meta">${esc(o.name)} · ${new Date(o.ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>${esc(o.msg)}`;
     row.appendChild(avatar);
     row.appendChild(bubble);
     chatMessages.appendChild(row);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 function esc(s) {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-signInAnonymously(auth);
+chatInput.addEventListener('input', () => {
+    const hasText = chatInput.value.trim() !== '';
+    if (hasText !== isTyping) {
+        update(ref(db, `online/${currentChannel}/${uid}`), { typing: hasText });
+        isTyping = hasText;
+    }
+});
 
 sendBtn.addEventListener('click', () => {
     const msg = chatInput.value.trim();
-    if (msg) {
-        push(ref(db, `chat/${currentChannel}`), { name: username, msg, ts: Date.now(), uid });
-        chatInput.value = '';
+    if (!msg || !username) return;
+    push(ref(db, `chat/${currentChannel}`), {
+        name: username,
+        msg,
+        ts: Date.now(),
+        uid
+    });
+    chatInput.value = '';
+    if (isTyping) {
+        update(ref(db, `online/${currentChannel}/${uid}`), { typing: false });
+        isTyping = false;
     }
 });
 
 chatInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') sendBtn.click();
-});
-
-chatInput.addEventListener('input', () => {
-    const typing = chatInput.value.trim() !== '';
-    update(ref(db, `online/${currentChannel}/${uid}`), { typing });
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => update(ref(db, `online/${currentChannel}/${uid}`), { typing: false }), 2000);
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendBtn.click();
+    }
 });
 
 serverConfirm.addEventListener('click', () => {
     const newCh = channelSelect.value;
-    if (newCh !== currentChannel) {
-        currentChannel = newCh;
-        listenChannel(newCh);
-    }
+    if (newCh === currentChannel) return;
+    if (presenceRef) remove(presenceRef);
+    currentChannel = newCh;
+    channelName.textContent = currentChannel.toUpperCase();
+    initializeChat();
 });
+
+// Fallback for direct access
+if (window.BUU && window.BUU.myHandle && window.dispatchEvent(new MessageEvent('message', {data: {type: 'userData', handle: window.BUU.myHandle, uid: window.BUU.uid, channel: window.BUU.currentChannel || 'sam'}}));
+
+signInAnonymously(auth).catch(() => {});
 </script>
 </body>
 </html>
