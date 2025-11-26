@@ -39,10 +39,6 @@
         font-family: 'Press Start 2P';
         font-size: 12px;
     }
-    .panel-body {
-        padding: 8px;
-        color: var(--text-gray);
-    }
     .chat-win {
         display: flex;
         flex-direction: column;
@@ -159,27 +155,9 @@
         font-style: italic;
         min-height: 24px;
     }
-    .small {
-        font-size: 11px;
-        color: var(--muted);
-    }
 </style>
 </head>
 <body>
-
-<div id="serverSelectPanel" class="panel" style="display:none;"> <!-- hidden until needed, but kept if you want manual switch -->
-    <div class="small">SELECT SERVER (auto-selected from boot)</div>
-    <div class="controls">
-        <select id="channelSelect">
-            <option value="sam">//Sam</option>
-            <option value="exuro">//Exuro</option>
-            <option value="nero">//Nero</option>
-            <option value="nora">//Nora</option>
-            <option value="loktal">//Loktal</option>
-        </select>
-        <button id="serverConfirm">Switch</button>
-    </div>
-</div>
 
 <div class="panel">
     <div class="panel-title">
@@ -187,7 +165,7 @@
     </div>
     <div class="panel-body chat-win">
         <div class="chat-main">
-            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-messages" id="chatMessages">Waiting for boot...</div>
             <div class="chat-users">
                 <div class="small" style="margin-bottom:6px">USERS ONLINE</div>
                 <div id="activeUsersList"></div>
@@ -203,8 +181,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove, onDisconnect, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, push, onChildAdded, get, onValue, remove, onDisconnect, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
@@ -215,13 +192,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const auth = getAuth(app);
 
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
-const channelSelect = document.getElementById('channelSelect');
-const serverConfirm = document.getElementById('serverConfirm');
 const userCountSmall = document.getElementById('userCountSmall');
 const activeUsersList = document.getElementById('activeUsersList');
 const channelName = document.getElementById('channelName');
@@ -231,152 +205,126 @@ let uid = null;
 let username = null;
 let currentChannel = null;
 let presenceRef = null;
-let isTyping = false; // tracks local typing state to prevent unnecessary DB writes
+let isTyping = false;
+let chatRef = null;
 
-window.parent.postMessage({ type: 'requestUserData' }, '*');
+// Exact same boot polling as message board - 100% reliable
+async function waitForBootUser() {
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      if (window.BUU && window.BUU.uid && window.BUU.myHandle && window.BUU.currentChannel) {
+        uid = window.BUU.uid;
+        username = window.BUU.myHandle;
+        currentChannel = window.BUU.currentChannel;
+        clearInterval(interval);
+        resolve();
+      }
+    }, 100);
+  });
+}
 
-window.addEventListener('message', (event) => {
-    if (event.data.type === 'userData') {
-        username = event.data.handle?.trim() || null;
-        uid = event.data.uid;
-        currentChannel = event.data.channel?.trim() || 'sam';
+async function startChat() {
+  channelName.textContent = currentChannel.toUpperCase();
+  chatInput.disabled = false;
+  sendBtn.disabled = false;
+  chatInput.placeholder = "Say something...";
+  chatMessages.innerHTML = '';
 
-        if (!username) {
-            channelName.textContent = 'NO HANDLE';
-            chatInput.placeholder = "Set handle on boot page";
-            return;
-        }
-
-        channelName.textContent = currentChannel.toUpperCase();
-        channelSelect.value = currentChannel;
-
-        chatInput.disabled = false;
-        sendBtn.disabled = false;
-        chatInput.placeholder = "Say something...";
-
-        initializeChat();
-    }
-});
-
-function initializeChat() {
-    setPresence();
-    listenMessages();
-    watchOnline();
+  setPresence();
+  loadInitialMessages();
+  watchOnline();
 }
 
 function setPresence() {
-    if (presenceRef) remove(presenceRef);
-    presenceRef = ref(db, `online/${currentChannel}/${uid}`);
-    const payload = { name: username, ts: Date.now(), uid, typing: false };
-    set(presenceRef, payload);
-    onDisconnect(presenceRef).remove();
+  if (presenceRef) remove(presenceRef);
+  presenceRef = ref(db, `online/${currentChannel}/${uid}`);
+  set(presenceRef, { name: username, ts: Date.now(), uid, typing: false });
+  onDisconnect(presenceRef).remove();
 }
 
-function watchOnline() {
-    const onlineRef = ref(db, `online/${currentChannel}`);
-    onValue(onlineRef, snap => {
-        const data = snap.val() || {};
-        const users = Object.values(data);
-        users.sort((a, b) => a.name.localeCompare(b.name));
-
-        activeUsersList.innerHTML = '';
-        users.forEach(u => {
-            const row = document.createElement('div');
-            row.className = 'user-row';
-            row.innerHTML = `<div class="status-dot"></div><div class="uname">${esc(u.name)}</div>`;
-            activeUsersList.appendChild(row);
-        });
-
-        const count = users.length;
-        userCountSmall.textContent = `${count} ${count === 1 ? 'user' : 'users'}`;
-
-        // Typing indicator - stable as long as someone has text in their box
-        const typingUsers = users.filter(u => u.typing && u.uid !== uid).map(u => u.name);
-        if (typingUsers.length > 0) {
-            typingIndicator.textContent = typingUsers.length === 1 
-                ? `${typingUsers[0]} is typing...`
-                : `${typingUsers.slice(0,3).join(', ')}${typingUsers.length > 3 ? ' and others' : ''} are typing...`;
-        } else {
-            typingIndicator.textContent = '';
-        }
-    });
-}
-
-function listenMessages() {
-    const chatRef = ref(db, `chat/${currentChannel}`);
-    onValue(chatRef, snap => {
-        chatMessages.innerHTML = '';
-        const data = snap.val() || {};
-        Object.values(data)
-            .sort((a, b) => a.ts - b.ts)
-            .forEach(msg => renderMessage(msg));
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    });
+function loadInitialMessages() {
+  chatRef = ref(db, `chat/${currentChannel}`);
+  get(chatRef).then(snap => {
+    const data = snap.val() || {};
+    Object.values(data)
+      .sort((a, b) => a.ts - b.ts)
+      .forEach(msg => renderMessage(msg));
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  });
+  onChildAdded(chatRef, snap => renderMessage(snap.val()));
 }
 
 function renderMessage(o) {
-    const row = document.createElement('div');
-    row.className = 'chat-row';
-    const avatar = document.createElement('div');
-    avatar.className = 'chat-avatar';
-    avatar.textContent = (o.name || '?').slice(0,2).toUpperCase();
-    const bubble = document.createElement('div');
-    bubble.className = 'chat-bubble';
-    if (o.uid === uid) bubble.classList.add('me');
-    bubble.innerHTML = `<div class="chat-meta">${esc(o.name)} · ${new Date(o.ts).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>${esc(o.msg)}`;
-    row.appendChild(avatar);
-    row.appendChild(bubble);
-    chatMessages.appendChild(row);
+  const row = document.createElement('div');
+  row.className = 'chat-row';
+  const avatar = document.createElement('div');
+  avatar.className = 'chat-avatar';
+  avatar.textContent = o.name.slice(0,2).toUpperCase();
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble' + (o.uid === uid ? ' me' : '');
+  const time = new Date(o.ts).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+  bubble.innerHTML = `<div class="chat-meta">${esc(o.name)} <span style="color:#666;">${time}</span></div>${esc(o.msg)}`;
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+  chatMessages.appendChild(row);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function watchOnline() {
+  const onlineRef = ref(db, `online/${currentChannel}`);
+  onValue(onlineRef, snap => {
+    const data = snap.val() || {};
+    const users = Object.values(data).sort((a, b) => a.name.localeCompare(b.name));
+
+    activeUsersList.innerHTML = '';
+    users.forEach(u => {
+      const row = document.createElement('div');
+      row.className = 'user-row';
+      row.innerHTML = `<div class="status-dot"></div><div class="uname">${esc(u.name)}</div>`;
+      activeUsersList.appendChild(row);
+    });
+
+    const count = users.length;
+    userCountSmall.textContent = `${count} ${count === 1 ? 'user' : 'users'}`;
+
+    const typingUsers = users.filter(u => u.typing && u.uid !== uid).map(u => u.name);
+    typingIndicator.textContent = typingUsers.length > 0
+      ? `${typingUsers.slice(0,2).join(', ')}${typingUsers.length > 2 ? '...' : ''} typing`
+      : '';
+  });
 }
 
 function esc(s) {
-    return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 chatInput.addEventListener('input', () => {
-    const hasText = chatInput.value.trim() !== '';
-    if (hasText !== isTyping) {
-        update(ref(db, `online/${currentChannel}/${uid}`), { typing: hasText });
-        isTyping = hasText;
-    }
+  const hasText = chatInput.value.trim().length > 0;
+  if (hasText !== isTyping) {
+    update(ref(db, `online/${currentChannel}/${uid}`), { typing: hasText });
+    isTyping = hasText;
+  }
 });
 
 sendBtn.addEventListener('click', () => {
-    const msg = chatInput.value.trim();
-    if (!msg || !username) return;
-    push(ref(db, `chat/${currentChannel}`), {
-        name: username,
-        msg,
-        ts: Date.now(),
-        uid
-    });
+  const msg = chatInput.value.trim();
+  if (msg) {
+    push(chatRef, { name: username, msg, ts: Date.now(), uid });
     chatInput.value = '';
-    if (isTyping) {
-        update(ref(db, `online/${currentChannel}/${uid}`), { typing: false });
-        isTyping = false;
-    }
+    update(ref(db, `online/${currentChannel}/${uid}`), { typing: false });
+    isTyping = false;
+  }
 });
 
 chatInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendBtn.click();
-    }
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendBtn.click();
+  }
 });
 
-serverConfirm.addEventListener('click', () => {
-    const newCh = channelSelect.value;
-    if (newCh === currentChannel) return;
-    if (presenceRef) remove(presenceRef);
-    currentChannel = newCh;
-    channelName.textContent = currentChannel.toUpperCase();
-    initializeChat();
-});
-
-// Fallback for direct access
-if (window.BUU && window.BUU.myHandle && window.dispatchEvent(new MessageEvent('message', {data: {type: 'userData', handle: window.BUU.myHandle, uid: window.BUU.uid, channel: window.BUU.currentChannel || 'sam'}}));
-
-signInAnonymously(auth).catch(() => {});
+// Boot exactly like message board
+waitForBootUser().then(startChat);
 </script>
 </body>
 </html>
