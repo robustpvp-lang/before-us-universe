@@ -1,55 +1,107 @@
 <div class="panel">
   <div class="panel-title" style="cursor:pointer">
-    <span id="boardToggle">[-]</span> <span id="boardTitle">//MESSAGE BOARD</span>
-    <span class="small">Posts persist – chat deletes after 24h</span>
+    <span id="boardToggle">[-]</span> //MESSAGE BOARD - #<span id="boardChannelName">sam</span>
+    <span class="small">Posts persist – </span>
   </div>
-  <div class="panel-body" id="boardBody" style="display:block">
+  <div class="panel-body" id="boardBody" style="display:block;border-top:none;border-radius:0;">
     <style>
+      #boardInner {
+        background: #001111;
+        min-height: 600px;
+        display: flex;
+        flex-direction: column;
+      }
+      #boardList {
+        flex: 1;
+        overflow: auto;
+        padding: 10px;
+      }
       .board-thread {
-        background: #f8f8ff;
-        border: 1px solid #ccc;
-        border-left: 5px solid var(--accent);
-        padding: 10px 14px;
-        margin: 12px 0;
+        background: #002222;
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--accent);
+        padding: 12px;
+        margin-bottom: 16px;
         word-wrap: break-word;
         overflow-wrap: anywhere;
       }
       .board-thread:hover {
-        background: #eef2ff;
+        box-shadow: 0 0 8px var(--accent);
+      }
+      .board-thread .post-meta {
+        margin-bottom: 8px;
+        opacity: 0.9;
+      }
+      .board-thread strong {
+        color: var(--accent);
       }
       .quotelink {
-        color: inherit;
+        color: var(--accent);
         text-decoration: underline;
+        cursor: pointer;
       }
       .reply-link {
         margin-left: 12px;
         cursor: pointer;
         color: var(--accent);
+        font-size: 11px;
+      }
+      #boardSearch {
+        width: 100%;
+        padding: 10px;
+        background: #001f1f;
+        border: 2px solid var(--border);
+        color: var(--fg);
+        box-sizing: border-box;
+        margin-bottom: 10px;
+      }
+      #postingArea {
+        padding: 12px;
+        background: #001111;
+        border-top: 1px solid var(--border);
       }
       #postingInfo {
-        margin: 10px 0 6px 0;
+        margin-bottom: 8px;
         font-size: 13px;
       }
-      #postingInfo strong {
-        font-weight: bold;
+      #boardMsg {
+        width: 100%;
+        min-height: 120px;
+        background: #001f1f;
+        border: 2px solid var(--border);
+        color: var(--fg);
+        padding: 10px;
+        box-sizing: border-box;
+        font-family: 'Roboto Mono', monospace;
+        resize: vertical;
       }
-      #boardList {
-        min-height: 60px;
+      #postBoardBtn {
+        margin-top: 8px;
+        padding: 10px 20px;
+        background: var(--accent);
+        border: 3px solid #000;
+        font-weight: bold;
+        cursor: pointer;
       }
       #boardList:empty::before {
         content: "No posts yet in this channel";
         display: block;
         text-align: center;
-        color: #888;
-        padding: 30px 0;
+        color: #00aaaa;
+        padding: 80px 20px;
+        font-size: 14px;
       }
     </style>
 
-    <input id="boardSearch" placeholder="//search posts" style="width:100%;margin-bottom:8px;box-sizing:border-box;">
-    <div id="boardList" style="overflow:auto;max-height:700px;margin:10px 0;"></div>
-    <div id="postingInfo">Posting as <strong id="boardHandle" style="color:red">loading...</strong> in #<strong id="boardChannel">loading...</strong></div>
-    <textarea id="boardMsg" placeholder="Message (max 1000 chars) – Greentext: start line with > – Quote: >>postid" style="width:100%;min-height:120px;font-family:Verdana,sans-serif;box-sizing:border-box;"></textarea>
-    <button id="postBoardBtn" style="margin-top:8px;padding:10px 20px;background:var(--accent);border:3px solid #000;font-weight:bold;cursor:pointer;">POST</button>
+    <div id="boardInner">
+      <input id="boardSearch" placeholder="//search posts">
+      <div id="boardList"></div>
+      <div id="postingArea">
+        <div id="postingInfo">Posting as <strong id="boardHandle" style="color:red">loading...</strong> in #<strong id="boardChannelEl">loading...</strong></div>
+        <textarea id="boardMsg" placeholder="Message (max 1000 chars) – >greentext works – >>postid quotes work"></textarea>
+        <button id="postBoardBtn" disabled>POST</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -71,25 +123,21 @@ const boardList = document.getElementById('boardList');
 const boardMsg = document.getElementById('boardMsg');
 const postBoardBtn = document.getElementById('postBoardBtn');
 const boardSearch = document.getElementById('boardSearch');
-const boardBody = document.getElementById('boardBody');
 const toggleIcon = document.getElementById('boardToggle');
-const boardTitleEl = document.getElementById('boardTitle');
-const boardHandleEl = document.getElementById('boardHandle');
-const boardChannelEl = document.getElementById('boardChannel');
+const boardBody = document.getElementById('boardBody');
+const boardChannelName = document.getElementById('boardChannelName');
+const boardHandle = document.getElementById('boardHandle');
+const boardChannelEl = document.getElementById('boardChannelEl');
 
-let uid = null;
 let myHandle = null;
+let uid = null;
 let currentChannel = null;
 let channelRef = null;
 
 document.querySelector('.panel-title').onclick = () => {
-  if (boardBody.style.display === 'none') {
-    boardBody.style.display = 'block';
-    toggleIcon.textContent = '[-]';
-  } else {
-    boardBody.style.display = 'none';
-    toggleIcon.textContent = '[+]';
-  }
+  const isHidden = boardBody.style.display === 'none';
+  boardBody.style.display = isHidden ? 'block' : 'none';
+  toggleIcon.textContent = isHidden ? '[-]' : '[+]';
 };
 
 function esc(s) {
@@ -97,18 +145,16 @@ function esc(s) {
 }
 
 function updateUI() {
-  boardTitleEl.textContent = `//MESSAGE BOARD${currentChannel ? ' - #' + currentChannel : ''}`;
-  boardChannelEl.textContent = currentChannel || '???';
+  boardChannelName.textContent = (currentChannel || 'sam').toUpperCase();
+  boardChannelEl.textContent = currentChannel || 'sam';
   if (myHandle) {
-    boardHandleEl.textContent = myHandle;
-    boardHandleEl.style.color = '';
+    boardHandle.textContent = myHandle;
+    boardHandle.style.color = 'var(--accent)';
     postBoardBtn.disabled = false;
-    postBoardBtn.style.opacity = 1;
   } else {
-    boardHandleEl.textContent = 'no handle set';
-    boardHandleEl.style.color = 'red';
+    boardHandle.textContent = 'no handle set';
+    boardHandle.style.color = 'red';
     postBoardBtn.disabled = true;
-    postBoardBtn.style.opacity = 0.5;
   }
 }
 
@@ -118,33 +164,29 @@ function renderBoardPost(p, id) {
   el.id = `post-${id}`;
 
   let messageHtml = '';
-  const lines = (p.msg || '').split('\n');
-
+  const lines = p.msg.split('\n');
   lines.forEach(line => {
     if (line.trim() === '') {
       messageHtml += '<br>';
       return;
     }
-
     let lineHtml = esc(line);
-
-    // >>quotes
     lineHtml = lineHtml.replace(/(&gt;&gt;([a-zA-Z0-9-]+))/g, '<a href="#post-$2" class="quotelink">$1</a>');
-
-    // Greentext
-    const isGreen = line.startsWith('>');
-    if (isGreen) lineHtml = '<span style="color:#789922">' + lineHtml + '</span>';
-
+    if (line.startsWith('>')) lineHtml = '<span style="color:#789922">' + lineHtml + '</span>';
     messageHtml += lineHtml + '<br>';
   });
 
+  const date = new Date(p.ts);
+  const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+  const dateStr = date.toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
+
   el.innerHTML = `
-    <div style="margin-bottom:6px;">
+    <div class="post-meta">
       <strong>${esc(p.name || 'Anonymous')}</strong>
-      <span class="small"> ${new Date(p.ts).toLocaleString()}</span>
+      <span style="margin-left:8px;color:#00aaaa;">${dateStr} ${timeStr}</span>
       <span class="reply-link">[Reply]</span>
     </div>
-    <div>${messageHtml}</div>
+    <div style="margin-top:8px;">${messageHtml}</div>
   `;
 
   el.querySelector('.reply-link').onclick = () => {
@@ -157,89 +199,38 @@ function renderBoardPost(p, id) {
 
 function applySearch() {
   const term = boardSearch.value.toLowerCase();
-  for (const child of boardList.children) {
-    child.style.display = child.textContent.toLowerCase().includes(term) ? '' : 'none';
-  }
+  Array.from(boardList.children).forEach(el => {
+    el.style.display = el.textContent.toLowerCase().includes(term) ? '' : 'none';
+  });
 }
 
 function listenBoard(ch) {
   if (channelRef) off(channelRef);
-
   boardList.innerHTML = '';
-  boardSearch.value = '';
-  applySearch();
-
   channelRef = ref(db, `board/${ch}`);
-
   get(channelRef).then(snap => {
     const data = snap.val() || {};
-    if (Object.keys(data).length === 0) return;
-
     Object.entries(data)
-      .sort(([ , a], [ , b]) => a.ts - b.ts)
+      .sort((a, b) => a[1].ts - b[1].ts)
       .forEach(([id, o]) => renderBoardPost(o, id));
-
     boardList.scrollTop = boardList.scrollHeight;
-    applySearch();
   });
-
   onChildAdded(channelRef, snap => {
-    const isAtBottom = boardList.scrollTop + boardList.clientHeight >= boardList.scrollHeight - 30;
     renderBoardPost(snap.val(), snap.key);
-    if (isAtBottom) boardList.scrollTop = boardList.scrollHeight;
-    applySearch();
+    boardList.scrollTop = boardList.scrollHeight;
   });
-}
-
-function monitorBootChanges() {
-  let lastChannel = null;
-  let lastHandle = null;
-  let lastUid = null;
-
-  setInterval(() => {
-    if (!window.BUU) return;
-
-    const changed = window.BUU.currentChannel !== lastChannel ||
-                   window.BUU.myHandle !== lastHandle ||
-                   window.BUU.uid !== lastUid;
-
-    if (changed) {
-      currentChannel = window.BUU.currentChannel;
-      myHandle = window.BUU.myHandle;
-      uid = window.BUU.uid;
-
-      if (window.BUU.currentChannel !== lastChannel) {
-        listenBoard(currentChannel || 'sam');
-      }
-
-      updateUI();
-      lastChannel = window.BUU.currentChannel;
-      lastHandle = window.BUU.myHandle;
-      lastUid = window.BUU.uid;
-    }
-  }, 350);
 }
 
 postBoardBtn.onclick = async () => {
-  if (!myHandle) {
-    alert('You must set a handle in the boot menu before posting.');
-    return;
-  }
-
+  if (!myHandle) return;
   const m = boardMsg.value.trim();
-  if (!m) return;
-  if (m.length > 1000) {
-    alert('Message too long (max 1000 characters)');
-    return;
-  }
-
-  const r = push(ref(db, `board/${currentChannel || 'sam'}`));
+  if (!m || m.length > 1000) return;
+  const r = push(ref(db, `board/${currentChannel}`));
   await set(r, { name: myHandle, msg: m, ts: Date.now(), uid });
   boardMsg.value = '';
 };
 
 boardSearch.addEventListener('input', applySearch);
-
 boardMsg.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'Enter') {
     e.preventDefault();
@@ -247,22 +238,28 @@ boardMsg.addEventListener('keydown', e => {
   }
 });
 
-async function init() {
+async function waitForBootUser() {
   return new Promise(resolve => {
+    if (window.BUU && window.BUU.uid && window.BUU.myHandle && window.BUU.currentChannel) {
+      uid = window.BUU.uid;
+      myHandle = window.BUU.myHandle;
+      currentChannel = window.BUU.currentChannel;
+      resolve();
+      return;
+    }
     const interval = setInterval(() => {
-      if (window.BUU && window.BUU.uid !== undefined) {  // uid = window.BUU.uid;
-        myHandle = window.BUU.myHandle || null;
-        currentChannel = window.BUU.currentChannel || 'sam';
+      if (window.BUU && window.BUU.uid && window.BUU.myHandle && window.BUU.currentChannel) {
+        uid = window.BUU.uid;
+        myHandle = window.BUU.myHandle;
+        currentChannel = window.BUU.currentChannel;
         clearInterval(interval);
-        updateUI();
-        listenBoard(currentChannel);
-        monitorBootChanges();
         resolve();
       }
     }, 100);
   });
 }
 
-await init();
-updateUI(); // initial state (will show "no handle set" until boot loads)
+await waitForBootUser();
+updateUI();
+listenBoard(currentChannel);
 </script>
