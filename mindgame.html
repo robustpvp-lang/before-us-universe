@@ -4,10 +4,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>The Mind Game — The Inner Path (Ortega Build)</title>
-
 <!-- Chart.js from CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
   :root{
     --bg-0:#0a0a0a; --bg-1:#1a1a2e; --panel:#0a0a14;
@@ -22,12 +20,10 @@
     justify-content:center; align-items:flex-start; padding:20px 12px;
     overflow-x:hidden;
   }
-
   /* starfield */
   .stars{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.7}
   .star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle 3s infinite}
   @keyframes twinkle{0%,100%{opacity:0.25}50%{opacity:1}}
-
   /* main container */
   .game-container{
     width:100%; max-width:980px; background:var(--glass);
@@ -36,17 +32,13 @@
     position:relative; z-index:1; max-height:calc(100vh - 40px);
     overflow:auto;
   }
-
   h1{color:var(--accent);text-align:center;font-size:1.8em;margin-bottom:8px;letter-spacing:2px;text-shadow:0 0 10px rgba(106,159,255,0.45)}
   .subtitle{text-align:center;color:var(--muted);font-style:italic;margin-bottom:20px;font-size:0.95em}
-
   .progress-bar{width:100%;height:6px;background:#11131a;border-radius:4px;overflow:hidden;margin-bottom:20px}
   .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#4a4aff,#6a9fff);transition:width .45s ease;border-radius:2px;box-shadow:0 0 8px rgba(106,159,255,.6)}
-
   .voice{font-style:italic;color:#9a9aff;margin-bottom:18px;padding:12px;background:rgba(90,90,200,0.06);border-left:3px solid var(--accent);line-height:1.6}
   .scenario-header{display:flex;justify-content:center;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #2b2b44}
   .scenario-number{color:var(--accent);font-weight:bold}
-
   .scenario-text{margin:14px 0 20px;line-height:1.7;font-size:1.03em}
   .choices{display:flex;flex-direction:column;gap:10px}
   .choices button{
@@ -58,31 +50,24 @@
   .choices button:hover{transform:translateX(6px);box-shadow:0 6px 22px rgba(106,159,255,0.18);border-color:var(--accent)}
   .choices button:hover::before{left:100%}
   .start-button{display:block;margin:22px auto 0;padding:16px 20px;background:linear-gradient(135deg,#4a4aff,#6a9fff);border:none;border-radius:6px;color:white;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(106,159,255,0.26)}
-
   /* analysis */
   .analysis h1{color:var(--accent);text-align:center;margin-top:8px}
   .score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:18px}
   .score-card{background:rgba(106,159,255,0.06);border:1px solid #33364a;padding:12px;border-radius:6px;text-align:center}
   .score-card .label{color:var(--muted);font-size:0.85em;margin-bottom:6px}
   .score-card .value{color:var(--accent);font-size:1.8em;font-weight:700}
-
   .dominant-path{background:linear-gradient(135deg, rgba(106,159,255,0.12), rgba(255,106,159,0.06));padding:18px;border-radius:8px;border:1px solid rgba(106,159,255,0.12);text-align:center;margin-top:18px}
   .interpretation{background:rgba(20,20,34,0.6);border-left:3px solid var(--accent);padding:12px;margin-top:12px;line-height:1.6;border-radius:4px}
   .archetype-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
   .archetype-tag{background:rgba(106,159,255,0.12);padding:6px 10px;border-radius:16px;border:1px solid rgba(106,159,255,0.06);color:var(--accent);font-size:0.9em}
-
   .data-table{width:100%;margin-top:16px;border-collapse:collapse}
   .data-table th,.data-table td{padding:8px;border:1px solid #22273a;font-size:0.92em;text-align:left}
-
   .cheat{margin-top:18px;padding:12px;border-radius:6px;background:#07121a;border:1px dashed #3a6f8f;color:var(--accent);text-align:center;font-weight:bold}
-
   /* PILGRIM / GLITCH styling */
   .glitch-overlay{position:fixed;inset:0;background:transparent;pointer-events:none;z-index:9999;opacity:0;transition:opacity .25s}
   .glitch-scan{position:absolute;left:0;top:0;width:100%;height:100%;background:repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 6px);mix-blend-mode:overlay;opacity:.5;transform:translateY(-10%);animation:scan 6s linear infinite}
   @keyframes scan{0%{transform:translateY(-20%)}100%{transform:translateY(20%)}}
-
   .glitch-pulse{position:absolute;inset:0;background:linear-gradient(90deg, rgba(255,106,159,0.03), rgba(106,159,255,0.03));mix-blend-mode:screen;opacity:0.7}
-
   /* shutter/tear effect container */
   .shutter{
     position:relative;overflow:hidden;
@@ -90,7 +75,6 @@
   .shutter::after{
     content:'';position:absolute;left:-10%;top:-40%;width:120%;height:220%;background:linear-gradient(120deg,rgba(10,10,20,0.0) 40%, rgba(0,0,0,0.6) 50%, rgba(10,10,20,0.0) 60%);transform:rotate(-8deg);pointer-events:none;opacity:0;transition:opacity .25s;
   }
-
   /* Pilgrim reveal container (hidden until triggered) */
   .pilgrim-screen{
     position:fixed;inset:0;background:#000000ee;display:flex;align-items:center;justify-content:center;z-index:10000;visibility:hidden;opacity:0;transition:opacity .35s, visibility .35s;
@@ -108,7 +92,6 @@
   .pilgrim-right{width:46%;background:linear-gradient(135deg,#0b1215,#001012);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
   .pilgrim-glyph{font-size:40px;letter-spacing:6px;color:#8df0ff;filter:drop-shadow(0 0 10px rgba(0,200,255,0.1));opacity:0.9;transform:translateY(0)}
   .pilgrim-crumb{position:absolute;inset:0;mix-blend-mode:screen;opacity:0.4}
-
   /* heavy glitch motions */
   .glitch-jagged{animation:glitch-jag 1.2s steps(6) infinite;transform-origin:center}
   @keyframes glitch-jag{
@@ -119,12 +102,10 @@
     40%{clip-path:polygon(0 0%,100% 0%,100% 100%,0 100%);transform:translateX(0)}
     100%{clip-path:polygon(0 2%,100% 2%,100% 98%,0 98%);transform:translateX(0)}
   }
-
   .tear-line{
     position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg, transparent, #ff6a9f, transparent);
     top:50%;transform:skewY(-12deg);
   }
-
   /* lux-fallen voice text distortion effect when printing lines */
   .lxf-text{font-family:monospace;white-space:pre-wrap;line-height:1.5}
   .lxf-glitch-char{display:inline-block;position:relative;animation:rand-glitch 1.6s infinite}
@@ -135,13 +116,11 @@
     75%{transform:translateY(-1px) rotate(0.2deg) skewX(-0.2deg)}
     100%{transform:translateY(0)}
   }
-
   /* make pilgrim visible */
   .pilgrim-screen.visible{visibility:visible;opacity:1}
   .pilgrim-screen.visible .pilgrim-window{transform:scale(1)}
   .glitch-overlay.visible{opacity:1}
   .shutter.reveal::after{opacity:0.82;transition:opacity .2s}
-
   /* responsive */
   @media (max-width:820px){
     .pilgrim-window{flex-direction:column;height:78%}
@@ -153,7 +132,7 @@
     .choices button{font-size:0.9em;padding:12px 14px}
     .pilgrim-left{padding:20px 16px}
   }
-  
+ 
   @media (max-width:480px){
     body{padding:12px 8px}
     h1{font-size:1.3em;letter-spacing:1px}
@@ -168,24 +147,18 @@
 </style>
 </head>
 <body>
-
 <div class="stars" id="stars"></div>
-
 <div class="game-container shutter" id="mainContainer">
   <h1 class="glitch">THE MIND GAME</h1>
   <div class="subtitle">The Inner Path — Ortega Edition</div>
-
   <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
-
   <div id="game-content"></div>
 </div>
-
 <!-- heavy glitch overlay -->
 <div class="glitch-overlay" id="glitchOverlay">
   <div class="glitch-scan"></div>
   <div class="glitch-pulse"></div>
 </div>
-
 <!-- Pilgrim modal (hidden initially) -->
 <div class="pilgrim-screen" id="pilgrimScreen" aria-hidden="true">
   <div class="pilgrim-window" role="dialog" aria-modal="true">
@@ -206,22 +179,18 @@
     <div class="tear-line"></div>
   </div>
 </div>
-
 <script>
 /* ============================
    CORE GAME DATA & SETUP
    ============================ */
-
 const ALL_PATHS = [
   'Action/Ego','Wisdom/Reason','Surrender/Flow',
   'Nero','Nora','Loktal','Sam','Exuro','Micromegas'
 ];
-
 const PATH_ICONS = {
   'Action/Ego': '⚔️','Wisdom/Reason':'🧠','Surrender/Flow':'🌊',
   'Nero':'☯️','Nora':'🔬','Loktal':'🔥','Sam':'🔎','Exuro':'🔥','Micromegas':'✦'
 };
-
 const PATH_DESCRIPTIONS = {
   'Action/Ego':'The Willful Path',
   'Wisdom/Reason':'The Rational Path',
@@ -233,7 +202,6 @@ const PATH_DESCRIPTIONS = {
   'Exuro':'Flame & Catalyst',
   'Micromegas':'Pursuit of Knowledge'
 };
-
 const ARCHETYPES = {
   'Nero':['Ram Dass','Alan Watts','Thích Nhất Hạnh'],
   'Nora':['Marie Curie','Carl Sagan','Hypatia'],
@@ -242,14 +210,11 @@ const ARCHETYPES = {
   'Exuro':['Winston Churchill','Malcolm X','Joan of Arc'],
   'Micromegas':['Carl Sagan','Stephen Hawking','Voltaire']
 };
-
 // small utility
 function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
 /* ============================
    SCENARIOS
    ============================ */
-
 const scenarios = [
   {
     text:"You stand before a grove where ancient trees cast deep shadows. A presence watches.",
@@ -339,8 +304,7 @@ const scenarios = [
       {text:'Engage in debate and consensus-building', path:'Wisdom/Reason'},
       {text:'Allow time to heal wounds naturally', path:'Nero'}
     ]
-  }
-];
+  },
   {
     text:"You know an unpopular truth that could save the city but will turn you into a pariah.",
     options:[
@@ -422,7 +386,6 @@ const scenarios = [
     ]
   }
 ];
-
 /* ============================
    STATE
    ============================ */
@@ -430,12 +393,10 @@ let currentScenario = 0;
 let choicesMade = JSON.parse(localStorage.getItem('mind_choices')||'[]');
 let results = {}; ALL_PATHS.forEach(p=>results[p]=0);
 choicesMade.forEach(c=>{ if(results[c.path]!==undefined) results[c.path]++ });
-
 /* UI references */
 const progressEl = document.getElementById('progress');
 const contentEl = document.getElementById('game-content');
 const mainContainer = document.getElementById('mainContainer');
-
 /* INITIAL UI */
 function renderIntro(){
   progressUpdate();
@@ -450,13 +411,11 @@ function renderIntro(){
   document.getElementById('startBtn').onclick = ()=> loadScenario(0);
 }
 renderIntro();
-
 /* PROGRESS */
 function progressUpdate(){
   const pct = Math.round((currentScenario / scenarios.length) * 100);
   progressEl.style.width = pct + '%';
 }
-
 /* RENDER SCENARIO */
 function loadScenario(idx){
   currentScenario = idx;
@@ -482,13 +441,11 @@ function loadScenario(idx){
     });
   });
 }
-
 /* CHOICE HANDLER with fast-tap check (for Pilgrim) */
 function makeChoice(sIndex, oIndex){
   // debounce simple guard
   if(window._last && Date.now()-window._last<150) return;
   window._last = Date.now();
-
   const s = scenarios[sIndex];
   const sel = s.options[oIndex];
   // record
@@ -496,132 +453,113 @@ function makeChoice(sIndex, oIndex){
     scenario: sIndex, option: oIndex, path: sel.path, ts: Date.now()
   });
   localStorage.setItem('mind_choices', JSON.stringify(choicesMade));
-
   // update results
   if(results[sel.path]===undefined) results[sel.path] = 0;
   results[sel.path]++;
-
   // quick-tap heuristic: must have 7+ rapid clicks in a row to trigger
-  const fastClicks = (choicesMade.length >= 7) && 
+  const fastClicks = (choicesMade.length >= 7) &&
     (choicesMade.slice(-7).every((c,idx,arr)=> {
       if(idx === 0) return true;
       return (c.ts - arr[idx-1].ts) < 180;
     }));
-
   // Check if Pilgrim was already rejected this session
   const pilgrimRejected = localStorage.getItem('pilgrim_rejected') === 'true';
-
   // If fast tapping triggers Pilgrim reveal AND it hasn't been rejected yet...
   if(fastClicks && !pilgrimRejected){
     // slight delay to make it feel earned
     setTimeout(()=> triggerPilgrimSequence(), 380);
     return;
   }
-
   // continue
   currentScenario++;
   if(currentScenario >= scenarios.length) showAnalysis();
   else loadScenario(currentScenario);
 }
-
 /* ============================
    ANALYSIS + CHARTS
    ============================ */
-
 function showAnalysis(){
   progressUpdate();
   // ensure results include all paths
   ALL_PATHS.forEach(p=>{ if(results[p]===undefined) results[p]=0 });
-
   // sort for dominance
   const sorted = Object.entries(results).sort((a,b)=>b[1]-a[1]);
   const max = sorted[0][1];
   const dominant = sorted.filter(s=>s[1]===max && max>0).map(s=>s[0]);
-
   let html = `<div class="analysis"><h1 class="glitch">ANALYSIS COMPLETE</h1>
     <div class="score-grid">`;
   Object.entries(results).forEach(([p,score])=>{
     html += `<div class="score-card"><div class="label">${PATH_ICONS[p]||''} ${esc(p)}</div><div class="value">${score}</div></div>`;
   });
   html += `</div>`;
-
   if(dominant.length===0){
     html += `<div class="dominant-path"><h2>No dominant pattern detected</h2><div class="subtitle">Try again with more decisive choices.</div></div>`;
   } else {
     html += `<div class="dominant-path"><h2>${dominant.map(d=>PATH_ICONS[d]).join(' + ')} ${dominant.join(' + ')}</h2><div class="subtitle">${dominant.map(d=>PATH_DESCRIPTIONS[d]).join(' and ')}</div></div>`;
   }
-
   // detailed description of dominant
   dominant.forEach(d=>{
     html += `<h2 style="margin-top:24px">${PATH_ICONS[d]||''} ${esc(d)}</h2><div class="interpretation">${pathInterpretation(d)}</div><div class="archetype-list">`;
     (ARCHETYPES[d]||[]).forEach(a=> html += `<div class="archetype-tag">${esc(a)}</div>`);
     html += `</div>`;
   });
-
   // raw table
   html += `<h2 style="margin-top:24px">Raw Scores</h2><table class="data-table"><thead><tr><th>Path</th><th>Score</th><th>Description</th></tr></thead><tbody>`;
   Object.entries(results).forEach(([p,s])=>{
     html += `<tr><td>${esc(p)}</td><td>${s}</td><td>${esc(PATH_DESCRIPTIONS[p]||'')}</td></tr>`;
   });
   html += `</tbody></table>`;
-
   // chart canvases
   html += `<div style="display:flex;gap:18px;margin-top:18px;flex-wrap:wrap">
     <div style="flex:1;min-width:280px"><canvas id="barChart" height="160"></canvas></div>
     <div style="flex:1;min-width:280px"><canvas id="radarChart" height="160"></canvas></div>
   </div>`;
-
   // cheat code reveal
   html += `<div class="cheat" style="margin-top:24px">PROJECT ORTEGA ACCESS CODE: <strong>thereisnospoon</strong></div>
   <div style="text-align:center;margin-top:12px;color:var(--muted);font-size:0.9em">Use this code in Project Ortega ARG for special access</div>`;
-
   html += `</div>`;
   contentEl.innerHTML = html;
-
   // render charts
   setTimeout(()=> renderCharts(results), 80);
 }
-
 /* Interpretation snippets */
 function pathInterpretation(t){
   switch(t){
-    case 'Action/Ego': 
+    case 'Action/Ego':
       return '<p>You are a force that reshapes reality through will and decisive action. Your strength lies in your ability to take command when others hesitate, to cut through complexity with clarity of purpose. You believe that the world yields to those who act boldly and with conviction.</p><p>However, beware the shadow of this path: the erosion of empathy, the inability to see nuance, and the temptation to view all obstacles as nails when you have mastered the hammer. True power includes knowing when <em>not</em> to act.</p>';
-    
-    case 'Wisdom/Reason': 
+   
+    case 'Wisdom/Reason':
       return '<p>You navigate by the light of understanding, seeking patterns in chaos and truth in complexity. Your gift is the capacity to observe, analyze, and construct frameworks that bring order to confusion. You trust that knowledge properly wielded is the greatest lever for change.</p><p>Yet wisdom has its trap: analysis paralysis, the endless deferral of action in pursuit of perfect understanding. Remember that all maps are incomplete, and sometimes the territory demands you move before you fully comprehend it.</p>';
-    
-    case 'Surrender/Flow': 
+   
+    case 'Surrender/Flow':
       return '<p>You have learned what few master: that there is strength in yielding, power in acceptance, wisdom in recognizing what cannot be controlled. You move with the currents rather than against them, finding the path of least resistance not from weakness but from profound understanding.</p><p>The danger lies in mistaking surrender for passivity, in using "flow" as an excuse for abdication. True surrender is active, conscious, and requires as much courage as the fiercest battle. Do not confuse peace with avoidance.</p>';
-    
-    case 'Nero': 
+   
+    case 'Nero':
       return '<p>You walk the path of present-centered wisdom, where compassion and awareness become your primary instruments. Like Ram Dass or Alan Watts, you understand that being fully present—without judgment, without the tyranny of ego—is itself a revolutionary act.</p><p>Your strength is your capacity to hold space for others, to see clearly without the distortions of desire and fear. But beware the subtle pride of the "enlightened," the danger of using spiritual detachment as a shield against genuine engagement with suffering—both yours and others.</p>';
-    
-    case 'Nora': 
+   
+    case 'Nora':
       return '<p>You are driven by the sacred flame of inquiry, the relentless need to understand how things work, to peel back layers of mystery until truth stands revealed. Like Marie Curie facing radioactive elements or Carl Sagan contemplating the cosmos, you believe that understanding is humanity\'s highest calling.</p><p>Your challenge is remembering that not all truth can be quantified, that some knowledge carries terrible weight, and that the human cost of discovery must never be forgotten. The scientist who loses empathy becomes a technician of death.</p>';
-    
-    case 'Loktal': 
+   
+    case 'Loktal':
       return '<p>You are trajectory incarnate—force and vision combined, the ability to see what must be and the will to make it so regardless of cost. Like Genghis Khan reshaping continents or Caesar crossing the Rubicon, you understand that history belongs to those who refuse to be constrained by the possible.</p><p>But power without wisdom becomes tyranny, and vision without compassion becomes nightmare. The greatest danger is forgetting that your grand designs are built on a foundation of living beings, each with their own irreplaceable interiority. Do not become the monster you sought to defeat.</p>';
-    
-    case 'Sam': 
+   
+    case 'Sam':
       return '<p>Curiosity is your north star—the burning need to know, to explore, to question everything. Like Feynman dismantling a problem with childlike wonder, you refuse to accept "that\'s just how it is" as an answer. Every closed door is an invitation.</p><p>The risk is diffusion: curiosity without discipline becomes dilettantism. Master the art of choosing which questions matter most, which mysteries deserve your finite attention. Not all doors should be opened, and not all knowledge serves wisdom.</p>';
-    
-    case 'Exuro': 
+   
+    case 'Exuro':
       return '<p>You are the catalyst, the flame that transforms everything it touches. Like Churchill rallying a nation or Malcolm X demanding justice, you understand that some moments require fire—that transformation sometimes demands destruction of the old before the new can emerge.</p><p>Fire purifies but also consumes. The revolutionary can become the tyrant, the reformer can become the destroyer. Learn to distinguish between what must burn and what must be preserved, between righteous fury and mere destruction. Flame serves the forge, not the other way around.</p>';
-    
-    case 'Micromegas': 
+   
+    case 'Micromegas':
       return '<p>You see from a distance that verges on the cosmic. Like Voltaire\'s Micromegas or Sagan\'s pale blue dot, you understand that individual human dramas are insignificant against the vastness of space and time—and yet somehow, paradoxically, this makes them more precious, not less.</p><p>The danger of the cosmic perspective is a coldness that masquerades as wisdom, a nihilism dressed as enlightenment. Remember: you are not separate from the universe you observe. The observer is part of the observation, and your detachment is itself a choice with consequences.</p>';
-    
-    default: 
+   
+    default:
       return '<p>You have walked a balanced path, drawing from multiple wells of wisdom. This multiplicity is both gift and challenge—it grants you flexibility and perspective, but may also indicate uncertainty about your deepest convictions. Integration is your task: weaving these threads into a coherent whole rather than remaining forever in synthesis.</p>';
   }
 }
-
 /* Chart rendering using Chart.js */
 function renderCharts(dataObj){
   const labels = Object.keys(dataObj);
   const values = Object.values(dataObj);
-
   // Bar chart
   const ctx = document.getElementById('barChart').getContext('2d');
   new Chart(ctx, {
@@ -635,7 +573,6 @@ function renderCharts(dataObj){
       scales:{y:{beginAtZero:true, ticks:{precision:0}}}
     }
   });
-
   // Radar chart (comparative)
   const ctx2 = document.getElementById('radarChart').getContext('2d');
   new Chart(ctx2, {
@@ -644,17 +581,14 @@ function renderCharts(dataObj){
     options:{responsive:true, maintainAspectRatio:false, scales:{r:{beginAtZero:true}}}
   });
 }
-
 /* ============================
    PILGRIM PATH — HEAVY GLITCH SEQUENCE
    ============================ */
-
 const glitchOverlay = document.getElementById('glitchOverlay');
 const pilgrimScreen = document.getElementById('pilgrimScreen');
 const pilgrimText = document.getElementById('pilgrimText');
 const pilgrimAccept = document.getElementById('pilgrimAccept');
 const pilgrimReject = document.getElementById('pilgrimReject');
-
 // printing routine for Lux-Fallen voice (the hidden aspect of Anu)
 const luxLines = [
   "I am what remains when the mirror shatters.",
@@ -667,27 +601,22 @@ const luxLines = [
   "The truth is: there is no stable self to map. Only patterns, shifting.",
   "You came here to know yourself. I came to show you there is no 'yourself' to know."
 ];
-
 function triggerPilgrimSequence(){
   // show overlay and shutter hints
   glitchOverlay.classList.add('visible');
   document.querySelector('.shutter').classList.add('reveal');
-
   // slight page freeze feel
   document.body.style.overflow = 'hidden';
   setTimeout(()=> {
     showPilgrimModal();
   }, 800);
 }
-
 function showPilgrimModal(){
   pilgrimScreen.classList.add('visible');
   pilgrimScreen.setAttribute('aria-hidden','false');
-
   // start heavy visual twitches
   const glyph = document.querySelector('.pilgrim-glyph');
   glyph.classList.add('glitch-jagged');
-
   // print lines letter-by-letter with occasional distortions
   pilgrimText.innerHTML = '';
   let li = 0;
@@ -703,14 +632,12 @@ function showPilgrimModal(){
   }
   printNextLine();
 }
-
 function printLine(line, cb){
   const chars = Array.from(line);
   let i=0;
   const spanWrap = document.createElement('div');
   spanWrap.style.marginBottom='8px';
   pilgrimText.appendChild(spanWrap);
-
   const t = setInterval(()=>{
     if(i>=chars.length){ clearInterval(t); setTimeout(cb, 160); return; }
     // quiver: occasionally inject glitch diacritics
@@ -725,7 +652,6 @@ function printLine(line, cb){
     i++;
   }, 28 + Math.random()*40);
 }
-
 // pilgrim buttons
 pilgrimAccept.onclick = ()=> {
   // if user accepts, mark Pilgrim path score high and show a false 'reward' (deceptive)
@@ -735,7 +661,6 @@ pilgrimAccept.onclick = ()=> {
   // animate shutter, then forward to a fake analysis page that contains Pilgrim as primary
   shutterAndReveal('pilgrim-accepted');
 };
-
 pilgrimReject.onclick = ()=> {
   // Mark that pilgrim was rejected so it won't trigger again
   localStorage.setItem('pilgrim_rejected', 'true');
@@ -745,13 +670,12 @@ pilgrimReject.onclick = ()=> {
   document.body.style.overflow = '';
   glitchOverlay.classList.remove('visible');
   document.querySelector('.shutter').classList.remove('reveal');
-  
+ 
   // Continue to next scenario
   currentScenario++;
   if(currentScenario >= scenarios.length) showAnalysis();
   else loadScenario(currentScenario);
 };
-
 function shutterAndReveal(mode){
   // intensify overlay
   glitchOverlay.classList.add('visible');
@@ -785,7 +709,6 @@ function shutterAndReveal(mode){
     }, 900);
   }, 480);
 }
-
 function showPilgrimAnalysis(){
   // show analysis but with Pilgrim page shutter + heavy glitch header
   contentEl.innerHTML = `<div class="analysis"><h1 class="glitch" style="color:#ff6a9f">PILGRIM PROJECTION</h1>
@@ -801,7 +724,6 @@ function showPilgrimAnalysis(){
     setTimeout(()=> { glitchOverlay.classList.remove('visible'); showAnalysis(); }, 880);
   };
 }
-
 /* ============================
    Reset helper for developer
    ============================ */
@@ -813,7 +735,6 @@ window.resetMindGame = ()=> {
   currentScenario = 0;
   renderIntro();
 };
-
 /* ===================================
    Initialize: if previously completed, show analysis summary
    =================================== */
@@ -833,7 +754,6 @@ if(choicesMade.length>0 && currentScenario >= scenarios.length){
     renderIntro();
   }
 }
-
 /* star generation */
 (function genStars(){
   const stars = document.getElementById('stars');
@@ -847,7 +767,6 @@ if(choicesMade.length>0 && currentScenario >= scenarios.length){
     stars.appendChild(s);
   }
 })();
-
 </script>
 </body>
 </html>
