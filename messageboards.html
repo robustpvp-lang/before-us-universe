@@ -3,19 +3,24 @@
     <span id="boardToggle">[-]</span> //MESSAGE BOARD - #<span id="boardChannelName">sam</span>
     <span class="small">Posts persist – </span>
   </div>
+
   <div class="panel-body" id="boardBody" style="display:block;border-top:none;border-radius:0;">
+
     <style>
       #boardInner {
         background: #001111;
-        min-height: 600px;
+        height: 600px;              /* FIXED: allows internal scroll */
         display: flex;
         flex-direction: column;
+        overflow: hidden;           /* important containment */
       }
+
       #boardList {
         flex: 1;
-        overflow: auto;
+        overflow-y: auto;           /* vertical scrollbar appears */
         padding: 10px;
       }
+
       .board-thread {
         background: #002222;
         border: 1px solid var(--border);
@@ -25,27 +30,33 @@
         word-wrap: break-word;
         overflow-wrap: anywhere;
       }
+
       .board-thread:hover {
         box-shadow: 0 0 8px var(--accent);
       }
+
       .board-thread .post-meta {
         margin-bottom: 8px;
         opacity: 0.9;
       }
+
       .board-thread strong {
         color: var(--accent);
       }
+
       .quotelink {
         color: var(--accent);
         text-decoration: underline;
         cursor: pointer;
       }
+
       .reply-link {
         margin-left: 12px;
         cursor: pointer;
         color: var(--accent);
         font-size: 11px;
       }
+
       #boardSearch {
         width: 100%;
         padding: 10px;
@@ -55,15 +66,18 @@
         box-sizing: border-box;
         margin-bottom: 10px;
       }
+
       #postingArea {
         padding: 12px;
         background: #001111;
         border-top: 1px solid var(--border);
       }
+
       #postingInfo {
         margin-bottom: 8px;
         font-size: 13px;
       }
+
       #boardMsg {
         width: 100%;
         min-height: 120px;
@@ -75,6 +89,7 @@
         font-family: 'Roboto Mono', monospace;
         resize: vertical;
       }
+
       #postBoardBtn {
         margin-top: 8px;
         padding: 10px 20px;
@@ -83,6 +98,7 @@
         font-weight: bold;
         cursor: pointer;
       }
+
       #boardList:empty::before {
         content: "No posts yet in this channel";
         display: block;
@@ -96,9 +112,16 @@
     <div id="boardInner">
       <input id="boardSearch" placeholder="//search posts">
       <div id="boardList"></div>
+
       <div id="postingArea">
-        <div id="postingInfo">Posting as <strong id="boardHandle" style="color:red">loading...</strong> in #<strong id="boardChannelEl">loading...</strong></div>
-        <textarea id="boardMsg" placeholder="Message (max 1000 chars) – >greentext works – >>postid quotes work"></textarea>
+        <div id="postingInfo">
+          Posting as <strong id="boardHandle" style="color:red">loading...</strong> in #
+          <strong id="boardChannelEl">loading...</strong>
+        </div>
+
+        <textarea id="boardMsg"
+          placeholder="Message (max 1000 chars) – >greentext works – >>postid quotes work"></textarea>
+
         <button id="postBoardBtn" disabled>POST</button>
       </div>
     </div>
@@ -208,6 +231,7 @@ function listenBoard(ch) {
   if (channelRef) off(channelRef);
   boardList.innerHTML = '';
   channelRef = ref(db, `board/${ch}`);
+
   get(channelRef).then(snap => {
     const data = snap.val() || {};
     Object.entries(data)
@@ -215,6 +239,7 @@ function listenBoard(ch) {
       .forEach(([id, o]) => renderBoardPost(o, id));
     boardList.scrollTop = boardList.scrollHeight;
   });
+
   onChildAdded(channelRef, snap => {
     renderBoardPost(snap.val(), snap.key);
     boardList.scrollTop = boardList.scrollHeight;
@@ -231,6 +256,7 @@ postBoardBtn.onclick = async () => {
 };
 
 boardSearch.addEventListener('input', applySearch);
+
 boardMsg.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'Enter') {
     e.preventDefault();
