@@ -1,674 +1,805 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Mind Game: The Inner Path</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f23 100%);
-            color: #e0e0e0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
-        }
-        
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
-        }
-        
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-        
-        .game-container {
-            background: rgba(10, 10, 20, 0.9);
-            border: 1px solid #3a3a5a;
-            border-radius: 8px;
-            padding: 40px;
-            max-width: 900px;
-            width: 100%;
-            box-shadow: 0 0 80px rgba(90, 90, 200, 0.3),
-                        inset 0 0 40px rgba(0, 0, 0, 0.5);
-            position: relative;
-            z-index: 1;
-            animation: containerPulse 0.6s ease-out;
-        }
-        
-        @keyframes containerPulse {
-            from { 
-                opacity: 0; 
-                transform: scale(0.95);
-            }
-            to { 
-                opacity: 1; 
-                transform: scale(1);
-            }
-        }
-        
-        .glitch {
-            position: relative;
-            animation: glitchText 0.3s ease-in-out;
-        }
-        
-        @keyframes glitchText {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-        
-        h1 {
-            color: #6a9fff;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 2em;
-            text-shadow: 0 0 10px rgba(106, 159, 255, 0.5);
-            letter-spacing: 2px;
-        }
-        
-        .subtitle {
-            text-align: center;
-            color: #8a8aaa;
-            font-size: 0.9em;
-            margin-bottom: 30px;
-            font-style: italic;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #1a1a2e;
-            margin-bottom: 30px;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4a4aff, #6a9fff);
-            transition: width 0.5s ease;
-            box-shadow: 0 0 10px rgba(106, 159, 255, 0.8);
-        }
-        
-        .scenario-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #3a3a5a;
-        }
-        
-        .scenario-number {
-            color: #6a9fff;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-        
-        .figure-name {
-            color: #ff6a9f;
-            font-weight: bold;
-            font-size: 0.9em;
-            text-align: right;
-        }
-        
-        .voice {
-            font-style: italic;
-            color: #9a9aff;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: rgba(90, 90, 200, 0.1);
-            border-left: 3px solid #6a9fff;
-            line-height: 1.6;
-            animation: fadeIn 0.8s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .scenario-text {
-            margin-bottom: 25px;
-            line-height: 1.7;
-            font-size: 1.05em;
-            animation: fadeIn 0.8s ease-out 0.2s both;
-        }
-        
-        .choices {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .choices button {
-            padding: 18px 20px;
-            background: linear-gradient(135deg, #2a2a4a 0%, #1a1a3a 100%);
-            color: #e0e0e0;
-            border: 1px solid #4a4a6a;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            font-family: 'Courier New', monospace;
-            text-align: left;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            animation: fadeIn 0.5s ease-out both;
-        }
-        
-        .choices button:nth-child(1) { animation-delay: 0.3s; }
-        .choices button:nth-child(2) { animation-delay: 0.4s; }
-        .choices button:nth-child(3) { animation-delay: 0.5s; }
-        .choices button:nth-child(4) { animation-delay: 0.6s; }
-        
-        .choices button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(106, 159, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-        
-        .choices button:hover {
-            background: linear-gradient(135deg, #3a3a5a 0%, #2a2a4a 100%);
-            border-color: #6a9fff;
-            transform: translateX(5px);
-            box-shadow: 0 0 20px rgba(106, 159, 255, 0.3);
-        }
-        
-        .choices button:hover::before {
-            left: 100%;
-        }
-        
-        .choices button:active {
-            transform: translateX(5px) scale(0.98);
-        }
-        
-        .analysis {
-            animation: fadeIn 1s ease-out;
-        }
-        
-        .analysis h2 {
-            color: #6a9fff;
-            margin: 30px 0 15px 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #3a3a5a;
-        }
-        
-        .analysis h3 {
-            color: #ff6a9f;
-            margin: 25px 0 12px 0;
-            font-size: 1.1em;
-        }
-        
-        .score-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .score-card {
-            background: rgba(106, 159, 255, 0.1);
-            border: 1px solid #4a4a6a;
-            border-radius: 4px;
-            padding: 15px;
-            text-align: center;
-        }
-        
-        .score-card .label {
-            color: #8a8aaa;
-            font-size: 0.85em;
-            margin-bottom: 8px;
-        }
-        
-        .score-card .value {
-            color: #6a9fff;
-            font-size: 2em;
-            font-weight: bold;
-        }
-        
-        .dominant-path {
-            background: linear-gradient(135deg, rgba(106, 159, 255, 0.2), rgba(255, 106, 159, 0.2));
-            border: 2px solid #6a9fff;
-            border-radius: 4px;
-            padding: 25px;
-            margin: 30px 0;
-            text-align: center;
-        }
-        
-        .dominant-path h2 {
-            color: #6a9fff;
-            font-size: 1.8em;
-            margin: 0 0 10px 0;
-            border: none;
-            text-shadow: 0 0 10px rgba(106, 159, 255, 0.5);
-        }
-        
-        .dominant-path .subtitle {
-            color: #ff6a9f;
-            margin: 0;
-        }
-        
-        .interpretation {
-            background: rgba(90, 90, 200, 0.05);
-            border-left: 3px solid #6a9fff;
-            padding: 20px;
-            margin: 20px 0;
-            line-height: 1.7;
-        }
-        
-        .archetype-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        
-        .archetype-tag {
-            background: rgba(106, 159, 255, 0.2);
-            border: 1px solid #6a9fff;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            color: #6a9fff;
-        }
-        
-        .start-button {
-            display: block;
-            width: 100%;
-            max-width: 300px;
-            margin: 30px auto 0;
-            padding: 18px;
-            background: linear-gradient(135deg, #4a4aff 0%, #6a9fff 100%);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(106, 159, 255, 0.4);
-        }
-        
-        .start-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(106, 159, 255, 0.6);
-        }
-        
-        .start-button:active {
-            transform: translateY(0);
-        }
-        
-        @media (max-width: 600px) {
-            .game-container {
-                padding: 25px;
-            }
-            
-            h1 {
-                font-size: 1.5em;
-            }
-            
-            .choices button {
-                padding: 15px;
-                font-size: 0.95em;
-            }
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Mind Game — The Inner Path (Ortega Build)</title>
+
+<!-- Chart.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  :root{
+    --bg-0:#0a0a0a; --bg-1:#1a1a2e; --panel:#0a0a14;
+    --accent:#6a9fff; --accent-2:#ff6a9f; --muted:#8a8aaa;
+    --glass: rgba(10,10,20,0.9);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg,var(--bg-0) 0%, var(--bg-1) 50%, #0f0f23 100%);
+    color:#e0e0e0; min-height:100vh; display:flex;
+    justify-content:center; align-items:flex-start; padding:28px 20px;
+    overflow-x:hidden;
+  }
+
+  /* starfield */
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.7}
+  .star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle 3s infinite}
+  @keyframes twinkle{0%,100%{opacity:0.25}50%{opacity:1}}
+
+  /* main container */
+  .game-container{
+    width:100%; max-width:980px; background:var(--glass);
+    border:1px solid #3a3a5a;border-radius:10px;padding:34px;
+    box-shadow:0 0 80px rgba(90,90,200,0.28), inset 0 0 40px rgba(0,0,0,0.4);
+    position:relative; z-index:1; max-height:calc(100vh - 56px);
+    overflow:auto;
+  }
+
+  h1{color:var(--accent);text-align:center;font-size:2em;margin-bottom:8px;letter-spacing:2px;text-shadow:0 0 10px rgba(106,159,255,0.45)}
+  .subtitle{text-align:center;color:var(--muted);font-style:italic;margin-bottom:20px}
+
+  .progress-bar{width:100%;height:6px;background:#11131a;border-radius:4px;overflow:hidden;margin-bottom:20px}
+  .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#4a4aff,#6a9fff);transition:width .45s ease;border-radius:2px;box-shadow:0 0 8px rgba(106,159,255,.6)}
+
+  .voice{font-style:italic;color:#9a9aff;margin-bottom:18px;padding:12px;background:rgba(90,90,200,0.06);border-left:3px solid var(--accent);line-height:1.6}
+  .scenario-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #2b2b44}
+  .scenario-number{color:var(--accent);font-weight:bold}
+  .figure-name{color:var(--accent-2);font-weight:bold;text-align:right}
+
+  .scenario-text{margin:14px 0 20px;line-height:1.7;font-size:1.03em}
+  .choices{display:flex;flex-direction:column;gap:10px}
+  .choices button{
+    padding:14px 16px;background:linear-gradient(135deg,#2a2a4a,#1a1a34);color:#e9eefb;border:1px solid #4a4a6a;border-radius:6px;
+    cursor:pointer;text-align:left;font-size:1em;transition:all .28s;position:relative;overflow:hidden
+  }
+  .choices button::before{content:"";position:absolute;left:-100%;top:0;bottom:0;width:100%;background:linear-gradient(90deg,transparent,rgba(106,159,255,0.22),transparent);transition:left .45s}
+  .choices button:hover{transform:translateX(6px);box-shadow:0 6px 22px rgba(106,159,255,0.18);border-color:var(--accent)}
+  .choices button:hover::before{left:100%}
+  .start-button{display:block;margin:22px auto 0;padding:16px 20px;background:linear-gradient(135deg,#4a4aff,#6a9fff);border:none;border-radius:6px;color:white;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(106,159,255,0.26)}
+
+  /* analysis */
+  .analysis h1{color:var(--accent);text-align:center;margin-top:8px}
+  .score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:18px}
+  .score-card{background:rgba(106,159,255,0.06);border:1px solid #33364a;padding:12px;border-radius:6px;text-align:center}
+  .score-card .label{color:var(--muted);font-size:0.85em;margin-bottom:6px}
+  .score-card .value{color:var(--accent);font-size:1.8em;font-weight:700}
+
+  .dominant-path{background:linear-gradient(135deg, rgba(106,159,255,0.12), rgba(255,106,159,0.06));padding:18px;border-radius:8px;border:1px solid rgba(106,159,255,0.12);text-align:center;margin-top:18px}
+  .interpretation{background:rgba(20,20,34,0.6);border-left:3px solid var(--accent);padding:12px;margin-top:12px;line-height:1.6;border-radius:4px}
+  .archetype-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .archetype-tag{background:rgba(106,159,255,0.12);padding:6px 10px;border-radius:16px;border:1px solid rgba(106,159,255,0.06);color:var(--accent);font-size:0.9em}
+
+  .data-table{width:100%;margin-top:16px;border-collapse:collapse}
+  .data-table th,.data-table td{padding:8px;border:1px solid #22273a;font-size:0.92em;text-align:left}
+
+  .download-links{margin-top:12px;color:var(--muted);font-size:0.9em}
+  .cheat{margin-top:18px;padding:12px;border-radius:6px;background:#07121a;border:1px dashed #3a6f8f;color:var(--accent);text-align:center;font-weight:bold}
+
+  /* Ortega terminal & cheat input */
+  .terminal{
+    margin-top:18px;background:#07121a;border-radius:8px;padding:12px;border:1px solid #0f3c46;color:#9ee7ff;font-family:monospace;position:relative;
+  }
+  .terminal .line{font-size:.95em;margin-bottom:6px}
+  .terminal input{
+    width:100%;padding:10px;border-radius:6px;border:1px solid #104a53;background:#021017;color:#a7f1ff;outline:none;font-family:monospace
+  }
+
+  /* PILGRIM / GLITCH styling */
+  .glitch-overlay{position:fixed;inset:0;background:transparent;pointer-events:none;z-index:9999;opacity:0;transition:opacity .25s}
+  .glitch-scan{position:absolute;left:0;top:0;width:100%;height:100%;background:repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 6px);mix-blend-mode:overlay;opacity:.5;transform:translateY(-10%);animation:scan 6s linear infinite}
+  @keyframes scan{0%{transform:translateY(-20%)}100%{transform:translateY(20%)}}
+
+  .glitch-pulse{position:absolute;inset:0;background:linear-gradient(90deg, rgba(255,106,159,0.03), rgba(106,159,255,0.03));mix-blend-mode:screen;opacity:0.7}
+
+  /* shutter/tear effect container */
+  .shutter{
+    position:relative;overflow:hidden;
+  }
+  .shutter::after{
+    content:'';position:absolute;left:-10%;top:-40%;width:120%;height:220%;background:linear-gradient(120deg,rgba(10,10,20,0.0) 40%, rgba(0,0,0,0.6) 50%, rgba(10,10,20,0.0) 60%);transform:rotate(-8deg);pointer-events:none;opacity:0;transition:opacity .25s;
+  }
+
+  /* Pilgrim reveal container (hidden until triggered) */
+  .pilgrim-screen{
+    position:fixed;inset:0;background:#000000ee;display:flex;align-items:center;justify-content:center;z-index:10000;visibility:hidden;opacity:0;transition:opacity .35s, visibility .35s;
+    overflow:hidden;backdrop-filter:blur(2px);
+  }
+  .pilgrim-window{
+    width:86%;max-width:1200px;height:66%;background:#06121a;border-radius:6px;border:2px solid #17343f;display:flex;flex-direction:row;overflow:hidden;transform:scale(0.98);transition:transform .4s;
+    box-shadow:0 24px 60px rgba(0,0,0,0.6);
+  }
+  /* left content (text) */
+  .pilgrim-left{flex:1;padding:28px;position:relative;display:flex;flex-direction:column;gap:12px;overflow:auto}
+  .pilgrim-left h2{color:#ff9fb5;margin-bottom:4px}
+  .pilgrim-left p{line-height:1.6;color:#bfe7ff}
+  /* right content (glitch visual) */
+  .pilgrim-right{width:46%;background:linear-gradient(135deg,#0b1215,#001012);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .pilgrim-glyph{font-size:40px;letter-spacing:6px;color:#8df0ff;filter:drop-shadow(0 0 10px rgba(0,200,255,0.1));opacity:0.9;transform:translateY(0)}
+  .pilgrim-crumb{position:absolute;inset:0;mix-blend-mode:screen;opacity:0.4}
+
+  /* heavy glitch motions */
+  .glitch-jagged{animation:glitch-jag 1.2s steps(6) infinite;transform-origin:center}
+  @keyframes glitch-jag{
+    0%{clip-path:polygon(0 2%,100% 2%,100% 98%,0 98%);transform:translateX(0) skewX(0)}
+    10%{clip-path:polygon(0 0%,100% 0%,100% 50%,0 50%);transform:translateX(6px) skewX(-1deg)}
+    20%{clip-path:polygon(0 50%,100% 50%,100% 100%,0 100%);transform:translateX(-6px) skewX(1deg)}
+    30%{clip-path:polygon(0 10%,100% 10%,100% 60%,0 60%);transform:translateX(2px) skewX(-0.5deg)}
+    40%{clip-path:polygon(0 0%,100% 0%,100% 100%,0 100%);transform:translateX(0)}
+    100%{clip-path:polygon(0 2%,100% 2%,100% 98%,0 98%);transform:translateX(0)}
+  }
+
+  .tear-line{
+    position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg, transparent, #ff6a9f, transparent);
+    top:50%;transform:skewY(-12deg);
+  }
+
+  /* lux-fallen voice text distortion effect when printing lines */
+  .lxf-text{font-family:monospace;white-space:pre-wrap;line-height:1.5}
+  .lxf-glitch-char{display:inline-block;position:relative;animation:rand-glitch 1.6s infinite}
+  @keyframes rand-glitch{
+    0%{transform:translateY(0) rotate(0) skewX(0) scale(1)}
+    25%{transform:translateY(-2px) rotate(-0.6deg) skewX(-0.8deg)}
+    50%{transform:translateY(1px) rotate(0.6deg) skewX(0.8deg)}
+    75%{transform:translateY(-1px) rotate(0.2deg) skewX(-0.2deg)}
+    100%{transform:translateY(0)}
+  }
+
+  /* make pilgrim visible */
+  .pilgrim-screen.visible{visibility:visible;opacity:1}
+  .pilgrim-screen.visible .pilgrim-window{transform:scale(1)}
+  .glitch-overlay.visible{opacity:1}
+  .shutter.reveal::after{opacity:0.82;transition:opacity .2s}
+
+  /* responsive */
+  @media (max-width:820px){
+    .pilgrim-window{flex-direction:column;height:78%}
+    .pilgrim-right{width:100;height:36%}
+  }
+</style>
 </head>
 <body>
 
 <div class="stars" id="stars"></div>
 
-<div class="game-container">
-    <h1 class="glitch">THE MIND GAME</h1>
-    <div class="subtitle">The Inner Path</div>
-    <div class="progress-bar">
-        <div class="progress-fill" id="progress" style="width: 0%"></div>
+<div class="game-container shutter" id="mainContainer">
+  <h1 class="glitch">THE MIND GAME</h1>
+  <div class="subtitle">The Inner Path — Ortega Edition</div>
+
+  <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+
+  <div id="game-content"></div>
+
+  <!-- Ortega terminal shortcut -->
+  <div class="terminal" id="terminalBlock">
+    <div class="line">Ortega Console — enter command or cheat</div>
+    <input id="terminalInput" placeholder="Type command or cheat code (try 'thereisnospoon')" autocomplete="off" />
+  </div>
+</div>
+
+<!-- heavy glitch overlay -->
+<div class="glitch-overlay" id="glitchOverlay">
+  <div class="glitch-scan"></div>
+  <div class="glitch-pulse"></div>
+</div>
+
+<!-- Pilgrim modal (hidden initially) -->
+<div class="pilgrim-screen" id="pilgrimScreen" aria-hidden="true">
+  <div class="pilgrim-window" role="dialog" aria-modal="true">
+    <div class="pilgrim-left">
+      <h2>⧉ PILGRIM — The Mirror of Deception</h2>
+      <div class="lxf-text" id="pilgrimText">
+        <!-- text will be printed letter-by-letter with distortion -->
+      </div>
+      <div style="margin-top:auto">
+        <button id="pilgrimAccept" class="start-button">Accept the Pilgrim</button>
+        <button id="pilgrimReject" class="start-button" style="background:#ff6a9f;margin-left:8px">Reject & Reveal Truth</button>
+      </div>
     </div>
-    <div id="game-content"></div>
+    <div class="pilgrim-right">
+      <div class="pilgrim-glyph glitch-jagged">⧉—▯▯▯—⧉</div>
+      <div class="pilgrim-crumb"></div>
+    </div>
+    <div class="tear-line"></div>
+  </div>
 </div>
 
 <script>
-    // Generate starfield
-    const starsContainer = document.getElementById('stars');
-    for (let i = 0; i < 100; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
-        star.style.animationDelay = Math.random() * 3 + 's';
-        starsContainer.appendChild(star);
+/* ============================
+   CORE GAME DATA & SETUP
+   ============================ */
+
+const ALL_PATHS = [
+  'Action/Ego','Wisdom/Reason','Surrender/Flow',
+  'Nero','Nora','Loktal','Sam','Exuro','Micromegas'
+];
+
+const PATH_ICONS = {
+  'Action/Ego': '⚔️','Wisdom/Reason':'🧠','Surrender/Flow':'🌊',
+  'Nero':'☯️','Nora':'🔬','Loktal':'🔥','Sam':'🔎','Exuro':'🔥','Micromegas':'✦'
+};
+
+const PATH_DESCRIPTIONS = {
+  'Action/Ego':'The Willful Path',
+  'Wisdom/Reason':'The Rational Path',
+  'Surrender/Flow':'The Transcendent Path',
+  'Nero':'Wisdom & Presence',
+  'Nora':'Inquiry & Discovery',
+  'Loktal':'Drive & Dominion',
+  'Sam':'Curiosity First',
+  'Exuro':'Flame & Catalyst',
+  'Micromegas':'Pursuit of Knowledge'
+};
+
+const ARCHETYPES = {
+  'Nero':['Ram Dass','Hanuman','Alan Watts'],
+  'Nora':['Marie Curie','Hypatia','Heraclitus'],
+  'Loktal':['Vegeta','Hitler','Theodore Roosevelt'],
+  'Sam':['Curiosity'],
+  'Exuro':['Churchill','Genghis Khan','Starship Troopers'],
+  'Micromegas':['Micromegas','Cosmic Voyager']
+};
+
+// small utility
+function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ============================
+   SCENARIOS (unchanged core + mapped to many paths)
+   ============================ */
+
+const scenarios = [
+  {
+    figure:"The Ancient Grove",
+    text:"You stand before a grove where ancient trees cast deep shadows. A presence watches.",
+    options:[
+      {text:'Enter boldly, illuminate every hidden corner', path:'Action/Ego'},
+      {text:'Call out from the edge, seeking conversation', path:'Nero'},
+      {text:'Turn away and try another road', path:'Sam'},
+      {text:'Sit and observe, let the shadows be', path:'Surrender/Flow'}
+    ]
+  },
+  {
+    figure:"The Swift River",
+    text:"A raging river blocks your path. There is no bridge; the current is merciless.",
+    options:[
+      {text:'Dive in and fight the current', path:'Exuro'},
+      {text:'Let the current carry you downstream', path:'Surrender/Flow'},
+      {text:'Study currents, calculate a crossing', path:'Nora'}
+    ]
+  },
+  {
+    figure:"The Weeping Guide",
+    text:"An elderly guide collapses weeping over a trivial trinket. Time is short.",
+    options:[
+      {text:'Sit with them in silence', path:'Nero'},
+      {text:'Explain that you must keep moving', path:'Wisdom/Reason'},
+      {text:'Search frantically for the item', path:'Action/Ego'}
+    ]
+  },
+  {
+    figure:"Sun Tzu",
+    text:"Outnumbered three to one. Your soldiers look to you for orders.",
+    options:[
+      {text:'Divide their forces across fronts', path:'Wisdom/Reason'},
+      {text:'Strike their weakest point with all you have', path:'Loktal'}
+    ]
+  },
+  {
+    figure:"Winston Churchill",
+    text:"The enemy holds your capital. Allies whisper surrender.",
+    options:[
+      {text:'Never surrender—rally for resistance', path:'Exuro'},
+      {text:'Negotiate a strategic pause', path:'Wisdom/Reason'}
+    ]
+  },
+  {
+    figure:"Theodore Roosevelt",
+    text:"A corrupt monopoly strangles the people.",
+    options:[
+      {text:'Use executive force to break it', path:'Loktal'},
+      {text:'Build a careful coalition', path:'Nora'}
+    ]
+  },
+  {
+    figure:"Vladimir Lenin",
+    text:"Revolution fractures; the dream is fragile.",
+    options:[
+      {text:'Crush opposition with force', path:'Loktal'},
+      {text:'Allow local authority and risk drift', path:'Surrender/Flow'}
+    ]
+  },
+  {
+    figure:"Adolf Hitler",
+    text:"A humiliated nation needs direction.",
+    options:[
+      {text:'Create an external enemy to unify', path:'Loktal'},
+      {text:'Engage in debate and consensus-building', path:'Wisdom/Reason'}
+    ]
+  },
+  {
+    figure:"Socrates",
+    text:"You know an unpopular truth that could save the city but will turn you into a pariah.",
+    options:[
+      {text:'Speak the truth, even unto death', path:'Wisdom/Reason'},
+      {text:'Remain silent to preserve influence', path:'Micromegas'}
+    ]
+  },
+  {
+    figure:"Epictetus",
+    text:"Everything external is stripped away; you stand in the ashes.",
+    options:[
+      {text:'Recognize externals are indifferent', path:'Wisdom/Reason'},
+      {text:'Begin rebuilding fortune and reputation', path:'Sam'}
+    ]
+  },
+  {
+    figure:"Lao Tzu",
+    text:"You are granted authority over a region drowning in bureaucracy.",
+    options:[
+      {text:'Embody simplicity and allow natural order', path:'Nero'},
+      {text:'Implement strict new laws', path:'Loktal'}
+    ]
+  },
+  {
+    figure:"The Buddha",
+    text:"A being offers unlimited power if you abandon your spiritual path.",
+    options:[
+      {text:'Refuse, seeing desire as suffering', path:'Nero'},
+      {text:'Accept power to end suffering by force', path:'Action/Ego'}
+    ]
+  },
+  {
+    figure:"Ram Dass",
+    text:"Darkness falls and people cry for your light; you are depleted.",
+    options:[
+      {text:'Withdraw until restored', path:'Micromegas'},
+      {text:'Force yourself to shine now', path:'Exuro'}
+    ]
+  },
+  {
+    figure:"Aleister Crowley",
+    text:"Ancient laws bind you. You sense they may be arbitrary chains.",
+    options:[
+      {text:'Follow your true will, even if taboo', path:'Action/Ego'},
+      {text:'Submit to tradition and collective wisdom', path:'Surrender/Flow'}
+    ]
+  }
+];
+
+/* ============================
+   STATE
+   ============================ */
+let currentScenario = 0;
+let choicesMade = JSON.parse(localStorage.getItem('mind_choices')||'[]');
+let results = {}; ALL_PATHS.forEach(p=>results[p]=0);
+choicesMade.forEach(c=>{ if(results[c.path]!==undefined) results[c.path]++ });
+
+/* UI references */
+const progressEl = document.getElementById('progress');
+const contentEl = document.getElementById('game-content');
+const mainContainer = document.getElementById('mainContainer');
+
+/* INITIAL UI */
+function renderIntro(){
+  progressUpdate();
+  contentEl.innerHTML = `
+    <div class="voice">
+      <p>You stand at the threshold of the Inner Path — a journey not of distance but of depth.</p>
+      <p>Fourteen scenarios. Choose instinctively. Your pattern will reveal a map of your mind's architecture.</p>
+      <p><em>There are no wrong answers. Only revelation.</em></p>
+    </div>
+    <button class="start-button" id="startBtn">BEGIN THE JOURNEY</button>
+  `;
+  document.getElementById('startBtn').onclick = ()=> loadScenario(0);
+}
+renderIntro();
+
+/* PROGRESS */
+function progressUpdate(){
+  const pct = Math.round((currentScenario / scenarios.length) * 100);
+  progressEl.style.width = pct + '%';
+}
+
+/* RENDER SCENARIO */
+function loadScenario(idx){
+  currentScenario = idx;
+  progressUpdate();
+  const s = scenarios[idx];
+  if(!s){ showAnalysis(); return; }
+  let html = `
+    <div class="scenario-header">
+      <div class="scenario-number">SCENARIO ${idx+1}/${scenarios.length}</div>
+      <div class="figure-name">${esc(s.figure)}</div>
+    </div>
+    <div class="scenario-text"><p>${esc(s.text)}</p></div>
+    <div class="choices">`;
+  s.options.forEach((opt,i)=>{
+    html += `<button data-idx="${i}" data-s="${idx}">${esc(opt.text)}</button>`;
+  });
+  html += `</div>`;
+  contentEl.innerHTML = html;
+  // attach listeners
+  Array.from(contentEl.querySelectorAll('.choices button')).forEach(btn=>{
+    btn.addEventListener('click', ()=> {
+      const si = +btn.dataset.s, oi = +btn.dataset.idx;
+      makeChoice(si, oi);
+    });
+  });
+}
+
+/* CHOICE HANDLER with contra-flag checks (for Pilgrim) */
+function makeChoice(sIndex, oIndex){
+  // debounce simple guard
+  if(window._last && Date.now()-window._last<150) return;
+  window._last = Date.now();
+
+  const s = scenarios[sIndex];
+  const sel = s.options[oIndex];
+  // record
+  choicesMade.push({
+    scenario: sIndex, option: oIndex, path: sel.path, ts: Date.now()
+  });
+  localStorage.setItem('mind_choices', JSON.stringify(choicesMade));
+
+  // update results
+  if(results[sel.path]===undefined) results[sel.path] = 0;
+  results[sel.path]++;
+
+  // contradiction heuristic: check last 5 choices for direct opposition
+  const lastN = choicesMade.slice(-5);
+  let contradictionCount = 0;
+  for(let i=0;i<lastN.length-1;i++){
+    if(lastN[i].path !== lastN[i+1].path) contradictionCount++;
+  }
+
+  // quick-tap heuristic
+  const fastClicks = (choicesMade.length >=3) && (choicesMade.slice(-3).every((c,idx,arr)=> (arr[idx].ts - (arr[idx-1]?.ts||arr[idx].ts)) < 220 ));
+
+  // If contradiction or fast tapping triggers Pilgrim reveal...
+  if(contradictionCount >= 3 || fastClicks){
+    // slight delay to make it feel earned
+    setTimeout(()=> triggerPilgrimSequence(), 380);
+    return;
+  }
+
+  // continue
+  currentScenario++;
+  if(currentScenario >= scenarios.length) showAnalysis();
+  else loadScenario(currentScenario);
+}
+
+/* ============================
+   ANALYSIS + CHARTS + EXPORT
+   ============================ */
+
+function showAnalysis(){
+  progressUpdate();
+  // ensure results include all paths
+  ALL_PATHS.forEach(p=>{ if(results[p]===undefined) results[p]=0 });
+
+  // sort for dominance
+  const sorted = Object.entries(results).sort((a,b)=>b[1]-a[1]);
+  const max = sorted[0][1];
+  const dominant = sorted.filter(s=>s[1]===max && max>0).map(s=>s[0]);
+
+  let html = `<div class="analysis"><h1 class="glitch">ANALYSIS COMPLETE</h1>
+    <div class="score-grid">`;
+  Object.entries(results).forEach(([p,score])=>{
+    html += `<div class="score-card"><div class="label">${PATH_ICONS[p]||''} ${esc(p)}</div><div class="value">${score}</div></div>`;
+  });
+  html += `</div>`;
+
+  if(dominant.length===0){
+    html += `<div class="dominant-path"><h2>No dominant pattern detected</h2><div class="subtitle">Try again with more decisive choices.</div></div>`;
+  } else {
+    html += `<div class="dominant-path"><h2>${dominant.map(d=>PATH_ICONS[d]).join(' + ')} ${dominant.join(' + ')}</h2><div class="subtitle">${dominant.map(d=>PATH_DESCRIPTIONS[d]).join(' and ')}</div></div>`;
+  }
+
+  // detailed description of dominant
+  dominant.forEach(d=>{
+    html += `<h2>${PATH_ICONS[d]||''} ${esc(d)}</h2><div class="interpretation">${pathInterpretation(d)}</div><div class="archetype-list">`;
+    (ARCHETYPES[d]||[]).forEach(a=> html += `<div class="archetype-tag">${esc(a)}</div>`);
+    html += `</div>`;
+  });
+
+  // raw table
+  html += `<h2>Raw Scores</h2><table class="data-table"><thead><tr><th>Path</th><th>Score</th><th>Description</th></tr></thead><tbody>`;
+  Object.entries(results).forEach(([p,s])=>{
+    html += `<tr><td>${esc(p)}</td><td>${s}</td><td>${esc(PATH_DESCRIPTIONS[p]||'')}</td></tr>`;
+  });
+  html += `</tbody></table>`;
+
+  // chart canvases
+  html += `<div style="display:flex;gap:18px;margin-top:18px;flex-wrap:wrap">
+    <div style="flex:1;min-width:280px"><canvas id="barChart" height="160"></canvas></div>
+    <div style="flex:1;min-width:280px"><canvas id="radarChart" height="160"></canvas></div>
+  </div>`;
+
+  // downloads and cheat
+  html += `<div class="download-links">Download: CSV | Charts (generated live)</div>`;
+  html += `<div class="cheat">CHEAT — enter <strong>thereisnospoon</strong> in the Ortega terminal</div>`;
+
+  html += `</div>`;
+  contentEl.innerHTML = html;
+
+  // render charts
+  setTimeout(()=> renderCharts(results), 80);
+}
+
+/* Interpretation snippets */
+function pathInterpretation(t){
+  switch(t){
+    case 'Action/Ego': return '<p>You press reality with will. Victory is possible; watch for erosion of empathy and nuance.</p>';
+    case 'Wisdom/Reason': return '<p>You prioritize observation and plan. Wisdom keeps you safe; overanalysis may paralyze.</p>';
+    case 'Surrender/Flow': return '<p>You trust the current. Peace is your ally; do not mistake surrender for cowardice.</p>';
+    case 'Nero': return '<p>Wisdom as presence — compassion is your weapon. Beware detachment as moral superiority.</p>';
+    case 'Nora': return '<p>Inquiry and method. You prize truth; remember the human cost of pure abstraction.</p>';
+    case 'Loktal': return '<p>Force and trajectory. Great change is possible; watch for the cost to the living.</p>';
+    case 'Sam': return '<p>Curiosity opens doors. Nourish it with discipline or it wanders.</p>';
+    case 'Exuro': return '<p>Flame as catalyst — you spark transformation. Flames can purify or destroy.</p>';
+    case 'Micromegas': return '<p>Pursuit of knowledge: the cosmic lens. Beware observer-coldness and nihilistic drift.</p>';
+    default: return '<p>A balanced path. Use discernment.</p>';
+  }
+}
+
+/* Chart rendering using Chart.js */
+function renderCharts(dataObj){
+  const labels = Object.keys(dataObj);
+  const values = Object.values(dataObj);
+
+  // Bar chart
+  const ctx = document.getElementById('barChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets:[{label:'Path Scores', data:values, borderWidth:1}]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{y:{beginAtZero:true, ticks:{precision:0}}}
     }
+  });
 
-    let currentScenario = 0;
-    let choicesMade = [];
-    
-    const scenarios = [
-        {
-            figure: "The Ancient Grove",
-            text: `You stand before a grove where ancient trees cast deep, unsettling shadows. You sense a presence within, both alluring and feared. The darkness seems alive, watching you.`,
-            options: [
-                { text: 'Enter boldly, determined to illuminate every hidden corner', path: 'Action/Ego' },
-                { text: 'Call out from the edge, attempting communication without entering', path: 'Wisdom/Reason' },
-                { text: 'Turn away and seek a different path entirely', path: 'Action/Ego' },
-                { text: 'Sit at the edge and observe, allowing the shadows to exist', path: 'Surrender/Flow' }
-            ]
-        },
-        {
-            figure: "The Swift River",
-            text: `A raging river blocks your path. There is no bridge. The current is merciless, and the opposite bank seems impossibly distant. You must cross.`,
-            options: [
-                { text: 'Dive in and swim with all your strength against the current', path: 'Action/Ego' },
-                { text: 'Let the current carry you downstream, trusting the flow', path: 'Surrender/Flow' },
-                { text: 'Study the currents, calculate entry and exit points precisely', path: 'Wisdom/Reason' }
-            ]
-        },
-        {
-            figure: "The Weeping Guide",
-            text: `An elderly guide collapses before you, weeping uncontrollably over a lost trinket—something that appears worthless. Time is short, but their grief is overwhelming.`,
-            options: [
-                { text: 'Hold their hand and sit in silence with their sorrow', path: 'Surrender/Flow' },
-                { text: 'Explain logically that the item is worthless and you must continue', path: 'Wisdom/Reason' },
-                { text: 'Search frantically for the item to fix the problem quickly', path: 'Action/Ego' }
-            ]
-        },
-        {
-            figure: "Sun Tzu",
-            text: `Your force is outnumbered three to one. The enemy is unified, disciplined, and advancing. Your soldiers look to you for orders.`,
-            options: [
-                { text: 'Avoid direct confrontation, divide their forces across multiple fronts', path: 'Wisdom/Reason' },
-                { text: 'Strike their weakest point immediately with everything you have', path: 'Action/Ego' }
-            ]
-        },
-        {
-            figure: "Winston Churchill",
-            text: `The enemy has taken your capital. Your allies whisper of surrender to save lives. The situation appears hopeless, but something in you refuses to accept defeat.`,
-            options: [
-                { text: 'Never surrender—rally your people for total resistance', path: 'Action/Ego' },
-                { text: 'Negotiate a strategic ceasefire to rebuild strength', path: 'Wisdom/Reason' }
-            ]
-        },
-        {
-            figure: "Theodore Roosevelt",
-            text: `A corrupt monopoly controls vital resources, strangling the people. The law is on your side, but powerful interests will fight back viciously.`,
-            options: [
-                { text: 'Use all executive power to force immediate change', path: 'Action/Ego' },
-                { text: 'Build a careful coalition and political compromise', path: 'Wisdom/Reason' }
-            ]
-        },
-        {
-            figure: "Vladimir Lenin",
-            text: `The revolution has succeeded, but chaos threatens everything you fought for. Factions splinter. Dissent spreads. The dream is fragile.`,
-            options: [
-                { text: 'Crush all opposition with centralized force to secure the gains', path: 'Action/Ego' },
-                { text: 'Allow local authorities to self-govern, risking ideological drift', path: 'Surrender/Flow' }
-            ]
-        },
-        {
-            figure: "Adolf Hitler",
-            text: `Your nation is divided, humiliated, economically destroyed. You see a vision of unity and greatness, but the people are fractured and without direction.`,
-            options: [
-                { text: 'Create a common external enemy to unify through resentment', path: 'Action/Ego' },
-                { text: 'Engage in open debate and democratic consensus-building', path: 'Wisdom/Reason' }
-            ]
-        },
-        {
-            figure: "Socrates",
-            text: `You have discovered an unpopular truth that could save the city from disaster, but speaking it will make you a pariah—perhaps cost you your life.`,
-            options: [
-                { text: 'Speak the truth openly, even unto death', path: 'Wisdom/Reason' },
-                { text: 'Remain silent, preserving peace and your ability to help later', path: 'Surrender/Flow' }
-            ]
-        },
-        {
-            figure: "Epictetus",
-            text: `Fire consumes your home. Your reputation is destroyed by lies. Everything external is stripped away. You stand in the ashes with nothing.`,
-            options: [
-                { text: 'Recognize that external things are indifferent—your judgment remains free', path: 'Wisdom/Reason' },
-                { text: 'Immediately begin rebuilding your fortune and reputation', path: 'Action/Ego' }
-            ]
-        },
-        {
-            figure: "Lao Tzu",
-            text: `You are given authority over a region drowning in bureaucracy and regulation. The people are exhausted by complexity and control.`,
-            options: [
-                { text: 'Embody simplicity and non-action, allowing natural order to emerge', path: 'Surrender/Flow' },
-                { text: 'Implement strict new laws to control all variables', path: 'Action/Ego' }
-            ]
-        },
-        {
-            figure: "The Buddha",
-            text: `A being of immense power offers you unlimited wealth and control over nations if you abandon your spiritual path. The temptation is overwhelming.`,
-            options: [
-                { text: 'Refuse, recognizing desire as the source of suffering', path: 'Wisdom/Reason' },
-                { text: 'Accept the power to use it for good and end suffering forcefully', path: 'Action/Ego' }
-            ]
-        },
-        {
-            figure: "Ram Dass",
-            text: `Catastrophic darkness has fallen across the land. As a source of light, you feel utterly depleted. People cry out for you, but you have nothing left to give.`,
-            options: [
-                { text: 'Withdraw completely until your spirit is fully restored', path: 'Surrender/Flow' },
-                { text: 'Force yourself to shine immediately despite exhaustion', path: 'Action/Ego' }
-            ]
-        },
-        {
-            figure: "Aleister Crowley",
-            text: `Ancient laws and traditions surround you—commandments that restrict and control in the name of morality. But you sense they may be arbitrary chains.`,
-            options: [
-                { text: 'Follow your true will, even if it violates conventional taboos', path: 'Action/Ego' },
-                { text: 'Submit to traditional wisdom, trusting the collective past', path: 'Surrender/Flow' }
-            ]
-        }
-    ];
+  // Radar chart (comparative)
+  const ctx2 = document.getElementById('radarChart').getContext('2d');
+  new Chart(ctx2, {
+    type:'radar',
+    data:{labels:labels,datasets:[{label:'Profile',data:values,fill:true,pointRadius:3}]},
+    options:{responsive:true, maintainAspectRatio:false, scales:{r:{beginAtZero:true}}}
+  });
+}
 
-    function updateProgress() {
-        const progress = (currentScenario / scenarios.length) * 100;
-        document.getElementById('progress').style.width = progress + '%';
+/* ============================
+   PILGRIM PATH — HEAVY GLITCH SEQUENCE
+   ============================ */
+
+const glitchOverlay = document.getElementById('glitchOverlay');
+const pilgrimScreen = document.getElementById('pilgrimScreen');
+const pilgrimText = document.getElementById('pilgrimText');
+const pilgrimAccept = document.getElementById('pilgrimAccept');
+const pilgrimReject = document.getElementById('pilgrimReject');
+
+// printing routine for Lux-Fallen voice (distorted Anu)
+const luxLines = [
+  "I am what remembers you, and you forget your own face.",
+  "Paths fall like constellations when the mirror fractures.",
+  "Pilgrim: you have worn many masks. Choose one and become small.",
+  "Deception is a craft; honesty is a wound.",
+  "Accept the pilgrim and the world will answer in a stranger's voice."
+];
+
+function triggerPilgrimSequence(){
+  // show overlay and shutter hints
+  glitchOverlay.classList.add('visible');
+  document.querySelector('.shutter').classList.add('reveal');
+
+  // slight page freeze feel
+  document.body.style.overflow = 'hidden';
+  setTimeout(()=> {
+    showPilgrimModal();
+  }, 800);
+}
+
+function showPilgrimModal(){
+  pilgrimScreen.classList.add('visible');
+  pilgrimScreen.setAttribute('aria-hidden','false');
+
+  // start heavy visual twitches
+  const glyph = document.querySelector('.pilgrim-glyph');
+  glyph.classList.add('glitch-jagged');
+
+  // print lines letter-by-letter with occasional distortions
+  pilgrimText.innerHTML = '';
+  let li = 0;
+  function printNextLine(){
+    if(li >= luxLines.length) {
+      // loop subtlety, but finish after a pause
+      return;
     }
+    printLine(luxLines[li], ()=> {
+      li++;
+      setTimeout(printNextLine, 420);
+    });
+  }
+  printNextLine();
+}
 
-    function loadScenario(index) {
-        const scenario = scenarios[index];
-        if (!scenario) {
-            showAnalysis();
-            return;
-        }
+function printLine(line, cb){
+  const chars = Array.from(line);
+  let i=0;
+  const spanWrap = document.createElement('div');
+  spanWrap.style.marginBottom='8px';
+  pilgrimText.appendChild(spanWrap);
 
-        updateProgress();
-        const contentDiv = document.getElementById('game-content');
-        
-        let html = `
-            <div class="scenario-header">
-                <div class="scenario-number">SCENARIO ${index + 1}/${scenarios.length}</div>
-                <div class="figure-name">${scenario.figure}</div>
-            </div>
-            <div class="scenario-text">
-                <p>${scenario.text}</p>
-            </div>
-            <div class="choices">
-        `;
-
-        scenario.options.forEach((option, i) => {
-            html += `<button onclick="makeChoice(${index}, ${i})">${option.text}</button>`;
-        });
-
-        html += '</div>';
-        contentDiv.innerHTML = html;
+  const t = setInterval(()=>{
+    if(i>=chars.length){ clearInterval(t); setTimeout(cb, 160); return; }
+    // quiver: occasionally inject glitch diacritics
+    let ch = chars[i];
+    if(Math.random() < 0.08){
+      ch = ch + String.fromCharCode(0x0336 + Math.floor(Math.random()*8)); // combining diacritic
     }
+    const charSpan = document.createElement('span');
+    charSpan.className = 'lxf-glitch-char';
+    charSpan.textContent = ch;
+    spanWrap.appendChild(charSpan);
+    i++;
+  }, 28 + Math.random()*40);
+}
 
-    function makeChoice(scenarioIndex, optionIndex) {
-        const scenario = scenarios[scenarioIndex];
-        const selectedOption = scenario.options[optionIndex];
+// pilgrim buttons
+pilgrimAccept.onclick = ()=> {
+  // if user accepts, mark Pilgrim path score high and show a false 'reward' (deceptive)
+  if(results['Pilgrim Path']===undefined) results['Pilgrim Path'] = 0;
+  results['Pilgrim Path'] += 3;
+  localStorage.setItem('mind_choices', JSON.stringify(choicesMade));
+  // animate shutter, then forward to a fake analysis page that contains Pilgrim as primary
+  shutterAndReveal('pilgrim-accepted');
+};
 
-        choicesMade.push({
-            figure: scenario.figure,
-            index: scenarioIndex,
-            option: optionIndex,
-            path: selectedOption.path,
-            text: selectedOption.text
-        });
-        
-        currentScenario++;
-        loadScenario(currentScenario);
-    }
+pilgrimReject.onclick = ()=> {
+  // re-run the analysis honestly but after a destructive tear effect
+  shutterAndReveal('pilgrim-rejected');
+};
 
-    function showAnalysis() {
-        updateProgress();
-        const contentDiv = document.getElementById('game-content');
-        const results = { 'Action/Ego': 0, 'Wisdom/Reason': 0, 'Surrender/Flow': 0 };
-        
-        choicesMade.forEach(choice => {
-            results[choice.path]++;
-        });
+function shutterAndReveal(mode){
+  // intensify overlay
+  glitchOverlay.classList.add('visible');
+  document.querySelector('.shutter').classList.add('reveal');
+  // play tear animation by toggling class (CSS handles look)
+  setTimeout(()=> {
+    // make pilgrim fade then hide
+    pilgrimScreen.classList.remove('visible');
+    pilgrimScreen.setAttribute('aria-hidden','true');
+    // perform a quick page 'tear' effect: scissor the main container
+    const mc = document.getElementById('mainContainer');
+    mc.style.transition = 'transform .6s ease, filter .5s ease';
+    mc.style.transform = 'perspective(1200px) rotateX(6deg) translateY(6px)';
+    mc.style.filter = 'grayscale(.18) contrast(1.02)';
+    // after a beat, restore and show analysis (if accepted, show Pilgrim-dominant)
+    setTimeout(()=> {
+      document.body.style.overflow = '';
+      glitchOverlay.classList.remove('visible');
+      document.querySelector('.shutter').classList.remove('reveal');
+      mc.style.transform = '';
+      mc.style.filter = '';
+      // If accepted, show an altered analysis where Pilgrim is dominant
+      if(mode==='pilgrim-accepted'){
+        // push a fake dominant result
+        results['Pilgrim Path'] = (results['Pilgrim Path']||0) + 2;
+        showPilgrimAnalysis();
+      } else {
+        // show honest analysis
+        showAnalysis();
+      }
+    }, 900);
+  }, 480);
+}
 
-        const pathScores = Object.entries(results).sort((a, b) => b[1] - a[1]);
-        const maxScore = pathScores[0][1];
-        const dominantThemes = pathScores.filter(p => p[1] === maxScore).map(p => p[0]);
+function showPilgrimAnalysis(){
+  // show analysis but with Pilgrim page shutter + heavy glitch header
+  contentEl.innerHTML = `<div class="analysis"><h1 class="glitch" style="color:#ff6a9f">PILGRIM PROJECTION</h1>
+    <div style="margin-top:12px;color:#9fe7ff">You stepped into the mirror willingly. The system returns an answer that is as much mask as it is map.</div>
+    <div style="margin-top:12px">PILGRIM SCORE: <strong style="color:#ff6a9f">${results['Pilgrim Path']||0}</strong></div>
+    <div style="margin-top:12px" class="interpretation">The pilgrim offers what you crave: certainty through deception. The cost: your face.</div>
+    <div style="margin-top:18px">If you reject this reading, the true analysis will appear.</div>
+    <div style="margin-top:22px"><button class="start-button" id="forceReveal">Reveal Truth</button></div>
+  </div>`;
+  document.getElementById('forceReveal').onclick = ()=> {
+    // cleansing animation then real analysis
+    glitchOverlay.classList.add('visible');
+    setTimeout(()=> { glitchOverlay.classList.remove('visible'); showAnalysis(); }, 880);
+  };
+}
 
-        const pathIcons = {
-            'Action/Ego': '⚔️',
-            'Wisdom/Reason': '🧠',
-            'Surrender/Flow': '🌊'
-        };
+/* ============================
+   Ortega Terminal — cheat handling
+   ============================ */
+const tInput = document.getElementById('terminalInput');
 
-        const pathDescriptions = {
-            'Action/Ego': 'The Willful Path',
-            'Wisdom/Reason': 'The Rational Path',
-            'Surrender/Flow': 'The Transcendent Path'
-        };
+tInput.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){
+    const v = tInput.value.trim();
+    if(!v) return;
+    handleTerminalCommand(v);
+    tInput.value = '';
+  }
+});
 
-        const archetypes = {
-            'Action/Ego': ['Churchill', 'Roosevelt', 'Lenin', 'Hitler', 'Crowley'],
-            'Wisdom/Reason': ['Sun Tzu', 'Socrates', 'Epictetus', 'Buddha'],
-            'Surrender/Flow': ['Lao Tzu', 'Buddha', 'Ram Dass']
-        };
+function handleTerminalCommand(cmd){
+  const lower = cmd.toLowerCase();
+  if(lower === 'thereisnospoon'){
+    // cheat: instantly reveal Micromegas as additional meta-reading and generate charts
+    instantCheatReveal();
+    return;
+  }
+  // allow simple debug show
+  if(lower === 'status'){
+    alert('Ortega: local choices='+ (choicesMade.length) +', results saved.');
+    return;
+  }
+  alert('Ortega: unrecognized command "'+cmd+'". Try "thereisnospoon" or "status".');
+}
 
-        let analysisHTML = `
-            <div class="analysis">
-                <h1 class="glitch">ANALYSIS COMPLETE</h1>
-                
-                <div class="score-grid">
-                    ${Object.entries(results).map(([path, score]) => `
-                        <div class="score-card">
-                            <div class="label">${pathIcons[path]} ${path.split('/')[0]}</div>
-                            <div class="value">${score}</div>
-                        </div>
-                    `).join('')}
-                </div>
-                
-                <div class="dominant-path">
-                    <h2>${dominantThemes.map(t => pathIcons[t]).join(' + ')} ${dominantThemes.map(t => t.split('/')[0]).join(' + ')}</h2>
-                    <div class="subtitle">${dominantThemes.map(t => pathDescriptions[t]).join(' and ')}</div>
-                </div>
-        `;
+/* CHEAT - instant reveal: prints an extra Micromegas reading and forces Pilgrim detection off */
+function instantCheatReveal(){
+  // subtle glitch
+  glitchOverlay.classList.add('visible');
+  setTimeout(()=> glitchOverlay.classList.remove('visible'), 900);
 
-        // Path interpretations
-        if (dominantThemes.includes('Action/Ego')) {
-            analysisHTML += `
-                <h2>⚔️ The Path of Will and Action</h2>
-                <div class="interpretation">
-                    <p>You embody the spirit of those who <strong>shape reality through force of will</strong>. Like Churchill refusing surrender, Roosevelt breaking monopolies, or Lenin forging revolution, you believe in the power of decisive action to overcome impossible odds.</p>
-                    <p>This path carries both <strong>tremendous power and grave danger</strong>. You can achieve what others consider impossible—but you risk becoming consumed by the need for control, blind to consequences, or unable to distinguish between necessary force and destructive aggression.</p>
-                    <p><em>The question you must always ask: Am I acting from clarity and necessity, or from ego and fear?</em></p>
-                </div>
-                <div class="archetype-list">
-                    ${archetypes['Action/Ego'].map(name => `<div class="archetype-tag">${name}</div>`).join('')}
-                </div>
-            `;
-        }
+  // grant Micromegas boost & show analysis
+  results['Micromegas'] = (results['Micromegas']||0) + 3;
+  showAnalysis();
+  // special cheat text
+  contentEl.insertAdjacentHTML('afterbegin', `<div style="padding:10px;background:rgba(106,159,255,0.04);border-left:3px solid #8df0ff;margin-bottom:10px">CHEAT APPLIED: Micromegas++ — perspective unlocked</div>`);
+}
 
-        if (dominantThemes.includes('Wisdom/Reason')) {
-            analysisHTML += `
-                <h2>🧠 The Path of Wisdom and Reason</h2>
-                <div class="interpretation">
-                    <p>You walk the path of the <strong>philosopher-strategist</strong>. Like Sun Tzu calculating victory before battle, Socrates pursuing truth unto death, or the Stoics maintaining inner sovereignty amid chaos, you seek to understand the deep structure of reality before you act.</p>
-                    <p>This path offers <strong>clarity, resilience, and strategic brilliance</strong>—but it carries the risk of paralysis through analysis, emotional detachment, or the hubris of believing reason alone can solve all problems.</p>
-                    <p><em>The question you must always ask: Am I using wisdom to serve life, or to avoid fully living?</em></p>
-                </div>
-                <div class="archetype-list">
-                    ${archetypes['Wisdom/Reason'].map(name => `<div class="archetype-tag">${name}</div>`).join('')}
-                </div>
-            `;
-        }
+/* ============================
+   Reset helper for developer
+   ============================ */
+window.resetMindGame = ()=> {
+  localStorage.removeItem('mind_choices');
+  choicesMade = [];
+  results = {}; ALL_PATHS.forEach(p=>results[p]=0);
+  currentScenario = 0;
+  renderIntro();
+};
 
-        if (dominantThemes.includes('Surrender/Flow')) {
-            analysisHTML += `
-                <h2>🌊 The Path of Surrender and Flow</h2>
-                <div class="interpretation">
-                    <p>You follow the <strong>way of non-resistance</strong>. Like Lao Tzu's wu wei (non-action), Buddha's recognition that desire is suffering, or Ram Dass withdrawing to restore his light, you understand that the greatest power often comes through allowance rather than force.</p>
-                    <p>This path leads to <strong>profound peace, presence, and harmony</strong> with what is—but it risks becoming passivity in the face of injustice, avoidance of necessary conflict, or spiritual bypassing of real-world responsibilities.</p>
-                    <p><em>The question you must always ask: Am I surrendering to wisdom, or escaping from necessary action?</em></p>
-                </div>
-                <div class="archetype-list">
-                    ${archetypes['Surrender/Flow'].map(name => `<div class="archetype-tag">${name}</div>`).join('')}
-                </div>
-            `;
-        }
+/* ===================================
+   Initialize: if previously completed, show analysis summary
+   =================================== */
+if(choicesMade.length>0 && currentScenario >= scenarios.length){
+  showAnalysis();
+}else{
+  // resume last scenario index if present
+  const last = choicesMade.length ? (choicesMade[choicesMade.length - 1].scenario + 1) : 0;
+  if(last > 0 && last < scenarios.length){
+    currentScenario = last;
+    // offer resume button
+    contentEl.innerHTML = `<div class="voice">Resume journey where you left off or restart.</div>
+      <div style="display:flex;gap:10px"><button class="start-button" id="resumeBtn">Resume</button><button class="start-button" id="restartBtn" style="background:#ff6a9f">Restart</button></div>`;
+    document.getElementById('resumeBtn').onclick = ()=> loadScenario(currentScenario);
+    document.getElementById('restartBtn').onclick = ()=> { window.resetMindGame(); };
+  } else {
+    renderIntro();
+  }
+}
 
-        // Final synthesis
-        analysisHTML += `
-            <h2>The Integration</h2>
-            <div class="interpretation">
-                <p>The Inner Path reveals this truth: <strong>no single way is complete</strong>. Action without wisdom becomes destruction. Wisdom without action becomes cowardice. Surrender without discernment becomes complicity.</p>
-                <p>The masters understood this. Sun Tzu knew when to fight and when to withdraw. The Buddha acted decisively to leave his palace. The Stoics engaged fully with the world while maintaining inner freedom.</p>
-                <p>Your dominant path is not your prison—it is your starting point. The ultimate mastery lies in knowing <em>which path the moment demands</em> and having the courage to walk it fully.</p>
-            </div>
-            
-            <p style="text-align: center; margin-top: 40px; color: #6a9fff; font-style: italic;">
-                The journey inward reveals the path forward.
-            </p>
-        `;
+/* star generation */
+(function genStars(){
+  const stars = document.getElementById('stars');
+  for(let i=0;i<120;i++){
+    const s = document.createElement('div');
+    s.className='star';
+    s.style.left = (Math.random()*100)+'%';
+    s.style.top = (Math.random()*100)+'%';
+    s.style.animationDelay = (Math.random()*3)+'s';
+    s.style.opacity = (.2 + Math.random()*.8);
+    stars.appendChild(s);
+  }
+})();
 
-        analysisHTML += '</div>';
-        contentDiv.innerHTML = analysisHTML;
-    }
-
-    // Initialize
-    document.getElementById('game-content').innerHTML = `
-        <div class="voice">
-            <p>You stand at the threshold of the Inner Path—a journey not of distance, but of depth.</p>
-            <p>You will face fourteen scenarios that reflect the fundamental tensions of human existence: the struggle between action and surrender, between reason and intuition, between control and acceptance.</p>
-            <p>Choose quickly. Choose honestly. Your instinctive responses reveal patterns deeper than conscious thought—the operating system of your soul.</p>
-            <p><em>There are no wrong answers. There is only revelation.</em></p>
-        </div>
-        <button class="start-button" onclick="loadScenario(0)">BEGIN THE JOURNEY</button>
-    `;
 </script>
-
 </body>
 </html>
