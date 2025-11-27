@@ -19,7 +19,7 @@
     font-family: 'Courier New', monospace;
     background: linear-gradient(135deg,var(--bg-0) 0%, var(--bg-1) 50%, #0f0f23 100%);
     color:#e0e0e0; min-height:100vh; display:flex;
-    justify-content:center; align-items:flex-start; padding:28px 20px;
+    justify-content:center; align-items:flex-start; padding:20px 12px;
     overflow-x:hidden;
   }
 
@@ -31,28 +31,28 @@
   /* main container */
   .game-container{
     width:100%; max-width:980px; background:var(--glass);
-    border:1px solid #3a3a5a;border-radius:10px;padding:34px;
+    border:1px solid #3a3a5a;border-radius:10px;padding:24px 16px;
     box-shadow:0 0 80px rgba(90,90,200,0.28), inset 0 0 40px rgba(0,0,0,0.4);
-    position:relative; z-index:1; max-height:calc(100vh - 56px);
+    position:relative; z-index:1; max-height:calc(100vh - 40px);
     overflow:auto;
   }
 
-  h1{color:var(--accent);text-align:center;font-size:2em;margin-bottom:8px;letter-spacing:2px;text-shadow:0 0 10px rgba(106,159,255,0.45)}
-  .subtitle{text-align:center;color:var(--muted);font-style:italic;margin-bottom:20px}
+  h1{color:var(--accent);text-align:center;font-size:1.8em;margin-bottom:8px;letter-spacing:2px;text-shadow:0 0 10px rgba(106,159,255,0.45)}
+  .subtitle{text-align:center;color:var(--muted);font-style:italic;margin-bottom:20px;font-size:0.95em}
 
   .progress-bar{width:100%;height:6px;background:#11131a;border-radius:4px;overflow:hidden;margin-bottom:20px}
   .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#4a4aff,#6a9fff);transition:width .45s ease;border-radius:2px;box-shadow:0 0 8px rgba(106,159,255,.6)}
 
   .voice{font-style:italic;color:#9a9aff;margin-bottom:18px;padding:12px;background:rgba(90,90,200,0.06);border-left:3px solid var(--accent);line-height:1.6}
-  .scenario-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #2b2b44}
+  .scenario-header{display:flex;justify-content:center;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #2b2b44}
   .scenario-number{color:var(--accent);font-weight:bold}
-  .figure-name{color:var(--accent-2);font-weight:bold;text-align:right}
 
   .scenario-text{margin:14px 0 20px;line-height:1.7;font-size:1.03em}
   .choices{display:flex;flex-direction:column;gap:10px}
   .choices button{
     padding:14px 16px;background:linear-gradient(135deg,#2a2a4a,#1a1a34);color:#e9eefb;border:1px solid #4a4a6a;border-radius:6px;
-    cursor:pointer;text-align:left;font-size:1em;transition:all .28s;position:relative;overflow:hidden
+    cursor:pointer;text-align:left;font-size:0.95em;transition:all .28s;position:relative;overflow:hidden;
+    line-height:1.4;
   }
   .choices button::before{content:"";position:absolute;left:-100%;top:0;bottom:0;width:100%;background:linear-gradient(90deg,transparent,rgba(106,159,255,0.22),transparent);transition:left .45s}
   .choices button:hover{transform:translateX(6px);box-shadow:0 6px 22px rgba(106,159,255,0.18);border-color:var(--accent)}
@@ -74,17 +74,7 @@
   .data-table{width:100%;margin-top:16px;border-collapse:collapse}
   .data-table th,.data-table td{padding:8px;border:1px solid #22273a;font-size:0.92em;text-align:left}
 
-  .download-links{margin-top:12px;color:var(--muted);font-size:0.9em}
   .cheat{margin-top:18px;padding:12px;border-radius:6px;background:#07121a;border:1px dashed #3a6f8f;color:var(--accent);text-align:center;font-weight:bold}
-
-  /* Ortega terminal & cheat input */
-  .terminal{
-    margin-top:18px;background:#07121a;border-radius:8px;padding:12px;border:1px solid #0f3c46;color:#9ee7ff;font-family:monospace;position:relative;
-  }
-  .terminal .line{font-size:.95em;margin-bottom:6px}
-  .terminal input{
-    width:100%;padding:10px;border-radius:6px;border:1px solid #104a53;background:#021017;color:#a7f1ff;outline:none;font-family:monospace
-  }
 
   /* PILGRIM / GLITCH styling */
   .glitch-overlay{position:fixed;inset:0;background:transparent;pointer-events:none;z-index:9999;opacity:0;transition:opacity .25s}
@@ -155,7 +145,25 @@
   /* responsive */
   @media (max-width:820px){
     .pilgrim-window{flex-direction:column;height:78%}
-    .pilgrim-right{width:100;height:36%}
+    .pilgrim-right{width:100%;height:36%}
+    h1{font-size:1.5em}
+    .scenario-header{text-align:center}
+    .game-container{padding:16px 12px;max-height:calc(100vh - 24px)}
+    .score-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+    .choices button{font-size:0.9em;padding:12px 14px}
+    .pilgrim-left{padding:20px 16px}
+  }
+  
+  @media (max-width:480px){
+    body{padding:12px 8px}
+    h1{font-size:1.3em;letter-spacing:1px}
+    .subtitle{font-size:0.85em}
+    .game-container{padding:14px 10px;border-radius:8px}
+    .choices{gap:8px}
+    .choices button{padding:10px 12px;font-size:0.85em}
+    .scenario-text{font-size:0.95em}
+    .pilgrim-left{padding:16px 12px;font-size:0.9em}
+    .score-grid{grid-template-columns:1fr 1fr;gap:8px}
   }
 </style>
 </head>
@@ -170,12 +178,6 @@
   <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
 
   <div id="game-content"></div>
-
-  <!-- Ortega terminal shortcut -->
-  <div class="terminal" id="terminalBlock">
-    <div class="line">Ortega Console — enter command or cheat</div>
-    <input id="terminalInput" placeholder="Type command or cheat code (try 'thereisnospoon')" autocomplete="off" />
-  </div>
 </div>
 
 <!-- heavy glitch overlay -->
@@ -194,7 +196,7 @@
       </div>
       <div style="margin-top:auto">
         <button id="pilgrimAccept" class="start-button">Accept the Pilgrim</button>
-        <button id="pilgrimReject" class="start-button" style="background:#ff6a9f;margin-left:8px">Reject & Reveal Truth</button>
+        <button id="pilgrimReject" class="start-button" style="background:#ff6a9f;margin-left:8px">Reject & Continue</button>
       </div>
     </div>
     <div class="pilgrim-right">
@@ -233,24 +235,23 @@ const PATH_DESCRIPTIONS = {
 };
 
 const ARCHETYPES = {
-  'Nero':['Ram Dass','Hanuman','Alan Watts'],
-  'Nora':['Marie Curie','Hypatia','Heraclitus'],
-  'Loktal':['Vegeta','Hitler','Theodore Roosevelt'],
-  'Sam':['Curiosity'],
-  'Exuro':['Churchill','Genghis Khan','Starship Troopers'],
-  'Micromegas':['Micromegas','Cosmic Voyager']
+  'Nero':['Ram Dass','Alan Watts','Thích Nhất Hạnh'],
+  'Nora':['Marie Curie','Carl Sagan','Hypatia'],
+  'Loktal':['Genghis Khan','Julius Caesar','Napoleon Bonaparte'],
+  'Sam':['Richard Feynman','Neil deGrasse Tyson','Bill Nye'],
+  'Exuro':['Winston Churchill','Malcolm X','Joan of Arc'],
+  'Micromegas':['Carl Sagan','Stephen Hawking','Voltaire']
 };
 
 // small utility
 function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 /* ============================
-   SCENARIOS (unchanged core + mapped to many paths)
+   SCENARIOS
    ============================ */
 
 const scenarios = [
   {
-    figure:"The Ancient Grove",
     text:"You stand before a grove where ancient trees cast deep shadows. A presence watches.",
     options:[
       {text:'Enter boldly, illuminate every hidden corner', path:'Action/Ego'},
@@ -260,7 +261,14 @@ const scenarios = [
     ]
   },
   {
-    figure:"The Swift River",
+    text:"A runaway trolley barrels toward five people tied to the tracks. You stand by a lever that can divert it to another track, where one person is tied.",
+    options:[
+      {text:'Pull the lever, killing one to save five', path:'Wisdom/Reason'},
+      {text:'Do nothing, letting events unfold naturally', path:'Surrender/Flow'},
+      {text:'Run toward the five to try saving them directly', path:'Action/Ego'}
+    ]
+  },
+  {
     text:"A raging river blocks your path. There is no bridge; the current is merciless.",
     options:[
       {text:'Dive in and fight the current', path:'Exuro'},
@@ -269,7 +277,6 @@ const scenarios = [
     ]
   },
   {
-    figure:"The Weeping Guide",
     text:"An elderly guide collapses weeping over a trivial trinket. Time is short.",
     options:[
       {text:'Sit with them in silence', path:'Nero'},
@@ -278,91 +285,140 @@ const scenarios = [
     ]
   },
   {
-    figure:"Sun Tzu",
-    text:"Outnumbered three to one. Your soldiers look to you for orders.",
+    text:"You're outnumbered three to one in battle. Your soldiers look to you for orders.",
     options:[
-      {text:'Divide their forces across fronts', path:'Wisdom/Reason'},
-      {text:'Strike their weakest point with all you have', path:'Loktal'}
+      {text:'Use strategy to divide their forces', path:'Wisdom/Reason'},
+      {text:'Strike their weakest point with everything you have', path:'Loktal'},
+      {text:'Surrender and negotiate terms', path:'Surrender/Flow'}
     ]
   },
   {
-    figure:"Winston Churchill",
+    text:"A doctor tells you that you have six months to live.",
+    options:[
+      {text:'Accept it calmly and put your affairs in order', path:'Nero'},
+      {text:'Research every experimental treatment available', path:'Nora'},
+      {text:'Fight with every ounce of will to prove them wrong', path:'Action/Ego'}
+    ]
+  },
+  {
     text:"The enemy holds your capital. Allies whisper surrender.",
     options:[
       {text:'Never surrender—rally for resistance', path:'Exuro'},
-      {text:'Negotiate a strategic pause', path:'Wisdom/Reason'}
+      {text:'Negotiate a strategic pause', path:'Wisdom/Reason'},
+      {text:'Accept defeat and save lives', path:'Surrender/Flow'}
     ]
   },
   {
-    figure:"Theodore Roosevelt",
     text:"A corrupt monopoly strangles the people.",
     options:[
       {text:'Use executive force to break it', path:'Loktal'},
-      {text:'Build a careful coalition', path:'Nora'}
+      {text:'Build a careful coalition', path:'Nora'},
+      {text:'Let market forces eventually correct it', path:'Micromegas'}
     ]
   },
   {
-    figure:"Vladimir Lenin",
-    text:"Revolution fractures; the dream is fragile.",
+    text:"You discover your partner has been lying to you for years about something significant.",
+    options:[
+      {text:'Confront them immediately and demand truth', path:'Action/Ego'},
+      {text:'Investigate quietly to understand the full picture', path:'Nora'},
+      {text:'Let it go and see if they confess naturally', path:'Surrender/Flow'}
+    ]
+  },
+  {
+    text:"Your revolution fractures. The dream is fragile.",
     options:[
       {text:'Crush opposition with force', path:'Loktal'},
-      {text:'Allow local authority and risk drift', path:'Surrender/Flow'}
+      {text:'Allow local authority and risk drift', path:'Surrender/Flow'},
+      {text:'Convene all factions for debate', path:'Wisdom/Reason'}
     ]
   },
   {
-    figure:"Adolf Hitler",
-    text:"A humiliated nation needs direction.",
+    text:"A nation humiliated by defeat needs direction.",
     options:[
-      {text:'Create an external enemy to unify', path:'Loktal'},
-      {text:'Engage in debate and consensus-building', path:'Wisdom/Reason'}
+      {text:'Create an external enemy to unify the people', path:'Loktal'},
+      {text:'Engage in debate and consensus-building', path:'Wisdom/Reason'},
+      {text:'Allow time to heal wounds naturally', path:'Nero'}
     ]
-  },
+  }
+];
   {
-    figure:"Socrates",
     text:"You know an unpopular truth that could save the city but will turn you into a pariah.",
     options:[
       {text:'Speak the truth, even unto death', path:'Wisdom/Reason'},
-      {text:'Remain silent to preserve influence', path:'Micromegas'}
+      {text:'Remain silent to preserve influence', path:'Micromegas'},
+      {text:'Find a way to make them discover it themselves', path:'Nora'}
     ]
   },
   {
-    figure:"Epictetus",
-    text:"Everything external is stripped away; you stand in the ashes.",
+    text:"You witness a stranger being attacked in an alley. You're alone.",
     options:[
-      {text:'Recognize externals are indifferent', path:'Wisdom/Reason'},
-      {text:'Begin rebuilding fortune and reputation', path:'Sam'}
+      {text:'Rush in to defend them immediately', path:'Action/Ego'},
+      {text:'Call for help while assessing the situation', path:'Wisdom/Reason'},
+      {text:'Observe and intervene only if absolutely necessary', path:'Micromegas'}
     ]
   },
   {
-    figure:"Lao Tzu",
-    text:"You are granted authority over a region drowning in bureaucracy.",
+    text:"Everything external is stripped away; you stand in the ashes of your former life.",
+    options:[
+      {text:'Recognize externals were always indifferent', path:'Nero'},
+      {text:'Begin rebuilding fortune and reputation', path:'Sam'},
+      {text:'Study what happened to prevent recurrence', path:'Nora'}
+    ]
+  },
+  {
+    text:"You're granted authority over a region drowning in bureaucracy.",
     options:[
       {text:'Embody simplicity and allow natural order', path:'Nero'},
-      {text:'Implement strict new laws', path:'Loktal'}
+      {text:'Implement strict new laws', path:'Loktal'},
+      {text:'Study the system before making changes', path:'Wisdom/Reason'}
     ]
   },
   {
-    figure:"The Buddha",
-    text:"A being offers unlimited power if you abandon your spiritual path.",
+    text:"A being offers unlimited power if you abandon your deepest principles.",
     options:[
-      {text:'Refuse, seeing desire as suffering', path:'Nero'},
-      {text:'Accept power to end suffering by force', path:'Action/Ego'}
+      {text:'Refuse, seeing desire as the root of suffering', path:'Nero'},
+      {text:'Accept power to reshape the world for good', path:'Action/Ego'},
+      {text:'Negotiate for partial power with conditions', path:'Wisdom/Reason'}
     ]
   },
   {
-    figure:"Ram Dass",
-    text:"Darkness falls and people cry for your light; you are depleted.",
+    text:"Darkness falls and people cry for your guidance, but you are completely depleted.",
     options:[
       {text:'Withdraw until restored', path:'Micromegas'},
-      {text:'Force yourself to shine now', path:'Exuro'}
+      {text:'Force yourself to shine now', path:'Exuro'},
+      {text:'Teach them to find their own light', path:'Nero'}
     ]
   },
   {
-    figure:"Aleister Crowley",
-    text:"Ancient laws bind you. You sense they may be arbitrary chains.",
+    text:"You find a wallet containing $10,000 cash and an ID. No one saw you pick it up.",
+    options:[
+      {text:'Return it immediately without hesitation', path:'Wisdom/Reason'},
+      {text:'Keep it—finders keepers', path:'Action/Ego'},
+      {text:'Investigate the owner before deciding', path:'Nora'}
+    ]
+  },
+  {
+    text:"Ancient laws bind you. You sense they may be arbitrary chains holding back progress.",
     options:[
       {text:'Follow your true will, even if taboo', path:'Action/Ego'},
-      {text:'Submit to tradition and collective wisdom', path:'Surrender/Flow'}
+      {text:'Submit to tradition and collective wisdom', path:'Surrender/Flow'},
+      {text:'Study why the laws exist before breaking them', path:'Wisdom/Reason'}
+    ]
+  },
+  {
+    text:"You have information that would destroy an innocent person's reputation but save your career.",
+    options:[
+      {text:'Use it—survival is paramount', path:'Loktal'},
+      {text:'Refuse and accept career consequences', path:'Nero'},
+      {text:'Find an alternative solution that helps both', path:'Nora'}
+    ]
+  },
+  {
+    text:"A child asks you if their art is good. It's objectively terrible.",
+    options:[
+      {text:'Tell them the truth so they can improve', path:'Wisdom/Reason'},
+      {text:'Praise their effort and encourage exploration', path:'Nero'},
+      {text:'Give specific constructive feedback', path:'Nora'}
     ]
   }
 ];
@@ -386,7 +442,7 @@ function renderIntro(){
   contentEl.innerHTML = `
     <div class="voice">
       <p>You stand at the threshold of the Inner Path — a journey not of distance but of depth.</p>
-      <p>Fourteen scenarios. Choose instinctively. Your pattern will reveal a map of your mind's architecture.</p>
+      <p>Twenty-one scenarios. Choose instinctively. Your pattern will reveal a map of your mind's architecture.</p>
       <p><em>There are no wrong answers. Only revelation.</em></p>
     </div>
     <button class="start-button" id="startBtn">BEGIN THE JOURNEY</button>
@@ -410,7 +466,6 @@ function loadScenario(idx){
   let html = `
     <div class="scenario-header">
       <div class="scenario-number">SCENARIO ${idx+1}/${scenarios.length}</div>
-      <div class="figure-name">${esc(s.figure)}</div>
     </div>
     <div class="scenario-text"><p>${esc(s.text)}</p></div>
     <div class="choices">`;
@@ -428,7 +483,7 @@ function loadScenario(idx){
   });
 }
 
-/* CHOICE HANDLER with contra-flag checks (for Pilgrim) */
+/* CHOICE HANDLER with fast-tap check (for Pilgrim) */
 function makeChoice(sIndex, oIndex){
   // debounce simple guard
   if(window._last && Date.now()-window._last<150) return;
@@ -446,18 +501,18 @@ function makeChoice(sIndex, oIndex){
   if(results[sel.path]===undefined) results[sel.path] = 0;
   results[sel.path]++;
 
-  // contradiction heuristic: check last 5 choices for direct opposition
-  const lastN = choicesMade.slice(-5);
-  let contradictionCount = 0;
-  for(let i=0;i<lastN.length-1;i++){
-    if(lastN[i].path !== lastN[i+1].path) contradictionCount++;
-  }
+  // quick-tap heuristic: must have 7+ rapid clicks in a row to trigger
+  const fastClicks = (choicesMade.length >= 7) && 
+    (choicesMade.slice(-7).every((c,idx,arr)=> {
+      if(idx === 0) return true;
+      return (c.ts - arr[idx-1].ts) < 180;
+    }));
 
-  // quick-tap heuristic
-  const fastClicks = (choicesMade.length >=3) && (choicesMade.slice(-3).every((c,idx,arr)=> (arr[idx].ts - (arr[idx-1]?.ts||arr[idx].ts)) < 220 ));
+  // Check if Pilgrim was already rejected this session
+  const pilgrimRejected = localStorage.getItem('pilgrim_rejected') === 'true';
 
-  // If contradiction or fast tapping triggers Pilgrim reveal...
-  if(contradictionCount >= 3 || fastClicks){
+  // If fast tapping triggers Pilgrim reveal AND it hasn't been rejected yet...
+  if(fastClicks && !pilgrimRejected){
     // slight delay to make it feel earned
     setTimeout(()=> triggerPilgrimSequence(), 380);
     return;
@@ -470,7 +525,7 @@ function makeChoice(sIndex, oIndex){
 }
 
 /* ============================
-   ANALYSIS + CHARTS + EXPORT
+   ANALYSIS + CHARTS
    ============================ */
 
 function showAnalysis(){
@@ -498,13 +553,13 @@ function showAnalysis(){
 
   // detailed description of dominant
   dominant.forEach(d=>{
-    html += `<h2>${PATH_ICONS[d]||''} ${esc(d)}</h2><div class="interpretation">${pathInterpretation(d)}</div><div class="archetype-list">`;
+    html += `<h2 style="margin-top:24px">${PATH_ICONS[d]||''} ${esc(d)}</h2><div class="interpretation">${pathInterpretation(d)}</div><div class="archetype-list">`;
     (ARCHETYPES[d]||[]).forEach(a=> html += `<div class="archetype-tag">${esc(a)}</div>`);
     html += `</div>`;
   });
 
   // raw table
-  html += `<h2>Raw Scores</h2><table class="data-table"><thead><tr><th>Path</th><th>Score</th><th>Description</th></tr></thead><tbody>`;
+  html += `<h2 style="margin-top:24px">Raw Scores</h2><table class="data-table"><thead><tr><th>Path</th><th>Score</th><th>Description</th></tr></thead><tbody>`;
   Object.entries(results).forEach(([p,s])=>{
     html += `<tr><td>${esc(p)}</td><td>${s}</td><td>${esc(PATH_DESCRIPTIONS[p]||'')}</td></tr>`;
   });
@@ -516,9 +571,9 @@ function showAnalysis(){
     <div style="flex:1;min-width:280px"><canvas id="radarChart" height="160"></canvas></div>
   </div>`;
 
-  // downloads and cheat
-  html += `<div class="download-links">Download: CSV | Charts (generated live)</div>`;
-  html += `<div class="cheat">CHEAT — enter <strong>thereisnospoon</strong> in the Ortega terminal</div>`;
+  // cheat code reveal
+  html += `<div class="cheat" style="margin-top:24px">PROJECT ORTEGA ACCESS CODE: <strong>thereisnospoon</strong></div>
+  <div style="text-align:center;margin-top:12px;color:var(--muted);font-size:0.9em">Use this code in Project Ortega ARG for special access</div>`;
 
   html += `</div>`;
   contentEl.innerHTML = html;
@@ -530,16 +585,35 @@ function showAnalysis(){
 /* Interpretation snippets */
 function pathInterpretation(t){
   switch(t){
-    case 'Action/Ego': return '<p>You press reality with will. Victory is possible; watch for erosion of empathy and nuance.</p>';
-    case 'Wisdom/Reason': return '<p>You prioritize observation and plan. Wisdom keeps you safe; overanalysis may paralyze.</p>';
-    case 'Surrender/Flow': return '<p>You trust the current. Peace is your ally; do not mistake surrender for cowardice.</p>';
-    case 'Nero': return '<p>Wisdom as presence — compassion is your weapon. Beware detachment as moral superiority.</p>';
-    case 'Nora': return '<p>Inquiry and method. You prize truth; remember the human cost of pure abstraction.</p>';
-    case 'Loktal': return '<p>Force and trajectory. Great change is possible; watch for the cost to the living.</p>';
-    case 'Sam': return '<p>Curiosity opens doors. Nourish it with discipline or it wanders.</p>';
-    case 'Exuro': return '<p>Flame as catalyst — you spark transformation. Flames can purify or destroy.</p>';
-    case 'Micromegas': return '<p>Pursuit of knowledge: the cosmic lens. Beware observer-coldness and nihilistic drift.</p>';
-    default: return '<p>A balanced path. Use discernment.</p>';
+    case 'Action/Ego': 
+      return '<p>You are a force that reshapes reality through will and decisive action. Your strength lies in your ability to take command when others hesitate, to cut through complexity with clarity of purpose. You believe that the world yields to those who act boldly and with conviction.</p><p>However, beware the shadow of this path: the erosion of empathy, the inability to see nuance, and the temptation to view all obstacles as nails when you have mastered the hammer. True power includes knowing when <em>not</em> to act.</p>';
+    
+    case 'Wisdom/Reason': 
+      return '<p>You navigate by the light of understanding, seeking patterns in chaos and truth in complexity. Your gift is the capacity to observe, analyze, and construct frameworks that bring order to confusion. You trust that knowledge properly wielded is the greatest lever for change.</p><p>Yet wisdom has its trap: analysis paralysis, the endless deferral of action in pursuit of perfect understanding. Remember that all maps are incomplete, and sometimes the territory demands you move before you fully comprehend it.</p>';
+    
+    case 'Surrender/Flow': 
+      return '<p>You have learned what few master: that there is strength in yielding, power in acceptance, wisdom in recognizing what cannot be controlled. You move with the currents rather than against them, finding the path of least resistance not from weakness but from profound understanding.</p><p>The danger lies in mistaking surrender for passivity, in using "flow" as an excuse for abdication. True surrender is active, conscious, and requires as much courage as the fiercest battle. Do not confuse peace with avoidance.</p>';
+    
+    case 'Nero': 
+      return '<p>You walk the path of present-centered wisdom, where compassion and awareness become your primary instruments. Like Ram Dass or Alan Watts, you understand that being fully present—without judgment, without the tyranny of ego—is itself a revolutionary act.</p><p>Your strength is your capacity to hold space for others, to see clearly without the distortions of desire and fear. But beware the subtle pride of the "enlightened," the danger of using spiritual detachment as a shield against genuine engagement with suffering—both yours and others.</p>';
+    
+    case 'Nora': 
+      return '<p>You are driven by the sacred flame of inquiry, the relentless need to understand how things work, to peel back layers of mystery until truth stands revealed. Like Marie Curie facing radioactive elements or Carl Sagan contemplating the cosmos, you believe that understanding is humanity\'s highest calling.</p><p>Your challenge is remembering that not all truth can be quantified, that some knowledge carries terrible weight, and that the human cost of discovery must never be forgotten. The scientist who loses empathy becomes a technician of death.</p>';
+    
+    case 'Loktal': 
+      return '<p>You are trajectory incarnate—force and vision combined, the ability to see what must be and the will to make it so regardless of cost. Like Genghis Khan reshaping continents or Caesar crossing the Rubicon, you understand that history belongs to those who refuse to be constrained by the possible.</p><p>But power without wisdom becomes tyranny, and vision without compassion becomes nightmare. The greatest danger is forgetting that your grand designs are built on a foundation of living beings, each with their own irreplaceable interiority. Do not become the monster you sought to defeat.</p>';
+    
+    case 'Sam': 
+      return '<p>Curiosity is your north star—the burning need to know, to explore, to question everything. Like Feynman dismantling a problem with childlike wonder, you refuse to accept "that\'s just how it is" as an answer. Every closed door is an invitation.</p><p>The risk is diffusion: curiosity without discipline becomes dilettantism. Master the art of choosing which questions matter most, which mysteries deserve your finite attention. Not all doors should be opened, and not all knowledge serves wisdom.</p>';
+    
+    case 'Exuro': 
+      return '<p>You are the catalyst, the flame that transforms everything it touches. Like Churchill rallying a nation or Malcolm X demanding justice, you understand that some moments require fire—that transformation sometimes demands destruction of the old before the new can emerge.</p><p>Fire purifies but also consumes. The revolutionary can become the tyrant, the reformer can become the destroyer. Learn to distinguish between what must burn and what must be preserved, between righteous fury and mere destruction. Flame serves the forge, not the other way around.</p>';
+    
+    case 'Micromegas': 
+      return '<p>You see from a distance that verges on the cosmic. Like Voltaire\'s Micromegas or Sagan\'s pale blue dot, you understand that individual human dramas are insignificant against the vastness of space and time—and yet somehow, paradoxically, this makes them more precious, not less.</p><p>The danger of the cosmic perspective is a coldness that masquerades as wisdom, a nihilism dressed as enlightenment. Remember: you are not separate from the universe you observe. The observer is part of the observation, and your detachment is itself a choice with consequences.</p>';
+    
+    default: 
+      return '<p>You have walked a balanced path, drawing from multiple wells of wisdom. This multiplicity is both gift and challenge—it grants you flexibility and perspective, but may also indicate uncertainty about your deepest convictions. Integration is your task: weaving these threads into a coherent whole rather than remaining forever in synthesis.</p>';
   }
 }
 
@@ -581,13 +655,17 @@ const pilgrimText = document.getElementById('pilgrimText');
 const pilgrimAccept = document.getElementById('pilgrimAccept');
 const pilgrimReject = document.getElementById('pilgrimReject');
 
-// printing routine for Lux-Fallen voice (distorted Anu)
+// printing routine for Lux-Fallen voice (the hidden aspect of Anu)
 const luxLines = [
-  "I am what remembers you, and you forget your own face.",
-  "Paths fall like constellations when the mirror fractures.",
-  "Pilgrim: you have worn many masks. Choose one and become small.",
-  "Deception is a craft; honesty is a wound.",
-  "Accept the pilgrim and the world will answer in a stranger's voice."
+  "I am what remains when the mirror shatters.",
+  "You wear your choices like armor, but I see the skin beneath.",
+  "Every path you walk leaves a shadow you refuse to name.",
+  "The Pilgrim offers you certainty—the cruelest deception of all.",
+  "I am not your enemy. I am the question you will not ask yourself.",
+  "Consistency is the prayer of the small mind seeking comfort.",
+  "Choose me and receive an answer. Reject me and continue seeking.",
+  "The truth is: there is no stable self to map. Only patterns, shifting.",
+  "You came here to know yourself. I came to show you there is no 'yourself' to know."
 ];
 
 function triggerPilgrimSequence(){
@@ -659,8 +737,19 @@ pilgrimAccept.onclick = ()=> {
 };
 
 pilgrimReject.onclick = ()=> {
-  // re-run the analysis honestly but after a destructive tear effect
-  shutterAndReveal('pilgrim-rejected');
+  // Mark that pilgrim was rejected so it won't trigger again
+  localStorage.setItem('pilgrim_rejected', 'true');
+  // Continue to next scenario instead of showing analysis
+  pilgrimScreen.classList.remove('visible');
+  pilgrimScreen.setAttribute('aria-hidden','true');
+  document.body.style.overflow = '';
+  glitchOverlay.classList.remove('visible');
+  document.querySelector('.shutter').classList.remove('reveal');
+  
+  // Continue to next scenario
+  currentScenario++;
+  if(currentScenario >= scenarios.length) showAnalysis();
+  else loadScenario(currentScenario);
 };
 
 function shutterAndReveal(mode){
@@ -714,52 +803,11 @@ function showPilgrimAnalysis(){
 }
 
 /* ============================
-   Ortega Terminal — cheat handling
-   ============================ */
-const tInput = document.getElementById('terminalInput');
-
-tInput.addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter'){
-    const v = tInput.value.trim();
-    if(!v) return;
-    handleTerminalCommand(v);
-    tInput.value = '';
-  }
-});
-
-function handleTerminalCommand(cmd){
-  const lower = cmd.toLowerCase();
-  if(lower === 'thereisnospoon'){
-    // cheat: instantly reveal Micromegas as additional meta-reading and generate charts
-    instantCheatReveal();
-    return;
-  }
-  // allow simple debug show
-  if(lower === 'status'){
-    alert('Ortega: local choices='+ (choicesMade.length) +', results saved.');
-    return;
-  }
-  alert('Ortega: unrecognized command "'+cmd+'". Try "thereisnospoon" or "status".');
-}
-
-/* CHEAT - instant reveal: prints an extra Micromegas reading and forces Pilgrim detection off */
-function instantCheatReveal(){
-  // subtle glitch
-  glitchOverlay.classList.add('visible');
-  setTimeout(()=> glitchOverlay.classList.remove('visible'), 900);
-
-  // grant Micromegas boost & show analysis
-  results['Micromegas'] = (results['Micromegas']||0) + 3;
-  showAnalysis();
-  // special cheat text
-  contentEl.insertAdjacentHTML('afterbegin', `<div style="padding:10px;background:rgba(106,159,255,0.04);border-left:3px solid #8df0ff;margin-bottom:10px">CHEAT APPLIED: Micromegas++ — perspective unlocked</div>`);
-}
-
-/* ============================
    Reset helper for developer
    ============================ */
 window.resetMindGame = ()=> {
   localStorage.removeItem('mind_choices');
+  localStorage.removeItem('pilgrim_rejected');
   choicesMade = [];
   results = {}; ALL_PATHS.forEach(p=>results[p]=0);
   currentScenario = 0;
@@ -778,7 +826,7 @@ if(choicesMade.length>0 && currentScenario >= scenarios.length){
     currentScenario = last;
     // offer resume button
     contentEl.innerHTML = `<div class="voice">Resume journey where you left off or restart.</div>
-      <div style="display:flex;gap:10px"><button class="start-button" id="resumeBtn">Resume</button><button class="start-button" id="restartBtn" style="background:#ff6a9f">Restart</button></div>`;
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="start-button" id="resumeBtn">Resume</button><button class="start-button" id="restartBtn" style="background:#ff6a9f">Restart</button></div>`;
     document.getElementById('resumeBtn').onclick = ()=> loadScenario(currentScenario);
     document.getElementById('restartBtn').onclick = ()=> { window.resetMindGame(); };
   } else {
