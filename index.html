@@ -58,7 +58,7 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 @media (max-width:600px){.title-bar{flex-wrap:nowrap;overflow-x:auto;}.title-bar{font-size:11px;}}
 .panel{background:var(--panel-bg);border-radius:4px;box-shadow:0 0 12px rgba(0,255,255,0.08);margin-bottom:12px;overflow:hidden;position:relative;}
 .panel-title{display:flex;align-items:center;justify-content:space-between;padding:6px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
-.panel-body{padding:8px;color:var(--text-gray)}
+.panel-body{padding:8px;color:var(--text-gray);overflow:auto;}
 .yt-wrap iframe{width:100%;max-width:720px;height:405px;border:4px solid var(--border);}
 @media(max-width:600px){.yt-wrap iframe{height:200px;}}
 .chat-win{display:flex;flex-direction:column;height:520px}
@@ -140,12 +140,17 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 .bot { color: #0f0; }
 a { color: #0ff; text-decoration: underline; }
 .donate-flash { animation: flash 1s infinite; display: inline-block; margin-left: 5px; }
-#visitorCounter, #hitCounter {opacity: 1;}
+#hitCounter {background:var(--accent);color:#000;padding:6px 12px;border:2px solid #000;border-radius:4px;font-size:12px;display:inline-block;margin:4px;opacity:1;cursor:default;}
+#hitCounter:hover {opacity:0.8;}
+#visitorPanel{display:flex;justify-content:center;gap:8px;}
 #buyBookBtn {animation: flash 2s infinite;}
 @keyframes flash{0%{opacity:1;}50%{opacity:0.8;}100%{opacity:1;}}
 #mindGameBtn {margin: 6px 0;}
 #ortegaIframeContainer {max-height: 300px; z-index: 1; position: relative;}
 .bottom-section {position: relative; z-index: 0;}
+.link-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+#shortstreamsPanel {margin:0 auto;max-width:720px;}
+#galleriesPanel .panel-body {min-height:200px;overflow:auto;}
 </style>
 </head>
 <body>
@@ -229,7 +234,7 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<div class="panel collapsible collapsed">
+<div class="panel collapsible collapsed" id="shortstreamsPanel">
 <div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="soraBody">
 <div id="shortstreams-wrap">
@@ -266,11 +271,36 @@ a { color: #0ff; text-decoration: underline; }
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//sora.ai</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="soraAiBody">
+<div id="soraai-wrap">
+<iframe src="https://robustpvp-lang.github.io/before-us-universe/soraai.html" allowfullscreen allow="autoplay; fullscreen"></iframe>
+</div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//TACTICALCOMMAND(Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="tacticalBody">
 <iframe src="tacticalcommand.html" style="width:100%; height:100%; border:none;"></iframe>
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<div class="bottom-section">
+  <div class="panel collapsible collapsed" id="galleriesPanel">
+    <div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+    <div class="panel-body">
+      <iframe src="https://robustpvp-lang.github.io/before-us-universe/galleries.html" style="width:100%;height:500px;border:none;" onload="this.style.height=this.contentWindow.document.body.scrollHeight+'px'"></iframe>
+    </div>
+    <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+  </div>
+  <div class="panel collapsible collapsed" id="revivalSitesPanel">
+    <div class="panel-title"><div class="small">//REVIVAL.SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+    <div class="panel-body" style="max-height:500px;overflow:auto">
+      <iframe src="https://robustpvp-lang.github.io/before-us-universe/revival.html" style="width:100%;height:100%;border:none;min-height:400px;"></iframe>
+    </div>
+    <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+  </div>
 </div>
 </div>
 <div>
@@ -293,29 +323,14 @@ a { color: #0ff; text-decoration: underline; }
 <a href="https://sora.chatgpt.com/p/s_692415a63f0081918d36fcfb2535670c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kJdH5e8d4z6b" target="_blank"><div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div></a>
 <a href="https://sora.chatgpt.com/p/s_6917fddaa4288191b1f8ebac4e791e56?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.Sigsv6ochclj" target="_blank"><div class="ad-banner">Do you need more arms? Try Hexapro!</div></a>
 <a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank"><div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div></a>
+<div class="link-row">
 <a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
 <a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
 <a class="link-btn" href="https://www.oldversion.com/" target="_blank" rel="noopener noreferrer">OldVersion.com</a>
 </div>
-<div class="bottom-section">
-  <div class="panel collapsible collapsed">
-    <div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-    <div class="panel-body">
-      <iframe src="https://robustpvp-lang.github.io/before-us-universe/galleries.html" style="width:100%;height:500px;border:none;" onload="this.style.height=this.contentWindow.document.body.scrollHeight+'px'"></iframe>
-    </div>
-    <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-  </div>
-  <div class="panel collapsible collapsed" id="revivalSitesPanel">
-    <div class="panel-title"><div class="small">//REVIVAL.SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-    <div class="panel-body" style="max-height:500px;overflow:auto">
-      <iframe src="https://robustpvp-lang.github.io/before-us-universe/revival.html" style="width:100%;height:100%;border:none;min-height:400px;"></iframe>
-    </div>
-    <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-  </div>
-</div>
 <div class="ticker" id="visitorPanel">
-<div id="visitorCounter">Visitors: Loading...</div>
 <div id="hitCounter">Hits: Loading...</div>
+</div>
 </div>
 </div>
 </div>
@@ -692,18 +707,11 @@ let credential;
 try {
 credential = await signInAnonymously(auth);
 uid = credential.user.uid;
-const visitorsRef = ref(db, 'visitors/count');
-get(visitorsRef).then(snap => {
-let count = snap.val() || 0;
-count++;
-set(visitorsRef, count);
-document.getElementById('visitorCounter').textContent = 'Visitors: ' + count;
-}).catch(() => {document.getElementById('visitorCounter').textContent = 'Visitors: Error';});
 const hitsRef = ref(db, 'hits/count');
-get(hitsRef).then(snap => {
+get(hitsRef).then(async snap => {
 let count = snap.val() || 0;
 count++;
-set(hitsRef, count);
+await set(hitsRef, count);
 document.getElementById('hitCounter').textContent = 'Hits: ' + count;
 }).catch(() => {document.getElementById('hitCounter').textContent = 'Hits: Error';});
 const logRef = push(ref(db, 'visitors/logs'));
