@@ -21,20 +21,24 @@
         }
         html, body {
             margin: 0;
+            padding: 0;
             height: 100%;
             font-family: 'Roboto Mono', monospace;
             background: var(--bg);
             color: var(--fg);
-            overflow: auto;
+            overflow: hidden;
         }
         .panel {
             background: var(--panel-bg);
             border: 3px solid var(--border);
             border-radius: 4px;
             box-shadow: 0 0 12px rgba(0, 255, 255, 0.08);
-            margin: 12px;
+            margin: 0;
             overflow: hidden;
             position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .panel-title {
             display: flex;
@@ -45,11 +49,16 @@
             color: #fff;
             font-family: 'Press Start 2P';
             font-size: 12px;
+            position: relative;
+            z-index: 10;
         }
         .panel-body {
             padding: 8px;
             color: var(--text-gray);
-            height: calc(100vh - 100px); /* Adjust for full height minus title */
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         .toggle-btn {
             background: var(--accent);
@@ -58,8 +67,8 @@
             padding: 4px 8px;
             cursor: pointer;
             font-size: 10px;
-            margin-left: auto;
             animation: flicker 0.5s infinite alternate;
+            user-select: none;
         }
         @keyframes flicker {
             0% { opacity: 1; }
@@ -69,19 +78,25 @@
             display: none;
         }
         #slideshow-container {
-            height: 100%;
+            flex: 1;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         #slideshow-iframe {
             width: 100%;
-            height: 100%;
+            flex: 1;
             border: none;
+            background: #000;
         }
         #slideshow-controls {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 12px;
-            margin-top: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
         }
         #slideshow-controls button {
             background: var(--accent);
@@ -92,101 +107,140 @@
             font-weight: 900;
             border-radius: 6px;
             font-size: 14px;
+            font-family: 'Press Start 2P';
+            transition: transform 0.1s;
+        }
+        #slideshow-controls button:hover {
+            transform: scale(1.05);
+        }
+        #slideshow-controls button:active {
+            transform: scale(0.95);
+        }
+        #video-counter {
+            color: var(--accent);
+            font-family: 'Press Start 2P';
+            font-size: 12px;
+            padding: 0 12px;
         }
         @media (max-width: 600px) {
             .panel-title { font-size: 10px; }
-            .panel-body { padding: 6px; font-size: 12px; }
+            #slideshow-controls button {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            #video-counter {
+                font-size: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="panel collapsible">
         <div class="panel-title">
-            <div class="title">//sora.ai (Under Construction)</div>
+            <div class="title">//sora.ai</div>
             <div class="toggle-btn" aria-label="Toggle">▼</div>
         </div>
         <div class="panel-body" id="vineBody">
             <div id="slideshow-container">
                 <iframe id="slideshow-iframe" src="" allowfullscreen allow="autoplay; fullscreen"></iframe>
-            </div>
-            <div id="slideshow-controls">
-                <button id="prevVid">Prev</button>
-                <button id="nextVid">Next</button>
+                <div id="slideshow-controls">
+                    <button id="prevVid">◀ PREV</button>
+                    <span id="video-counter">1 / 44</span>
+                    <button id="nextVid">NEXT ▶</button>
+                </div>
             </div>
         </div>
-        <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
     </div>
 
     <script>
         const videoUrls = [
-
-"https://sora.chatgpt.com/p/s_69279552662c81919f570209f9af9856?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.wqc16zqqcIJO"
-"https://sora.chatgpt.com/p/s_6927954e95d4819191eeec1eb2fd5c43?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.g19M7s1wa6xa"
-"https://sora.chatgpt.com/p/s_692794ba83488191be8ef4e6b5a77506?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.WqG8Qy15BYLR"
-"https://sora.chatgpt.com/p/s_692795459a1c8191bcd8e182281e336d?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.ZW01flqfUpW7"
-"https://sora.chatgpt.com/p/s_6927954acf3c8191a49026a3803e35c5?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.wtYgMDJ7WemS"
-"https://sora.chatgpt.com/p/s_692794a867808191b1bc86672873112d?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.LaTkmEvVr9Yy"
-"https://sora.chatgpt.com/p/s_69279276eec48191825ee121c13f9499?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.t9fWkYV3FVOD"
-"https://sora.chatgpt.com/p/s_6927928c86b4819190193828389729b9?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.P0D-ROhWunI5"
-"https://sora.chatgpt.com/p/s_69279261b4588191afa4662ce9cec528?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.SGQNeRSUPzo0"
-"https://sora.chatgpt.com/p/s_6927924fc9a4819180e05a376996fefe?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.5GZLT1qAezDD"
-"https://sora.chatgpt.com/p/s_692780dd0d748191bbaa6fdab0f73353?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.KDqxjnqbEEfG"
-"https://sora.chatgpt.com/p/s_69278071de0481919d1764ce40b81c22?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1._aX63zk9-xAy"
-"https://sora.chatgpt.com/p/s_6927804c42a08191905c8056d5a55756?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.8xliHaFVEnNn"
-"https://sora.chatgpt.com/p/s_69278086749c8191a1e157c3dcd44540?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.zdJKZK6zH8lE"
-"https://sora.chatgpt.com/p/s_6927805096a08191ba45993104d8ad2f?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.RZdgESHSBnK9"
-"https://sora.chatgpt.com/p/s_69278054d8d881918c47de923ed8c35d?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.mZxkJyvAxigD"
-"https://sora.chatgpt.com/p/s_6927806a4cec81919ae191dd6d5c63ad?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.-DzZqwlObkzu"
-"https://sora.chatgpt.com/p/s_6927808f3a548191831e0d21a0e5d291?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.KqMaMs2tvKbZ"
-"https://sora.chatgpt.com/p/s_6927803c5b8c8191b3dfa6f7cf64a968?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.DznTqGS0ZcN3"
-"https://sora.chatgpt.com/p/s_6924176f5ed481919d69729cf30b1426?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.lPeFh_liI2iI"
-"https://sora.chatgpt.com/p/s_692417b2d3e48191ba5e26d1ceb35133?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.pCy51kiVNdIP"
-"https://sora.chatgpt.com/p/s_6924175da74481918c45b41e9289c863?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kAo5-UgrQYt0"
-"https://sora.chatgpt.com/p/s_69241725435c81919492f8a153f30820?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.pwUH2L1u1VWD"
-"https://sora.chatgpt.com/p/s_692417471114819186f78208cb6b205e?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.q6YOgZ1EbR_m"
-"https://sora.chatgpt.com/p/s_692415d2096c8191b1c06aeeeacda448?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.w33p5ZSp_vhs"
-"https://sora.chatgpt.com/p/s_69180165d61c8191846697ea901b7f9f?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.d34boopy3nxP"
-"https://sora.chatgpt.com/p/s_6918015603b08191a230ebd60606af79?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.4aHbX_UwG7oi"
-"https://sora.chatgpt.com/p/s_6917fde02d748191916f68b13aecd23c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.g5DILcPciKX-"
-"https://sora.chatgpt.com/p/s_6917fe333774819186ab3c8458577f04?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.As906DLajnBw"
-"https://sora.chatgpt.com/p/s_6917fe2de7d881919260bc8cdd18fc37?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.LFfFOLSAwENb"
-"https://sora.chatgpt.com/p/s_6917fe2781d88191a11a0376387e1aa0?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.AE7AvAGGNEUN"
-"https://sora.chatgpt.com/p/s_6917fe141da48191b35a7fb09aa95e15?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.blJp4mjcaFO_"
-"https://sora.chatgpt.com/p/s_6917fe0ec004819198a05e28b2222ad0?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.LqdckqFOf2fm"
-"https://sora.chatgpt.com/p/s_6917fde4edb88191bd65f1d507a70b8f?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.j1feoi3M-wBn"
-"https://sora.chatgpt.com/p/s_6917fe17b94481919efa87e2621b09e7?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.5sO1GvvceOpH"
-"https://sora.chatgpt.com/p/s_6917fe010c548191aea58f50c1a17bf7?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.UhSwVX8YLYcS"
-"https://sora.chatgpt.com/p/s_6917fdfa11d4819181683844d3672de9?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.VfuT1G_Ft4Af"
-"https://sora.chatgpt.com/p/s_6917fdfd6fe08191b961cb791df6d087?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.yeBddxMLWpLa"
-"https://sora.chatgpt.com/p/s_6917fdf0292081919a083365a9458cdc?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.ve1ogC08M-BI"
-"https://sora.chatgpt.com/p/s_691802180c608191a154a5961e040fa9?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.1KikmTPvyWCk"
-"https://sora.chatgpt.com/p/s_6917fdf36c5c8191a02377eb23e3d3c7?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.-Q8ZvBjdiXol"
-"https://sora.chatgpt.com/p/s_6917fde92158819190c7b18ba88929e1?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.PxpHnPipOZ-C"
-"https://sora.chatgpt.com/p/s_6917fddab36481919b45ed047e3a510e?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.XSgqGkXgy0rD"
-"https://sora.chatgpt.com/p/s_6917fddb056081919119d4b751b1d603?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.SGI8Domq0XWE"
+            "https://sora.chatgpt.com/p/s_69279552662c81919f570209f9af9856?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.wqc16zqqcIJO",
+            "https://sora.chatgpt.com/p/s_6927954e95d4819191eeec1eb2fd5c43?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.g19M7s1wa6xa",
+            "https://sora.chatgpt.com/p/s_692794ba83488191be8ef4e6b5a77506?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.WqG8Qy15BYLR",
+            "https://sora.chatgpt.com/p/s_692795459a1c8191bcd8e182281e336d?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.ZW01flqfUpW7",
+            "https://sora.chatgpt.com/p/s_6927954acf3c8191a49026a3803e35c5?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.wtYgMDJ7WemS",
+            "https://sora.chatgpt.com/p/s_692794a867808191b1bc86672873112d?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.LaTkmEvVr9Yy",
+            "https://sora.chatgpt.com/p/s_69279276eec48191825ee121c13f9499?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.t9fWkYV3FVOD",
+            "https://sora.chatgpt.com/p/s_6927928c86b4819190193828389729b9?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.P0D-ROhWunI5",
+            "https://sora.chatgpt.com/p/s_69279261b4588191afa4662ce9cec528?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.SGQNeRSUPzo0",
+            "https://sora.chatgpt.com/p/s_6927924fc9a4819180e05a376996fefe?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.5GZLT1qAezDD",
+            "https://sora.chatgpt.com/p/s_692780dd0d748191bbaa6fdab0f73353?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.KDqxjnqbEEfG",
+            "https://sora.chatgpt.com/p/s_69278071de0481919d1764ce40b81c22?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1._aX63zk9-xAy",
+            "https://sora.chatgpt.com/p/s_6927804c42a08191905c8056d5a55756?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.8xliHaFVEnNn",
+            "https://sora.chatgpt.com/p/s_69278086749c8191a1e157c3dcd44540?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.zdJKZK6zH8lE",
+            "https://sora.chatgpt.com/p/s_6927805096a08191ba45993104d8ad2f?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.RZdgESHSBnK9",
+            "https://sora.chatgpt.com/p/s_69278054d8d881918c47de923ed8c35d?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.mZxkJyvAxigD",
+            "https://sora.chatgpt.com/p/s_6927806a4cec81919ae191dd6d5c63ad?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.-DzZqwlObkzu",
+            "https://sora.chatgpt.com/p/s_6927808f3a548191831e0d21a0e5d291?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.KqMaMs2tvKbZ",
+            "https://sora.chatgpt.com/p/s_6927803c5b8c8191b3dfa6f7cf64a968?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.DznTqGS0ZcN3",
+            "https://sora.chatgpt.com/p/s_6924176f5ed481919d69729cf30b1426?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.lPeFh_liI2iI",
+            "https://sora.chatgpt.com/p/s_692417b2d3e48191ba5e26d1ceb35133?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.pCy51kiVNdIP",
+            "https://sora.chatgpt.com/p/s_6924175da74481918c45b41e9289c863?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kAo5-UgrQYt0",
+            "https://sora.chatgpt.com/p/s_69241725435c81919492f8a153f30820?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.pwUH2L1u1VWD",
+            "https://sora.chatgpt.com/p/s_692417471114819186f78208cb6b205e?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.q6YOgZ1EbR_m",
+            "https://sora.chatgpt.com/p/s_692415d2096c8191b1c06aeeeacda448?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.w33p5ZSp_vhs",
+            "https://sora.chatgpt.com/p/s_69180165d61c8191846697ea901b7f9f?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.d34boopy3nxP",
+            "https://sora.chatgpt.com/p/s_6918015603b08191a230ebd60606af79?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.4aHbX_UwG7oi",
+            "https://sora.chatgpt.com/p/s_6917fde02d748191916f68b13aecd23c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.g5DILcPciKX-",
+            "https://sora.chatgpt.com/p/s_6917fe333774819186ab3c8458577f04?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.As906DLajnBw",
+            "https://sora.chatgpt.com/p/s_6917fe2de7d881919260bc8cdd18fc37?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.LFfFOLSAwENb",
+            "https://sora.chatgpt.com/p/s_6917fe2781d88191a11a0376387e1aa0?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.AE7AvAGGNEUN",
+            "https://sora.chatgpt.com/p/s_6917fe141da48191b35a7fb09aa95e15?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.blJp4mjcaFO_",
+            "https://sora.chatgpt.com/p/s_6917fe0ec004819198a05e28b2222ad0?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.LqdckqFOf2fm",
+            "https://sora.chatgpt.com/p/s_6917fde4edb88191bd65f1d507a70b8f?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.j1feoi3M-wBn",
+            "https://sora.chatgpt.com/p/s_6917fe17b94481919efa87e2621b09e7?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.5sO1GvvceOpH",
+            "https://sora.chatgpt.com/p/s_6917fe010c548191aea58f50c1a17bf7?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.UhSwVX8YLYcS",
+            "https://sora.chatgpt.com/p/s_6917fdfa11d4819181683844d3672de9?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.VfuT1G_Ft4Af",
+            "https://sora.chatgpt.com/p/s_6917fdfd6fe08191b961cb791df6d087?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.yeBddxMLWpLa",
+            "https://sora.chatgpt.com/p/s_6917fdf0292081919a083365a9458cdc?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.ve1ogC08M-BI",
+            "https://sora.chatgpt.com/p/s_691802180c608191a154a5961e040fa9?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.1KikmTPvyWCk",
+            "https://sora.chatgpt.com/p/s_6917fdf36c5c8191a02377eb23e3d3c7?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.-Q8ZvBjdiXol",
+            "https://sora.chatgpt.com/p/s_6917fde92158819190c7b18ba88929e1?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.PxpHnPipOZ-C",
+            "https://sora.chatgpt.com/p/s_6917fddab36481919b45ed047e3a510e?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.XSgqGkXgy0rD",
+            "https://sora.chatgpt.com/p/s_6917fddb056081919119d4b751b1d603?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.SGI8Domq0XWE"
         ];
+        
         let currentVideoIndex = 0;
         const slideshowIframe = document.getElementById('slideshow-iframe');
+        const videoCounter = document.getElementById('video-counter');
+        
         function updateVideo() {
             slideshowIframe.src = videoUrls[currentVideoIndex];
+            videoCounter.textContent = `${currentVideoIndex + 1} / ${videoUrls.length}`;
         }
-        document.getElementById('nextVid').onclick = () => {
+        
+        document.getElementById('nextVid').addEventListener('click', () => {
             currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
             updateVideo();
-        };
-        document.getElementById('prevVid').onclick = () => {
+        });
+        
+        document.getElementById('prevVid').addEventListener('click', () => {
             currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.length;
             updateVideo();
-        };
-        updateVideo();
-
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                currentVideoIndex = (currentVideoIndex + 1) % videoUrls.length;
+                updateVideo();
+            } else if (e.key === 'ArrowLeft') {
+                currentVideoIndex = (currentVideoIndex - 1 + videoUrls.length) % videoUrls.length;
+                updateVideo();
+            }
+        });
+        
         // Toggle functionality
-        document.querySelectorAll('.toggle-btn:not(.bottom-toggle)').forEach(btn => {
-            btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const panel = btn.closest('.panel');
+                panel.classList.toggle('collapsed');
+                btn.textContent = panel.classList.contains('collapsed') ? '▼' : '▲';
+            });
         });
-        document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
-            btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
-        });
+        
+        // Load first video
+        updateVideo();
     </script>
 </body>
 </html>
