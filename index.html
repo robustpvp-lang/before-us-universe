@@ -95,19 +95,17 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 .board-thread:nth-child(even) {background: #f0f0f0;}
 .board-thread strong{color:#000080;font-size:14px}
 .board-thread .small{color:#808080;font-style:italic;margin-top:4px;display:block}
-#serverSelectPanel{margin-bottom:12px;padding:8px; border:3px solid var(--border); background:var(--panel-bg);}
+#serverSelectPanel{margin-bottom:12px;padding:8px}
 #serverSelectPanel .controls{display:flex;gap:8px;align-items:center}
 #serverSelectPanel select{flex:1;padding:12px;background:#001f1f;border:3px solid var(--border);color:var(--fg);font-weight:700;font-size:14px;border-radius:6px}
 #serverConfirm{background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;box-shadow:0 0 10px var(--accent)}
 
-/* MEDIAPLAYER PANEL STYLES - Corrected to use .panel styles, adjusting the iframe height for a smaller player */
-#mediaplayerPanel {
-    padding: 0;
-}
-#mediaplayerPanel iframe{
-    width:100%; 
-    height: 100px; /* Adjusted height for a smaller player */
-    border: none;
+/* NEW MEDIAPLAYER PANEL STYLES - Matches #serverSelectPanel height/padding */
+#mediaplayerPanel{
+    margin-bottom:12px;
+    padding:8px;
+    border:3px solid var(--border); 
+    background:var(--panel-bg);
 }
 
 #ortegaPanel button{width:100%;background:var(--accent);color:#000;padding:12px;border:3px solid #000;border-radius:6px;font-weight:900;cursor:pointer;font-size:14px; margin-bottom: 12px; /* Added spacing to separate from Mind Game */ }
@@ -237,10 +235,8 @@ a { color: #0ff; text-decoration: underline; }
 <button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Stumble</button>
 <button id="emailBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Join Email List</button>
 </div>
-<div class="layout">
-<div>
 <div class="panel" id="mediaplayerPanel">
-    <iframe src="mediaplayer.html" style="width:100%; height:100px; border:none;"></iframe>
+    <iframe src="mediaplayer.html" style="width:100%; height:100%; border:none; min-height: 52px;"></iframe>
 </div>
 <div class="panel" id="serverSelectPanel">
 <div class="small">SELECT SERVER</div>
@@ -255,6 +251,8 @@ a { color: #0ff; text-decoration: underline; }
 <button id="serverConfirm" aria-label="Switch server">Switch Server</button>
 </div>
 </div>
+<div class="layout">
+<div>
 <div class="panel">
 <div class="panel-title"><div class="title" id="chatTitle">//SAM <span class="small" id="userCountSmall">0 users</span></div></div>
 <div class="panel-body chat-win" id="chatBody">
@@ -371,26 +369,24 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-
-<a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank"><div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div></a>
 <div class="bottom-section">
-    <div class="panel collapsible collapsed" id="galleriesPanel">
+  <div class="panel collapsible collapsed" id="galleriesPanel">
     <div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
     <div class="panel-body">
-    <iframe src="https://robustpvp-lang.github.io/before-us-universe/galleries.html" style="width:100%;height:500px;border:none;"></iframe>
+      <iframe src="https://robustpvp-lang.github.io/before-us-universe/galleries.html" style="width:100%;height:500px;border:none;"></iframe>
     </div>
     <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-    </div>
+  </div>
 
 <a href="https://sora.chatgpt.com/p/s_6917fddaa4288191b1f8ebac4e791e56?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.Sigsv6ochclj" target="_blank"><div class="ad-banner">Do you need more arms? Try Hexapro!</div></a>
 
-    <div class="panel collapsible collapsed" id="revivalSitesPanel">
+  <div class="panel collapsible collapsed" id="revivalSitesPanel">
     <div class="panel-title"><div class="small">//REVIVAL.SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
     <div class="panel-body" style="max-height:500px;overflow:auto">
-    <iframe src="https://robustpvp-lang.github.io/before-us-universe/revival.html" style="width:100%;height:100%;border:none;min-height:400px;"></iframe>
+      <iframe src="https://robustpvp-lang.github.io/before-us-universe/revival.html" style="width:100%;height:100%;border:none;min-height:400px;"></iframe>
     </div>
     <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-    </div>
+  </div>
 </div>
 </div>
 <div>
@@ -404,12 +400,14 @@ a { color: #0ff; text-decoration: underline; }
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 
+<a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank"><div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div></a>
+
 <button id="mindGameBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:100%;">//Mind Game (Under Construction)</button>
 <div id="ortegaPanel">
-    <button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-    <div id="ortegaIframeContainer">
+  <button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
+  <div id="ortegaIframeContainer">
     <iframe id="ortegaIframe" src="" style="width:100%; height:100%;"></iframe>
-    </div>
+  </div>
 </div>
 
 <div class="link-row">
@@ -480,536 +478,653 @@ const bootLines = [
 let lineIdx = 0;
 
 function typeBootLine(){
-    if(lineIdx < bootLines.length){
-        bootLog.textContent += bootLines[lineIdx] + "\n";
-        lineIdx++;
-        setTimeout(typeBootLine, 240 + Math.random()*360);
-    } else {
-        bootStatus.textContent = "AUTH PENDING...";
-        setTimeout(() => signInAnonymously(auth).then(user => {
-            uid = user.user.uid;
-            bootStatus.textContent = `AUTH GRANTED: ${uid.substring(0, 6)}...`;
-            setTimeout(() => {
-                // Pre-select the channel from the dropdown for the user
-                currentChannel = bootChannel.value;
-                bootStatus.textContent = `CHANNEL ${currentChannel.toUpperCase()} SELECTED.`;
-                bootBtn.disabled = false;
-                bootInput.focus();
-            }, 500);
-        }).catch(error => {
-            console.error("Firebase Auth Error:", error);
-            bootStatus.textContent = `AUTH FAILED: ${error.code}`;
-        }), 800);
-    }
+if(lineIdx < bootLines.length){
+bootLog.textContent += bootLines[lineIdx] + "\n";
+lineIdx++;
+setTimeout(typeBootLine, 240 + Math.random()*360);
+}
 }
 
 onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
 
 function prependFeedEntry(text){
-    const el = document.createElement('div');
-    el.className = 'dm-inline';
-    el.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
-    systemFeed.prepend(el);
-    while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChild);
+const el = document.createElement('div');
+el.className = 'dm-inline';
+el.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+systemFeed.prepend(el);
+while(systemFeed.children.length > 80) systemFeed.removeChild(systemFeed.lastChild);
 }
-
 function updateMarqueeFromCache(){
-    if(feedCache.length === 0){
-        marqueeInner.textContent = "System Feed Empty...";
-        return;
-    }
-    const fullText = feedCache.map(e => `[${new Date(e.timestamp).toLocaleTimeString()}] ${e.text}`).join(" — ");
-    marqueeInner.textContent = fullText;
+if(feedCache.length === 0){
+marqueeInner.textContent = "C:\\> Welcome to the Before Us Network — system: stable … MEMORY OK — DISK CHECK PASSED — NETWORK ACTIVE — AWAITING COMMAND… — Site Under Construction —";
+startMarqueeAnimation();
+return;
+}
+const text = feedCache.slice(0,8).map(item => item.text).join(' ✦ ');
+marqueeInner.textContent = ' ' + text + ' ';
+startMarqueeAnimation();
+}
+let marqueeAnimId = null;
+function startMarqueeAnimation(){
+if(marqueeAnimId) cancelAnimationFrame(marqueeAnimId);
+const inner = marqueeInner;
+inner.style.transform = 'translateX(0)';
+const wrapWidth = marqueeWrap.offsetWidth;
+const innerWidth = inner.offsetWidth || wrapWidth * 1.5;
+const speed = 80;
+let start = null;
+function step(ts){
+if(!start) start = ts;
+const elapsed = (ts - start) / 1000;
+const distance = speed * elapsed;
+inner.style.transform = `translateX(${-distance}px)`;
+if(distance > innerWidth + wrapWidth) start = ts;
+marqueeAnimId = requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+}
+
+const feedRef = ref(db, 'feed');
+onChildAdded(feedRef, snap => {
+const obj = {key: snap.key, text: snap.val(), ts: Date.now()};
+feedCache.unshift(obj);
+if(feedCache.length > 40) feedCache.pop();
+prependFeedEntry(obj.text);
+updateMarqueeFromCache();
+bootBroadcast.textContent = obj.text;
+});
+
+get(feedRef).then(snap => {
+const data = snap.val() || {};
+feedCache = Object.entries(data).map(([k,v]) => ({key:k, text:v}));
+updateMarqueeFromCache();
+});
+
+function setPresence(h,ch){
+if(!uid || !h) return;
+try {
+if(presenceRef) remove(presenceRef).catch(()=>{});
+presenceRef = ref(db, `online/${ch}/${uid}`);
+set(presenceRef,{name:h,ts:Date.now(),channel:ch,uid, typing:false}).then(()=>{
+onDisconnect(presenceRef).remove();
+}).catch(e => appendSystem('Presence error: ' + e.message));
+} catch(e){
+appendSystem('Presence failed: ' + e.message);
+}
+}
+
+let onlineWatchRef = ref(db, 'online');
+function watchOnline(){
+onValue(onlineWatchRef, snap => {
+const data = snap.val() || {};
+renderServerTracking(data);
+renderActiveUsers(data[currentChannel] || {});
+updateUserCount(data);
+updateTypingIndicator(data[currentChannel] || {});
+});
+}
+
+function renderServerTracking(data){
+serverTrackingList.innerHTML = '';
+const channels = ['sam','exuro','nero','nora','loktal'];
+channels.forEach(ch => {
+const users = Object.values(data[ch] || {});
+const count = users.length;
+const iconColor = count > 0 ? 'lime' : 'red';
+const branch = document.createElement('div');
+branch.className = `server-branch ${ch === currentChannel ? 'current-server' : ''}`;
+branch.innerHTML = `<div class="server-title">//${ch.toUpperCase()} (${count}) <span class="status-icon ${count > 0 ? 'animated' : ''}" style="color:${iconColor}">●</span></div><div class="user-list"></div>`;
+const userList = branch.querySelector('.user-list');
+if(count === 0){
+userList.innerHTML = '<div>—</div>';
+} else {
+users.forEach(u => {
+const div = document.createElement('div');
+div.textContent = u.name + (u.typing ? ' (typing...)' : '');
+userList.appendChild(div);
+});
+}
+serverTrackingList.appendChild(branch);
+});
+}
+
+function renderActiveUsers(obj){
+activeUsersList.innerHTML = '';
+Object.values(obj || {}).forEach(u => {
+const row = document.createElement('div'); row.className = 'user-row';
+const dot = document.createElement('div'); dot.className = 'status-dot';
+const name = document.createElement('div'); name.className = 'uname'; name.textContent = u.name;
+row.append(dot, name);
+activeUsersList.appendChild(row);
+});
+}
+
+function updateUserCount(data){
+const count = Object.keys(data[currentChannel] || {}).length;
+userCountSmall.textContent = count + (count === 1 ? ' user' : ' users');
+chatTitle.innerHTML = `//${currentChannel.toUpperCase()} <span class="small">${count} user${count === 1 ? '' : 's'}</span>`;
+boardTitle.innerHTML = `//${currentChannel.toUpperCase()} MESSAGE BOARD`;
+}
+
+function watchPresenceEvents() {
+const channels = ['sam','exuro','nero','nora','loktal'];
+channels.forEach(ch => {
+onChildAdded(ref(db, `online/${ch}`), snap => {
+const u = snap.val();
+if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' joined //${ch.toUpperCase()}`);
+});
+onChildRemoved(ref(db, `online/${ch}`), snap => {
+const u = snap.val();
+if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' left //${ch.toUpperCase()}`);
+});
+});
+}
+
+// Global flag to track if we are in the Ortega Iframe mode
+let inOrtegaMode = false;
+
+function listenChannel(ch){
+// If we are exiting Ortega mode, remove the iframe
+if (inOrtegaMode) {
+    exitOrtegaChat();
+}
+
+for(const k in channelListeners){
+if(channelListeners[k].ref) off(channelListeners[k].ref);
+}
+channelListeners = {};
+currentChannel = ch;
+chatMessages.innerHTML = '';
+const r = ref(db, `chat/${ch}`);
+const q = query(r, orderByChild('ts'));
+const fn = snap => {
+const o = snap.val();
+if(o && !o.deleted) renderChatMessage(o, snap.key);
+};
+onChildAdded(q, fn, e => appendSystem('Chat listen error: ' + e.message));
+channelListeners[ch] = {ref: r, fn};
+listenBoard(ch);
+}
+
+function renderChatMessage(o, key){
+// Do not render normal messages if we are in Ortega mode
+if (inOrtegaMode) return;
+
+const row = document.createElement('div'); row.className = 'chat-row';
+const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
+const bub = document.createElement('div'); bub.className = 'chat-bubble';
+if(o.uid === uid) bub.classList.add('me');
+bub.innerHTML = `<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+if(o.uid === uid){
+const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
+edit.onclick = () => { /* edit logic */ };
+const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
+del.onclick = () => {
+update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => appendSystem('Delete failed: ' + e.message));
+row.style.display = 'none';
+};
+bub.append(edit, del);
+}
+row.append(av, bub);
+chatMessages.appendChild(row);
+chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+async function hash(str){
+const e = new TextEncoder().encode(str);
+const b = await crypto.subtle.digest('SHA-256', e);
+return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join('');
+}
+
+async function postMessage(ch, name, msg){
+if(!uid || !myHandle) {
+bootOverlay.style.display = 'flex';
+appRoot.style.display = 'none';
+return;
+}
+const m = msg.trim();
+if(!m || m.length > 500) return;
+const ts = Date.now();
+const h = await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
+const key = push(ref(db, `chat/${ch}`)).key;
+const updates = {};
+updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
+updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
+await update(ref(db), updates).catch(e => appendSystem('Chat post error: ' + e.message));
+set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
+}
+
+function listenBoard(ch){
+for(const k in boardListeners){
+if(boardListeners[k].ref) off(boardListeners[k].ref);
+}
+boardListeners = {};
+boardList.innerHTML = '';
+const r = ref(db, `board/${ch}`);
+get(r).then(snap => {
+const data = snap.val() || {};
+Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
+renderBoardPost(o, id);
+});
+}).catch(e => appendSystem('Board load error: ' + e.message));
+const fn = snap => {
+const o = snap.val();
+renderBoardPost(o, snap.key);
+boardList.scrollTop = boardList.scrollHeight;
+};
+onChildAdded(r, fn, e => appendSystem('Board listen error: ' + e.message));
+boardListeners[ch] = {ref: r, fn};
+}
+
+function renderBoardPost(p, id){
+const el = document.createElement('div'); el.className = 'board-thread';
+el.innerHTML = `<strong>${esc(p.name)}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
+const reply = document.createElement('span');
+reply.textContent = '[Reply]';
+reply.style.cursor = 'pointer';
+reply.style.color = 'var(--accent)';
+reply.onclick = () => {
+boardMsg.value = `>>${id}\n` + boardMsg.value;
+boardMsg.focus();
+};
+el.appendChild(reply);
+boardList.appendChild(el);
+}
+
+// NEW FUNCTION: Enter Ortega Chat Mode
+function enterOrtegaChat() {
+    // 1. Visually trigger glitch/transition
+    document.body.classList.add('glitch-transition');
+
+    // 2. Set the global flag and update title
+    inOrtegaMode = true;
+    currentChannel = 'ortega'; // Use a temporary placeholder 'channel'
+
+    // Update title
+    chatTitle.innerHTML = `//ORTEGA <span class="small">[Command Interface]</span>`;
     
-    // Calculate required width
-    const textWidth = marqueeInner.scrollWidth;
-    const wrapWidth = marqueeWrap.offsetWidth;
-    
-    // Reset animation
-    marqueeInner.style.transition = 'none';
-    marqueeInner.style.transform = 'translateX(0)';
-    
-    if(textWidth > wrapWidth){
-        // Set up infinite scroll animation
-        const duration = textWidth / 50; // 50px/sec speed
-        marqueeInner.style.animation = `marqueeScroll ${duration}s linear infinite`;
-        
-        // Add dynamic CSS for keyframes
-        const style = document.createElement('style');
-        style.type = 'text/css';
-        style.innerHTML = `@keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-${textWidth}px); } }`;
-        
-        // Remove old style tag if it exists to prevent accumulation (optional cleanup)
-        const oldStyle = document.querySelector('style[data-marquee-style]');
-        if(oldStyle) oldStyle.remove();
-
-        style.setAttribute('data-marquee-style', true);
-        document.getElementsByTagName('head')[0].appendChild(style);
-    } else {
-        marqueeInner.style.animation = 'none';
-    }
-}
-
-function listenToSystemFeed(){
-    const feedRef = ref(db, 'system_feed');
-    onValue(feedRef, (snapshot) => {
-        const data = snapshot.val();
-        if(data){
-            feedCache = Object.values(data).sort((a, b) => a.timestamp - b.timestamp);
-            updateMarqueeFromCache();
-        } else {
-            feedCache = [];
-            updateMarqueeFromCache();
-        }
-    }, (error) => {
-        console.error("System Feed Error:", error);
-    });
-}
-
-
-function renderMessage(msg, isMe, channel, fromBoard=false){
-    const el = document.createElement('div');
-    el.className = 'chat-row';
-
-    const avatar = document.createElement('div');
-    avatar.className = 'chat-avatar';
-    avatar.textContent = msg.handle.substring(0, 2).toUpperCase();
-
-    const bubble = document.createElement('div');
-    bubble.className = isMe ? 'chat-bubble me' : 'chat-bubble';
-
-    const meta = document.createElement('div');
-    meta.className = 'chat-meta';
-    
-    let timeStr = new Date(msg.timestamp).toLocaleTimeString();
-    if(fromBoard){
-        meta.textContent = `//${channel.toUpperCase()} | ${msg.handle} | ${timeStr}`;
-    } else {
-        meta.textContent = `${msg.handle} | ${timeStr}`;
-    }
-
-    const content = document.createElement('div');
-    content.textContent = msg.text;
-
-    bubble.appendChild(meta);
-    bubble.appendChild(content);
-
-    if(isMe){
-        el.style.justifyContent = 'flex-end';
-        el.appendChild(bubble);
-        el.appendChild(avatar);
-    } else {
-        el.appendChild(avatar);
-        el.appendChild(bubble);
-    }
-    
-    chatMessages.appendChild(el);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function renderBoardPost(post, postId, channel){
-    const el = document.createElement('div');
-    el.className = 'board-thread';
-    el.dataset.postId = postId;
-    el.innerHTML = `
-        <strong>Post by: ${post.handle}</strong> 
-        <span class="small">Posted on: ${new Date(post.timestamp).toLocaleString()} | Server: //${channel.toUpperCase()}</span>
-        <hr style="border-top:1px solid #ccc; margin:8px 0;">
-        <p style="margin:0;">${post.text}</p>
-        <div style="text-align:right; margin-top:8px;">
-            <button class="link-btn delete-btn" data-post-id="${postId}" style="background:red; color:white; border-color:#000;">Delete</button>
-        </div>
-    `;
-    boardList.prepend(el);
-}
-
-function listenToChannel(channel){
-    if(channelListeners[channel]) return; // Already listening
-
-    // Chat Listener
-    const chatRef = query(ref(db, `messages/${channel}`), orderByChild('timestamp'));
-    const chatAddedListener = onChildAdded(chatRef, (snapshot) => {
-        const msg = snapshot.val();
-        renderMessage(msg, msg.uid === uid, channel);
-    });
-
-    // Board Listener
-    const boardRef = ref(db, `boards/${channel}`);
-    const boardAddedListener = onChildAdded(boardRef, (snapshot) => {
-        renderBoardPost(snapshot.val(), snapshot.key, channel);
-    });
-    const boardRemovedListener = onChildRemoved(boardRef, (snapshot) => {
-        const el = document.querySelector(`.board-thread[data-post-id="${snapshot.key}"]`);
-        if(el) el.remove();
-    });
-
-    channelListeners[channel] = { 
-        chatAdded: chatAddedListener,
-        boardAdded: boardAddedListener,
-        boardRemoved: boardRemovedListener
-    };
-}
-
-function stopListeningToChannel(channel){
-    if(channelListeners[channel]){
-        // Unbind listeners using the returned functions (or implicit off call)
-        off(ref(db, `messages/${channel}`));
-        off(ref(db, `boards/${channel}`));
-        delete channelListeners[channel];
-    }
-}
-
-function switchChannel(newChannel){
-    if(!uid || newChannel === currentChannel) return;
-
-    // 1. Clear UI
+    // 3. Clear existing chat messages
     chatMessages.innerHTML = '';
-    boardList.innerHTML = '';
-
-    // 2. Stop old listeners
-    if(currentChannel){
-        stopListeningToChannel(currentChannel);
-    }
-
-    // 3. Set new channel
-    currentChannel = newChannel;
-    chatTitle.querySelector('.title').innerHTML = `//${newChannel.toUpperCase()} <span class="small" id="userCountSmall">0 users</span>`;
-    boardTitle.textContent = `//${newChannel.toUpperCase()} MESSAGE BOARD`;
-    channelSelect.value = newChannel;
-
-    // 4. Start new listeners
-    listenToChannel(newChannel);
-    listenToUsers(newChannel);
-
-    // 5. Update presence
-    if(presenceRef){
-        set(presenceRef, {
-            handle: myHandle,
-            channel: currentChannel,
-            timestamp: Date.now()
-        });
-    }
-
-    prependFeedEntry(`NETWORK: Switched to server //${newChannel.toUpperCase()}`);
-}
-
-function listenToUsers(channel){
-    // Clear old listeners on the user list if they exist
-    off(ref(db, 'presence'));
-    activeUsersList.innerHTML = '';
-    userCountSmall.textContent = '0 users';
-
-    const presenceRef = ref(db, 'presence');
-    let userList = [];
-
-    // Listener for user activity (added/changed)
-    onChildAdded(presenceRef, (snapshot) => {
-        const user = snapshot.val();
-        const userId = snapshot.key;
-        if(user.channel === channel){
-            if(!userList.find(u => u.uid === userId)) {
-                userList.push({...user, uid: userId});
-            }
-        }
-        renderUsers(userList, channel);
-    });
-
-    onChildChanged(presenceRef, (snapshot) => {
-        const user = snapshot.val();
-        const userId = snapshot.key;
-        let index = userList.findIndex(u => u.uid === userId);
-
-        if(user.channel === channel){
-            if(index === -1){
-                userList.push({...user, uid: userId});
-            } else {
-                userList[index] = {...user, uid: userId};
-            }
-        } else {
-            if(index !== -1){
-                userList.splice(index, 1);
-            }
-        }
-        renderUsers(userList, channel);
-    });
     
-    // Listener for user disconnect (removed)
-    onChildRemoved(presenceRef, (snapshot) => {
-        const userId = snapshot.key;
-        let index = userList.findIndex(u => u.uid === userId);
-        if(index !== -1){
-            userList.splice(index, 1);
-        }
-        renderUsers(userList, channel);
-    });
-
-    // Listener for all users for the Server Tracking Panel (Always listening to all)
-    listenToServerTracking();
-}
-
-function listenToServerTracking(){
-    const presenceRef = ref(db, 'presence');
+    // 4. Create and inject the iframe
+    const ortegaIframe = document.createElement('iframe');
+    ortegaIframe.id = 'ortegaChatIframe';
+    ortegaIframe.src = 'ortega.html';
     
-    off(presenceRef); // Stop previous listener
+    // Hide the chat input and users list 
+    document.querySelector('.chat-main').style.display = 'none'; 
+    document.querySelector('.chat-controls').style.display = 'none';
 
-    onValue(presenceRef, (snapshot) => {
-        const users = snapshot.val();
-        const allUsers = users || {};
-        renderServerTracking(allUsers);
-    });
+    // Make the chatMessages container full height for the iframe
+    chatMessages.style.flex = '1'; 
+    chatMessages.style.padding = '0';
+    chatMessages.style.position = 'absolute';
+    chatMessages.style.top = '0';
+    chatMessages.style.left = '0';
+    chatMessages.style.right = '0';
+    chatMessages.style.bottom = '0';
+
+    chatMessages.appendChild(ortegaIframe);
+
+    // 5. Remove glitch effect after delay
+    setTimeout(() => {
+        document.body.classList.remove('glitch-transition');
+        appendSystem(`[SYSTEM] Entering secured channel //ORTEGA. Type /exitortega to return.`);
+    }, 800);
 }
 
-function renderUsers(users, currentChannel){
-    activeUsersList.innerHTML = '';
-    const filteredUsers = users.filter(u => u.channel === currentChannel);
-    userCountSmall.textContent = `${filteredUsers.length} users`;
+// NEW FUNCTION: Exit Ortega Chat Mode
+function exitOrtegaChat() {
+    if (!inOrtegaMode) return;
 
-    filteredUsers.forEach(user => {
-        const el = document.createElement('div');
-        el.className = 'user-row';
-        el.innerHTML = `<span class="status-dot"></span><span class="uname">${user.handle}</span>`;
-        activeUsersList.appendChild(el);
-    });
+    // 1. Visually trigger glitch/transition
+    document.body.classList.add('glitch-transition');
+
+    // 2. Remove iframe and restore chat/input
+    const ortegaIframe = document.getElementById('ortegaChatIframe');
+    if (ortegaIframe) ortegaIframe.remove();
+
+    // Restore chat elements
+    document.querySelector('.chat-main').style.display = 'flex';
+    document.querySelector('.chat-controls').style.display = 'flex';
+    chatMessages.style.position = 'relative'; // Restore position
+    chatMessages.style.padding = '8px';
+
+    // 3. Reset state and listeners
+    inOrtegaMode = false;
+    currentChannel = channelSelect.value; // Revert to selected channel
+    listenChannel(currentChannel);
+    setPresence(myHandle, currentChannel); // Update presence
+
+    // 4. Update Title
+    updateUserCount({}); // Forces a title refresh based on new currentChannel
+
+    // 5. Remove glitch effect after delay
+    setTimeout(() => {
+        document.body.classList.remove('glitch-transition');
+        appendSystem(`[SYSTEM] Exited //ORTEGA. Returned to //${currentChannel.toUpperCase()}.`);
+    }, 800);
 }
 
-function renderServerTracking(allUsers){
-    serverTrackingList.innerHTML = '';
-    const channels = ['sam', 'exuro', 'nero', 'nora', 'loktal'];
-    let channelMap = {};
 
-    Object.keys(allUsers).forEach(userId => {
-        const user = allUsers[userId];
-        if(!channelMap[user.channel]) {
-            channelMap[user.channel] = [];
-        }
-        channelMap[user.channel].push(user.handle);
-    });
-
-    channels.forEach(channel => {
-        const users = channelMap[channel] || [];
-        const userCount = users.length;
-        const isCurrent = channel === currentChannel;
-
-        const branch = document.createElement('div');
-        branch.className = `server-branch ${isCurrent ? 'current-server' : ''}`;
-        
-        const title = document.createElement('div');
-        title.className = 'server-title';
-        const icon = userCount > 0 ? `<span class="status-icon animated">●</span>` : `<span class="status-icon">○</span>`;
-        title.innerHTML = `//${channel.toUpperCase()} (${userCount}) ${icon}`;
-        branch.appendChild(title);
-
-        const userListDiv = document.createElement('div');
-        userListDiv.className = 'user-list';
-        userListDiv.style.display = isCurrent ? 'block' : 'none'; // Show list for current channel by default
-
-        users.forEach(handle => {
-            const userEl = document.createElement('div');
-            userEl.textContent = handle;
-            userListDiv.appendChild(userEl);
-        });
-
-        branch.appendChild(userListDiv);
-        serverTrackingList.appendChild(branch);
-
-        title.addEventListener('click', () => {
-            userListDiv.style.display = userListDiv.style.display === 'none' ? 'block' : 'none';
-        });
-    });
+sendBtn.onclick = () => {
+if(!myHandle) {
+bootOverlay.style.display = 'flex';
+appRoot.style.display = 'none';
+return;
 }
+const val = chatInput.value.trim();
+const normalizedVal = val.toLowerCase(); 
 
-// --- Event Handlers and Initializers ---
+// NEW: Command Check for /operationcwal and /exitortega
+if(normalizedVal === '/operationcwal' && !inOrtegaMode){
+    enterOrtegaChat();
+    chatInput.value = '';
+    update(ref(db, `online/${currentChannel}/${uid}`), { typing: false });
+    return;
+}
+if(normalizedVal === '/exitortega' && inOrtegaMode){
+    exitOrtegaChat();
+    chatInput.value = '';
+    return;
+}
+// If in Ortega mode, simply clear input and don't send to database
+if (inOrtegaMode) {
+    chatInput.value = '';
+    return;
+}
+// END NEW Command Check
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Start preboot process
-    
-    // Add event listener to hide preboot and start boot sequence
-    const hidePreboot = () => {
-        prebootOverlay.style.display = 'none';
-        bootOverlay.style.display = 'flex';
-        typeBootLine();
-        document.removeEventListener('keydown', hidePreboot);
-        document.removeEventListener('click', hidePreboot);
-    };
-    document.addEventListener('keydown', hidePreboot, { once: true });
-    document.addEventListener('click', hidePreboot, { once: true });
+if(normalizedVal.startsWith('/d6')){
+const roll = Math.floor(Math.random() * 6) + 1;
+postMessage(currentChannel, myHandle, `rolled d6: ${roll}`);
+} else if(normalizedVal.startsWith('/d20')){
+const roll = Math.floor(Math.random() * 20) + 1;
+postMessage(currentChannel, myHandle, `rolled d20: ${roll}`);
+} else {
+postMessage(currentChannel, myHandle, val);
+}
+chatInput.value = '';
+};
 
-    listenToSystemFeed();
-
-    // Collapsible Panel Toggle Logic
-    document.querySelectorAll('.panel.collapsible .panel-title, .panel.collapsible .toggle-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const panel = e.currentTarget.closest('.panel');
-            panel.classList.toggle('collapsed');
-        });
-    });
+chatInput.addEventListener('keydown', e => {
+if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
 });
 
-bootBtn.addEventListener('click', () => {
-    myHandle = bootInput.value.trim();
-    if(myHandle.length < 3) {
-        bootStatus.textContent = "HANDLE must be at least 3 characters.";
-        bootInput.focus();
-        return;
-    }
+postBoardBtn.onclick = async () => {
+if(!myHandle || !uid) {
+bootOverlay.style.display = 'flex';
+appRoot.style.display = 'none';
+return;
+}
+const m = boardMsg.value.trim();
+if(!m || m.length > 1000) return;
+const r = push(ref(db, `board/${currentChannel}`));
+await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
+boardMsg.value = '';
+};
+boardMsg.addEventListener('keydown', e => {
+if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
+});
 
-    currentChannel = bootChannel.value;
+serverConfirm.onclick = () => {
+const newCh = channelSelect.value;
+if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
+document.body.classList.add('glitch-transition');
+setTimeout(() => {
+listenChannel(newCh);
+setPresence(myHandle, newCh);
+currentChannel = newCh;
+document.body.classList.remove('glitch-transition');
+}, 1000);
+appendSystem(`User '${myHandle}' switched to //${newCh.toUpperCase()}`);
+}
+};
+
+ortegaBtn.onclick = () => {
+ortegaClickCount++;
+if (ortegaClickCount >= 18) {
+document.body.classList.add('glitch-transition');
+setTimeout(() => {
+// Ortega container is shown using display: block, allowing it to push elements down
+ortegaIframeContainer.style.display = 'block'; 
+document.getElementById('ortegaIframe').src = 'ortega.html';
+}, 500);
+setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
+}
+};
+
+let typingTimeout = null;
+chatInput.addEventListener('input', () => {
+if(!uid || uid.startsWith('offline_')) return;
+const isTyping = chatInput.value.trim().length > 0;
+set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
+clearTimeout(typingTimeout);
+typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
+resetIdleTimer();
+});
+
+function updateTypingIndicator(obj){
+const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name);
+document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
+}
+
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function appendSystem(t){
+const d = document.createElement('div');
+d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
+d.style.fontSize = '12px';
+systemFeed.prepend(d);
+}
+
+bootBtn.addEventListener('click', async () => {
+let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
+if(!raw){
+bootStatus.textContent = "Please enter a handle.";
+return;
+}
+bootStatus.textContent = "Entering network...";
+let credential;
+try {
+credential = await signInAnonymously(auth);
+uid = credential.user.uid;
+
+// Hit Counter increment and display logic (Triggered only after successful boot/sign-in)
+const hitsRef = ref(db, 'hits/count');
+get(hitsRef).then(snap => {
+    let count = snap.val() || 0;
+    document.getElementById('hitCounter').textContent = 'Hits: ' + (count + 1); 
+    set(hitsRef, count + 1).catch(() => {});
+}).catch(() => {document.getElementById('hitCounter').textContent = 'Hits: Error';});
+// END HIT COUNTER
+
+const logRef = push(ref(db, 'visitors/logs'));
+set(logRef, {ts: Date.now(), handle: raw});
+} catch(e) {
+bootStatus.textContent = "Auth error: " + e.message;
+appendSystem('Authentication failed: ' + e.message);
+return;
+}
+myHandle = raw;
+currentChannel = bootChannel.value || 'exuro';
+let isGuilty = Math.random() < 0.01;
+if(isGuilty){
+bootStatus.textContent = `CAST IN THE NAME OF GOD : [ YE GUILTY ]`;
+document.body.classList.add('degauss');
+const dn = document.createElement('div');
+dn.id = 'dngodmode';
+dn.textContent = 'DNgodmode';
+document.body.appendChild(dn);
+return;
+}
+// Try DB in background - never block load
+setTimeout(() => {
+set(ref(db, `users/${uid}`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
+appendSystem('Profile save failed: ' + e.message);
+});
+setPresence(myHandle, currentChannel);
+}, 500);
+finishBoot();
+resetIdleTimer();
+});
+
+function finishBoot(){
+bootStatus.textContent = `CAST IN THE NAME OF GOD : [ YE NOT GUILTY ]`;
+setTimeout(() => {
+bootOverlay.style.display = 'none';
+appRoot.style.display = 'block';
+channelSelect.value = currentChannel;
+initializePanels();
+appendSystem('System ready');
+listenChannel(currentChannel);
+}, 900);
+}
+
+function initializePanels(){
+document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
+document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
+btn.onclick = () => {
+    const panel = btn.closest('.panel');
+    panel.classList.toggle('collapsed');
+    // Glitch effect when toggling panels
+    panel.classList.add('glitch-update');
+    setTimeout(() => panel.classList.remove('glitch-update'), 500);
+};
+});
+}
+
+// Pre-Boot Functions
+function startPreBoot() {
+    prebootOverlay.style.display = 'flex';
     bootOverlay.style.display = 'none';
-    appRoot.style.display = 'block';
+    appRoot.style.display = 'none';
+    document.addEventListener('keydown', dismissPreBoot, { once: true });
+    document.addEventListener('mousedown', dismissPreBoot, { once: true });
+    document.addEventListener('touchstart', dismissPreBoot, { once: true });
+}
 
-    // 1. Setup Presence
-    presenceRef = ref(db, `presence/${uid}`);
-    set(presenceRef, {
-        handle: myHandle,
-        channel: currentChannel,
-        timestamp: Date.now()
-    });
-    // Remove presence on disconnect
-    onDisconnect(presenceRef).remove();
+function dismissPreBoot() {
+    document.removeEventListener('keydown', dismissPreBoot);
+    document.removeEventListener('mousedown', dismissPreBoot);
+    document.removeEventListener('touchstart', dismissPreBoot);
 
-    // 2. Initial Channel Load
-    switchChannel(currentChannel);
-    
-    prependFeedEntry(`LOGIN: ${myHandle} has joined server //${currentChannel.toUpperCase()}`);
-    
-    // 3. Setup Board Post Deletion Listener
-    boardList.addEventListener('click', (e) => {
-        if(e.target.classList.contains('delete-btn')){
-            const postId = e.target.dataset.postId;
-            const postRef = ref(db, `boards/${currentChannel}/${postId}`);
-            
-            get(postRef).then(snapshot => {
-                const post = snapshot.val();
-                if(post && post.uid === uid){
-                    remove(postRef);
-                    prependFeedEntry(`BOARD: Deleted own post (ID: ${postId.substring(0, 4)}) on //${currentChannel.toUpperCase()}`);
-                } else {
-                    alert('You can only delete your own posts.');
-                }
-            });
-        }
-    });
-
-    // 4. Setup Stumble button
-    document.getElementById('stumbleBtn').addEventListener('click', () => {
-        const links = [
-            "https://tokillamockinggoblin.boards.net/",
-            "https://youtube.com/@Patrickauthor",
-            "https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview",
-            "https://spacehey.com/profile?id=4317004",
-            "https://web.archive.org/",
-            "https://www.oldversion.com/"
-        ];
-        const randomLink = links[Math.floor(Math.random() * links.length)];
-        window.open(randomLink, '_blank');
-        document.body.classList.add('glitch-transition');
-        setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
-    });
-});
-
-// Send Chat Message
-sendBtn.addEventListener('click', () => {
-    const text = chatInput.value.trim();
-    if(text.length > 0 && myHandle){
-        const messageRef = push(ref(db, `messages/${currentChannel}`));
-        set(messageRef, {
-            uid: uid,
-            handle: myHandle,
-            text: text,
-            timestamp: Date.now()
-        });
-        chatInput.value = '';
+    prebootOverlay.style.display = 'none';
+    bootOverlay.style.display = 'flex';
+    if (lineIdx < bootLines.length) {
+        typeBootLine();
     }
-});
-chatInput.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter'){
-        sendBtn.click();
-    }
-});
+}
 
-// Post Message to Board
-postBoardBtn.addEventListener('click', () => {
-    const text = boardMsg.value.trim();
-    if(text.length > 0 && myHandle){
-        const postRef = push(ref(db, `boards/${currentChannel}`));
-        set(postRef, {
-            uid: uid,
-            handle: myHandle,
-            text: text,
-            timestamp: Date.now()
-        });
-        boardMsg.value = '';
-        prependFeedEntry(`BOARD: ${myHandle} posted on //${currentChannel.toUpperCase()}`);
-    }
-});
+// START APPLICATION WITH PRE-BOOT
+startPreBoot();
+// END NEW
 
-// Switch Server
-serverConfirm.addEventListener('click', () => {
-    const newChannel = channelSelect.value;
-    if(newChannel !== currentChannel){
-        switchChannel(newChannel);
-    }
+watchOnline();
+watchPresenceEvents();
+appendSystem('Initializing...');
+setTimeout(() => updateMarqueeFromCache(), 800);
+
+setInterval(() => {
+const p = 80 + Math.floor(Math.random() * 11);
+bootBroadcast.textContent = `Timeline stability.. ${p}%`;
+bootBroadcast.classList.add('glitch-update');
+setTimeout(() => bootBroadcast.classList.remove('glitch-update'), 500);
+}, 5000);
+
+for(let i=0; i<8; i++){
+const p = document.createElement('div'); p.className = 'particle';
+p.style.left = Math.random()*100 + '%';
+p.style.animationDelay = Math.random()*5 + 's';
+marqueeWrap.appendChild(p);
+}
+
+document.querySelectorAll('.collapsible .toggle-btn:not(.bottom-toggle)').forEach(btn => {
+btn.onclick = () => btn.closest('.panel').classList.toggle('collapsed');
 });
 
-// Ortega Button Toggle
-ortegaBtn.addEventListener('click', () => {
-    const iframe = document.getElementById('ortegaIframe');
-    const container = document.getElementById('ortegaIframeContainer');
-
-    if (container.style.display === 'block') {
-        container.style.display = 'none';
-        ortegaBtn.textContent = 'Project ://ORTEGA (Under Maintenance)';
-        // Optional: Hide/remove the iframe from chat if it was open there too
-        const chatIframe = document.getElementById('ortegaChatIframe');
-        if(chatIframe) chatIframe.remove();
-        chatMessages.style.position = 'relative'; // Reset position
-    } else {
-        container.style.display = 'block';
-        iframe.src = 'https://robustpvp-lang.github.io/before-us-universe/ortega.html';
-        ortegaBtn.textContent = 'Hide Project ://ORTEGA';
-        
-        // Load Ortega into the chat window on the third click (hidden feature)
-        ortegaClickCount++;
-        if (ortegaClickCount >= 3) {
-            const chatIframe = document.createElement('iframe');
-            chatIframe.id = 'ortegaChatIframe';
-            chatIframe.src = 'https://robustpvp-lang.github.io/before-us-universe/ortega.html';
-            chatMessages.appendChild(chatIframe);
-            chatMessages.style.position = 'static'; // Allow iframe to take over
-            prependFeedEntry('ORTEGA: Interface deployed to chat window.');
-            ortegaClickCount = 0; // Reset
-        }
-    }
-});
-
-// Email List Button (Placeholder)
-document.getElementById('emailBtn').addEventListener('click', () => {
-    alert("Email signup is coming soon! Check back later.");
-});
-
-// Buy Book Button (Placeholder)
-document.getElementById('buyBookBtn').addEventListener('click', () => {
-    window.open("https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview", "_blank");
-});
-
-// Mind Game Button (Placeholder)
-document.getElementById('mindGameBtn').addEventListener('click', () => {
-    alert("Mind Game is currently under development. Be prepared.");
-});
-
-// Board Search Functionality
 boardSearch.addEventListener('input', () => {
-    const filter = boardSearch.value.toLowerCase();
-    document.querySelectorAll('.board-thread').forEach(thread => {
-        const text = thread.textContent.toLowerCase();
-        if(text.includes(filter) || filter === ''){
-            thread.style.display = 'block';
-        } else {
-            thread.style.display = 'none';
-        }
-    });
+const term = boardSearch.value.toLowerCase();
+Array.from(boardList.children).forEach(el => {
+el.style.display = el.textContent.toLowerCase().includes(term) ? '' : 'none';
 });
+});
+
+setInterval(() => {
+activeUsersList.classList.add('glitch-update');
+setTimeout(() => activeUsersList.classList.remove('glitch-update'), 500);
+}, 30000);
+
+window.addEventListener('beforeunload', () => {
+if(presenceRef) remove(presenceRef);
+});
+
+setInterval(async () => {
+try {
+const snap = await get(ref(db,'chat'));
+const data = snap.val()||{};
+for(const ch in data){
+for(const id in data[ch]){
+if(data[ch][id].ts && Date.now() - data[ch][id].ts > 24*60*60*1000){
+await remove(ref(db, `chat/${ch}/${id}`));
+}
+}
+}
+} catch(e){ appendSystem('Purge error'); }
+}, 60*60*1000);
+
+setInterval(() => {
+if (uid && currentChannel && !inOrtegaMode) {
+set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
+}
+}, 300000);
+
+let idleTimer;
+function resetIdleTimer() {
+clearTimeout(idleTimer);
+idleTimer = setTimeout(() => {
+bootOverlay.style.display = 'flex';
+appRoot.style.display = 'none';
+appendSystem('Idle timeout - returned to boot screen.');
+}, 600000); // 10 minutes
+}
+
+document.addEventListener('mousemove', resetIdleTimer);
+document.addEventListener('keydown', resetIdleTimer);
+document.addEventListener('touchstart', resetIdleTimer);
+
+const revivalLinks = Array.from(document.querySelectorAll('#revivalSitesPanel .panel-body a'))
+.map(a => a.href)
+.filter(href => href.startsWith('http') && !href.includes('discord.gg') && !href.includes('en.wikipedia.org') && !href.includes('x.com') && !href.includes('robustpvp-lang.github.io'));
+const toolbarLinks = [
+'https://tokillamockinggoblin.boards.net/',
+'https://youtube.com/@Patrickauthor',
+'https://reedsy.com/discovery/book/before-us-1-melphia-s-game-patrick-mcdonald#preview',
+'https://spacehey.com/profile?id=4317004',
+'https://web.archive.org/',
+'https://www.oldversion.com/'
+];
+revivalLinks.push(...toolbarLinks);
+
+document.getElementById('stumbleBtn').onclick = () => {
+const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)];
+const timestamp = Date.now();
+window.open(`${randomLink}?t=${timestamp}`, '_blank');
+};
+
+document.getElementById('emailBtn').onclick = () => {
+window.open('https://forms.gle/LBAkMsnVT7xrraYT8', '_blank');
+};
+
+document.getElementById('mindGameBtn').onclick = () => {
+document.body.classList.add('glitch-transition');
+setTimeout(() => window.open('mindgame.html', '_blank'), 500);
+setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
+};
+
+document.getElementById('buyBookBtn').onclick = () => {
+window.open('bookpage.html', '_blank');
+};
 </script>
 </body>
 </html>
