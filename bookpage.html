@@ -6,98 +6,164 @@
 <title>Before Us Universe — Melphia's Game</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-    body { font-family: 'Roboto Mono', monospace; background: #000; color: #fff; margin:0; padding:0; text-align: center; }
-    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-    h1 { font-family: 'Press Start 2P', cursive; color: #f00; font-size: 24px; line-height: 1.5; }
-    .cover { max-width: 300px; margin: 20px auto; display: block; border: 2px solid #555; border-radius: 4px; }
-    .synopsis { text-align: left; font-style: italic; color: #ccc; }
-    .author { margin-top: 40px; text-align: left; }
-    .buy-section { margin-top: 40px; }
-    .link-btn { 
-        display: inline-block;
-        padding: 12px 24px; 
-        background: #111; 
-        color: #fff; 
-        border: 1px solid #555; 
-        border-radius: 4px; 
-        cursor: pointer; 
-        font-size: 16px;
-        text-decoration: none;
-        margin: 10px;
-        position: relative;
-        transition: all 0.3s;
-    }
-    .link-btn:hover { background: #333; }
-    .donate-flash {
-        font-size: 10px;
-        color: #0f0;
-        margin-left: 8px;
-        animation: flash 1.5s infinite;
-    }
-    @keyframes flash {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
-    }
-    .alien-voice { 
-        color: #f00; 
-        font-style: normal;
-        animation: glitch 3s infinite;
-        display: inline-block;
-    }
-    @keyframes glitch {
-        0%, 90%, 100% { transform: translate(0); }
-        91% { transform: translate(-2px, 1px); }
-        92% { transform: translate(2px, -1px); }
-        93% { transform: translate(-1px, 2px); }
-        94% { transform: translate(1px, -2px); }
-    }
+    /* --- Theme Variables --- */
+    :root {
+        --primary-color: #00FFFF; /* Bright Cyan */
+        --accent-color: #00AAFF; /* Teal/Blue Accent */
+        --background-color: #000;
+        --text-color: #fff;
+        --border-color: rgba(0, 170, 255, 0.4); /* Faded Cyan */
+    }
+
+    body { font-family: 'Roboto Mono', monospace; background: var(--background-color); color: var(--text-color); margin:0; padding:0; text-align: center; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    
+    /* --- Title & Header --- */
+    h1 { 
+        font-family: 'Press Start 2P', cursive; 
+        color: var(--primary-color); 
+        font-size: 24px; 
+        line-height: 1.5; 
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.6); /* Cyan glow */
+    }
+    h2 {
+        color: var(--primary-color);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 5px;
+        margin-top: 30px;
+    }
+    
+    /* --- Cover & Synopsis --- */
+    .cover { 
+        max-width: 300px; 
+        margin: 20px auto; 
+        display: block; 
+        border: 2px solid var(--accent-color); /* Teal border */
+        border-radius: 4px; 
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); /* Soft external glow */
+    }
+    .synopsis { 
+        text-align: left; 
+        font-style: italic; 
+        color: #ccc; 
+        padding: 15px;
+        border: 1px solid var(--border-color);
+        background: rgba(0, 0, 0, 0.4);
+    }
+    .author { 
+        margin-top: 40px; 
+        text-align: left; 
+    }
+
+    /* --- Author Image --- */
+    .author-image {
+        float: right;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--accent-color);
+        margin-left: 20px;
+        margin-bottom: 10px;
+    }
+    
+    /* --- Buttons --- */
+    .buy-section { margin-top: 40px; }
+    .link-btn { 
+        display: inline-block;
+        padding: 12px 24px; 
+        background: rgba(0, 170, 255, 0.1); /* Semi-transparent teal background */
+        color: var(--primary-color); 
+        border: 1px solid var(--primary-color); 
+        border-radius: 4px; 
+        cursor: pointer; 
+        font-size: 16px;
+        text-decoration: none;
+        margin: 10px;
+        position: relative;
+        transition: all 0.3s;
+        box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    }
+    .link-btn:hover { 
+        background: rgba(0, 170, 255, 0.3); /* Brighter on hover */
+        box-shadow: 0 0 10px var(--primary-color);
+    }
+
+    /* --- Glitch Effects --- */
+    .donate-flash {
+        font-size: 10px;
+        color: #0f0; /* Keeping a slight green for "system alert" vibe */
+        margin-left: 8px;
+        animation: flash 1.5s infinite;
+    }
+    @keyframes flash {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+    .alien-voice { 
+        color: var(--accent-color);  /* Using the dimmer teal for the voice */
+        font-style: normal;
+        animation: glitch 3s infinite;
+        display: inline-block;
+    }
+    @keyframes glitch {
+        0%, 90%, 100% { transform: translate(0); }
+        91% { transform: translate(-2px, 1px); }
+        92% { transform: translate(2px, -1px); }
+        93% { transform: translate(-1px, 2px); }
+        94% { transform: translate(1px, -2px); }
+    }
 </style>
 </head>
 <body>
 <div class="container">
-    <h1>Before Us 1 : Melphia's Game</h1>
-    <img src="https://m.media-amazon.com/images/I/81zGy9ws6aL._SY466_.jpg" alt="Book Cover: Before Us - Melphia's Game by Patrick McDonald" class="cover">
+    <h1>Before Us 1 : Melphia's Game</h1>
+    
+        <img src="tradecover.jpeg" alt="Book Cover: Before Us - Melphia's Game by Patrick McDonald" class="cover">
 
-    <div class="synopsis">
-        <p>Life isn't easy. Stories rarely have happy endings.</p>
-        <p><span class="alien-voice">(What is this? a *reader?*…. )</span></p>
-        <p>So you found me.…I mean, this book. Which means you were looking for something right? <span class="alien-voice">(Gross..a primate? And what are these things..hands? How primitive.)</span></p>
-        <p>A troubled boy. A peculiar stone. Strange dreams that hint of worlds older than language.</p>
-        <p>Continue to read this in your own voice my mortal worm. I mean.. <span class="alien-voice">*Friend.*</span></p>
-        <p>Where were we? That's right..Brother turns against brother. Giants stir in the abyss. Empires rise and fall as galaxies burn.</p>
-        <p>In the middle of it: Sam, a young boy drifting through the crumbling orbit of his parents' addictions, his childhood in the 90s was fractured from the start, everyday was a quiet drama. But when dreams become visitations, he realizes he's not merely imagining these things, he's living them.</p>
-        <p><span class="alien-voice">(What's that smell? Skin? Bones? Are you holding me with bones inside of you?!? Disgusting!)</span></p>
-        <p>Mentors appear with half-truths, and gods who've been waiting longer than your kind has scurried on two legs tell of a threat that devours stars…drawing closer, its tendrils tasting worlds before swallowing them whole.</p>
-        <p><span class="alien-voice">*(But you clearly weren't looking for any of that right?)</span></p>
-    </div>
+    <div class="synopsis">
+        <p>Life isn't easy. Stories rarely have happy endings.</p>
+        <p><span class="alien-voice">(What is this? a *reader?*…. )</span></p>
+        <p>So you found me.…I mean, this book. Which means you were looking for something right? <span class="alien-voice">(Gross..a primate? And what are these things..hands? How primitive.)</span></p>
+        <p>A troubled boy. A peculiar stone. Strange dreams that hint of worlds older than language.</p>
+        <p>Continue to read this in your own voice my mortal worm. I mean.. <span class="alien-voice">*Friend.*</span></p>
+        <p>Where were we? That's right..Brother turns against brother. Giants stir in the abyss. Empires rise and fall as galaxies burn.</p>
+        <p>In the middle of it: Sam, a young boy drifting through the crumbling orbit of his parents' addictions, his childhood in the 90s was fractured from the start, everyday was a quiet drama. But when dreams become visitations, he realizes he's not merely imagining these things, he's living them.</p>
+        <p><span class="alien-voice">(What's that smell? Skin? Bones? Are you holding me with bones inside of you?!? Disgusting!)</span></p>
+        <p>Mentors appear with half-truths, and gods who've been waiting longer than your kind has scurried on two legs tell of a threat that devours stars…drawing closer, its tendrils tasting worlds before swallowing them whole.</p>
+        <p><span class="alien-voice">*(But you clearly weren't looking for any of that right?)</span></p>
+    </div>
 
-    <div class="author">
-        <h2>About the Author</h2>
-        <p>Patrick McDonald is a first time thriller and sci-fi author from North Carolina, now living in Washington state. The main character, Sam, is loosely based on Patrick's own childhood experiences and memories.</p>
-    </div>
+    <div class="author">
+        <h2>About the Author</h2>
+        
+                <img src="1595794292244.jpg" alt="Author Patrick McDonald" class="author-image">
+        
+        <p>Patrick McDonald is a first time thriller and sci-fi author from North Carolina, now living in Washington state. The main character, Sam, is loosely based on Patrick's own childhood experiences and memories.</p>
+        <div style="clear: both;"></div>     </div>
 
-    <div class="buy-section">
-        <h2>Get Your Copy</h2>
-        
-        <div style="margin: 30px 0;">
-            <h3>Buy on Amazon</h3>
-            <a class="link-btn" href="https://www.amazon.com/dp/B0G3WLSNFK" target="_blank" rel="noopener noreferrer">
-                Buy on Amazon
-            </a>
-        </div>
+    <div class="buy-section">
+        <h2>Get Your Copy</h2>
+        
+        <div style="margin: 30px 0;">
+            <h3>Buy on Amazon</h3>
+            <a class="link-btn" href="https://www.amazon.com/dp/B0G3WLSNFK" target="_blank" rel="noopener noreferrer">
+                Buy on Amazon
+            </a>
+        </div>
 
-        <div style="margin: 30px 0;">
-            <h3>Or Support Directly</h3>
-            <p>Donate $9.99 or more and receive an EPUB copy!</p>
-            <a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">
-                PayPal<span class="donate-flash">Donate</span>
-            </a>
-            <a class="link-btn" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">
-                Venmo<span class="donate-flash">Donate</span>
-            </a>
-            <p style="margin-top: 20px; font-size: 14px; color: #999;">After donation, you'll receive instructions on how to download your EPUB copy.</p>
-        </div>
-    </div>
+        <div style="margin: 30px 0;">
+            <h3>Or Support Directly</h3>
+            <p>Donate $9.99 or more and receive an EPUB copy!</p>
+            <a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">
+                PayPal<span class="donate-flash">Donate</span>
+            </a>
+            <a class="link-btn" href="https://venmo.com/hisrobustness" target="_blank" rel="noopener noreferrer">
+                Venmo<span class="donate-flash">Donate</span>
+            </a>
+            <p style="margin-top: 20px; font-size: 14px; color: #999;">After donation, you'll receive instructions on how to download your EPUB copy.</p>
+        </div>
+    </div>
 </div>
 </body>
 </html>
