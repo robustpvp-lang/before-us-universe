@@ -55,30 +55,6 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 #bootBroadcast{animation:glitch 3s infinite alternate;}
 #app{display:none;padding:56px 12px 12px 12px;box-sizing:border-box;height:100%;overflow:auto}
 
-/* NEW CWAL DISPLAY STYLES */
-#operationCwalDisplay{
-    position:fixed; 
-    inset:0; 
-    background:var(--bg); 
-    color:var(--fg); 
-    z-index:9999; 
-    display:none; 
-    padding:20px; 
-    overflow:auto;
-}
-#closeCwalBtn{
-    position:sticky; 
-    top:10px; 
-    right:10px; 
-    padding:8px 16px; 
-    background:var(--accent); 
-    color:#000; 
-    border:2px solid #000; 
-    cursor:pointer; 
-    font-family:'Press Start 2P', monospace;
-}
-/* END NEW CWAL STYLES */
-
 .title-bar{display:flex;gap:8px;flex-wrap:nowrap;padding:8px;background:transparent;color:#fff;font-family:'Press Start 2P';font-size:13px;align-items:center;justify-content:flex-start;overflow-x:auto}
 .title-bar::-webkit-scrollbar{height:12px;background:var(--panel-bg);border:1px solid var(--border);}
 .title-bar::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
@@ -96,7 +72,8 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 @media(max-width:600px){.chat-win{height:400px;}}
 .chat-title{display:flex;justify-content:space-between;align-items:center;padding:8px;background:linear-gradient(90deg,var(--yahoo-blue),var(--yahoo-dark));color:#fff;font-family:'Press Start 2P';font-size:12px}
 .chat-main{display:flex;flex:1;overflow:hidden}
-.chat-messages{flex:1;overflow:auto;background:#e6e6fa;border-right:1px solid rgba(0,0,0,0.1);padding:8px;color:#000}
+/* NEW: chat-messages needs to be able to display the ortega iframe */
+.chat-messages{flex:1;overflow:auto;background:#e6e6fa;border-right:1px solid rgba(0,0,0,0.1);padding:8px;color:#000; position: relative;}
 .chat-users{background:#fffacd;border-left:1px solid rgba(0,0,0,0.1);padding:8px;overflow:auto;width:200px}
 @media(max-width:700px){.chat-main{flex-direction:column}.chat-users{width:auto;border-left:0;border-top:1px solid rgba(0,0,0,0.1)}}
 .chat-row{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
@@ -122,6 +99,15 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 #serverSelectPanel .controls{display:flex;gap:8px;align-items:center}
 #serverSelectPanel select{flex:1;padding:12px;background:#001f1f;border:3px solid var(--border);color:var(--fg);font-weight:700;font-size:14px;border-radius:6px}
 #serverConfirm{background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;box-shadow:0 0 10px var(--accent)}
+
+/* NEW MEDIAPLAYER PANEL STYLES - Matches #serverSelectPanel height/padding */
+#mediaplayerPanel{
+    margin-bottom:12px;
+    padding:8px;
+    border:3px solid var(--border); 
+    background:var(--panel-bg);
+}
+
 #ortegaPanel button{width:100%;background:var(--accent);color:#000;padding:12px;border:3px solid #000;border-radius:6px;font-weight:900;cursor:pointer;font-size:14px; margin-bottom: 12px; /* Added spacing to separate from Mind Game */ }
 #serverTrackingPanel .server-branch{margin-bottom:12px}
 #serverTrackingPanel .server-title{font-weight:700;color:var(--accent);font-size:13px;cursor:pointer}
@@ -149,7 +135,7 @@ body{-webkit-overflow-scrolling:touch;overflow-y:scroll;}
 ::-webkit-scrollbar{width:12px;background:var(--panel-bg);border:1px solid var(--border);}
 ::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
 #revivalSitesPanel .panel-body{max-height:100px;overflow:auto;}
-#emailPanel .panel-body{height:auto;padding:4px;}
+#emailPanel .panel-body{height:auto;}
 #ytBody .panel-body{height:auto;}
 #soraBody .panel-body{height:auto;}
 #boardBody{height:600px;}
@@ -178,7 +164,7 @@ a { color: #0ff; text-decoration: underline; }
 #ortegaIframeContainer {display:none; height:auto; overflow-y:scroll; margin-top:10px; border:1px solid var(--border); padding:10px;}
 .bottom-section {position: relative; z-index: 0;}
 .link-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-#shortstreamsPanel {margin:0 auto;max-width:720px;}
+#shortstreamsPanel {margin:0 auto;max-width:720px; margin-bottom: 12px;}
 #galleriesPanel .panel-body {min-height:200px;overflow:auto;}
 #soraai-wrap iframe, #shortstreams-wrap iframe, #galleriesPanel iframe, #exe4219Body iframe {width:100%;max-width:720px;height:405px;border:4px solid var(--border);}
 @media(max-width:600px){#soraai-wrap iframe, #shortstreams-wrap iframe, #galleriesPanel iframe, #exe4219Body iframe {height:200px;}}
@@ -188,6 +174,16 @@ a { color: #0ff; text-decoration: underline; }
 0% {filter: brightness(1.5) contrast(1.5); transform: scale(1.05);}
 50% {filter: brightness(0.5) contrast(2); transform: scale(0.95);}
 100% {filter: brightness(1) contrast(1); transform: scale(1);}
+}
+/* New style for Ortega iframe within chat */
+#ortegaChatIframe {
+    width: 100%; 
+    height: 100%; 
+    border: none; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    background-color: #e6e6fa; /* Match chat background */
 }
 </style>
 </head>
@@ -224,10 +220,6 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div id="app">
 
-<div id="operationCwalDisplay">
-    <button id="closeCwalBtn">CLOSE [X]</button>
-    <div id="cwalContent"></div>
-</div>
 <div class="title-bar">
 <div class="logo">C://BUU.exe</div>
 <a class="link-btn" href="https://www.paypal.com/paypalme/pmcdon13" target="_blank" rel="noopener noreferrer">PayPal<span class="donate-flash">Donate</span></a>
@@ -242,6 +234,9 @@ a { color: #0ff; text-decoration: underline; }
 <button id="buyBookBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Buy book 1 now!</button>
 <button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Stumble</button>
 <button id="emailBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Join Email List</button>
+</div>
+<div class="panel" id="mediaplayerPanel">
+    <iframe src="mediaplayer.html" style="width:100%; height:100%; border:none; min-height: 52px;"></iframe>
 </div>
 <div class="panel" id="serverSelectPanel">
 <div class="small">SELECT SERVER</div>
@@ -284,6 +279,11 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+
+<a href="https://drive.google.com/file/d/1iEMPjIAgriMtsE4zN6md0X8ypgdU62H/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+    <div class="ad-banner">Jellyfish Jello 99 Cents!</div>
+</a>
+
 <div class="panel collapsible collapsed" id="shortstreamsPanel">
 <div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="soraBody">
@@ -293,6 +293,11 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+
+<a href="https://drive.google.com/file/d/1xliRFbjA8XLKZK92D_UMeczBU_Gkm2tP/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+    <div class="ad-banner">Get your Govt Issued Mind Helmet before next year to avoid memory fines!</div>
+</a>
+
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="fleetcommandBody">
@@ -300,6 +305,11 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+
+<a href="https://drive.google.com/file/d/1GcVs_0Yl8NJAFrrQdwgIJ_awnXirb1dW/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+    <div class="ad-banner">Hollow Earth Beaches! Visit Today!</div>
+</a>
+
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="boardBody">
@@ -313,6 +323,11 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+
+<a href="https://drive.google.com/file/d/1QBZXupjFo8cReq5OdrApwFxNfH-0uCb/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+    <div class="ad-banner">Atomic Peanut Butter! It glows with Flavor!</div>
+</a>
+
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//ENTITY(Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="entityBody">
@@ -320,6 +335,11 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+
+<a href="https://drive.google.com/file/d/1eRao1lQNER3hAVwQvw0ELFZbvAVrKH-6/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+    <div class="ad-banner">Did another you from the multiverse steal your credit? we can help!</div>
+</a>
+
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//TACTICALCOMMAND(Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="tacticalBody">
@@ -327,6 +347,9 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+
+<a href="https://sora.chatgpt.com/p/s_692415bc74c08191a0a5348aee788ebc?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.h1JfPIVieaPG" target="_blank"><div class="ad-banner">Teleportors and Syntheizers only 999 credits</div></a>
+
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//sora.ai</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="soraAiBody">
@@ -336,6 +359,9 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+
+<a href="https://sora.chatgpt.com/p/s_692415a63f0081918d36fcfb2535670c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kJdH5e8d4z6b" target="_blank"><div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div></a>
+
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//4219.exe</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="exe4219Body">
@@ -351,6 +377,9 @@ a { color: #0ff; text-decoration: underline; }
     </div>
     <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
   </div>
+
+<a href="https://sora.chatgpt.com/p/s_6917fddaa4288191b1f8ebac4e791e56?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.Sigsv6ochclj" target="_blank"><div class="ad-banner">Do you need more arms? Try Hexapro!</div></a>
+
   <div class="panel collapsible collapsed" id="revivalSitesPanel">
     <div class="panel-title"><div class="small">//REVIVAL.SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
     <div class="panel-body" style="max-height:500px;overflow:auto">
@@ -370,6 +399,9 @@ a { color: #0ff; text-decoration: underline; }
 <div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+
+<a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank"><div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div></a>
+
 <button id="mindGameBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:100%;">//Mind Game (Under Construction)</button>
 <div id="ortegaPanel">
   <button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
@@ -377,10 +409,7 @@ a { color: #0ff; text-decoration: underline; }
     <iframe id="ortegaIframe" src="" style="width:100%; height:100%;"></iframe>
   </div>
 </div>
-<a href="https://sora.chatgpt.com/p/s_692415bc74c08191a0a5348aee788ebc?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.h1JfPIVieaPG" target="_blank"><div class="ad-banner">Teleportors and Syntheizers only 999 credits</div></a>
-<a href="https://sora.chatgpt.com/p/s_692415a63f0081918d36fcfb2535670c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kJdH5e8d4z6b" target="_blank"><div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div></a>
-<a href="https://sora.chatgpt.com/p/s_6917fddaa4288191b1f8ebac4e791e56?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.Sigsv6ochclj" target="_blank"><div class="ad-banner">Do you need more arms? Try Hexapro!</div></a>
-<a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank"><div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div></a>
+
 <div class="link-row">
 <a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
 <a class="link-btn" href="https://web.archive.org/" target="_blank" rel="noopener noreferrer">Wayback Machine</a>
@@ -392,7 +421,7 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 </div>
 </div>
-  <script type="module">
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect, update, get, off, onChildRemoved, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -429,10 +458,6 @@ const boardSearch = document.getElementById('boardSearch');
 
 // NEW ELEMENTS
 const prebootOverlay = document.getElementById('prebootOverlay');
-const prebootIframe = document.getElementById('prebootIframe');
-const operationCwalDisplay = document.getElementById('operationCwalDisplay');
-const cwalContent = document.getElementById('cwalContent');
-const closeCwalBtn = document.getElementById('closeCwalBtn');
 const ortegaIframeContainer = document.getElementById('ortegaIframeContainer');
 // END NEW ELEMENTS
 
@@ -459,7 +484,6 @@ lineIdx++;
 setTimeout(typeBootLine, 240 + Math.random()*360);
 }
 }
-// typeBootLine() is now called by dismissPreBoot
 
 onAuthStateChanged(auth, u => { if(u) uid = u.uid; });
 
@@ -596,7 +620,15 @@ if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' left //${ch.toU
 });
 }
 
+// Global flag to track if we are in the Ortega Iframe mode
+let inOrtegaMode = false;
+
 function listenChannel(ch){
+// If we are exiting Ortega mode, remove the iframe
+if (inOrtegaMode) {
+    exitOrtegaChat();
+}
+
 for(const k in channelListeners){
 if(channelListeners[k].ref) off(channelListeners[k].ref);
 }
@@ -615,6 +647,9 @@ listenBoard(ch);
 }
 
 function renderChatMessage(o, key){
+// Do not render normal messages if we are in Ortega mode
+if (inOrtegaMode) return;
+
 const row = document.createElement('div'); row.className = 'chat-row';
 const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
 const bub = document.createElement('div'); bub.className = 'chat-bubble';
@@ -696,48 +731,81 @@ el.appendChild(reply);
 boardList.appendChild(el);
 }
 
-// NEW: Function to load the external HTML with glitch effect
-function loadOperationCwal() {
-    // 1. Trigger the glitch effect immediately on the body
+// NEW FUNCTION: Enter Ortega Chat Mode
+function enterOrtegaChat() {
+    // 1. Visually trigger glitch/transition
     document.body.classList.add('glitch-transition');
 
-    // 2. Hide app and show project display
-    appRoot.style.display = 'none';
-    operationCwalDisplay.style.display = 'block';
+    // 2. Set the global flag and update title
+    inOrtegaMode = true;
+    currentChannel = 'ortega'; // Use a temporary placeholder 'channel'
 
-    const url = 'operationcwal.html'; 
-    cwalContent.innerHTML = `<p style="color:var(--fg);">[SYSTEM] Executing Command /operationcwal. Loading ${url}...</p>`;
+    // Update title
+    chatTitle.innerHTML = `//ORTEGA <span class="small">[Command Interface]</span>`;
+    
+    // 3. Clear existing chat messages
+    chatMessages.innerHTML = '';
+    
+    // 4. Create and inject the iframe
+    const ortegaIframe = document.createElement('iframe');
+    ortegaIframe.id = 'ortegaChatIframe';
+    ortegaIframe.src = 'ortega.html';
+    
+    // Hide the chat input and users list 
+    document.querySelector('.chat-main').style.display = 'none'; 
+    document.querySelector('.chat-controls').style.display = 'none';
 
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(htmlContent => {
-            // Inject content
-            cwalContent.innerHTML = htmlContent;
+    // Make the chatMessages container full height for the iframe
+    chatMessages.style.flex = '1'; 
+    chatMessages.style.padding = '0';
+    chatMessages.style.position = 'absolute';
+    chatMessages.style.top = '0';
+    chatMessages.style.left = '0';
+    chatMessages.style.right = '0';
+    chatMessages.style.bottom = '0';
 
-            // 3. Remove glitch effect after a short delay (e.g., 800ms)
-            setTimeout(() => {
-                document.body.classList.remove('glitch-transition');
-            }, 800); 
-        })
-        .catch(error => {
-            // Remove glitch immediately on error
-            document.body.classList.remove('glitch-transition');
+    chatMessages.appendChild(ortegaIframe);
 
-            cwalContent.innerHTML = `<p style="color:red;">[ERROR] Could not load PROJECT CWA: ${error.message}</p>`;
-        });
+    // 5. Remove glitch effect after delay
+    setTimeout(() => {
+        document.body.classList.remove('glitch-transition');
+        appendSystem(`[SYSTEM] Entering secured channel //ORTEGA. Type /exitortega to return.`);
+    }, 800);
 }
 
-// NEW: Function to close the external HTML view and return to chat
-closeCwalBtn.onclick = function() {
-    operationCwalDisplay.style.display = 'none';
-    appRoot.style.display = 'block'; 
-    cwalContent.innerHTML = ''; // Clear the content
-};
+// NEW FUNCTION: Exit Ortega Chat Mode
+function exitOrtegaChat() {
+    if (!inOrtegaMode) return;
+
+    // 1. Visually trigger glitch/transition
+    document.body.classList.add('glitch-transition');
+
+    // 2. Remove iframe and restore chat/input
+    const ortegaIframe = document.getElementById('ortegaChatIframe');
+    if (ortegaIframe) ortegaIframe.remove();
+
+    // Restore chat elements
+    document.querySelector('.chat-main').style.display = 'flex';
+    document.querySelector('.chat-controls').style.display = 'flex';
+    chatMessages.style.position = 'relative'; // Restore position
+    chatMessages.style.padding = '8px';
+
+    // 3. Reset state and listeners
+    inOrtegaMode = false;
+    currentChannel = channelSelect.value; // Revert to selected channel
+    listenChannel(currentChannel);
+    setPresence(myHandle, currentChannel); // Update presence
+
+    // 4. Update Title
+    updateUserCount({}); // Forces a title refresh based on new currentChannel
+
+    // 5. Remove glitch effect after delay
+    setTimeout(() => {
+        document.body.classList.remove('glitch-transition');
+        appendSystem(`[SYSTEM] Exited //ORTEGA. Returned to //${currentChannel.toUpperCase()}.`);
+    }, 800);
+}
+
 
 sendBtn.onclick = () => {
 if(!myHandle) {
@@ -746,16 +814,26 @@ appRoot.style.display = 'none';
 return;
 }
 const val = chatInput.value.trim();
-const normalizedVal = val.toLowerCase(); // For easy command checking
+const normalizedVal = val.toLowerCase(); 
 
-// NEW: Command Check for /operationcwal
-if(normalizedVal === '/operationcwal'){
-    loadOperationCwal();
+// NEW: Command Check for /operationcwal and /exitortega
+if(normalizedVal === '/operationcwal' && !inOrtegaMode){
+    enterOrtegaChat();
     chatInput.value = '';
     update(ref(db, `online/${currentChannel}/${uid}`), { typing: false });
     return;
 }
-// END NEW
+if(normalizedVal === '/exitortega' && inOrtegaMode){
+    exitOrtegaChat();
+    chatInput.value = '';
+    return;
+}
+// If in Ortega mode, simply clear input and don't send to database
+if (inOrtegaMode) {
+    chatInput.value = '';
+    return;
+}
+// END NEW Command Check
 
 if(normalizedVal.startsWith('/d6')){
 const roll = Math.floor(Math.random() * 6) + 1;
@@ -774,12 +852,7 @@ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }
 });
 
 postBoardBtn.onclick = async () => {
-if(!myHandle) {
-bootOverlay.style.display = 'flex';
-appRoot.style.display = 'none';
-return;
-}
-if(!uid) {
+if(!myHandle || !uid) {
 bootOverlay.style.display = 'flex';
 appRoot.style.display = 'none';
 return;
@@ -813,7 +886,7 @@ ortegaClickCount++;
 if (ortegaClickCount >= 18) {
 document.body.classList.add('glitch-transition');
 setTimeout(() => {
-// NEW: Ortega container is shown using display: block, allowing it to push elements down
+// Ortega container is shown using display: block, allowing it to push elements down
 ortegaIframeContainer.style.display = 'block'; 
 document.getElementById('ortegaIframe').src = 'ortega.html';
 }, 500);
@@ -857,14 +930,14 @@ try {
 credential = await signInAnonymously(auth);
 uid = credential.user.uid;
 
-// NEW: Hit Counter increment and display logic moves here (after successful sign-in)
+// Hit Counter increment and display logic (Triggered only after successful boot/sign-in)
 const hitsRef = ref(db, 'hits/count');
 get(hitsRef).then(snap => {
     let count = snap.val() || 0;
-    document.getElementById('hitCounter').textContent = 'Hits: ' + (count + 1); // Increment for display
-    set(hitsRef, count + 1).catch(() => {}); // Write incremented value
+    document.getElementById('hitCounter').textContent = 'Hits: ' + (count + 1); 
+    set(hitsRef, count + 1).catch(() => {});
 }).catch(() => {document.getElementById('hitCounter').textContent = 'Hits: Error';});
-// END NEW HIT COUNTER
+// END HIT COUNTER
 
 const logRef = push(ref(db, 'visitors/logs'));
 set(logRef, {ts: Date.now(), handle: raw});
@@ -914,14 +987,14 @@ document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
 btn.onclick = () => {
     const panel = btn.closest('.panel');
     panel.classList.toggle('collapsed');
-    // SUGGESTION: Glitch effect when toggling panels
+    // Glitch effect when toggling panels
     panel.classList.add('glitch-update');
     setTimeout(() => panel.classList.remove('glitch-update'), 500);
 };
 });
 }
 
-// NEW: Pre-Boot Functions
+// Pre-Boot Functions
 function startPreBoot() {
     prebootOverlay.style.display = 'flex';
     bootOverlay.style.display = 'none';
@@ -1001,7 +1074,7 @@ await remove(ref(db, `chat/${ch}/${id}`));
 }, 60*60*1000);
 
 setInterval(() => {
-if (uid && currentChannel) {
+if (uid && currentChannel && !inOrtegaMode) {
 set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
 }
 }, 300000);
