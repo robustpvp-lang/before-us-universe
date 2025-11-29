@@ -179,19 +179,33 @@ async function loadPlaylist() {
             theme: '#0ff',
             loop: 'all',
             order: 'random',
-            mini: false, // Set to false to show full controls including buttons and track name
-            fixed: true // Keeps it fixed like a bar
+            mini: false, 
+            fixed: true
         });
-        // DISTORTION + GLITCH ENGINE
+
+        // --- DISTORTION + GLITCH ENGINE SETUP ---
         let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let trackSource = null;
-        let staticNoise = null;
+        let trackSource = null; // Will store the MediaElementSourceNode
         let distortionActive = false;
         let distortionTimer = null;
         let intervals = [];
         const staticOverlay = document.getElementById("static-overlay");
         const whisper = document.getElementById("whisper");
         const container = document.getElementById("player-container");
+
+        // Function to set up the Web Audio graph (Run only ONCE)
+        function setupAudioContext() {
+            if (trackSource) return; // Already set up
+
+            // Create the source from the existing APlayer audio element
+            trackSource = audioCtx.createMediaElementSource(player.audio);
+            
+            // Connect the source directly to the destination
+            trackSource.connect(audioCtx.destination);
+            
+            console.log("Web Audio Context initialized and connected.");
+        }
+
         function createStaticNoise() {
             const bufferSize = audioCtx.sampleRate * 3;
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -205,6 +219,7 @@ async function loadPlaylist() {
             noise.connect(gain).connect(audioCtx.destination);
             return { noise, gain };
         }
+
         function whisperEvent() {
             whisper.textContent = Math.random() > 0.5
                 ? "“…you opened the wrong door…”"
@@ -212,8 +227,12 @@ async function loadPlaylist() {
             whisper.style.opacity = 1;
             setTimeout(() => whisper.style.opacity = 0, 2500);
         }
+
         function activateDistortionMode() {
             if (distortionActive) return;
+            // Ensure audio context is resumed (required for all audio manipulation)
+            audioCtx.resume(); 
+            
             distortionActive = true;
             staticOverlay.currentTime = 0;
             staticOverlay.play().catch(console.error);
@@ -222,15 +241,18 @@ async function loadPlaylist() {
             intervals.push(setInterval(() => { container.classList.add("glitching"); setTimeout(() => container.classList.remove("glitching"), 300); }, 4000));
             intervals.push(setInterval(() => { document.body.style.filter = "invert(1)"; setTimeout(() => document.body.style.filter = "invert(0)", 500); }, 10000));
             intervals.push(setInterval(() => { if (Math.random() < 0.33) whisperEvent(); }, 12000));
+            
             const sn = createStaticNoise();
             sn.noise.start();
             staticNoise = sn;
+            
             intervals.push(setInterval(() => {
-                if (!trackSource) return;
+                // Adjust volume and rate directly on the player's underlying audio element
                 player.audio.volume = 0.7 + Math.random() * 0.25;
-                trackSource.playbackRate.value = 1 + (Math.random() * 0.07 - 0.035);
+                player.audio.playbackRate = 1 + (Math.random() * 0.07 - 0.035);
             }, 8000));
         }
+
         function resetDistortion() {
             distortionActive = false;
             staticOverlay.pause();
@@ -239,24 +261,34 @@ async function loadPlaylist() {
             container.classList.remove("luxpulse", "glitching");
             document.body.style.filter = "invert(0)";
             if (staticNoise) { staticNoise.noise.stop(); staticNoise = null; }
-            if (trackSource) trackSource.playbackRate.value = 1.0;
-            player.audio.volume = 1.0;
+            
+            // Set volume and rate back to normal
+            player.audio.playbackRate = 1.0;
+            player.audio.volume = 1.0; 
+            
             if (distortionTimer) { clearTimeout(distortionTimer); distortionTimer = null; }
             intervals.forEach(clearInterval);
             intervals = [];
         }
-        // PLAYER HOOKS
+
+        // --- PLAYER HOOKS ---
         player.on('play', () => {
+            // CRITICAL STEP: Setup the context only once
+            setupAudioContext(); 
+            
             resetDistortion();
             audioCtx.resume();
-            trackSource = audioCtx.createMediaElementSource(player.audio);
-            trackSource.connect(audioCtx.destination);
+            
+            // Start the timer for distortion mode
             distortionTimer = setTimeout(activateDistortionMode, 30000);
         });
+        
+        // Ensure distortion is reset on pause/end/track switch
         player.on('pause', resetDistortion);
         player.on('ended', resetDistortion);
         player.on('listswitch', resetDistortion);
         window.addEventListener('beforeunload', resetDistortion);
+
     } catch (error) {
         console.error('Playlist load failed:', error);
         document.getElementById("aplayer").innerHTML = "<p style='color: red; text-align: center;'>Error loading playlist. Please try again.</p>";
