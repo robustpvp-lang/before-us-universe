@@ -57,11 +57,11 @@
         50% { opacity: 0.3; text-shadow: none; }
     }
 
-    /* --- SVG Ghost Entity Wrapper --- */
+    /* --- Image Ghost Entity Wrapper --- */
     .ghost-wrapper {
         position: relative;
         width: 100%;
-        height: 450px;
+        height: 450px; /* Adjust height as needed for your image */
         display: flex;
         justify-content: center;
         align-items: center;
@@ -69,52 +69,68 @@
         overflow: hidden;
         border-top: 1px dashed rgba(0, 255, 255, 0.3);
         border-bottom: 1px dashed rgba(0, 255, 255, 0.3);
+        background-color: rgba(0, 10, 10, 0.4); /* Background for the image area */
     }
 
-    /* The SVG Container */
-    .ortega-svg {
+    .ortega-image {
         width: 100%;
         height: 100%;
+        object-fit: contain; /* or 'cover' depending on desired cropping */
         position: absolute;
         top: 0;
         left: 0;
         z-index: 1;
-        filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+        filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.4)) url(#glitch-filter);
+        animation: floatImage 6s ease-in-out infinite, glitchAnim 0.8s infinite;
     }
 
-    /* --- Entity Animations --- */
-    
-    /* Spectral noise filter animation */
-    #displacement-turbulence {
-        animation: turbulenceShift 5s linear infinite;
-    }
-    @keyframes turbulenceShift {
-        0% { baseFrequency: 0.01 0.01; }
-        50% { baseFrequency: 0.02 0.04; }
-        100% { baseFrequency: 0.01 0.01; }
-    }
+    /* Blinking Eyes Overlay - A simple overlay to simulate blinking */
+    .blinking-eyes-overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 3; /* Above the image, below the source code */
+        pointer-events: none;
+        animation: blink 4s infinite step-end; /* Adjust timing as needed */
+    }
 
-    /* Floating motion for the Face */
-    .face-group {
-        transform-origin: center;
-        animation: floatFace 6s ease-in-out infinite;
-    }
-    @keyframes floatFace {
+    @keyframes blink {
+        0%, 100% { background-color: transparent; }
+        10%, 12% { background-color: rgba(0, 0, 0, 0.8); } /* Quick dark flash */
+    }
+
+
+    /* --- Glitch Filter Definition (SVG Filter) --- */
+    svg {
+        position: absolute; /* Needed for the filter to work correctly */
+        width: 0;
+        height: 0;
+    }
+    .glitch-filters {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+    }
+
+    @keyframes floatImage {
         0% { transform: translateY(0); }
         50% { transform: translateY(-15px); }
         100% { transform: translateY(0); }
     }
 
-    /* Eye Pulse */
-    .eyes-group {
-        animation: eyePulse 4s ease-in-out infinite alternate;
-    }
-    @keyframes eyePulse {
-        0% { filter: drop-shadow(0 0 2px cyan); opacity: 0.7; }
-        100% { filter: drop-shadow(0 0 15px cyan); opacity: 1; }
-    }
-
-
+    /* Glitch Animation */
+    @keyframes glitchAnim {
+        0% { transform: translate(0); filter: hue-rotate(0deg); }
+        20% { transform: translate(-2px, 2px); filter: hue-rotate(90deg); }
+        40% { transform: translate(-3px, -3px); filter: hue-rotate(180deg); }
+        60% { transform: translate(4px, 4px); filter: hue-rotate(270deg); }
+        80% { transform: translate(2px, -2px); filter: hue-rotate(360deg); }
+        100% { transform: translate(0); filter: hue-rotate(0deg); }
+    }
+    
     /* --- DOS/CMD Source Code Overlay --- */
     .source-code-overlay {
         position: absolute;
@@ -123,7 +139,7 @@
         width: 100%;
         height: 100%;
         pointer-events: none;
-        z-index: 2;
+        z-index: 4; /* Above the image and blinking effect */
         overflow: hidden;
         background: repeating-linear-gradient(
             to bottom,
@@ -225,43 +241,20 @@
     </div>
     
     <div class="ghost-wrapper">
-        <svg class="ortega-svg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <filter id="spectral-noise">
-                    <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise" id="displacement-turbulence"/>
-                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" />
-                    <feGaussianBlur stdDeviation="1" />
-                </filter>
-            </defs>
+        <svg class="glitch-filters">
+            <filter id="glitch-filter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G" />
+                <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0" result="color"/>
+                <feOffset in="color" dx="-2" dy="-2" result="offset1" />
+                <feOffset in="color" dx="2" dy="2" result="offset2" />
+                <feBlend in="SourceGraphic" in2="offset1" mode="lighten" result="blend1" />
+                <feBlend in="blend1" in2="offset2" mode="lighten" />
+            </filter>
+        </svg>
 
-            <g class="face-group">
-                <path d="M 330 180 
-                         Q 330 120 400 120 
-                         Q 470 120 470 180 
-                         L 460 280 
-                         Q 460 350 400 380 
-                         Q 340 350 340 280 
-                         Z" 
-                      fill="rgba(0, 10, 10, 0.4)" 
-                      stroke="#00FFFF" 
-                      stroke-width="1.5" 
-                      filter="url(#spectral-noise)" 
-                      opacity="0.5"/> <path d="M 400 120 L 400 160 M 350 200 L 370 240 M 450 200 L 430 240 M 400 380 L 400 340" 
-                      stroke="#00FFFF" 
-                      stroke-width="0.5" 
-                      opacity="0.3" 
-                      fill="none" 
-                      filter="url(#spectral-noise)"/>
-
-                <g class="eyes-group">
-                    <path d="M 350 210 L 390 220 L 350 230 Z" fill="#00FFFF" />
-                    <circle cx="360" cy="220" r="2" fill="white" />
-                    
-                    <path d="M 450 210 L 410 220 L 450 230 Z" fill="#00FFFF" />
-                    <circle cx="440" cy="220" r="2" fill="white" />
-                </g>
-            </g>
-        </svg>
+        <img src="ntd-face (1).jpeg" alt="Ortega Entity" class="ortega-image">
+        <div class="blinking-eyes-overlay"></div>
         
         <div class="source-code-overlay">
             <div class="code-line">C:\> INIT_ENTITY_RENDER.EXE</div>
@@ -288,19 +281,13 @@
     <div class="disclaimer">
         <strong style="font-size: 1.3rem;">:// ORTEGA — Acknowledgment Required //</strong><br>
         Your presence is noted, **User**. The system requests acknowledgment before revealing what lies beneath its surface. The choice is yours.<br>
-        <br>This is simply a companion site for the book series "Before Us" by Patrick McDonald. This site is an immersive experience within that realm and nothing more. 
-        <br>If you choose to stay, then take a breathe and click the space below. Abandon Time All Ye Who Enter Here.
+        <br>
         <strong style="font-size: 1.2rem; letter-spacing: 2px;">&gt; Proceed with awareness. &lt;</strong>
     </div>
 
 </div>
 
 <div id="flash-overlay"></div>
-
-<script>
-    // Removed bluePill() and redPill() functions as buttons were removed.
-    // Flash animation logic is no longer required.
-</script>
 
 </body>
 </html>
