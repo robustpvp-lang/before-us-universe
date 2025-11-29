@@ -1,76 +1,257 @@
-import React, { useState, useEffect, useRef } from 'react';
-
-const SpaceShooter = () => {
-  const canvasRef = useRef(null);
-  const [gameState, setGameState] = useState('title');
-  const [score, setScore] = useState(0);
-  const [glitchPhase, setGlitchPhase] = useState(0);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4219 Space Shooter</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: monospace;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    
+    #titleScreen {
+      text-align: center;
+    }
+    
+    #titleScreen h1 {
+      font-size: 96px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      transition: all 0.1s;
+    }
+    
+    #titleScreen p {
+      font-size: 24px;
+      margin-bottom: 40px;
+      color: #00ffff;
+    }
+    
+    #startBtn {
+      padding: 20px 40px;
+      font-size: 24px;
+      background: #00ffff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      font-family: monospace;
+    }
+    
+    #startBtn:hover {
+      background: #00cccc;
+      transform: scale(1.05);
+    }
+    
+    #controls {
+      margin-top: 30px;
+      font-size: 18px;
+      color: #00ffff;
+    }
+    
+    #controls p {
+      margin: 5px 0;
+    }
+    
+    #gameScreen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    canvas {
+      border: 4px solid #00ffff;
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
+      display: block;
+    }
+    
+    #gameoverScreen {
+      display: none;
+      text-align: center;
+    }
+    
+    #gameoverScreen h2 {
+      font-size: 72px;
+      color: #ff0000;
+      margin-bottom: 20px;
+      text-shadow: 4px 4px 0px #000, 0 0 30px #ff0000;
+    }
+    
+    #gameoverScreen p {
+      font-size: 36px;
+      color: #00ffff;
+      margin-bottom: 40px;
+    }
+    
+    #retryBtn {
+      padding: 20px 40px;
+      font-size: 24px;
+      background: #00ffff;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      font-family: monospace;
+    }
+    
+    #retryBtn:hover {
+      background: #00cccc;
+      transform: scale(1.05);
+    }
+    
+    @media (max-width: 600px) {
+      #titleScreen h1 { font-size: 48px; }
+      #startBtn, #retryBtn { padding: 15px 30px; font-size: 18px; }
+      canvas { width: 100%; height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div id="titleScreen">
+    <h1 id="titleText">1942</h1>
+    <p id="subtitle">THE YEAR OF WAR</p>
+    <button id="startBtn">START MISSION</button>
+    <div id="controls">
+      <p>WASD - Move Ship</p>
+      <p>J - Fire Weapons</p>
+    </div>
+  </div>
   
-  const gameRef = useRef({
-    player: { x: 375, y: 500, width: 50, height: 60, speed: 6 },
-    bullets: [],
-    enemies: [],
-    stars: [],
-    explosions: [],
-    particles: [],
-    keys: {},
-    lastShot: 0,
-    enemySpawnTimer: 0,
-    scrollOffset: 0,
-    score: 0
-  });
+  <div id="gameScreen">
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+  </div>
+  
+  <div id="gameoverScreen">
+    <h2>MISSION FAILED</h2>
+    <p id="finalScore">FINAL SCORE: 00000000</p>
+    <button id="retryBtn">RETRY MISSION</button>
+  </div>
 
-  useEffect(() => {
-    if (gameState === 'title') {
-      const phases = [0, 500, 1000, 1500, 2000, 2500];
-      let currentPhase = 0;
-      
-      const glitchInterval = setInterval(() => {
-        currentPhase++;
-        if (currentPhase < phases.length) {
-          setGlitchPhase(currentPhase);
+  <script>
+    const titleScreen = document.getElementById('titleScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const gameoverScreen = document.getElementById('gameoverScreen');
+    const titleText = document.getElementById('titleText');
+    const subtitle = document.getElementById('subtitle');
+    const startBtn = document.getElementById('startBtn');
+    const retryBtn = document.getElementById('retryBtn');
+    const finalScoreEl = document.getElementById('finalScore');
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    let gameState = 'title';
+    let score = 0;
+    let glitchPhase = 0;
+    let game = {};
+    let animationId = null;
+    
+    // Title screen glitch effect
+    const glitchSequence = [
+      { text: '1942', color: '#ffff00' },
+      { text: '19█2', color: '#ffff00' },
+      { text: '1█4█', color: '#ffff00' },
+      { text: '█2█9', color: '#ff0000' },
+      { text: '42█9', color: '#00ffff' },
+      { text: '4219', color: '#00ffff' }
+    ];
+    
+    let glitchInterval = setInterval(() => {
+      if (glitchPhase < glitchSequence.length) {
+        const current = glitchSequence[glitchPhase];
+        titleText.textContent = current.text;
+        titleText.style.color = current.color;
+        
+        if (glitchPhase >= 1 && glitchPhase <= 4) {
+          const randomX = Math.random() * 10 - 5;
+          const randomY = Math.random() * 10 - 5;
+          titleText.style.textShadow = `${randomX}px ${randomY}px 0px #ff0000, ${-randomX}px ${-randomY}px 0px #00ffff`;
+          titleText.style.transform = `translate(${Math.random() * 6 - 3}px, ${Math.random() * 6 - 3}px)`;
         } else {
+          titleText.style.textShadow = '4px 4px 0px #000';
+          titleText.style.transform = 'none';
+        }
+        
+        if (glitchPhase === 5) {
+          subtitle.textContent = 'SPACE ASSAULT';
           clearInterval(glitchInterval);
         }
-      }, 500);
+        
+        glitchPhase++;
+      }
+    }, 500);
+    
+    function initGame() {
+      game = {
+        player: { x: 375, y: 500, width: 50, height: 60, speed: 6 },
+        bullets: [],
+        enemies: [],
+        stars: [],
+        explosions: [],
+        particles: [],
+        keys: {},
+        lastShot: 0,
+        enemySpawnTimer: 0,
+        scrollOffset: 0
+      };
       
-      return () => clearInterval(glitchInterval);
+      score = 0;
+      
+      // Initialize starfield
+      for (let i = 0; i < 100; i++) {
+        game.stars.push({
+          x: Math.random() * 800,
+          y: Math.random() * 600,
+          speed: 1 + Math.random() * 3,
+          size: 1 + Math.random() * 2,
+          brightness: 0.3 + Math.random() * 0.7
+        });
+      }
     }
-  }, [gameState]);
-
-  useEffect(() => {
-    if (gameState !== 'playing') return;
     
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const game = gameRef.current;
+    startBtn.addEventListener('click', () => {
+      titleScreen.style.display = 'none';
+      gameScreen.style.display = 'flex';
+      gameState = 'playing';
+      initGame();
+      gameLoop();
+    });
     
-    const SHOOT_COOLDOWN = 150;
-    const ENEMY_SPAWN_RATE = 1200;
+    retryBtn.addEventListener('click', () => {
+      gameoverScreen.style.display = 'none';
+      titleScreen.style.display = 'block';
+      glitchPhase = 5;
+      titleText.textContent = '4219';
+      titleText.style.color = '#00ffff';
+      subtitle.textContent = 'SPACE ASSAULT';
+    });
     
-    // Initialize starfield
-    for (let i = 0; i < 100; i++) {
-      game.stars.push({
-        x: Math.random() * 800,
-        y: Math.random() * 600,
-        speed: 1 + Math.random() * 3,
-        size: 1 + Math.random() * 2,
-        brightness: 0.3 + Math.random() * 0.7
-      });
-    }
-
-    const handleKeyDown = (e) => {
+    document.addEventListener('keydown', (e) => {
       game.keys[e.key.toLowerCase()] = true;
-    };
-
-    const handleKeyUp = (e) => {
+    });
+    
+    document.addEventListener('keyup', (e) => {
       game.keys[e.key.toLowerCase()] = false;
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    const createParticle = (x, y, color, count = 20) => {
+    });
+    
+    function createParticle(x, y, color, count = 20) {
       for (let i = 0; i < count; i++) {
         const angle = (Math.PI * 2 * i) / count;
         game.particles.push({
@@ -82,10 +263,9 @@ const SpaceShooter = () => {
           size: 2 + Math.random() * 3
         });
       }
-    };
-
-    const drawSpaceship = (x, y) => {
-      // Thruster glow
+    }
+    
+    function drawSpaceship(x, y) {
       const glowPhase = Math.sin(Date.now() / 50) * 0.3 + 0.7;
       const gradient = ctx.createRadialGradient(x + 25, y + 55, 5, x + 25, y + 55, 20);
       gradient.addColorStop(0, `rgba(100, 200, 255, ${glowPhase})`);
@@ -94,7 +274,6 @@ const SpaceShooter = () => {
       ctx.fillStyle = gradient;
       ctx.fillRect(x + 10, y + 50, 30, 20);
       
-      // Main thrusters (animated)
       const thrustLength = 15 + Math.sin(Date.now() / 30) * 5;
       ctx.fillStyle = '#00d4ff';
       ctx.fillRect(x + 15, y + 60, 6, thrustLength);
@@ -108,113 +287,91 @@ const SpaceShooter = () => {
       ctx.fillRect(x + 18, y + 60, 2, thrustLength - 8);
       ctx.fillRect(x + 32, y + 60, 2, thrustLength - 8);
       
-      // Wing thrusters
       ctx.fillStyle = '#00a8cc';
       ctx.fillRect(x + 3, y + 48, 4, 8);
       ctx.fillRect(x + 43, y + 48, 4, 8);
       
-      // Lower hull/engines
       ctx.fillStyle = '#1a1a2e';
       ctx.fillRect(x + 12, y + 50, 26, 12);
       
-      // Engine detail
       ctx.fillStyle = '#2a2a3e';
       ctx.fillRect(x + 15, y + 52, 7, 8);
       ctx.fillRect(x + 28, y + 52, 7, 8);
       
-      // Engine cores
       ctx.fillStyle = '#4a4a6e';
       ctx.fillRect(x + 16, y + 54, 5, 4);
       ctx.fillRect(x + 29, y + 54, 5, 4);
       
-      // Main body/fuselage
       ctx.fillStyle = '#2d3561';
       ctx.fillRect(x + 18, y + 30, 14, 25);
       
-      // Body highlights
       ctx.fillStyle = '#3d4571';
       ctx.fillRect(x + 20, y + 32, 10, 20);
       
-      // Body details/panels
       ctx.fillStyle = '#1d2551';
       ctx.fillRect(x + 22, y + 35, 6, 4);
       ctx.fillRect(x + 22, y + 42, 6, 4);
       
-      // Wings
       ctx.fillStyle = '#2d3561';
       ctx.fillRect(x + 5, y + 40, 40, 14);
       
-      // Wing gradient/shading
       ctx.fillStyle = '#3d4571';
       ctx.fillRect(x + 8, y + 42, 34, 10);
       
-      // Wing details
       ctx.fillStyle = '#4d5581';
       ctx.fillRect(x + 10, y + 44, 8, 6);
       ctx.fillRect(x + 32, y + 44, 8, 6);
       
-      // Wing weapons
       ctx.fillStyle = '#1a1a2e';
       ctx.fillRect(x + 7, y + 46, 5, 5);
       ctx.fillRect(x + 38, y + 46, 5, 5);
       
-      // Wing lights
       ctx.fillStyle = '#ff3366';
       ctx.fillRect(x + 3, y + 45, 3, 2);
       ctx.fillStyle = '#33ff66';
       ctx.fillRect(x + 44, y + 45, 3, 2);
       
-      // Cockpit area
       ctx.fillStyle = '#1d2551';
       ctx.fillRect(x + 20, y + 20, 10, 12);
       
-      // Cockpit window
       ctx.fillStyle = '#0a4a6a';
       ctx.fillRect(x + 22, y + 22, 6, 8);
       
-      // Cockpit highlight/reflection
       ctx.fillStyle = '#4a9aba';
       ctx.fillRect(x + 23, y + 23, 4, 3);
       
       ctx.fillStyle = '#8acaea';
       ctx.fillRect(x + 24, y + 24, 2, 2);
       
-      // Nose cone
       ctx.fillStyle = '#3d4571';
       ctx.fillRect(x + 22, y + 15, 6, 8);
       
       ctx.fillStyle = '#4d5581';
       ctx.fillRect(x + 23, y + 16, 4, 6);
       
-      // Nose tip
       ctx.fillStyle = '#5d6591';
       ctx.fillRect(x + 24, y + 10, 2, 8);
       
-      // Front sensor
       ctx.fillStyle = '#ff6b6b';
       ctx.fillRect(x + 24, y + 12, 2, 2);
       
-      // Side details/vents
       ctx.fillStyle = '#1a1a2e';
       ctx.fillRect(x + 16, y + 36, 3, 2);
       ctx.fillRect(x + 31, y + 36, 3, 2);
       ctx.fillRect(x + 16, y + 40, 3, 2);
       ctx.fillRect(x + 31, y + 40, 3, 2);
       
-      // Panel lines
       ctx.strokeStyle = '#1d2551';
       ctx.lineWidth = 1;
       ctx.strokeRect(x + 20, y + 25, 10, 25);
       
-      // Antenna
       ctx.fillStyle = '#4a4a6e';
       ctx.fillRect(x + 24, y + 8, 2, 4);
       ctx.fillStyle = '#ff3366';
       ctx.fillRect(x + 23, y + 7, 4, 2);
-    };
-
-    const drawBullet = (bullet) => {
-      // Plasma bolt effect
+    }
+    
+    function drawBullet(bullet) {
       const gradient = ctx.createLinearGradient(bullet.x, bullet.y - 10, bullet.x, bullet.y + 10);
       gradient.addColorStop(0, 'rgba(255, 100, 255, 0)');
       gradient.addColorStop(0.3, '#ff00ff');
@@ -224,92 +381,73 @@ const SpaceShooter = () => {
       ctx.fillStyle = gradient;
       ctx.fillRect(bullet.x - 2, bullet.y - 12, 8, 24);
       
-      // Core
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(bullet.x, bullet.y - 8, 4, 16);
       
-      // Glow
       ctx.fillStyle = 'rgba(255, 0, 255, 0.5)';
       ctx.fillRect(bullet.x - 4, bullet.y - 10, 12, 20);
-    };
-
-    const drawEnemy = (enemy) => {
+    }
+    
+    function drawEnemy(enemy) {
       const e = enemy;
       const x = e.x;
       const y = e.y;
       
       if (e.type === 'fighter') {
-        // Enemy fighter (inverted design)
         ctx.fillStyle = '#4a1a1a';
         ctx.fillRect(x + 8, y, 24, 16);
         
-        // Wings
         ctx.fillStyle = '#6a2a2a';
         ctx.fillRect(x, y + 12, 40, 12);
         
-        // Wing details
         ctx.fillStyle = '#5a2a2a';
         ctx.fillRect(x + 4, y + 14, 8, 8);
         ctx.fillRect(x + 28, y + 14, 8, 8);
         
-        // Body
         ctx.fillStyle = '#3a1a1a';
         ctx.fillRect(x + 12, y + 8, 16, 20);
         
-        // Cockpit
         ctx.fillStyle = '#1a0a0a';
         ctx.fillRect(x + 16, y + 12, 8, 6);
         
         ctx.fillStyle = '#6a1a1a';
         ctx.fillRect(x + 17, y + 13, 6, 4);
         
-        // Engines
         ctx.fillStyle = '#2a1a1a';
         ctx.fillRect(x + 10, y + 24, 6, 8);
         ctx.fillRect(x + 24, y + 24, 6, 8);
         
-        // Engine glow
         ctx.fillStyle = '#ff4444';
         ctx.fillRect(x + 12, y + 28, 3, 4);
         ctx.fillRect(x + 26, y + 28, 3, 4);
         
-        // Weapons
         ctx.fillStyle = '#1a1a1a';
         ctx.fillRect(x + 2, y + 16, 4, 4);
         ctx.fillRect(x + 34, y + 16, 4, 4);
-        
       } else if (e.type === 'bomber') {
-        // Heavy bomber
         ctx.fillStyle = '#2a3a1a';
         ctx.fillRect(x + 5, y, 50, 25);
         
-        // Wings
         ctx.fillStyle = '#3a4a2a';
         ctx.fillRect(x, y + 20, 60, 15);
         
-        // Wing engines
         ctx.fillStyle = '#1a2a1a';
         ctx.fillRect(x + 10, y + 30, 8, 10);
         ctx.fillRect(x + 42, y + 30, 8, 10);
         
-        // Body
         ctx.fillStyle = '#2a3a1a';
         ctx.fillRect(x + 15, y + 10, 30, 25);
         
-        // Cockpit
         ctx.fillStyle = '#1a2a0a';
         ctx.fillRect(x + 25, y + 15, 10, 8);
         
-        // Armor plating
         ctx.fillStyle = '#4a5a3a';
         ctx.fillRect(x + 20, y + 18, 20, 12);
         
-        // Turrets
         ctx.fillStyle = '#1a1a1a';
         ctx.fillRect(x + 27, y + 8, 6, 6);
       }
       
-      // Health bar
       const barWidth = e.type === 'bomber' ? 60 : 40;
       ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
       ctx.fillRect(x, y - 8, barWidth, 5);
@@ -318,51 +456,45 @@ const SpaceShooter = () => {
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 1;
       ctx.strokeRect(x, y - 8, barWidth, 5);
-    };
-
-    const drawExplosion = (exp) => {
+    }
+    
+    function drawExplosion(exp) {
       const colors = ['#ff0000', '#ff4400', '#ff8800', '#ffcc00', '#ffff00', '#ffffff'];
       const maxSize = 60;
       const progress = exp.age / 30;
       const size = maxSize * (1 - progress);
       
-      // Outer ring
       ctx.fillStyle = colors[Math.min(Math.floor(exp.age / 5), colors.length - 1)];
       ctx.fillRect(exp.x - size, exp.y - size, size * 2, size * 2);
       
-      // Middle ring
       const midSize = size * 0.7;
       ctx.fillStyle = colors[Math.min(Math.floor(exp.age / 5) + 1, colors.length - 1)];
       ctx.fillRect(exp.x - midSize, exp.y - midSize, midSize * 2, midSize * 2);
       
-      // Core
       const coreSize = size * 0.4;
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(exp.x - coreSize, exp.y - coreSize, coreSize * 2, coreSize * 2);
       
-      // Shockwave
       if (exp.age < 15) {
         ctx.strokeStyle = colors[Math.floor(exp.age / 3) % colors.length];
         ctx.lineWidth = 4;
         const waveSize = size * 1.5;
         ctx.strokeRect(exp.x - waveSize, exp.y - waveSize, waveSize * 2, waveSize * 2);
       }
-    };
-
-    const drawParticle = (p) => {
+    }
+    
+    function drawParticle(p) {
       ctx.fillStyle = p.color;
       ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
       
-      // Trail
       if (p.life > 40) {
         const alpha = (p.life - 40) / 20;
         ctx.fillStyle = p.color.replace(')', `, ${alpha * 0.5})`).replace('rgb', 'rgba');
         ctx.fillRect(p.x - p.size, p.y - p.size, p.size * 2, p.size * 2);
       }
-    };
-
-    const drawBackground = () => {
-      // Deep space gradient
+    }
+    
+    function drawBackground() {
       const gradient = ctx.createLinearGradient(0, 0, 0, 600);
       gradient.addColorStop(0, '#000511');
       gradient.addColorStop(0.5, '#0a0a1e');
@@ -370,14 +502,12 @@ const SpaceShooter = () => {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 800, 600);
       
-      // Nebula clouds
       const nebulaOffset = (game.scrollOffset * 0.1) % 600;
       ctx.fillStyle = 'rgba(80, 40, 120, 0.15)';
       ctx.fillRect(0, 100 - nebulaOffset, 800, 200);
       ctx.fillStyle = 'rgba(40, 80, 120, 0.1)';
       ctx.fillRect(0, 350 - nebulaOffset, 800, 150);
       
-      // Stars (parallax scrolling)
       game.stars.forEach(star => {
         star.y += star.speed;
         if (star.y > 600) {
@@ -389,7 +519,6 @@ const SpaceShooter = () => {
         ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
         ctx.fillRect(star.x, star.y, star.size, star.size);
         
-        // Twinkle effect for larger stars
         if (star.size > 1.5) {
           ctx.fillStyle = `rgba(200, 220, 255, ${alpha * 0.5})`;
           ctx.fillRect(star.x - 1, star.y, star.size + 2, star.size);
@@ -397,7 +526,6 @@ const SpaceShooter = () => {
         }
       });
       
-      // Distant planets
       const planetY = (game.scrollOffset * 0.05) % 800 - 200;
       ctx.fillStyle = '#2a3a5a';
       ctx.fillRect(650, planetY, 80, 80);
@@ -405,31 +533,29 @@ const SpaceShooter = () => {
       ctx.fillRect(660, planetY + 10, 60, 60);
       ctx.fillStyle = '#1a2a4a';
       ctx.fillRect(670, planetY + 40, 40, 20);
-    };
-
-    const updateGame = (timestamp) => {
+    }
+    
+    function updateGame(timestamp) {
       const p = game.player;
+      const SHOOT_COOLDOWN = 250;
+      const ENEMY_SPAWN_RATE = 2000;
       
-      // Player movement
       if (game.keys['a'] && p.x > 0) p.x -= p.speed;
       if (game.keys['d'] && p.x < 750) p.x += p.speed;
       if (game.keys['w'] && p.y > 0) p.y -= p.speed;
       if (game.keys['s'] && p.y < 540) p.y += p.speed;
       
-      // Shooting
       if (game.keys['j'] && timestamp - game.lastShot > SHOOT_COOLDOWN) {
         game.bullets.push({ x: p.x + 10, y: p.y, vy: -12 });
         game.bullets.push({ x: p.x + 36, y: p.y, vy: -12 });
         game.lastShot = timestamp;
       }
       
-      // Update bullets
       game.bullets = game.bullets.filter(b => {
         b.y += b.vy;
         return b.y > -20;
       });
       
-      // Spawn enemies
       if (timestamp - game.enemySpawnTimer > ENEMY_SPAWN_RATE) {
         const type = Math.random() > 0.7 ? 'bomber' : 'fighter';
         const width = type === 'bomber' ? 60 : 40;
@@ -449,15 +575,13 @@ const SpaceShooter = () => {
         game.enemySpawnTimer = timestamp;
       }
       
-      // Update enemies
       game.enemies = game.enemies.filter(e => {
         e.y += e.vy;
         return e.y < 650 && e.health > 0;
       });
       
-      // Collision: bullets vs enemies
       game.bullets.forEach((b, bi) => {
-        game.enemies.forEach((e, ei) => {
+        game.enemies.forEach((e) => {
           if (b.x > e.x && b.x < e.x + e.width &&
               b.y > e.y && b.y < e.y + e.height) {
             e.health -= 50;
@@ -467,28 +591,28 @@ const SpaceShooter = () => {
             if (e.health <= 0) {
               game.explosions.push({ x: e.x + e.width/2, y: e.y + e.height/2, age: 0 });
               const points = e.type === 'bomber' ? 200 : 100;
-              game.score += points;
-              setScore(game.score);
+              score += points;
             }
           }
         });
       });
       
-      // Collision: player vs enemies
       game.enemies.forEach(e => {
         if (p.x < e.x + e.width && p.x + p.width > e.x &&
             p.y < e.y + e.height && p.y + p.height > e.y) {
-          setGameState('gameover');
+          gameState = 'gameover';
+          gameScreen.style.display = 'none';
+          gameoverScreen.style.display = 'block';
+          finalScoreEl.textContent = `FINAL SCORE: ${score.toString().padStart(8, '0')}`;
+          if (animationId) cancelAnimationFrame(animationId);
         }
       });
       
-      // Update explosions
       game.explosions = game.explosions.filter(exp => {
         exp.age += 1;
         return exp.age < 30;
       });
       
-      // Update particles
       game.particles = game.particles.filter(p => {
         p.x += p.vx;
         p.y += p.vy;
@@ -498,9 +622,9 @@ const SpaceShooter = () => {
       });
       
       game.scrollOffset += 2;
-    };
-
-    const draw = () => {
+    }
+    
+    function draw() {
       drawBackground();
       
       game.particles.forEach(drawParticle);
@@ -509,138 +633,23 @@ const SpaceShooter = () => {
       game.enemies.forEach(drawEnemy);
       game.explosions.forEach(drawExplosion);
       
-      // HUD
       ctx.fillStyle = 'rgba(0, 0, 20, 0.7)';
       ctx.fillRect(0, 0, 800, 50);
       
       ctx.fillStyle = '#00ffff';
       ctx.font = 'bold 28px monospace';
-      ctx.fillText(`SCORE: ${game.score.toString().padStart(8, '0')}`, 20, 35);
+      ctx.fillText(`SCORE: ${score.toString().padStart(8, '0')}`, 20, 35);
       
       ctx.fillStyle = '#ff00ff';
       ctx.fillText(`ALTITUDE: ${Math.floor(game.scrollOffset / 10)}`, 500, 35);
-    };
-
-    let animationId;
-    const gameLoop = (timestamp) => {
+    }
+    
+    function gameLoop(timestamp) {
       if (gameState !== 'playing') return;
       updateGame(timestamp);
       draw();
       animationId = requestAnimationFrame(gameLoop);
-    };
-
-    animationId = requestAnimationFrame(gameLoop);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      cancelAnimationFrame(animationId);
-    };
-  }, [gameState]);
-
-  const startGame = () => {
-    gameRef.current = {
-      player: { x: 375, y: 500, width: 50, height: 60, speed: 6 },
-      bullets: [],
-      enemies: [],
-      stars: [],
-      explosions: [],
-      particles: [],
-      keys: {},
-      lastShot: 0,
-      enemySpawnTimer: 0,
-      scrollOffset: 0,
-      score: 0
-    };
-    setScore(0);
-    setGameState('playing');
-  };
-
-  const getTitleText = () => {
-    if (glitchPhase === 0) return '1942';
-    if (glitchPhase === 1) return '19█2';
-    if (glitchPhase === 2) return '1█4█';
-    if (glitchPhase === 3) return '█2█9';
-    if (glitchPhase === 4) return '42█9';
-    return '4219';
-  };
-
-  const getGlitchStyle = () => {
-    if (glitchPhase >= 1 && glitchPhase <= 4) {
-      return {
-        textShadow: `${Math.random() * 10 - 5}px ${Math.random() * 10 - 5}px 0px #ff0000,
-                     ${Math.random() * 10 - 5}px ${Math.random() * 10 - 5}px 0px #00ffff`,
-        transform: `translate(${Math.random() * 6 - 3}px, ${Math.random() * 6 - 3}px)`
-      };
     }
-    return {};
-  };
-
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black p-4">
-      {gameState === 'title' && (
-        <div className="text-center">
-          <h1 
-            className="text-9xl font-bold mb-8 transition-all duration-100"
-            style={{
-              color: glitchPhase >= 5 ? '#00ffff' : '#ffff00',
-              ...getGlitchStyle()
-            }}
-          >
-            {getTitleText()}
-          </h1>
-          <p className="text-2xl text-cyan-400 mb-8 font-mono">
-            {glitchPhase >= 5 ? 'SPACE ASSAULT' : 'THE YEAR OF WAR'}
-          </p>
-          <button
-            onClick={startGame}
-            className="px-12 py-4 bg-cyan-500 text-black font-bold text-2xl rounded hover:bg-cyan-400 transition-colors"
-            style={{
-              boxShadow: '0 0 20px rgba(0, 255, 255, 0.5)'
-            }}
-          >
-            START MISSION
-          </button>
-          <div className="mt-8 text-cyan-300 text-lg font-mono">
-            <p>WASD - Move Ship</p>
-            <p>J - Fire Weapons</p>
-          </div>
-        </div>
-      )}
-
-      {gameState === 'playing' && (
-        <div className="relative border-4 border-cyan-500 shadow-2xl" style={{boxShadow: '0 0 40px rgba(0, 255, 255, 0.6)'}}>
-          <canvas
-            ref={canvasRef}
-            width={800}
-            height={600}
-            className="bg-black"
-          />
-        </div>
-      )}
-
-      {gameState === 'gameover' && (
-        <div className="text-center">
-          <h2 className="text-7xl font-bold text-red-500 mb-6" style={{textShadow: '4px 4px 0px #000, 0 0 30px #ff0000'}}>
-            MISSION FAILED
-          </h2>
-          <p className="text-4xl text-cyan-400 mb-8 font-mono">
-            FINAL SCORE: {score.toString().padStart(8, '0')}
-          </p>
-          <button
-            onClick={() => {
-              setGameState('title');
-              setGlitchPhase(5);
-            }}
-            className="px-12 py-4 bg-cyan-500 text-black font-bold text-2xl rounded hover:bg-cyan-400 transition-colors"
-            style={{boxShadow: '0 0 20px rgba(0, 255, 255, 0.5)'}}
-          >
-            RETRY MISSION
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default SpaceShooter;
+  </script>
+</body>
+</html>
