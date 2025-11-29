@@ -6,376 +6,300 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Roboto+Mono:wght@300;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Roboto+Mono:wght@300;700&display=swap');
 
-    :root {
-        --color-primary: #00FFFF; /* Cyan */
-        --color-secondary-text: #CFD8DC;
-        --color-background: #050f0e;
-        
-        --color-blue-pill: #004D99;
-        --color-red-pill: #CC0000;
+    :root {
+        --color-primary: #00FFFF; /* Cyan */
+        --color-secondary-text: #CFD8DC;
+        --color-background: #050f0e;
+        
+        --glow-primary: 0 0 10px rgba(0, 255, 255, 0.7);
+    }
 
-        --glow-primary: 0 0 10px rgba(0, 255, 255, 0.7);
-    }
+    body {
+        margin: 0;
+        padding: 0;
+        background: var(--color-background);
+        color: var(--color-secondary-text);
+        font-family: 'Roboto Mono', monospace;
+        overflow-x: hidden;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-    body {
-        margin: 0;
-        padding: 0;
-        background: var(--color-background);
-        color: var(--color-secondary-text);
-        font-family: 'Roboto Mono', monospace;
-        overflow-x: hidden;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+    }
 
-    .container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 20px;
-        position: relative;
-    }
+    /* --- Companion Disclaimer Header --- */
+    .companion-disclaimer {
+        font-family: 'VT323', monospace;
+        color: var(--color-primary);
+        font-size: 1.4rem;
+        text-align: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid var(--color-primary);
+        box-shadow: var(--glow-primary);
+        background: rgba(0, 255, 255, 0.05);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        animation: warningBlink 4s ease-in-out infinite;
+    }
 
-    /* --- Companion Disclaimer Header --- */
-    .companion-disclaimer {
-        font-family: 'VT323', monospace;
-        color: var(--color-primary);
-        font-size: 1.4rem;
-        text-align: center;
-        margin-bottom: 20px;
-        padding: 15px;
-        border: 1px solid var(--color-primary);
-        box-shadow: var(--glow-primary);
-        background: rgba(0, 255, 255, 0.05);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        animation: warningBlink 4s ease-in-out infinite;
-    }
+    @keyframes warningBlink {
+        0%, 100% { opacity: 1; text-shadow: var(--glow-primary); }
+        50% { opacity: 0.3; text-shadow: none; }
+    }
 
-    @keyframes warningBlink {
-        0%, 100% { opacity: 1; text-shadow: var(--glow-primary); }
-        50% { opacity: 0.3; text-shadow: none; }
-    }
+    /* --- SVG Ghost Entity Wrapper --- */
+    .ghost-wrapper {
+        position: relative;
+        width: 100%;
+        height: 450px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        overflow: hidden;
+        border-top: 1px dashed rgba(0, 255, 255, 0.3);
+        border-bottom: 1px dashed rgba(0, 255, 255, 0.3);
+    }
 
-    /* --- SVG Ghost Entity Wrapper --- */
-    .ghost-wrapper {
-        position: relative;
-        width: 100%;
-        height: 450px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 20px;
-        overflow: hidden;
-        border-top: 1px dashed rgba(0, 255, 255, 0.3);
-        border-bottom: 1px dashed rgba(0, 255, 255, 0.3);
-    }
+    /* The SVG Container */
+    .ortega-svg {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+    }
 
-    /* The SVG Container */
-    .ortega-svg {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
-    }
+    /* --- Entity Animations --- */
+    
+    /* Spectral noise filter animation */
+    #displacement-turbulence {
+        animation: turbulenceShift 5s linear infinite;
+    }
+    @keyframes turbulenceShift {
+        0% { baseFrequency: 0.01 0.01; }
+        50% { baseFrequency: 0.02 0.04; }
+        100% { baseFrequency: 0.01 0.01; }
+    }
 
-    /* --- Entity Animations --- */
-    
-    /* Spectral noise filter animation */
-    #displacement-turbulence {
-        animation: turbulenceShift 5s linear infinite;
-    }
-    @keyframes turbulenceShift {
-        0% { baseFrequency: 0.01 0.01; }
-        50% { baseFrequency: 0.02 0.04; }
-        100% { baseFrequency: 0.01 0.01; }
-    }
+    /* Floating motion for the Face */
+    .face-group {
+        transform-origin: center;
+        animation: floatFace 6s ease-in-out infinite;
+    }
+    @keyframes floatFace {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0); }
+    }
 
-    /* Floating motion for the Face */
-    .face-group {
-        transform-origin: center;
-        animation: floatFace 6s ease-in-out infinite;
-    }
-    @keyframes floatFace {
-        0% { transform: translateY(0); }
-        50% { transform: translateY(-15px); }
-        100% { transform: translateY(0); }
-    }
-
-    /* Eye Pulse */
-    .eyes-group {
-        animation: eyePulse 4s ease-in-out infinite alternate;
-    }
-    @keyframes eyePulse {
-        0% { filter: drop-shadow(0 0 2px cyan); opacity: 0.7; }
-        100% { filter: drop-shadow(0 0 15px cyan); opacity: 1; }
-    }
+    /* Eye Pulse */
+    .eyes-group {
+        animation: eyePulse 4s ease-in-out infinite alternate;
+    }
+    @keyframes eyePulse {
+        0% { filter: drop-shadow(0 0 2px cyan); opacity: 0.7; }
+        100% { filter: drop-shadow(0 0 15px cyan); opacity: 1; }
+    }
 
 
-    /* --- DOS/CMD Source Code Overlay --- */
-    .source-code-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 2;
-        overflow: hidden;
-        background: repeating-linear-gradient(
-            to bottom,
-            transparent 0px,
-            transparent 3px,
-            rgba(0, 20, 20, 0.3) 4px
-        );
-    }
-    
-    .code-line {
-        font-family: 'VT323', monospace;
-        color: var(--color-primary);
-        font-size: 1.2rem;
-        white-space: nowrap;
-        opacity: 0.25;
-        position: absolute;
-        animation: codeScroll linear infinite;
-        text-shadow: 0 0 2px var(--color-primary);
-    }
+    /* --- DOS/CMD Source Code Overlay --- */
+    .source-code-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 2;
+        overflow: hidden;
+        background: repeating-linear-gradient(
+            to bottom,
+            transparent 0px,
+            transparent 3px,
+            rgba(0, 20, 20, 0.3) 4px
+        );
+    }
+    
+    .code-line {
+        font-family: 'VT323', monospace;
+        color: var(--color-primary);
+        font-size: 1.2rem;
+        white-space: nowrap;
+        opacity: 0.25;
+        position: absolute;
+        animation: codeScroll linear infinite;
+        text-shadow: 0 0 2px var(--color-primary);
+    }
 
-    /* Glitch Animation for the specific line */
-    .glitch-anim {
-        animation: codeScroll 15s linear infinite, textTwitch 0.3s infinite !important;
-        color: #fff !important; /* Flash white */
-        opacity: 0.6 !important;
-    }
+    /* Glitch Animation for the specific line */
+    .glitch-anim {
+        animation: codeScroll 15s linear infinite, textTwitch 0.3s infinite !important;
+        color: #fff !important; /* Flash white */
+        opacity: 0.6 !important;
+    }
 
-    @keyframes textTwitch {
-        0% { transform: translateX(0) skewX(0deg); }
-        20% { transform: translateX(-5px) skewX(-10deg); }
-        40% { transform: translateX(5px) skewX(10deg); }
-        60% { transform: translateX(-2px) skewX(0deg); }
-        80% { transform: translateX(2px) skewX(5deg); }
-        100% { transform: translateX(0) skewX(0deg); }
-    }
+    @keyframes textTwitch {
+        0% { transform: translateX(0) skewX(0deg); }
+        20% { transform: translateX(-5px) skewX(-10deg); }
+        40% { transform: translateX(5px) skewX(10deg); }
+        60% { transform: translateX(-2px) skewX(0deg); }
+        80% { transform: translateX(2px) skewX(5deg); }
+        100% { transform: translateX(0) skewX(0deg); }
+    }
 
-    /* Drifting Code Configuration */
-    .code-line:nth-child(1) { top: 5%; left: 100%; animation-duration: 12s; }
-    .code-line:nth-child(2) { top: 15%; left: 100%; animation-duration: 18s; animation-delay: -5s; font-size: 1rem;}
-    .code-line:nth-child(3) { top: 25%; left: 100%; animation-duration: 15s; animation-delay: -2s; }
-    /* The Glitch Line */
-    .code-line:nth-child(4) { top: 35%; left: 100%; animation-duration: 12s; animation-delay: -8s; font-size: 1.4rem;} 
-    
-    .code-line:nth-child(5) { top: 45%; left: 100%; animation-duration: 14s; animation-delay: -7s; }
-    .code-line:nth-child(6) { top: 55%; left: 100%; animation-duration: 19s; animation-delay: -1s; }
-    .code-line:nth-child(7) { top: 65%; left: 100%; animation-duration: 25s; animation-delay: -15s; font-size: 0.9rem;}
-    
-    /* New Lines */
-    .code-line:nth-child(8) { top: 75%; left: 100%; animation-duration: 22s; animation-delay: -3s; }
-    .code-line:nth-child(9) { top: 85%; left: 100%; animation-duration: 16s; animation-delay: -10s; }
-    .code-line:nth-child(10) { top: 92%; left: 100%; animation-duration: 20s; animation-delay: -6s; }
-    .code-line:nth-child(11) { top: 10%; left: 100%; animation-duration: 28s; animation-delay: -12s; font-size: 0.8rem; }
-    .code-line:nth-child(12) { top: 80%; left: 100%; animation-duration: 13s; animation-delay: -2s; }
+    /* Drifting Code Configuration */
+    .code-line:nth-child(1) { top: 5%; left: 100%; animation-duration: 12s; }
+    .code-line:nth-child(2) { top: 15%; left: 100%; animation-duration: 18s; animation-delay: -5s; font-size: 1rem;}
+    .code-line:nth-child(3) { top: 25%; left: 100%; animation-duration: 15s; animation-delay: -2s; }
+    /* The Glitch Line */
+    .code-line:nth-child(4) { top: 35%; left: 100%; animation-duration: 12s; animation-delay: -8s; font-size: 1.4rem;} 
+    
+    .code-line:nth-child(5) { top: 45%; left: 100%; animation-duration: 14s; animation-delay: -7s; }
+    .code-line:nth-child(6) { top: 55%; left: 100%; animation-duration: 19s; animation-delay: -1s; }
+    .code-line:nth-child(7) { top: 65%; left: 100%; animation-duration: 25s; animation-delay: -15s; font-size: 0.9rem;}
+    
+    /* New Lines */
+    .code-line:nth-child(8) { top: 75%; left: 100%; animation-duration: 22s; animation-delay: -3s; }
+    .code-line:nth-child(9) { top: 85%; left: 100%; animation-duration: 16s; animation-delay: -10s; }
+    .code-line:nth-child(10) { top: 92%; left: 100%; animation-duration: 20s; animation-delay: -6s; }
+    .code-line:nth-child(11) { top: 10%; left: 100%; animation-duration: 28s; animation-delay: -12s; font-size: 0.8rem; }
+    .code-line:nth-child(12) { top: 80%; left: 100%; animation-duration: 13s; animation-delay: -2s; }
 
 
-    @keyframes codeScroll {
-        0% { left: 100%; }
-        100% { left: -100%; } /* Changed to left property for smoother restart */
-    }
+    @keyframes codeScroll {
+        0% { left: 100%; }
+        100% { left: -100%; } /* Changed to left property for smoother restart */
+    }
 
-    /* --- Disclaimer Text --- */
-    .disclaimer {
-        font-size: 1.1rem;
-        line-height: 1.7rem;
-        margin-top: 20px;
-        position: relative;
-        z-index: 4;
-        text-align: center;
-        text-shadow: 0 0 10px rgba(0,0,0,0.9);
-    }
+    /* --- Disclaimer Text --- */
+    .disclaimer {
+        font-size: 1.1rem;
+        line-height: 1.7rem;
+        margin-top: 20px;
+        position: relative;
+        z-index: 4;
+        text-align: center;
+        text-shadow: 0 0 10px rgba(0,0,0,0.9);
+    }
 
-    .disclaimer strong {
-        color: var(--color-primary);
-        font-weight: 700;
-        text-shadow: var(--glow-primary);
-        letter-spacing: 0.5px;
-    }
+    .disclaimer strong {
+        color: var(--color-primary);
+        font-weight: 700;
+        text-shadow: var(--glow-primary);
+        letter-spacing: 0.5px;
+    }
 
-    /* --- Buttons --- */
-    .pill-row {
-        margin-top: 40px;
-        display: flex;
-        gap: 30px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .pill {
-        padding: 15px 35px;
-        font-size: 1.1rem;
-        font-family: 'Roboto Mono', monospace;
-        cursor: pointer;
-        border: 2px solid transparent;
-        border-radius: 4px;
-        transition: all 0.3s ease;
-        letter-spacing: 2px;
-        font-weight: bold;
-        text-transform: uppercase;
-        position: relative;
-    }
-
-    .blue {
-        background: rgba(0, 77, 153, 0.4);
-        color: white;
-        border-color: var(--color-blue-pill);
-        box-shadow: 0 0 15px var(--color-blue-pill);
-    }
-    .blue:hover {
-        background: var(--color-blue-pill);
-        box-shadow: 0 0 30px var(--color-blue-pill), 0 0 10px cyan;
-        transform: translateY(-2px);
-    }
-
-    .red {
-        background: rgba(204, 0, 0, 0.4);
-        color: white;
-        border-color: var(--color-red-pill);
-        box-shadow: 0 0 15px var(--color-red-pill);
-    }
-    .red:hover {
-        background: var(--color-red-pill);
-        box-shadow: 0 0 30px var(--color-red-pill), 0 0 10px orange;
-        transform: translateY(-2px);
-    }
-
-    /* --- Flash --- */
-    #flash-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 9999;
-        pointer-events: none;
-        background: var(--color-primary);
-        opacity: 0;
-    }
-    #flash-overlay.flash {
-        animation: flashAnim 0.25s ease-out forwards;
-    }
-    @keyframes flashAnim {
-        0% { opacity: 0; }
-        10% { opacity: 1; }
-        100% { opacity: 0; }
-    }
+    /* --- Flash --- */
+    #flash-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        pointer-events: none;
+        background: var(--color-primary);
+        opacity: 0;
+    }
 </style>
 </head>
 
 <body>
 <div class="container">
 
-    <div class="companion-disclaimer">
-        &gt;_ This is a companion website for the book series 'Before Us: By Patrick McDonald'
-    </div>
-    
-    <div class="ghost-wrapper">
-        <svg class="ortega-svg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <filter id="spectral-noise">
-                    <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise" id="displacement-turbulence"/>
-                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" />
-                    <feGaussianBlur stdDeviation="1" />
-                </filter>
-            </defs>
+    <div class="companion-disclaimer">
+        &gt;_ This is a companion website for the book series 'Before Us: By Patrick McDonald'
+    </div>
+    
+    <div class="ghost-wrapper">
+        <svg class="ortega-svg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="spectral-noise">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise" id="displacement-turbulence"/>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" />
+                    <feGaussianBlur stdDeviation="1" />
+                </filter>
+            </defs>
 
-            <g class="face-group">
-                <path d="M 330 180 
-                         Q 330 120 400 120 
-                         Q 470 120 470 180 
-                         L 460 280 
-                         Q 460 350 400 380 
-                         Q 340 350 340 280 
-                         Z" 
-                      fill="rgba(0, 10, 10, 0.4)" 
-                      stroke="#00FFFF" 
-                      stroke-width="1.5" 
-                      filter="url(#spectral-noise)" 
-                      opacity="0.5"/> <path d="M 400 120 L 400 160 M 350 200 L 370 240 M 450 200 L 430 240 M 400 380 L 400 340" 
-                      stroke="#00FFFF" 
-                      stroke-width="0.5" 
-                      opacity="0.3" 
-                      fill="none" 
-                      filter="url(#spectral-noise)"/>
+            <g class="face-group">
+                <path d="M 330 180 
+                         Q 330 120 400 120 
+                         Q 470 120 470 180 
+                         L 460 280 
+                         Q 460 350 400 380 
+                         Q 340 350 340 280 
+                         Z" 
+                      fill="rgba(0, 10, 10, 0.4)" 
+                      stroke="#00FFFF" 
+                      stroke-width="1.5" 
+                      filter="url(#spectral-noise)" 
+                      opacity="0.5"/> <path d="M 400 120 L 400 160 M 350 200 L 370 240 M 450 200 L 430 240 M 400 380 L 400 340" 
+                      stroke="#00FFFF" 
+                      stroke-width="0.5" 
+                      opacity="0.3" 
+                      fill="none" 
+                      filter="url(#spectral-noise)"/>
 
-                <g class="eyes-group">
-                    <path d="M 350 210 L 390 220 L 350 230 Z" fill="#00FFFF" />
-                    <circle cx="360" cy="220" r="2" fill="white" />
-                    
-                    <path d="M 450 210 L 410 220 L 450 230 Z" fill="#00FFFF" />
-                    <circle cx="440" cy="220" r="2" fill="white" />
-                </g>
-            </g>
-        </svg>
-        
-        <div class="source-code-overlay">
-            <div class="code-line">C:\> INIT_ENTITY_RENDER.EXE</div>
-            <div class="code-line">Scanning Biometrics... [UNKNOWN]</div>
-            <div class="code-line">WARNING: Containment Field 30% Unstable</div>
-            <div class="code-line glitch-anim">CRITICAL ERROR: SEGMENTATION FAULT AT 0x004F</div>
-            
-            <div class="code-line">01001001 00100000 01010201 01000101 00100000 01011001</div>
-            
-            <div class="code-line">Connecting to Neural Net... SUCCESS</div>
-            <div class="code-line">Downloading consciousness stream...</div>
-            
-            <div class="code-line">C://Ortega.thereisnospoon</div>
-            
-            <div class="code-line">Override_Security_Protocol: FORCE_ENTRY</div>
-            
-            <div class="code-line">System_Root_Access: GRANTED... GOODBYE_USER</div>
-            
-            <div class="code-line">ERROR: REALITY BUFFER OVERFLOW at 0x00FF34</div>
-            <div class="code-line">&gt;&gt; USER DECISION REQUIRED &lt;&lt;</div>
-        </div>
-    </div>
+                <g class="eyes-group">
+                    <path d="M 350 210 L 390 220 L 350 230 Z" fill="#00FFFF" />
+                    <circle cx="360" cy="220" r="2" fill="white" />
+                    
+                    <path d="M 450 210 L 410 220 L 450 230 Z" fill="#00FFFF" />
+                    <circle cx="440" cy="220" r="2" fill="white" />
+                </g>
+            </g>
+        </svg>
+        
+        <div class="source-code-overlay">
+            <div class="code-line">C:\> INIT_ENTITY_RENDER.EXE</div>
+            <div class="code-line">Scanning Biometrics... [UNKNOWN]</div>
+            <div class="code-line">WARNING: Containment Field 30% Unstable</div>
+            <div class="code-line glitch-anim">CRITICAL ERROR: SEGMENTATION FAULT AT 0x004F</div>
+            
+            <div class="code-line">01001001 00100000 01010201 01000101 00100000 01011001</div>
+            
+            <div class="code-line">Connecting to Neural Net... SUCCESS</div>
+            <div class="code-line">Downloading consciousness stream...</div>
+            
+            <div class="code-line">C://Ortega.thereisnospoon</div>
+            
+            <div class="code-line">Override_Security_Protocol: FORCE_ENTRY</div>
+            
+            <div class="code-line">System_Root_Access: GRANTED... GOODBYE_USER</div>
+            
+            <div class="code-line">ERROR: REALITY BUFFER OVERFLOW at 0x00FF34</div>
+            <div class="code-line">&gt;&gt; USER DECISION REQUIRED &lt;&lt;</div>
+        </div>
+    </div>
 
-    <div class="disclaimer">
-        <strong style="font-size: 1.3rem;">:// ORTEGA — Acknowledgment Required //</strong><br>
-        Your presence is noted, **User**. The system requests acknowledgment before revealing what lies beneath its surface. The choice is yours.<br>
-        <br>
-        **Selecting the Blue Pill** restores the illusion and returns you to familiar terrain.<br>
-        <br>
-        **Selecting the Red Pill** dissolves the façade and redirects you to the hidden layer referenced in this domain.<br>
-        <br>
-        <strong style="font-size: 1.2rem; letter-spacing: 2px;">&gt; Proceed with awareness. &lt;</strong>
-    </div>
+    <div class="disclaimer">
+        <strong style="font-size: 1.3rem;">:// ORTEGA — Acknowledgment Required //</strong><br>
+        Your presence is noted, **User**. The system requests acknowledgment before revealing what lies beneath its surface. The choice is yours.<br>
+        <br>This is simply a companion site for the book series "Before Us" by Patrick McDonald. This site is an immersive experience within that realm and nothing more. 
+        <br>If you choose to stay, then take a breathe and click the space below. Abandon Time All Ye Who Enter Here.
+        <strong style="font-size: 1.2rem; letter-spacing: 2px;">&gt; Proceed with awareness. &lt;</strong>
+    </div>
 
-    <div class="pill-row">
-        <button class="pill blue" onclick="bluePill()">BLUE PILL</button>
-        <button class="pill red" onclick="redPill()">RED PILL</button>
-    </div>
 </div>
 
 <div id="flash-overlay"></div>
 
 <script>
-    function bluePill() {
-        window.location.href = "https://www.google.com/";
-    }
-
-    function redPill() {
-        const flashOverlay = document.getElementById('flash-overlay');
-        flashOverlay.classList.add('flash');
-        
-        setTimeout(() => {
-            flashOverlay.classList.remove('flash'); 
-            window.location.href = "https://robustpvp-lang.github.io/before-us-universe/";
-        }, 250); 
-    }
+    // Removed bluePill() and redPill() functions as buttons were removed.
+    // Flash animation logic is no longer required.
 </script>
 
 </body>
