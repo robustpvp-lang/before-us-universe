@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4219 Space Shooter</title>
+    <title>4219 Space Shooter: COSMIC HORROR</title>
     <style>
         * {
             margin: 0;
@@ -253,6 +253,23 @@
         <button id="retryBtn">RETRY MISSION</button>
     </div>
 
+    ```
+
+---
+
+## 🐙 Part 2: JavaScript Logic (The Cosmic Horror)
+
+This part contains the updated and new JavaScript functions for the boss, its movements, background elements, and game logic.
+
+### Key Changes:
+
+* **New Global Variables:** Added `COSMIC_HORROR_SCORE`, `isBossActive`, `bossPatternType`, and `bossAttackTimer`.
+* **`drawBackground`:** Added the Space Octopus (A Cthulhu-esque design) and a Planet element. The planet drawing is modified from the original to integrate with the octopus drawing.
+* **New Entity:** The **Cosmic Horror Boss** (`drawCosmicHorror`, `updateCosmicHorror`).
+* **Control-Specific Logic:** The boss's movement logic in `updateCosmicHorror` now checks `controlType` to execute a **Desktop Pattern** (more predictable/twitchy movements) or a **Mobile Pattern** (slower, wider sweeps/more area-denial attacks).
+* **`updateGame`:** Logic added to check the score, activate the boss, and handle boss damage/collision.
+
+```javascript
     <script>
         const titleScreen = document.getElementById('titleScreen');
         const gameScreen = document.getElementById('gameScreen');
@@ -282,9 +299,15 @@
         let controlType = null; // 'desktop' or 'mobile'
         let difficultyInterval = null;
         let enemySpeedMultiplier = 1.0;
-        // Placeholder for volume (adjust if you add an audio element later)
         let gameVolumeMultiplier = 1.0; 
         const INITIAL_ENEMY_SPEED = { fighter: 2.5, bomber: 1.5 };
+
+        // --- COSMIC HORROR LOGIC ---
+        const COSMIC_HORROR_SCORE = 5000; // Score to trigger the boss
+        let isBossActive = false;
+        let bossPatternType = 'idle'; // 'desktop' or 'mobile'
+        let bossAttackTimer = 0;
+        const BOSS_MAX_HEALTH = 1000;
 
         // --- Glitch Effect (Unchanged) ---
         const glitchSequence = [
@@ -321,7 +344,7 @@
             }
         }, 500);
 
-        // --- Control Selection Logic ---
+        // --- Control Selection Logic (Unchanged) ---
         function setControlType(type) {
             controlType = type;
             desktopControlBtn.classList.remove('selected');
@@ -343,7 +366,7 @@
         mobileControlBtn.addEventListener('click', () => setControlType('mobile'));
 
 
-        // --- Difficulty Scaling Logic ---
+        // --- Difficulty Scaling Logic (Unchanged) ---
         function startDifficultyScaling() {
             enemySpeedMultiplier = 1.0;
             gameVolumeMultiplier = 1.0;
@@ -355,7 +378,6 @@
                 enemySpeedMultiplier *= 1.02; // +2%
                 gameVolumeMultiplier *= 1.02; // +2%
                 console.log(`Difficulty scaled. Speed Multiplier: ${enemySpeedMultiplier.toFixed(3)}`);
-                // Note: For volume scaling, you would apply gameVolumeMultiplier to your audio elements here
             }, 60000); 
         }
 
@@ -378,10 +400,13 @@
                 keys: {},
                 lastShot: 0,
                 enemySpawnTimer: 0,
-                scrollOffset: 0
+                scrollOffset: 0,
+                // New Boss Object
+                boss: { x: 300, y: -200, width: 200, height: 150, health: BOSS_MAX_HEALTH, maxHealth: BOSS_MAX_HEALTH, vx: 2, vy: 1, lastShot: 0, attackPattern: 0 } 
             };
             
             score = 0;
+            isBossActive = false;
             
             // Initialize starfield
             for (let i = 0; i < 100; i++) {
@@ -396,15 +421,17 @@
         }
         
         startBtn.addEventListener('click', () => {
-            if (!controlType) return; // Should be blocked by .active class, but good safeguard
+            if (!controlType) return; 
 
             titleScreen.style.display = 'none';
             gameScreen.style.display = 'flex';
             
             if (controlType === 'mobile') {
                 mobileControlsDiv.style.display = 'block';
+                bossPatternType = 'mobile';
             } else {
                 mobileControlsDiv.style.display = 'none';
+                bossPatternType = 'desktop';
             }
 
             gameState = 'playing';
@@ -421,14 +448,14 @@
             titleText.textContent = '4219';
             titleText.style.color = '#00ffff';
             subtitle.textContent = 'SPACE ASSAULT';
-            // Disable start button until a control type is re-selected (optional: could keep it active)
+            // Reset control selection for retry
             startBtn.classList.remove('active');
             controlType = null; 
             desktopControlBtn.classList.remove('selected');
             mobileControlBtn.classList.remove('selected');
         });
         
-        // --- Input Handling ---
+        // --- Input Handling (Unchanged) ---
         
         // Desktop Input (Keyboard)
         document.addEventListener('keydown', (e) => {
@@ -470,22 +497,23 @@
             btn.addEventListener('touchcancel', (e) => { e.preventDefault(); release(); }, { passive: false });
         });
         
-        // --- Game Drawing Functions (Kept the same for simplicity) ---
+        // --- Game Drawing Functions (Only drawBackground and new drawCosmicHorror are shown) ---
         function createParticle(x, y, color, count = 20) {
              for (let i = 0; i < count; i++) {
-                const angle = (Math.PI * 2 * i) / count;
-                game.particles.push({
-                    x, y,
-                    vx: Math.cos(angle) * (2 + Math.random() * 4),
-                    vy: Math.sin(angle) * (2 + Math.random() * 4),
-                    color,
-                    life: 60,
-                    size: 2 + Math.random() * 3
-                });
-            }
+                 const angle = (Math.PI * 2 * i) / count;
+                 game.particles.push({
+                     x, y,
+                     vx: Math.cos(angle) * (2 + Math.random() * 4),
+                     vy: Math.sin(angle) * (2 + Math.random() * 4),
+                     color,
+                     life: 60,
+                     size: 2 + Math.random() * 3
+                 });
+             }
         }
         
         function drawSpaceship(x, y) {
+            // ... (Player drawing code remains the same as your original) ...
             const glowPhase = Math.sin(Date.now() / 50) * 0.3 + 0.7;
             const gradient = ctx.createRadialGradient(x + 25, y + 55, 5, x + 25, y + 55, 20);
             gradient.addColorStop(0, `rgba(100, 200, 255, ${glowPhase})`);
@@ -590,7 +618,9 @@
             ctx.fillStyle = '#ff3366';
             ctx.fillRect(x + 23, y + 7, 4, 2);
         }
-        
+
+        // ... (drawBullet, drawEnemy, drawExplosion, drawParticle remain the same) ...
+
         function drawBullet(bullet) {
             const gradient = ctx.createLinearGradient(bullet.x, bullet.y - 10, bullet.x, bullet.y + 10);
             gradient.addColorStop(0, 'rgba(255, 100, 255, 0)');
@@ -713,7 +743,57 @@
                 ctx.fillRect(p.x - p.size, p.y - p.size, p.size * 2, p.size * 2);
             }
         }
-        
+
+        // --- NEW COSMIC HORROR DRAWING ---
+        function drawCosmicHorror(b) {
+            const x = b.x;
+            const y = b.y;
+
+            // Draw Health Bar
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(x, y - 20, b.width, 10);
+            ctx.fillStyle = '#ff00ff'; // Cosmic Pink/Purple
+            ctx.fillRect(x, y - 20, b.width * (b.health / b.maxHealth), 10);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y - 20, b.width, 10);
+
+            // Boss body (Cthulhu-esque head)
+            ctx.fillStyle = '#551a8b'; // Dark Purple
+            ctx.fillRect(x + 50, y + 30, 100, 80);
+
+            // Center Eye/Mouth
+            ctx.fillStyle = '#1a0a33'; // Black void
+            ctx.fillRect(x + 70, y + 50, 60, 40);
+            ctx.fillStyle = '#ff00ff'; // Pink core
+            ctx.fillRect(x + 80, y + 60, 40, 20);
+            ctx.fillStyle = '#ffffff'; // White glint
+            ctx.fillRect(x + 90, y + 65, 20, 10);
+
+            // Tentacles (Simple Rectangles for now)
+            const tentacleColor = '#8b1a8b';
+            const wave = Math.sin(Date.now() / 150) * 5;
+            
+            // Left Tentacle 1
+            ctx.fillStyle = tentacleColor;
+            ctx.fillRect(x, y + 60 + wave, 50, 10);
+            // Right Tentacle 1
+            ctx.fillStyle = tentacleColor;
+            ctx.fillRect(x + b.width - 50, y + 60 - wave, 50, 10);
+            // Left Tentacle 2
+            ctx.fillStyle = tentacleColor;
+            ctx.fillRect(x + 20, y + 100 - wave, 30, 10);
+            // Right Tentacle 2
+            ctx.fillStyle = tentacleColor;
+            ctx.fillRect(x + b.width - 50, y + 100 + wave, 30, 10);
+
+            // Status Text
+            ctx.font = '20px monospace';
+            ctx.fillStyle = '#ff00ff';
+            ctx.fillText('C T H U - B O S S', x + b.width/2 - 80, y - 30);
+        }
+
+        // --- NEW DRAW BACKGROUND WITH SPACE OCTOPUS ---
         function drawBackground() {
             const gradient = ctx.createLinearGradient(0, 0, 0, 600);
             gradient.addColorStop(0, '#000511');
@@ -728,6 +808,7 @@
             ctx.fillStyle = 'rgba(40, 80, 120, 0.1)';
             ctx.fillRect(0, 350 - nebulaOffset, 800, 150);
             
+            // Draw Stars
             game.stars.forEach(star => {
                 star.y += star.speed;
                 if (star.y > 600) {
@@ -746,46 +827,149 @@
                 }
             });
             
-            const planetY = (game.scrollOffset * 0.05) % 800 - 200;
-            ctx.fillStyle = '#2a3a5a';
-            ctx.fillRect(650, planetY, 80, 80);
-            ctx.fillStyle = '#3a4a6a';
-            ctx.fillRect(660, planetY + 10, 60, 60);
-            ctx.fillStyle = '#1a2a4a';
-            ctx.fillRect(670, planetY + 40, 40, 20);
+            // --- NEW: Space Octopus Eating Planet ---
+            const planetY = (game.scrollOffset * 0.05) % 1000 - 300; // Scrolls slowly
+            const planetX = 50;
+            const planetRadius = 150;
+
+            // Planet (The Earth)
+            ctx.beginPath();
+            ctx.arc(planetX, planetY, planetRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#2277aa'; // Blue ocean
+            ctx.fill();
+            ctx.fillStyle = '#33cc55'; // Green land
+            ctx.fillRect(planetX - 50, planetY - 80, 60, 40);
+            ctx.fillRect(planetX + 20, planetY + 40, 50, 30);
+            
+            // Space Octopus (Cthulhu background figure)
+            const octopusColor = 'rgba(128, 0, 128, 0.3)'; // Semi-transparent Purple
+            const octoX = planetX + 150;
+            const octoY = planetY;
+            const octoSize = 200;
+            const wave = Math.sin(Date.now() / 500) * 10;
+
+            ctx.fillStyle = octopusColor;
+            // Head
+            ctx.fillRect(octoX, octoY - 50, 100, 100);
+            // Eye Glow
+            ctx.fillStyle = 'rgba(255, 0, 255, 0.5)';
+            ctx.fillRect(octoX + 30, octoY - 30, 40, 40);
+
+            // Tentacles reaching for the planet
+            ctx.strokeStyle = octopusColor.replace('0.3', '0.6');
+            ctx.lineWidth = 15;
+            
+            // Tentacle 1 (Grabbing the top right)
+            ctx.beginPath();
+            ctx.moveTo(octoX + 10, octoY + 10);
+            ctx.quadraticCurveTo(octoX - 50, octoY - 50 + wave, planetX + 100, planetY - 100);
+            ctx.stroke();
+
+            // Tentacle 2 (Grabbing the bottom right)
+            ctx.beginPath();
+            ctx.moveTo(octoX + 50, octoY + 50);
+            ctx.quadraticCurveTo(octoX + 50 + wave, octoY + 100, planetX + 100, planetY + 80);
+            ctx.stroke();
         }
 
+        // --- NEW COSMIC HORROR UPDATE LOGIC ---
+        function updateCosmicHorror(b, timestamp) {
+            const BOSS_SPEED = 0.5;
+            const DESKTOP_FIRE_RATE = 500; // Faster, tighter attacks
+            const MOBILE_FIRE_RATE = 1000; // Slower, wider attacks
+
+            // 1. Movement Logic
+            b.x += b.vx * BOSS_SPEED;
+            b.y += b.vy * BOSS_SPEED;
+
+            // Bounce off the sides (Desktop Pattern: More erratic X movement)
+            if (b.x <= 0 || b.x >= canvas.width - b.width) {
+                b.vx = -b.vx;
+            }
+            // Slowly move down to attack area, then stay there
+            if (b.y < 50) {
+                b.vy = 1;
+            } else if (b.y >= 50) {
+                b.vy = 0; // Stay in the attack zone
+                b.y = 50;
+            }
+
+            // 2. Attack Logic based on controlType
+            if (b.y === 50) { // Only attack when in position
+                const fireRate = bossPatternType === 'desktop' ? DESKTOP_FIRE_RATE : MOBILE_FIRE_RATE;
+
+                if (timestamp - b.lastShot > fireRate) {
+                    if (bossPatternType === 'desktop') {
+                        // Desktop Pattern: Fast, straight shots targeting player
+                        game.bullets.push({ x: b.x + b.width / 2 - 2, y: b.y + b.height, vy: 5, isEnemy: true });
+                        game.bullets.push({ x: b.x + b.width / 2 + 2, y: b.y + b.height, vy: 5, isEnemy: true });
+                    } else {
+                        // Mobile Pattern: Slower, wider, spray pattern for area denial
+                        const offset = Math.random() * 20 - 10;
+                        game.bullets.push({ x: b.x + b.width / 2 + offset, y: b.y + b.height, vy: 4, isEnemy: true });
+                        game.bullets.push({ x: b.x + 30, y: b.y + b.height, vy: 3, isEnemy: true });
+                        game.bullets.push({ x: b.x + b.width - 30, y: b.y + b.height, vy: 3, isEnemy: true });
+                    }
+                    b.lastShot = timestamp;
+                }
+            }
+
+            // Boss Bullet collision (Need to update bullet logic to handle 'isEnemy')
+            game.bullets.forEach((b) => {
+                if (!b.isEnemy && b.x > game.boss.x && b.x < game.boss.x + game.boss.width &&
+                    b.y > game.boss.y && b.y < game.boss.y + game.boss.height) {
+                    game.boss.health -= 50;
+                    b.y = -100; // Remove bullet
+                    createParticle(b.x, b.y, 'rgb(255, 0, 255)', 10);
+                }
+            });
+
+            // Boss defeat logic
+            if (game.boss.health <= 0) {
+                game.explosions.push({ x: b.x + b.width/2, y: b.y + b.height/2, age: 0 });
+                score += 5000;
+                isBossActive = false; // Boss defeated, go back to normal enemies
+            }
+        }
+        
         // --- Game Update Logic ---
         function updateGame(timestamp) {
             const p = game.player;
             const SHOOT_COOLDOWN = 250;
             const ENEMY_SPAWN_RATE = 2000;
             
-            // Player Movement (Handles both desktop and mobile keys)
+            // Check for Boss Activation
+            if (score >= COSMIC_HORROR_SCORE && !isBossActive) {
+                isBossActive = true;
+                // Stop regular enemy spawning temporarily 
+            }
+
+            // Player Movement (Unchanged)
             if (game.keys['a'] && p.x > 0) p.x -= p.speed;
             if (game.keys['d'] && p.x < 750) p.x += p.speed;
             if (game.keys['w'] && p.y > 0) p.y -= p.speed;
             if (game.keys['s'] && p.y < 540) p.y += p.speed;
             
+            // Player Shooting (Unchanged)
             if (game.keys['j'] && timestamp - game.lastShot > SHOOT_COOLDOWN) {
                 game.bullets.push({ x: p.x + 10, y: p.y, vy: -12 });
                 game.bullets.push({ x: p.x + 36, y: p.y, vy: -12 });
                 game.lastShot = timestamp;
             }
             
+            // Bullet Update
             game.bullets = game.bullets.filter(b => {
                 b.y += b.vy;
-                return b.y > -20;
+                return b.y > -20 && b.y < 620; // Keep enemy bullets that go past the screen for a bit
             });
             
-            // Enemy Spawning (Uses enemySpeedMultiplier indirectly by affecting game difficulty)
-            if (timestamp - game.enemySpawnTimer > ENEMY_SPAWN_RATE / Math.sqrt(enemySpeedMultiplier)) { // Spawns faster as multiplier increases
+            // Enemy Spawning (Only spawn if boss is NOT active)
+            if (!isBossActive && timestamp - game.enemySpawnTimer > ENEMY_SPAWN_RATE / Math.sqrt(enemySpeedMultiplier)) { 
                 const type = Math.random() > 0.7 ? 'bomber' : 'fighter';
                 const width = type === 'bomber' ? 60 : 40;
                 const height = type === 'bomber' ? 40 : 32;
                 const health = type === 'bomber' ? 150 : 100;
                 
-                // Set enemy speed based on initial speed and current multiplier
                 const baseSpeed = INITIAL_ENEMY_SPEED[type];
                 const currentSpeed = baseSpeed * enemySpeedMultiplier;
 
@@ -797,17 +981,22 @@
                     type,
                     health,
                     maxHealth: health,
-                    vy: currentSpeed // Updated with scaling
+                    vy: currentSpeed 
                 });
                 game.enemySpawnTimer = timestamp;
             }
             
+            // Enemy Update
             game.enemies = game.enemies.filter(e => {
                 e.y += e.vy;
                 return e.y < 650 && e.health > 0;
             });
             
+            // Collision Detection: Bullet vs Enemy
             game.bullets.forEach((b, bi) => {
+                // Skip if this is an enemy bullet
+                if (b.isEnemy) return; 
+
                 game.enemies.forEach((e) => {
                     if (b.x > e.x && b.x < e.x + e.width &&
                         b.y > e.y && b.y < e.y + e.height) {
@@ -824,19 +1013,44 @@
                 });
             });
             
+            // Collision Detection: Player vs Enemy
             game.enemies.forEach(e => {
                 if (p.x < e.x + e.width && p.x + p.width > e.x &&
                     p.y < e.y + e.height && p.y + p.height > e.y) {
+                    // Game Over on collision
                     gameState = 'gameover';
                     gameScreen.style.display = 'none';
-                    mobileControlsDiv.style.display = 'none'; // Hide mobile controls
+                    mobileControlsDiv.style.display = 'none'; 
                     gameoverScreen.style.display = 'block';
                     finalScoreEl.textContent = `FINAL SCORE: ${score.toString().padStart(8, '0')}`;
-                    stopDifficultyScaling(); // Stop scaling difficulty on game over
+                    stopDifficultyScaling(); 
                     if (animationId) cancelAnimationFrame(animationId);
                 }
             });
+
+            // Collision Detection: Player vs Boss Bullet
+            game.bullets.forEach(b => {
+                if (b.isEnemy) {
+                    if (p.x < b.x + 5 && p.x + p.width > b.x - 5 &&
+                        p.y < b.y + 10 && p.y + p.height > b.y - 10) {
+                        // Game Over on boss bullet hit
+                        gameState = 'gameover';
+                        gameScreen.style.display = 'none';
+                        mobileControlsDiv.style.display = 'none'; 
+                        gameoverScreen.style.display = 'block';
+                        finalScoreEl.textContent = `FINAL SCORE: ${score.toString().padStart(8, '0')}`;
+                        stopDifficultyScaling(); 
+                        if (animationId) cancelAnimationFrame(animationId);
+                    }
+                }
+            });
             
+            // Boss Update
+            if (isBossActive) {
+                updateCosmicHorror(game.boss, timestamp);
+            }
+
+            // Explosion and Particle Updates (Unchanged)
             game.explosions = game.explosions.filter(exp => {
                 exp.age += 1;
                 return exp.age < 30;
@@ -856,32 +1070,31 @@
         function draw() {
             drawBackground();
             
+            // Draw all entities
             game.particles.forEach(drawParticle);
             drawSpaceship(game.player.x, game.player.y);
             game.bullets.forEach(drawBullet);
             game.enemies.forEach(drawEnemy);
             game.explosions.forEach(drawExplosion);
-            
-            ctx.fillStyle = 'rgba(0, 0, 20, 0.7)';
-            ctx.fillRect(0, 0, 800, 50);
-            
-            ctx.fillStyle = '#00ffff';
-            ctx.font = 'bold 28px monospace';
-            ctx.fillText(`SCORE: ${score.toString().padStart(8, '0')}`, 20, 35);
-            
-            ctx.fillStyle = '#ff00ff';
-            ctx.fillText(`ALTITUDE: ${Math.floor(game.scrollOffset / 10)}`, 500, 35);
-            
-            // Optional: Draw the current speed multiplier for debugging
-            ctx.fillStyle = '#ffcc00';
-            ctx.font = '14px monospace';
-            ctx.fillText(`SPEED x${enemySpeedMultiplier.toFixed(3)}`, 700, 580);
+
+            // Draw Boss
+            if (isBossActive) {
+                drawCosmicHorror(game.boss);
+            }
+
+            // Draw Score
+            ctx.font = '30px monospace';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(`SCORE: ${score.toString().padStart(8, '0')}`, 10, 30);
         }
         
         function gameLoop(timestamp) {
             if (gameState !== 'playing') return;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             updateGame(timestamp);
             draw();
+            
             animationId = requestAnimationFrame(gameLoop);
         }
     </script>
