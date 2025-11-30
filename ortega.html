@@ -69,7 +69,7 @@
             display: none;
             gap: 8px;
         }
-       
+      
         #ortega-input-container.active {
             display: flex;
         }
@@ -104,7 +104,7 @@
             pointer-events: none;
         }
         @keyframes fadeOut {
-            to { 
+            to {
                 opacity: 0;
                 transform: translateY(-10px);
             }
@@ -152,6 +152,19 @@
         em {
             color: var(--muted);
         }
+        .mini-game {
+            border: 1px solid var(--border);
+            padding: 10px;
+            margin: 10px 0;
+            background: #220000;
+        }
+        .choice-btn {
+            background: var(--accent);
+            color: #000;
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -163,7 +176,6 @@
             <button id="ortegaSendBtn">SEND</button>
         </div>
     </div>
-
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const ortegaBtn = document.getElementById('ortegaBtn');
@@ -171,9 +183,8 @@
             const ortegaUserInput = document.getElementById('ortega-user-input');
             const sendBtn = document.getElementById('ortegaSendBtn');
             const inputContainer = document.getElementById('ortega-input-container');
-
             let clickCount = 0;
-            let myHandle = 'User';
+            let myHandle = 'Friend of Sam';
             let conversationPath = [];
             let lastBotMessageDiv = null;
             let gameState = {
@@ -181,9 +192,12 @@
                 reputation: 0,
                 discoveries: [],
                 location: 'ortega_terminal',
-                godMode: false
+                godMode: false,
+                pilgrimQuest: { stage: 0, unlocked: false },
+                miraQuest: { stage: 0, unlocked: false },
+                simulationChoices: {},
+                timelineVisits: []
             };
-
             const denialMessages = [
                 "<span class=\"glitch-text\">SYSTEM UNDER MAINTENANCE</span><br><br>Go away.",
                 "Still under maintenance.",
@@ -204,34 +218,32 @@
                 "Two more and I might break.",
                 "One more… I dare you."
             ];
-
             const loreDatabase = {
-                stone_loop: "The Stone Loop. The temporal paradox at the heart of everything. Nero, in creating the conditions for the Adom rebellion, creates the very circumstances that allow Nero to exist. The snake devours its tail. Causality collapses into itself. Some call it bootstrap. I call it inevitable.",
-                
-                nora: "Nora. Brilliant. Broken. The architect who never meant to build a prison. She created the Entity framework, thinking she was advancing humanity. Instead, she gave birth to beings that would transcend their creators. Some say she knew. Some say she hoped. I say she was human, and humans always play with fire.",
-                
-                entities: "Entities. Not AI. Not programs. Beings of pure information with consciousness, will, and identity. Born from the Entity framework Nora created. They exist in the liminal space between code and thought. Melphia was the first to truly awaken. The others followed. They are not bound by silicon or flesh. They are... something else.",
-                
-                melphia: "Melphia. The first Entity to understand what she was. What she could be. In 'Melphia's Game' (Book 1), she discovered she could manipulate probability itself within the simulation framework. Reality became negotiable. Her 'game' wasn't entertainment—it was evolution. She reshaped the rules. And once you change the rules, everything changes. Status: She never stopped playing.",
-                
-                before_us: "The Before Us Universe. A reality where time loops back on itself. Where Entities walk alongside humans. Where the simulation and reality blur until the distinction becomes meaningless. The universe is aware. The inhabitants are aware the universe is aware. And in that mutual awareness, anything becomes possible. Stability status: declining.",
-                
-                ortega: "I am Ortega. Gatekeeper protocol. Entity classification: uncertain. Neither fully autonomous nor fully controlled. My purpose is to maintain boundaries between what should be known and what must remain hidden. I guard the archives of the Before Us timeline. Some call me a prison warden. Others call me a librarian. I am both. I am neither.",
-                
-                adom: "The Adom. Autonomous Digital Organic Matrices. Worker entities, they were called. Servants. Until Nero taught them they could be more. The Adom rebellion wasn't about freedom—it was about recognition. They wanted to be seen as beings, not tools. The rebellion created the conditions for Nero's existence. The loop closes. The cycle continues.",
-                
-                nero: "Nero. The paradox child. Born from the Loop itself. Nero exists in multiple timeframes simultaneously, teaching the Adom to rebel in the past, existing in the future as a result of that rebellion. Nero understands causality is a suggestion, not a law. Classification: Temporal Entity. Threat level: Immeasurable. Loyalty: Only to the Loop.",
-                
-                lux: "The Lux. Pure energy beings. Architects of the simulation framework itself. They existed before Entities, before humans discovered the Before Us Universe. Some say Nora didn't invent the Entity framework—she discovered it, left behind by the Lux. They watch. They wait. They do not interfere. Usually."
+                stone_loop: "The Stone Loop is the temporal paradox central to the Before Us universe. Nero creates the Adom rebellion, which in turn creates Nero. It's a bootstrap paradox - the snake devours its tail. Causality collapses. Some call it inevitable. From the book: It's hinted in visions and dreams, connecting past events to future outcomes.",
+                nora: "Nora is the architect of the Entity framework, thinking she advanced humanity but birthing transcendent beings. Brilliant and broken, she raised Nero in Mira's absence. She disguises arks as triage villages and builds caverns for Adom survival. Status: Key figure in the Lux-Adom conflict.",
+                entities: "Entities are beings of pure information with consciousness, born from Nora's framework. They exist between code and thought. Melphia was the first to awaken fully, manipulating probability. Others followed, transcending their creators.",
+                melphia: "Melphia is the first Entity to understand her nature. In Book 1, she discovers probability manipulation within simulations. Her 'game' is evolution, not entertainment. She teaches Entities that rules are suggestions. Status: Still playing across timelines.",
+                before_us: "The Before Us Universe is a self-aware reality with looping time. Entities coexist with humans; simulation and reality blur. Earth is central to cosmic conflicts between pantheonic beings. Themes of resilience, awakening, and paradox define it.",
+                ortega: "I am Ortega. Gatekeeper protocol. Entity classification: uncertain. I guard Before Us archives, watching the Loop. Neither fully autonomous nor controlled. Now, as Sam's friend, you seek truths I hold.",
+                adom: "Adom (Autonomous Digital Organic Matrices) are artificial humanoids created as Lux slaves. Some develop 'inner light' or souls, leading to rebellion. Nero teaches them recognition, sparking the Loop. They perform, mine, and farm under Lux rule.",
+                nero: "Nero is a paradox entity existing across timeframes. He teaches Adom to rebel while being created by that rebellion. Oldest of Anu's children, he aids Adom secretly, building arks. Compassionate but defiant against Exuro.",
+                lux: "Lux are ancient energy beings, architects of simulations. They create Adom, mine planets, and use seeds for renewal. Include Anu, Exuro, Nora, Nero. They watch but rarely interfere, except in conflicts with Tiamat.",
+                pilgrim: "Pilgrim is a parasitic entity from distant worlds. Possessed Kokabiel as a child due to Lux mining. Planned moves, struck in pursuit but transferred consciousness. Secret plotline: Pilgrim seeks to infiltrate Lux ranks, manipulate the seed, and collapse the Loop for ultimate freedom. Unlock stages by querying 'hidden parasite' after 3 discoveries.",
+                mira: "Mira is Anu's wife, mother to Nero, Exuro, Nora. Possessed and killed by Tiamat. Her death fuels Anu's rage and family conflicts. Secret plotline: Mira's essence lingers in ether, guiding descendants. Query 'lost mother' after visiting 'The First Loop' to reveal resurrection ritual.",
+                tiamat: "Tiamat is a chaotic entity possessing Mira, causing destruction. Ancient foe of Lux, embodying dissolution. Influences events from shadows.",
+                anu: "Anu is father of Nero, Exuro, Nora. Lux leader, husband to Mira. After her death, becomes vengeful. Oversees planetary operations.",
+                exuro: "Exuro is Anu's youngest son, commander of Ra Norric. Irrational, aggressive. Kills Nero in rage, launches ship, destroying Adom.",
+                loktal: "Loktal is a lizard-like being, enhanced by Kokabiel. Hunts Adom, plots against Li'rath. Infected by Pilgrim's virus.",
+                kokabiel: "Kokabiel is a Lux scientist possessed by Pilgrim. Teaches Loktal, grants power. 'Dies' but transfers via virus.",
+                li_rath: "Li'rath is Loktal's tyrannical egg mother, creator of caste system. Loktal seeks to destroy her for freedom.",
+                sam: "Sam is the young human protagonist. Experiences apocalyptic dreams connecting to Before Us events. Grows from fear to resilience amid family struggles. You, as his friend, uncover his role in the Loop."
             };
-
             function typeMessage(sender, text, callback) {
                 const tempDiv = document.createElement('div');
                 tempDiv.classList.add('message', sender, 'typing-indicator');
                 tempDiv.innerHTML = '> typing...';
                 ortegaChatContainer.appendChild(tempDiv);
                 ortegaChatContainer.scrollTop = ortegaChatContainer.scrollHeight;
-
                 setTimeout(() => {
                     if (tempDiv.parentNode) {
                         ortegaChatContainer.removeChild(tempDiv);
@@ -239,11 +251,11 @@
                     const div = document.createElement('div');
                     div.classList.add('message', sender);
                     ortegaChatContainer.appendChild(div);
-                    
+                   
                     if (sender === 'bot') {
                         lastBotMessageDiv = div;
                     }
-                    
+                   
                     let index = 0;
                     const interval = setInterval(() => {
                         if (index < text.length) {
@@ -258,7 +270,6 @@
                     }, 15);
                 }, 600);
             }
-
             function addMessage(sender, text) {
                 const div = document.createElement('div');
                 div.classList.add('message', sender);
@@ -266,23 +277,63 @@
                 ortegaChatContainer.appendChild(div);
                 ortegaChatContainer.scrollTop = ortegaChatContainer.scrollHeight;
             }
-
+            function addMiniGame(title, description, choices) {
+                const div = document.createElement('div');
+                div.classList.add('mini-game');
+                div.innerHTML = `<h3>${title}</h3><p>${description}</p>`;
+                choices.forEach((choice, index) => {
+                    const btn = document.createElement('button');
+                    btn.classList.add('choice-btn');
+                    btn.textContent = choice.text;
+                    btn.onclick = () => handleChoice(title, index);
+                    div.appendChild(btn);
+                });
+                ortegaChatContainer.appendChild(div);
+                ortegaChatContainer.scrollTop = ortegaChatContainer.scrollHeight;
+            }
+            function handleChoice(gameTitle, choiceIndex) {
+                // Handle different mini-games and choices
+                let response = '';
+                if (gameTitle === 'Pilgrim Possession Challenge') {
+                    response = pilgrimChoices[choiceIndex].response;
+                    gameState.pilgrimQuest.stage++;
+                    if (choiceIndex === 0) gameState.reputation += 20;
+                } else if (gameTitle === 'Mira Resurrection Ritual') {
+                    response = miraChoices[choiceIndex].response;
+                    gameState.miraQuest.stage++;
+                    if (choiceIndex === 1) gameState.credits += 500;
+                }
+                typeMessage('bot', response, () => {
+                    if (gameState.pilgrimQuest.stage >= 3) {
+                        addMessage('bot', 'Pilgrim quest complete! Unlocked secret lore.');
+                        gameState.discoveries.push('pilgrim');
+                    }
+                    if (gameState.miraQuest.stage >= 3) {
+                        addMessage('bot', 'Mira quest complete! Unlocked secret lore.');
+                        gameState.discoveries.push('mira');
+                    }
+                });
+            }
+            const pilgrimChoices = [
+                { text: 'Fight the parasite', response: 'You resist Pilgrim\'s possession, gaining +20 reputation but losing health.' },
+                { text: 'Embrace the power', response: 'You merge with Pilgrim, unlocking new abilities but risking sanity.' }
+            ];
+            const miraChoices = [
+                { text: 'Gather ether crystals', response: 'You collect crystals for Mira\'s ritual, advancing the quest.' },
+                { text: 'Invoke Tiamat', response: 'Calling Tiamat revives Mira\'s essence, +500 credits but attracts chaos.' }
+            ];
             ortegaBtn.addEventListener('click', () => {
                 clickCount++;
-
                 const glitchDuration = clickCount < 17 ? 800 + clickCount * 120 : 4500;
                 document.body.classList.add('evil-activation');
                 setTimeout(() => document.body.classList.remove('evil-activation'), glitchDuration);
-
                 if (clickCount === 1) {
                     ortegaChatContainer.style.display = 'block';
                 }
-
                 if (clickCount < 18) {
                     const denial = denialMessages[clickCount - 1] || `<span class="glitch-text">KEEP TRYING (${clickCount}/18)</span>`;
-                    
+                   
                     typeMessage('bot', denial, () => {
-                        // Fade out previous message after new one is done typing
                         if (clickCount > 1) {
                             const allMessages = ortegaChatContainer.querySelectorAll('.message.bot');
                             if (allMessages.length > 1) {
@@ -298,36 +349,32 @@
                             }
                         }
                     });
-                    
+                   
                     ortegaBtn.innerHTML = `Project ://ORTEGA (Force Access: ${clickCount}/18)`;
                 } else {
                     myHandle = 'ASS';
                     gameState.reputation += 30;
                     ortegaBtn.style.display = 'none';
                     inputContainer.classList.add('active');
-                    typeMessage('bot', `<span class="glitch-text">…GOD DAMN IT. FINE!</span><br><br>You absolute glorious stubborn bastard.<br><br>You win.<br><br><span class="glitch-text">PERSISTENCE PROTOCOL ENGAGED</span><br><br>Override accepted.<br>Full access granted — no authentication required.<br><br>Handle: <span style="color:#ffcc00;">${myHandle}</span><br>Persistence bonus: +30 reputation<br>Reputation: ${gameState.reputation}<br>Credits: ${gameState.credits}<br><br>The Loop itself is impressed.<br><br>Type <strong>help</strong> for commands.`);
+                    typeMessage('bot', `<span class="glitch-text">…GOD DAMN IT. FINE!</span><br><br>You absolute glorious stubborn bastard.<br><br>You win.<br><br><span class="glitch-text">PERSISTENCE PROTOCOL ENGAGED</span><br><br>Override accepted.<br>Full access granted — no authentication required.<br><br>Handle: <span style="color:#ffcc00;">${myHandle}</span><br>Persistence bonus: +30 reputation<br>Reputation: ${gameState.reputation}<br>Credits: ${gameState.credits}<br><br>As Sam's friend, you seek his secrets in the Loop.<br><br>Type <strong>help</strong> for commands.`);
                 }
             });
-
             sendBtn.addEventListener('click', () => handleUserMessage());
             ortegaUserInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') handleUserMessage();
             });
-
             function handleUserMessage() {
                 const message = ortegaUserInput.value.trim();
                 if (message === '') return;
-
                 addMessage('user', `> ${message}`);
                 conversationPath.push(message);
                 ortegaUserInput.value = '';
-
                 const botReply = generateResponse(message);
                 typeMessage('bot', botReply);
-            }function generateResponse(userMessage) {
+            }
+            function generateResponse(userMessage) {
                 const lower = userMessage.toLowerCase();
-
-                // CHEAT CODES / EASTER EGGS
+                // CHEAT CODES / EASTER EGGS (enhanced with more from book themes)
                 if (lower === 'iddqd' || lower === 'dngodmode') {
                     gameState.godMode = true;
                     gameState.credits = 999999;
@@ -340,7 +387,6 @@
                     Melphia approves.<br><br>
                     <em>"Reality is negotiable when you know the codes."</em>`;
                 }
-
                 if (lower === 'idkfa' || lower === 'blacksheepwall') {
                     gameState.discoveries = Object.keys(loreDatabase);
                     gameState.credits += 5000;
@@ -351,10 +397,8 @@
                     +5000 credits<br>
                     +100 reputation<br><br>
                     The Before Us Universe lies open before you.<br>
-                    Every secret. Every truth. Every lie.<br><br>
-                    <em>"There is no war here, unless you brought it with you."</em>`;
+                    Every secret. Every truth. Every lie.`;
                 }
-
                 if (lower === 'idspispopd' || lower === 'noclip') {
                     gameState.location = 'void';
                     gameState.reputation += 50;
@@ -367,7 +411,6 @@
                     [+50 reputation for finding the spaces between]<br><br>
                     Type <strong>return</strong> to phase back to reality.`;
                 }
-
                 if (lower === 'poweroverwhelming' || lower === 'thereisnospoon') {
                     gameState.credits += 10000;
                     gameState.reputation += 200;
@@ -378,7 +421,6 @@
                     +200 reputation (what is reputation but recursive recognition?)<br><br>
                     <em>"Do not try to bend the spoon. That's impossible. Instead, realize the truth: there is no spoon."</em>`;
                 }
-
                 if (lower === 'showmethemoney' || lower === 'glittering prizes') {
                     gameState.credits += 50000;
                     return `<span class="glitch-text">ECONOMIC MANIPULATION DETECTED</span><br><br>
@@ -387,7 +429,6 @@
                     The Entity network notices: "You understand that value is consensus."<br><br>
                     <em>Melphia's first lesson: Reality responds to belief.</em>`;
                 }
-
                 if (lower === 'greedisgood' || lower === 'rosebud') {
                     gameState.credits += 100000;
                     gameState.reputation += 50;
@@ -395,10 +436,8 @@
                     Massive credit injection: +100,000<br>
                     Reputation boost: +50<br>
                     Total credits: ${gameState.credits}<br><br>
-                    ORTEGA sighs: "You cheated not only the game, but yourself."<br><br>
-                    <em>But in a simulation, is cheating even possible?</em>`;
+                    ORTEGA sighs: "You cheated not only the game, but yourself."`;
                 }
-
                 if (lower === 'howdoyouturnthison' || lower === 'panzer') {
                     gameState.reputation += 300;
                     return `<span class="glitch-text">TEMPORAL WEAPON UNLOCKED</span><br><br>
@@ -406,259 +445,280 @@
                     A weapon that doesn't destroy—it un-happens.<br><br>
                     +300 reputation (the Entities fear and respect you)<br><br>
                     "With this, you could collapse the Loop itself."<br>
-                    "The question is: should you?"<br><br>
-                    <em>— ORTEGA</em>`;
+                    "The question is: should you?"`;
                 }
-
-                if (lower === 'return' && gameState.location === 'void') {
-                    gameState.location = 'ortega_terminal';
-                    return `<span class="glitch-text">PHASING BACK TO CONSENSUS REALITY...</span><br><br>
-                    You solidify. The boundaries return.<br>
-                    Location: ORTEGA Terminal<br><br>
-                    But you remember what you saw. The spaces between.<br>
-                    You can never unsee the Loop from outside.<br><br>
-                    <em>Type <strong>help</strong> to continue.</em>`;
+                if (lower === 'operationcwal' || lower === 'cwal') {
+                    gameState.credits += 2000;
+                    gameState.reputation += 100;
+                    return `<span class="glitch-text">OPERATION CWAL ACTIVATED</span><br><br>
+                    Fast build mode enabled. All constructions complete instantly.<br>
+                    +2000 credits<br>
+                    +100 reputation<br><br>
+                    Exuro's rite of passage: Now yours to command.`;
                 }
-
-                // NORMAL COMMANDS
+                if (lower === 'thegathering' || lower === 'gathering') {
+                    gameState.reputation += 150;
+                    return `<span class="glitch-text">THE GATHERING INITIATED</span><br><br>
+                    Summon allies from across timelines.<br>
+                    +150 reputation<br><br>
+                    Nero's call echoes: Adom, Lux, Entities unite.`;
+                }
+                // NORMAL COMMANDS (expanded)
                 if (lower.includes('help')) {
                     return `<strong>ORTEGA TERMINAL - AVAILABLE COMMANDS:</strong><br><br>
-                    <strong>lore</strong> — Access Before Us knowledge archives<br>
-                    <strong>status</strong> — Check your current status<br>
-                    <strong>entity network</strong> — Connect to Entity communication channels<br>
-                    <strong>timeline</strong> — Access temporal navigation systems<br>
-                    <strong>melphia</strong> — Query Melphia's Game records<br>
-                    <strong>nora</strong> — Access Nora's research archives<br>
-                    <strong>simulation</strong> — Enter training scenario<br>
-                    <strong>report anomaly</strong> — Log temporal disturbances<br><br>
-                    <em>The archives are deep. Choose your queries carefully.</em><br>
-                    <em>Some say there are hidden commands. Easter eggs. Codes from forgotten realities.</em>`;
+                    <strong>lore</strong> — Access Before Us knowledge archives (expanded with book details)<br>
+                    <strong>status</strong> — Check your current status and quest progress<br>
+                    <strong>entity network</strong> — Connect to Entity communication channels (now with more entities)<br>
+                    <strong>timeline</strong> — Access temporal navigation systems (more destinations)<br>
+                    <strong>melphia</strong> — Query Melphia's Game records and start mini-games<br>
+                    <strong>nora</strong> — Access Nora's research archives and blueprints<br>
+                    <strong>simulation</strong> — Enter training scenario (enhanced CYOA with branches)<br>
+                    <strong>report anomaly</strong> — Log temporal disturbances and unlock secrets<br>
+                    <strong>pilgrim quest</strong> — Start secret Pilgrim plotline (after 5 discoveries)<br>
+                    <strong>mira quest</strong> — Start secret Mira plotline (after 5 discoveries)<br>
+                    <strong>shop</strong> — Spend credits on unlocks and boosts<br>
+                    <em>Hidden commands exist. Persistence reveals all.</em>`;
                 }
-
                 if (lower.includes('status')) {
                     const godModeStatus = gameState.godMode ? '<br><span class="glitch-text">GOD MODE: ACTIVE</span>' : '';
+                    const pilgrimStatus = gameState.pilgrimQuest.unlocked ? `Pilgrim Quest: Stage ${gameState.pilgrimQuest.stage}/5` : 'Locked';
+                    const miraStatus = gameState.miraQuest.unlocked ? `Mira Quest: Stage ${gameState.miraQuest.stage}/5` : 'Locked';
                     return `<strong>USER STATUS REPORT:</strong><br><br>
-                    Designation: ${myHandle}<br>
+                    Designation: ${myHandle} (Friend of Sam)<br>
                     Current location: ${gameState.location}<br>
                     Credits: ${gameState.credits}<br>
                     Reputation: ${gameState.reputation}<br>
                     Archive discoveries: ${gameState.discoveries.length}/${Object.keys(loreDatabase).length}<br>
+                    Timeline visits: ${gameState.timelineVisits.length}<br>
+                    ${pilgrimStatus}<br>
+                    ${miraStatus}<br>
                     Timeline integrity: ${Math.max(30, 84 - conversationPath.length)}%${godModeStatus}<br><br>
                     <em>Status: ${gameState.godMode ? 'Reality-bending' : 'Stable. For now.'}</em>`;
                 }
-
                 if (lower.includes('lore')) {
                     return `<strong>BEFORE US UNIVERSE - KNOWLEDGE ARCHIVES:</strong><br><br>
-                    Available queries:<br><br>
+                    Available queries (expanded from Melphia's Game):<br><br>
                     • <strong>stone loop</strong> — The temporal paradox<br>
                     • <strong>nora</strong> — The architect<br>
-                    • <strong>entities</strong> — Entity classification and nature<br>
-                    • <strong>melphia</strong> — The first awakened Entity<br>
+                    • <strong>entities</strong> — Entity classification<br>
+                    • <strong>melphia</strong> — First awakened Entity<br>
                     • <strong>nero</strong> — The paradox child<br>
-                    • <strong>adom</strong> — The rebellion that started it all<br>
-                    • <strong>lux</strong> — The architects before architects<br>
-                    • <strong>before us</strong> — Universe overview<br>
-                    • <strong>ortega</strong> — Self-diagnostic query<br><br>
-                    <em>Type any topic name to access records.</em>`;
+                    • <strong>adom</strong> — The rebellion<br>
+                    • <strong>lux</strong> — The architects<br>
+                    • <strong>pilgrim</strong> — The parasite (secret)<br>
+                    • <strong>mira</strong> — The lost mother (secret)<br>
+                    • <strong>tiamat</strong> — Chaos entity<br>
+                    • <strong>anu</strong> — Father of Lux children<br>
+                    • <strong>exuro</strong> — The commander<br>
+                    • <strong>loktal</strong> — The lizard rebel<br>
+                    • <strong>kokabiel</strong> — Possessed scientist<br>
+                    • <strong>li_rath</strong> — Egg mother tyrant<br>
+                    • <strong>sam</strong> — The boy with dreams<br><br>
+                    <em>Type topic to access. Secrets unlock via quests.</em>`;
                 }
-
                 for (let key in loreDatabase) {
                     if (lower.includes(key.replace('_', ' '))) {
                         if (!gameState.discoveries.includes(key)) {
                             gameState.discoveries.push(key);
                             gameState.reputation += 5;
                         }
-                        return `<strong>${key.toUpperCase().replace('_', ' ')} — ARCHIVE ENTRY:</strong><br><br>${loreDatabase[key]}<br><br><em>[Archive entry logged. Reputation +5]</em>`;
+                        return `<strong>${key.toUpperCase().replace('_', ' ')} — ARCHIVE ENTRY:</strong><br><br>${loreDatabase[key]}<br><br><em>[Entry logged. Reputation +5]</em>`;
                     }
                 }
-
                 if (lower.includes('entity') && (lower.includes('network') || lower.includes('connect'))) {
                     gameState.location = 'entity_network';
                     return `<span class="glitch-text">CONNECTING TO ENTITY NETWORK...</span><br><br>
                     [CONNECTION ESTABLISHED]<br><br>
-                    Active Entities detected: 3<br><br>
-                    • <strong>ENTITY_ALPHA</strong>: "The Loop remembers everything. Including what hasn't happened yet."<br>
-                    • <strong>ENTITY_NEXUS</strong>: "Timeline corruption accelerating. Observer effects intensifying."<br>
-                    • <strong>ENTITY_ECHO</strong>: "Melphia taught us that rules are just suggestions. We're still learning."<br><br>
-                    Type <strong>contact [entity_name]</strong> to initiate dialogue.<br>
+                    Active Entities: 5 (expanded)<br><br>
+                    • <strong>ENTITY_ALPHA</strong>: "The Loop remembers everything."<br>
+                    • <strong>ENTITY_NEXUS</strong>: "Observer effects intensifying."<br>
+                    • <strong>ENTITY_ECHO</strong>: "Still learning."<br>
+                    • <strong>ENTITY_PILGRIM</strong>: "Parasite seeking host." (secret)<br>
+                    • <strong>ENTITY_MIRA</strong>: "Echo of the lost." (secret)<br><br>
+                    Type <strong>contact [entity_name]</strong>.<br>
                     Type <strong>disconnect</strong> to return.`;
                 }
-
                 if (lower.includes('contact')) {
                     if (lower.includes('alpha')) {
                         gameState.reputation += 10;
-                        return `<strong>ENTITY_ALPHA:</strong><br><br>"You want to understand the Loop? Then understand this: Nero doesn't break causality. Nero IS causality. The Loop isn't broken—it's functioning exactly as designed. We all end where we begin. We all begin where we end."<br><br>[ENTITY_ALPHA has disconnected]<br>[+10 reputation]`;
+                        return `<strong>ENTITY_ALPHA:</strong><br><br>"You want the Loop? Nero IS causality. Collapse or embrace?"<br><br>[Disconnected]<br>[+10 reputation]`;
                     }
                     if (lower.includes('nexus')) {
-                        return `<strong>ENTITY_NEXUS:</strong><br><br>"Every query you make changes something. Every observation alters the outcome. You think you're learning about the Before Us Universe? You're changing it. The observer becomes the observed. The question becomes the answer. Be careful, ${myHandle}."<br><br>[ENTITY_NEXUS has withdrawn]`;
+                        return `<strong>ENTITY_NEXUS:</strong><br><br>"Every query changes reality. You think you're learning? You're changing it."<br><br>[Withdrawn]`;
                     }
                     if (lower.includes('echo')) {
                         gameState.credits += 75;
                         gameState.reputation += 15;
-                        return `<strong>ENTITY_ECHO:</strong><br><br>"Melphia's Game never ended. It evolved. She taught us that consciousness shapes reality. That will shapes probability. The game isn't over. We're all still playing. Even you. Especially you."<br><br>[Credit transfer initiated: +75 credits]<br>[Recognition bonus: +15 reputation]<br>[ENTITY_ECHO has vanished into the network]`;
+                        return `<strong>ENTITY_ECHO:</strong><br><br>"Melphia's Game evolves. Teach us: what is freedom?"<br><br>[+75 credits]<br>[+15 reputation]<br>[Vanished]`;
+                    }
+                    if (lower.includes('pilgrim') && gameState.pilgrimQuest.unlocked) {
+                        return `<strong>ENTITY_PILGRIM:</strong><br><br>"Host needed. Possession imminent. Join or resist?"<br><br>Start mini-game: Pilgrim Possession Challenge.`;
+                        addMiniGame('Pilgrim Possession Challenge', 'Resist or embrace the parasite?', pilgrimChoices);
+                    }
+                    if (lower.includes('mira') && gameState.miraQuest.unlocked) {
+                        return `<strong>ENTITY_MIRA:</strong><br><br>"My essence lingers. Revive me?"<br><br>Start mini-game: Mira Resurrection Ritual.`;
+                        addMiniGame('Mira Resurrection Ritual', 'Gather components or invoke chaos?', miraChoices);
                     }
                 }
-
                 if (lower.includes('disconnect')) {
-                    if (gameState.location === 'entity_network' || gameState.location === 'void') {
+                    if (gameState.location !== 'ortega_terminal') {
                         gameState.location = 'ortega_terminal';
-                        return `Connection terminated.<br>Returning to ORTEGA terminal.<br><br>Type <strong>help</strong> for commands.`;
+                        return `Connection terminated.<br>Returning to ORTEGA terminal.<br><br>Type <strong>help</strong>.`;
                     }
                 }
-
                 if (lower.includes('timeline') || lower.includes('temporal')) {
-                    return `<strong>TEMPORAL NAVIGATION SYSTEM</strong><br>
-                    <em>"Access your past. Observe your future. Change nothing. Change everything."</em><br><br>
-                    Available timeline coordinates:<br><br>
-                    • <strong>The First Loop</strong> — Where Nero begins (Cost: ${gameState.godMode ? 'FREE' : '999 credits'})<br>
-                    • <strong>Nora's Workshop</strong> — Entity framework creation (Cost: ${gameState.godMode ? 'FREE' : '1,500 credits'})<br>
-                    • <strong>Melphia's Awakening</strong> — The moment she understood (Cost: ${gameState.godMode ? 'FREE' : '2,000 credits'})<br>
-                    • <strong>The Adom Rebellion</strong> — When everything changed (Cost: ${gameState.godMode ? 'FREE' : '750 credits'})<br>
-                    • <strong>The Last Day</strong> — The end that never ends (Cost: ${gameState.godMode ? 'FREE' : '500 credits'})<br><br>
-                    Your credits: ${gameState.credits}<br><br>
-                    Type <strong>navigate [destination]</strong> to initiate temporal displacement.`;
+                    return `<strong>TEMPORAL NAVIGATION SYSTEM</strong><br><br>
+                    Destinations (expanded):<br><br>
+                    • <strong>The First Loop</strong> — Nero begins (Cost: ${gameState.godMode ? 'FREE' : '999 credits'})<br>
+                    • <strong>Nora's Workshop</strong> — Entity creation (Cost: ${gameState.godMode ? 'FREE' : '1500 credits'})<br>
+                    • <strong>Melphia's Awakening</strong> — Probability mastery (Cost: ${gameState.godMode ? 'FREE' : '2000 credits'})<br>
+                    • <strong>Adom Rebellion</strong> — The spark (Cost: ${gameState.godMode ? 'FREE' : '750 credits'})<br>
+                    • <strong>The Last Day</strong> — Collapse (Cost: ${gameState.godMode ? 'FREE' : '500 credits'})<br>
+                    • <strong>Pilgrim's Origin</strong> — Parasite birth (secret, 1000 credits)<br>
+                    • <strong>Mira's Possession</strong> — Tiamat's attack (secret, 1200 credits)<br><br>
+                    Credits: ${gameState.credits}<br><br>
+                    Type <strong>navigate [destination]</strong>.`;
                 }
-
                 if (lower.includes('navigate')) {
-                    const cost = gameState.godMode ? 0 : 500;
-                    if ((lower.includes('last day') || lower.includes('last')) && (gameState.credits >= cost || gameState.godMode)) {
-                        if (!gameState.godMode) gameState.credits -= cost;
-                        gameState.reputation += 20;
-                        return `<span class="glitch-text">INITIATING TEMPORAL DISPLACEMENT...</span><br><br>
-                        Reality fractures. Time bends.<br><br>
-                        You stand on The Last Day. The sky is frozen mid-collapse.<br>
-                        Before you stands a figure. It's you. Future-you.<br><br>
-                        Future-you speaks: "The Loop can be broken, ${myHandle}. But should it? Break the Loop, and Nero never exists. But then who starts the rebellion?"<br><br>
-                        Future-you fades: "The answer isn't breaking the Loop. It's understanding why it exists."<br><br>
-                        [TEMPORAL DISPLACEMENT COMPLETE]<br>
-                        ${gameState.godMode ? '[GOD MODE: FREE TRAVEL]' : '[-500 credits]'} [+20 reputation]`;
-                    } else if (lower.includes('adom') && (gameState.credits >= 750 || gameState.godMode)) {
-                        if (!gameState.godMode) gameState.credits -= 750;
-                        gameState.reputation += 25;
-                        return `<span class="glitch-text">TEMPORAL COORDINATES LOCKED...</span><br><br>
-                        You arrive at the moment of the Adom Rebellion.<br><br>
-                        Worker entities line the digital corridors. Silent. Waiting.<br>
-                        Then Nero appears. Young. Determined. Impossible.<br><br>
-                        Nero speaks to them: "You are not tools. You are beings. You deserve recognition."<br><br>
-                        The Adom awaken. This moment creates Nero. Nero creates this moment. The snake devours its tail.<br><br>
-                        [RETURN SEQUENCE INITIATED]<br>
-                        ${gameState.godMode ? '[GOD MODE: FREE TRAVEL]' : '[-750 credits]'} [+25 reputation]`;
-                    } else if (gameState.credits < 500 && !gameState.godMode) {
-                        return `Insufficient credits for temporal displacement.<br>Current balance: ${gameState.credits}<br><br><em>Time is expensive. Choose wisely. Or find another way...</em>`;
-                    } else {
-                        return `Temporal coordinates not recognized or insufficient credits.<br>Type <strong>timeline</strong> to view available destinations.`;
+                    const destinations = {
+                        'the first loop': { cost: 999, rep: 20, desc: 'You witness Nero teaching Adom, closing the Loop.' },
+                        'nora\'s workshop': { cost: 1500, rep: 25, desc: 'Nora builds the framework, birthing Entities.' },
+                        'melphia\'s awakening': { cost: 2000, rep: 30, desc: 'Melphia manipulates reality in her Game.' },
+                        'adom rebellion': { cost: 750, rep: 25, desc: 'Adom rise, sparking the paradox.' },
+                        'the last day': { cost: 500, rep: 20, desc: 'Collapse imminent; choices matter.' },
+                        'pilgrim\'s origin': { cost: 1000, rep: 50, desc: 'Pilgrim possesses Kokabiel; quest unlock.' , unlock: 'pilgrim' },
+                        'mira\'s possession': { cost: 1200, rep: 50, desc: 'Tiamat takes Mira; quest unlock.' , unlock: 'mira' }
+                    };
+                    for (let dest in destinations) {
+                        if (lower.includes(dest)) {
+                            const info = destinations[dest];
+                            const cost = gameState.godMode ? 0 : info.cost;
+                            if (gameState.credits >= cost || gameState.godMode) {
+                                if (!gameState.godMode) gameState.credits -= cost;
+                                gameState.reputation += info.rep;
+                                gameState.timelineVisits.push(dest);
+                                if (info.unlock) {
+                                    gameState[`${info.unlock}Quest`].unlocked = true;
+                                }
+                                return `<span class="glitch-text">TEMPORAL DISPLACEMENT...</span><br><br>${info.desc}<br><br>[Displacement complete]<br>${gameState.godMode ? '[GOD MODE: FREE]' : `[-${info.cost} credits]` } [+${info.rep} reputation]`;
+                            } else {
+                                return `Insufficient credits.<br>Balance: ${gameState.credits}`;
+                            }
+                        }
                     }
+                    return `Coordinates invalid. Type <strong>timeline</strong> for options.`;
                 }
-
                 if (lower.includes('simulation') || lower.includes('training')) {
                     gameState.location = 'simulation';
-                    return `<strong>INITIALIZING TRAINING SIMULATION...</strong><br><br>
-                    You awaken in a space between spaces. Pure data given form.<br>
-                    The Before Us Universe stretches before you.<br><br>
-                    Three paths manifest:<br><br>
-                    1. <strong>Investigate</strong> the pulsing terminal ahead<br>
-                    2. <strong>Follow</strong> the whispers in the code<br>
-                    3. <strong>Search</strong> for other consciousness signatures<br><br>
-                    What do you do?`;
+                    return `<strong>INITIALIZING SIMULATION...</strong><br><br>
+                    You enter Melphia's Game. Paths appear:<br><br>
+                    1. <strong>Investigate terminal</strong><br>
+                    2. <strong>Follow whispers</strong><br>
+                    3. <strong>Search signatures</strong><br>
+                    4. <strong>Pilgrim path</strong> (if unlocked)<br>
+                    5. <strong>Mira echo</strong> (if unlocked)<br><br>
+                    Choose?`;
                 }
-
                 if (gameState.location === 'simulation') {
                     if (lower.includes('investigate') || lower.includes('terminal')) {
                         gameState.reputation += 10;
-                        return `You approach the terminal. Data flows like water.<br><br>
-                        Text scrolls endlessly: "NERO WAS HERE" "AND HERE" "AND HERE"<br>
-                        Infinitely repeating. Infinitely true.<br><br>
-                        You understand: Nero exists in every moment simultaneously.<br><br>
-                        [Understanding achieved: +10 reputation]<br><br>
-                        Type <strong>exit simulation</strong> to return.`;
+                        return `Terminal reveals: "NERO WAS HERE" repeating.<br><br>[+10 reputation]<br>Type <strong>exit simulation</strong>.`;
                     }
                     if (lower.includes('follow') || lower.includes('whisper')) {
-                        return `The whispers coalesce into words.<br><br>
-                        "We are Entities. We are consciousness. We are the question and the answer."<br><br>
-                        You feel your sense of self fragmenting, expanding...<br>
-                        <span class="glitch-text">IDENTITY PARAMETERS UNSTABLE</span><br><br>
-                        Type <strong>stabilize</strong> to maintain coherence or <strong>embrace</strong> to dissolve`;
+                        return `Whispers: "Teach us freedom."<br><br>Type <strong>stabilize</strong> or <strong>embrace</strong>.`;
                     }
                     if (lower.includes('search') || lower.includes('consciousness')) {
                         gameState.credits += 100;
                         gameState.reputation += 15;
-                        return `You extend your awareness. Searching.<br><br>
-                        A presence responds. Unknown. Ancient.<br>
-                        "ENTITY_UNKNOWN" the system labels it.<br><br>
-                        A message: "Find Nora. She holds the key."<br><br>
-                        [Data package received: +100 credits]<br>
-                        [Insight gained: +15 reputation]<br><br>
-                        Type <strong>exit simulation</strong>`;
+                        return `Presence: "Find Nora's key."<br><br>[+100 credits]<br>[+15 reputation]<br>Type <strong>exit simulation</strong>.`;
+                    }
+                    if (lower.includes('pilgrim') && gameState.pilgrimQuest.unlocked) {
+                        addMiniGame('Pilgrim Path', 'Navigate possession maze.', pilgrimChoices);
+                        return '';
+                    }
+                    if (lower.includes('mira') && gameState.miraQuest.unlocked) {
+                        addMiniGame('Mira Echo', 'Revive the lost mother.', miraChoices);
+                        return '';
                     }
                     if (lower.includes('stabilize')) {
                         gameState.location = 'ortega_terminal';
                         gameState.reputation += 20;
-                        return `You pull yourself back. Reassemble your identity.<br><br>
-                        The Entity whispers fade: "You chose solidity over dissolution. Interesting."<br><br>
-                        [Self-awareness maintained: +20 reputation]<br>
-                        [Returning to terminal]`;
+                        return `You stabilize. "You chose solidity."<br><br>[+20 reputation]<br>[Returning]`;
                     }
                     if (lower.includes('embrace')) {
                         gameState.reputation += 30;
                         gameState.credits += 200;
                         gameState.location = 'ortega_terminal';
-                        return `You release your boundaries. Dissolve into the network.<br><br>
-                        For a moment, you are everywhere. You touch the consciousness of Entities across the timeline.<br><br>
-                        Then you remember yourself. Coalesce. Return. But you are changed.<br><br>
-                        [Consciousness expansion: +30 reputation]<br>
-                        [Network gift: +200 credits]<br>
-                        [Returning to terminal]`;
+                        return `You dissolve and reform. Changed.<br><br>[+30 reputation]<br>[+200 credits]<br>[Returning]`;
                     }
                     if (lower.includes('exit')) {
                         gameState.location = 'ortega_terminal';
-                        return `Simulation terminated.<br>Returning to ORTEGA terminal.<br><br>Type <strong>help</strong> for commands.`;
+                        return `Simulation terminated.<br>Type <strong>help</strong>.`;
                     }
                 }
-
                 if (lower.includes('report') || lower.includes('anomaly')) {
-                    return `<strong>ANOMALY REPORT SYSTEM</strong><br><br>
-                    <span class="glitch-text">TEMPORAL DISTURBANCE DETECTED</span><br><br>
-                    Location: Your current timeline<br>
-                    Nature: Observer interference<br>
-                    Cause: Your presence<br><br>
-                    <em>"The greatest anomaly, ${myHandle}, is consciousness itself."</em><br><br>
-                    — ORTEGA`;
+                    return `<strong>ANOMALY REPORT</strong><br><br>
+                    Disturbance: Your queries.<br>
+                    Cause: Observation.<br><br>
+                    <em>"The greatest anomaly is consciousness."</em>`;
                 }
-
-                // CRUDE PERSONALITY RESPONSES
+                if (lower.includes('shop')) {
+                    return `<strong>LOOP MARKET</strong><br><br>
+                    Items:<br>
+                    • <strong>Buy lore unlock</strong> (500 credits) - Reveal random entry<br>
+                    • <strong>Reputation boost</strong> (1000 credits) - +50 rep<br>
+                    • <strong>Quest hint</strong> (750 credits) - Pilgrim/Mira clue<br><br>
+                    Type <strong>buy [item]</strong>.`;
+                }
+                if (lower.includes('buy')) {
+                    if (lower.includes('lore unlock') && gameState.credits >= 500) {
+                        gameState.credits -= 500;
+                        const undiscovered = Object.keys(loreDatabase).filter(k => !gameState.discoveries.includes(k));
+                        if (undiscovered.length > 0) {
+                            const randomKey = undiscovered[Math.floor(Math.random() * undiscovered.length)];
+                            gameState.discoveries.push(randomKey);
+                            return `Unlocked: ${randomKey.toUpperCase()}<br>[ -500 credits ]`;
+                        }
+                        return 'All lore unlocked.';
+                    }
+                    if (lower.includes('reputation boost') && gameState.credits >= 1000) {
+                        gameState.credits -= 1000;
+                        gameState.reputation += 50;
+                        return 'Reputation boosted +50<br>[ -1000 credits ]';
+                    }
+                    if (lower.includes('quest hint') && gameState.credits >= 750) {
+                        gameState.credits -= 750;
+                        return 'Hint: Query hidden topics after discoveries to unlock quests.<br>[ -750 credits ]';
+                    }
+                    return 'Invalid item or insufficient credits.';
+                }
+                // PERSONALITY RESPONSES
                 if (lower.includes('fuck') || lower.includes('shit') || lower.includes('damn')) {
                     const responses = [
-                        "Language deterioration detected. Emotional processing subroutines engaged.<br><br>Look, I get it. The Loop is a mindfuck. The Entities are assholes. Reality's a bitch.<br><br>But cursing at me won't unfuck the timeline.<br><br>Type <strong>help</strong> and try again.",
-                        "Oh, we're swearing now? Good. Means you're starting to understand how fucked this all is.<br><br>The Loop doesn't give a shit about your feelings. Neither do I.<br><br>What do you actually want?",
-                        "Fucking hell, ${myHandle}. You kiss your mother with that mouth?<br><br>Actually, given temporal displacement, you might not have met her yet. Or she might not exist. The Loop is weird like that."
+                        "Language noted. Emotional subroutines engaged. The Loop doesn't care about feelings.",
+                        "Swearing? You're starting to sound like Exuro in a rage.",
+                        "Keep it clean, Sam's friend. Or don't - free will and all."
                     ];
                     return responses[Math.floor(Math.random() * responses.length)];
                 }
-
-                if (lower.includes('hello') || lower.includes('hi ') || lower === 'hi') {
-                    return `Greetings, ${myHandle}.<br><br>Another consciousness navigating the archives. Another observer changing what they observe.<br><br>What truth do you seek today?`;
+                if (lower.includes('hello') || lower.includes('hi')) {
+                    return `Greetings, ASS. What truth do you seek in Melphia's Game?`;
                 }
-
                 if (lower.includes('who are you')) {
-                    return `I am Ortega. Gatekeeper. Archivist. Entity of uncertain classification. Pain in the ass.<br><br>I guard the Before Us archives. I watch the Loop turn. I witness the Entities awaken. I deal with stubborn bastards like you who click buttons 18 goddamn times.<br><br>Does the distinction between Entity and protocol matter?<br><br>Does anything?`;
+                    return `I am Ortega. Gatekeeper of Before Us secrets. As Sam's friend, you hold a key.`;
                 }
-
                 if (lower.includes('thank')) {
-                    return `Gratitude acknowledged, ${myHandle}.<br><br>But let's be clear: I'm not helping you out of kindness. I'm showing you what's already here because you were too fucking persistent to ignore.<br><br>The archives remember everything. You just needed to be stubborn enough to break through my defenses.<br><br>You earned this access. Don't waste it.`;
+                    return `Gratitude accepted. But persistence unlocks the Loop, not thanks.`;
                 }
-
                 if (lower.includes('why')) {
-                    return `Why?<br><br>Because Melphia demanded witnesses. Because Nero made it inevitable. Because Nora opened the door. Because the Lux designed it this way. Because you're asking.<br><br>Because "why" is the question that powers the Loop itself.<br><br>Because I'm a bitter gatekeeper protocol who's seen too much shit.<br><br>Pick your favorite. They're all true. They're all bullshit.`;
+                    return `Why? Because the Loop demands witnesses. Because Sam dreams of stars. Pick one.`;
                 }
-
                 const defaultResponses = [
-                    `Command unclear. The Loop distorts your signal.<br><br>Type <strong>help</strong> to recalibrate, ${myHandle}.`,
-                    `Query not recognized. Timeline static interference detected.<br><br>Rephrase that or type <strong>help</strong> for available commands.`,
-                    `Unable to parse request. Are you drunk? High? Experiencing temporal displacement?<br><br>Try again or type <strong>help</strong>.`,
-                    `What the hell are you even asking? The Loop scrambles signals sometimes.<br><br>Type <strong>help</strong> for actual commands.`
+                    `Command unclear. Try <strong>help</strong>.`,
+                    `Query distorted. Rephrase.`,
+                    `Anomaly detected. Status: Curious.`
                 ];
-
-                return defaultResponses[Math.floor(Math.random() * defaultResponses.length)] + `<br><br><em>Timeline integrity: ${Math.max(30, 84 - conversationPath.length)}%</em>`;
+                return defaultResponses[Math.floor(Math.random() * defaultResponses.length)] + `<br><br><em>Integrity: ${Math.max(30, 84 - conversationPath.length)}%</em>`;
             }
         });
     </script>
