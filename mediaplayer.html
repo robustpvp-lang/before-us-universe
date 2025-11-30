@@ -10,7 +10,7 @@
         :root {
             --bg: #001a1a;
             --fg: #00ffff;
-            --accent: #ffcc00;
+            --accent: #00aaff;
             --border: #00cccc;
             --panel-bg: #002b2b;
             --text-gray: #e6f7f7;
@@ -27,15 +27,14 @@
             display: flex;
             flex-direction: column;
             align-items: stretch;
-            justify-content: flex-start;
+            justify-content: center;
             height: 100vh;
-            overflow: hidden;
+            overflow: auto;
             transition: filter 0.4s;
         }
         #player-container {
             width: 100%;
-            /* Increased height to accommodate the progress bar and controls without crushing them */
-            height: 50px; 
+            height: auto;
             border-bottom: 2px solid var(--border);
             background: rgba(0, 20, 40, 0.8);
             box-shadow: 0 0 20px var(--fg);
@@ -43,6 +42,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px 0;
         }
         .aplayer {
             background: transparent !important;
@@ -50,61 +50,55 @@
             width: 100%;
             max-width: 800px;
             font-family: 'Press Start 2P', cursive !important;
-            font-size: 10px !important; /* Slightly larger font */
+            font-size: 12px !important; /* Larger font */
             color: var(--fg) !important;
-            /* Match the container height */
-            height: 50px !important; 
+            display: flex !important;
+            flex-direction: column !important;
+            height: auto !important;
         }
         .aplayer .aplayer-body {
             background: var(--panel-bg) !important;
             border: 1px solid var(--border) !important;
             border-radius: 4px;
-            padding: 3px;
-            /* Allow the internal elements to dictate the height */
-            height: auto !important; 
-            min-height: 44px; /* Set a minimum height */
+            padding: 5px;
+            height: auto !important;
+            min-height: 50px;
             display: flex;
             align-items: center;
         }
-        
+       
         /* 1. Fix the layout of the info/title area */
         .aplayer .aplayer-info {
-            /* Flex to manage title and time */
-            display: flex !important; 
+            display: flex !important;
             flex-direction: column; /* Stack title and time vertically */
             justify-content: center;
             height: 100%;
-            /* Give it more width to prevent aggressive truncation */
-            flex-grow: 1; 
-            padding: 0 5px;
+            flex-grow: 1;
+            padding: 0 10px;
         }
-
         /* 2. Fix the layout of the controls/progress bar */
         .aplayer .aplayer-controller {
-            /* Ensure controls are still visible */
-            display: flex !important; 
+            display: flex !important;
             align-items: center;
             flex-shrink: 0;
         }
-
         /* 3. Give title more visibility */
         .aplayer-title, .aplayer-author {
             color: var(--fg) !important;
             text-shadow: 0 0 5px var(--fg);
-            font-size: 10px; 
+            font-size: 12px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 250px; /* Increased max width */
-            display: block !important; /* Changed from inline-block for better stacking */
-            line-height: 1.2;
+            max-width: 300px; /* Increased max width */
+            display: block !important;
+            line-height: 1.4;
         }
-        
+       
         /* 4. Increase bar wrap margin to fit time better */
         .aplayer-bar-wrap {
             height: 4px !important;
-            /* Adjusted margin to push progress bar away from time display */
-            margin: 0 8px; 
+            margin: 0 10px;
             flex-grow: 1; /* Allow the bar to expand */
         }
         .aplayer-bar, .aplayer-played {
@@ -116,23 +110,48 @@
         .aplayer-icon {
             fill: var(--fg) !important;
             stroke: var(--border) !important;
-            width: 16px; /* Slightly larger icons */
-            height: 16px;
+            width: 20px; /* Larger icons */
+            height: 20px;
         }
-        
+       
         /* 5. Fix time display */
         .aplayer .aplayer-time {
-            font-size: 10px;
-            /* Ensure the time is treated as a single block */
-            display: block; 
+            font-size: 12px;
+            display: block;
             text-align: right;
             margin-left: auto; /* Push time to the right */
         }
-
-        /* These remain hidden for the thin banner style */
+        /* Keep lyrics hidden */
         .aplayer .aplayer-lrc { display: none; }
-        .aplayer .aplayer-list { display: none; }
-        
+       
+        /* Show and enlarge tracklist */
+        .aplayer .aplayer-list {
+            display: block !important;
+            background: var(--panel-bg) !important;
+            border: 1px solid var(--border) !important;
+            border-top: none !important;
+            border-radius: 0 0 4px 4px;
+            margin-top: 10px;
+        }
+        .aplayer .aplayer-list ol {
+            max-height: 60vh !important;
+            overflow-y: auto !important;
+            font-size: 14px !important;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .aplayer .aplayer-list li {
+            padding: 15px 10px !important;
+            border-top: 1px solid var(--border) !important;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .aplayer .aplayer-list li:hover,
+        .aplayer .aplayer-list li.aplayer-list-light {
+            background: rgba(0, 170, 255, 0.1) !important;
+        }
+       
         /* static render layer */
         #static-overlay {
             position: fixed;
@@ -172,9 +191,9 @@
             bottom: 10%;
             width: 100%;
             text-align: center;
-            color: #f0f;
+            color: var(--fg);
             font-size: 24px;
-            text-shadow: 0 0 20px #f0f;
+            text-shadow: 0 0 20px var(--fg);
             opacity: 0;
             transition: opacity 1.2s;
             z-index: 200;
@@ -206,10 +225,9 @@ async function loadPlaylist() {
             theme: '#0ff',
             loop: 'all',
             order: 'random',
-            mini: false, 
-            fixed: true
+            mini: false,
+            fixed: false
         });
-
         // --- DISTORTION + GLITCH ENGINE SETUP ---
         let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let trackSource = null; // Will store the MediaElementSourceNode
@@ -220,20 +238,17 @@ async function loadPlaylist() {
         const whisper = document.getElementById("whisper");
         const container = document.getElementById("player-container");
         let staticNoise = null; // Declare staticNoise here
-
         // Function to set up the Web Audio graph (Run only ONCE)
         function setupAudioContext() {
             if (trackSource) return; // Already set up
-
             // Create the source from the existing APlayer audio element
             trackSource = audioCtx.createMediaElementSource(player.audio);
-            
+           
             // Connect the source directly to the destination
             trackSource.connect(audioCtx.destination);
-            
+           
             console.log("Web Audio Context initialized and connected.");
         }
-
         function createStaticNoise() {
             const bufferSize = audioCtx.sampleRate * 3;
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -247,7 +262,6 @@ async function loadPlaylist() {
             noise.connect(gain).connect(audioCtx.destination);
             return { noise, gain };
         }
-
         function whisperEvent() {
             whisper.textContent = Math.random() > 0.5
                 ? "“…you opened the wrong door…”"
@@ -255,12 +269,11 @@ async function loadPlaylist() {
             whisper.style.opacity = 1;
             setTimeout(() => whisper.style.opacity = 0, 2500);
         }
-
         function activateDistortionMode() {
             if (distortionActive) return;
             // Ensure audio context is resumed (required for all audio manipulation)
-            audioCtx.resume(); 
-            
+            audioCtx.resume();
+           
             distortionActive = true;
             staticOverlay.currentTime = 0;
             staticOverlay.play().catch(console.error);
@@ -269,18 +282,17 @@ async function loadPlaylist() {
             intervals.push(setInterval(() => { container.classList.add("glitching"); setTimeout(() => container.classList.remove("glitching"), 300); }, 4000));
             intervals.push(setInterval(() => { document.body.style.filter = "invert(1)"; setTimeout(() => document.body.style.filter = "invert(0)", 500); }, 10000));
             intervals.push(setInterval(() => { if (Math.random() < 0.33) whisperEvent(); }, 12000));
-            
+           
             const sn = createStaticNoise();
             sn.noise.start();
             staticNoise = sn;
-            
+           
             intervals.push(setInterval(() => {
                 // Adjust volume and rate directly on the player's underlying audio element
                 player.audio.volume = 0.7 + Math.random() * 0.25;
                 player.audio.playbackRate = 1 + (Math.random() * 0.07 - 0.035);
             }, 8000));
         }
-
         function resetDistortion() {
             distortionActive = false;
             staticOverlay.pause();
@@ -289,34 +301,32 @@ async function loadPlaylist() {
             container.classList.remove("luxpulse", "glitching");
             document.body.style.filter = "invert(0)";
             if (staticNoise) { staticNoise.noise.stop(); staticNoise = null; }
-            
+           
             // Set volume and rate back to normal
             player.audio.playbackRate = 1.0;
-            player.audio.volume = 1.0; 
-            
+            player.audio.volume = 1.0;
+           
             if (distortionTimer) { clearTimeout(distortionTimer); distortionTimer = null; }
             intervals.forEach(clearInterval);
             intervals = [];
         }
-
         // --- PLAYER HOOKS ---
         player.on('play', () => {
             // CRITICAL STEP: Setup the context only once
-            setupAudioContext(); 
-            
+            setupAudioContext();
+           
             resetDistortion();
             audioCtx.resume();
-            
+           
             // Start the timer for distortion mode
             distortionTimer = setTimeout(activateDistortionMode, 30000);
         });
-        
+       
         // Ensure distortion is reset on pause/end/track switch
         player.on('pause', resetDistortion);
         player.on('ended', resetDistortion);
         player.on('listswitch', resetDistortion);
         window.addEventListener('beforeunload', resetDistortion);
-
     } catch (error) {
         console.error('Playlist load failed:', error);
         document.getElementById("aplayer").innerHTML = "<p style='color: red; text-align: center;'>Error loading playlist. Please try again.</p>";
