@@ -332,6 +332,14 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <a href="https://sora.chatgpt.com/p/s_692415bc74c08191a0a5348aee788ebc?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.h1JfPIVieaPG" target="_blank"><div class="ad-banner">Teleportors and Syntheizers only 999 credits</div></a>
 <div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//4219.exe</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="exe4219Body">
+<iframe src="4219.html" style="width:100%; height:100%; border:none;"></iframe>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<a href="https://sora.chatgpt.com/p/s_692415a63f0081918d36fcfb2535670c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kJdH5e8d4z6b" target="_blank"><div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div></a>
+<div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//sora.ai</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="soraAiBody">
 <div id="soraai-wrap">
@@ -340,15 +348,16 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<a href="https://sora.chatgpt.com/p/s_692415a63f0081918d36fcfb2535670c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kJdH5e8d4z6b" target="_blank"><div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div></a>
+<a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank"><div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div></a>
 <div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//4219.exe</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="exe4219Body">
-<iframe src="4219.html" style="width:100%; height:100%; border:none;"></iframe>
+<div class="panel-title"><div class="title">//DISCORD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="discordBody">
+<div id="discord-wrap">
+<iframe src="https://discord.com/invite/kWkPH8d9" style="width:100%; height:500px; border:4px solid var(--border);" allowfullscreen allow="autoplay; fullscreen"></iframe>
+</div>
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank"><div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div></a>
 <div class="bottom-section">
   <div class="panel collapsible collapsed" id="galleriesPanel">
     <div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -582,6 +591,74 @@ if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' left //${ch.toU
 }
 // Global flag to track if we are in the Ortega Iframe mode
 let inOrtegaMode = false;
+function enterOrtegaChat() {
+    // 1. Visually trigger glitch/transition
+    document.body.classList.add('glitch-transition');
+    // 2. Set the global flag and update title
+    inOrtegaMode = true;
+    currentChannel = 'ortega'; // Use a temporary placeholder 'channel'
+    // Update title
+    chatTitle.innerHTML = `//ORTEGA <span class="small">[Command Interface]</span>`;
+  
+    // 3. Clear existing chat messages
+    chatMessages.innerHTML = '';
+  
+    // 4. Create and inject the iframe
+    const ortegaIframe = document.createElement('iframe');
+    ortegaIframe.id = 'ortegaChatIframe';
+    ortegaIframe.src = 'ortega.html';
+  
+    // Hide the chat input and users list
+    document.querySelector('.chat-users').style.display = 'none';
+    document.querySelector('.chat-controls').style.display = 'none';
+    document.getElementById('typingIndicator').style.display = 'none';
+    // Make the chatMessages container full height for the iframe
+    chatMessages.style.flex = '1';
+    chatMessages.style.padding = '0';
+    chatMessages.style.position = 'absolute';
+    chatMessages.style.top = '0';
+    chatMessages.style.left = '0';
+    chatMessages.style.right = '0';
+    chatMessages.style.bottom = '0';
+    chatMessages.appendChild(ortegaIframe);
+    // 5. Remove glitch effect after delay
+    setTimeout(() => {
+        document.body.classList.remove('glitch-transition');
+        appendSystem(`[SYSTEM] Entering secured channel //ORTEGA. Type /exitortega to return.`);
+    }, 800);
+}
+// NEW FUNCTION: Exit Ortega Chat Mode
+function exitOrtegaChat() {
+    if (!inOrtegaMode) return;
+    // 1. Visually trigger glitch/transition
+    document.body.classList.add('glitch-transition');
+    // 2. Remove iframe and restore chat/input
+    const ortegaIframe = document.getElementById('ortegaChatIframe');
+    if (ortegaIframe) ortegaIframe.remove();
+    // Restore chat elements
+    document.querySelector('.chat-users').style.display = '';
+    document.querySelector('.chat-controls').style.display = 'flex';
+    document.getElementById('typingIndicator').style.display = '';
+    chatMessages.style.position = 'relative';
+    chatMessages.style.padding = '8px';
+    chatMessages.style.flex = '';
+    chatMessages.style.top = '';
+    chatMessages.style.left = '';
+    chatMessages.style.right = '';
+    chatMessages.style.bottom = '';
+    // 3. Reset state and listeners
+    inOrtegaMode = false;
+    currentChannel = channelSelect.value; // Revert to selected channel
+    listenChannel(currentChannel);
+    setPresence(myHandle, currentChannel); // Update presence
+    // 4. Update Title
+    updateUserCount({}); // Forces a title refresh based on new currentChannel
+    // 5. Remove glitch effect after delay
+    setTimeout(() => {
+        document.body.classList.remove('glitch-transition');
+        appendSystem(`[SYSTEM] Exited //ORTEGA. Returned to //${currentChannel.toUpperCase()}.`);
+    }, 800);
+}
 function listenChannel(ch){
 // If we are exiting Ortega mode, remove the iframe
 if (inOrtegaMode) {
@@ -681,68 +758,6 @@ boardMsg.focus();
 };
 el.appendChild(reply);
 boardList.appendChild(el);
-}
-// NEW FUNCTION: Enter Ortega Chat Mode
-function enterOrtegaChat() {
-    // 1. Visually trigger glitch/transition
-    document.body.classList.add('glitch-transition');
-    // 2. Set the global flag and update title
-    inOrtegaMode = true;
-    currentChannel = 'ortega'; // Use a temporary placeholder 'channel'
-    // Update title
-    chatTitle.innerHTML = `//ORTEGA <span class="small">[Command Interface]</span>`;
-   
-    // 3. Clear existing chat messages
-    chatMessages.innerHTML = '';
-   
-    // 4. Create and inject the iframe
-    const ortegaIframe = document.createElement('iframe');
-    ortegaIframe.id = 'ortegaChatIframe';
-    ortegaIframe.src = 'ortega.html';
-   
-    // Hide the chat input and users list
-    document.querySelector('.chat-main').style.display = 'none';
-    document.querySelector('.chat-controls').style.display = 'none';
-    // Make the chatMessages container full height for the iframe
-    chatMessages.style.flex = '1';
-    chatMessages.style.padding = '0';
-    chatMessages.style.position = 'absolute';
-    chatMessages.style.top = '0';
-    chatMessages.style.left = '0';
-    chatMessages.style.right = '0';
-    chatMessages.style.bottom = '0';
-    chatMessages.appendChild(ortegaIframe);
-    // 5. Remove glitch effect after delay
-    setTimeout(() => {
-        document.body.classList.remove('glitch-transition');
-        appendSystem(`[SYSTEM] Entering secured channel //ORTEGA. Type /exitortega to return.`);
-    }, 800);
-}
-// NEW FUNCTION: Exit Ortega Chat Mode
-function exitOrtegaChat() {
-    if (!inOrtegaMode) return;
-    // 1. Visually trigger glitch/transition
-    document.body.classList.add('glitch-transition');
-    // 2. Remove iframe and restore chat/input
-    const ortegaIframe = document.getElementById('ortegaChatIframe');
-    if (ortegaIframe) ortegaIframe.remove();
-    // Restore chat elements
-    document.querySelector('.chat-main').style.display = 'flex';
-    document.querySelector('.chat-controls').style.display = 'flex';
-    chatMessages.style.position = 'relative'; // Restore position
-    chatMessages.style.padding = '8px';
-    // 3. Reset state and listeners
-    inOrtegaMode = false;
-    currentChannel = channelSelect.value; // Revert to selected channel
-    listenChannel(currentChannel);
-    setPresence(myHandle, currentChannel); // Update presence
-    // 4. Update Title
-    updateUserCount({}); // Forces a title refresh based on new currentChannel
-    // 5. Remove glitch effect after delay
-    setTimeout(() => {
-        document.body.classList.remove('glitch-transition');
-        appendSystem(`[SYSTEM] Exited //ORTEGA. Returned to //${currentChannel.toUpperCase()}.`);
-    }, 800);
 }
 sendBtn.onclick = () => {
 if(!myHandle) {
