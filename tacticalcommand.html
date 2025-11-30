@@ -1,49 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<title>Wireframe Fleet Simulator — Enhanced</title>
+<style>
+  html,body{height:100%;margin:0;background:#000;color:#0f0;font-family:monospace;overflow:hidden;touch-action:none}
+  #ui{position:absolute;left:12px;top:12px;z-index:30;color:#9f9}
+  #canvas{display:block;width:100vw;height:100vh;touch-action:none}
+  .panel{background:rgba(0,0,0,0.6);border:1px solid rgba(0,255,0,0.08);padding:8px;border-radius:6px}
+  button,input{background:transparent;border:1px solid rgba(0,255,0,0.12);color:#9f9;padding:8px 12px;margin:2px;font-family:monospace;font-size:14px;touch-action:manipulation;cursor:pointer;pointer-events:auto}
+  button:hover{background:rgba(0,255,0,0.1);border-color:rgba(0,255,0,0.3)}
+  .hint{opacity:0.8;font-size:11px;margin-top:6px}
+  .mini{position:absolute;right:12px;bottom:12px;width:220px;height:140px;border:1px solid rgba(0,255,0,0.08);z-index:22}
+  label{display:block;font-size:12px;margin-top:6px}
+  
+  #titleScreen{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  #titleScreen h1{font-size:48px;color:#0f0;margin:20px;text-shadow:0 0 10px #0f0}
+  #titleScreen h2{font-size:24px;color:#0f0;margin:10px;font-weight:normal}
+  #titleScreen .credits{font-size:14px;color:#9f9;margin:30px;opacity:0.8}
+  #titleScreen button{font-size:20px;padding:15px 40px;margin:20px;border:2px solid #0f0;color:#0f0;background:transparent}
+  #titleScreen button:hover{background:#0f0;color:#000}
+</style>
+</head>
+<body>
+<div id="titleScreen">
+  <h1>WIREFRAME FLEET SIMULATOR</h1>
+  <h2>Command your fleet against the enemy titan</h2>
+  <button id="startBtn">START GAME</button>
+  <div class="credits">Created by Patrick McDonald and Claude</div>
+</div>
+<div id="ui" class="panel" style="display:none">
+  <div style="font-weight:700">Wireframe Fleet Simulator — Enhanced</div>
+  <div style="margin-top:6px">Ships: <span id="shipCount">0</span> | Enemies: <span id="enemyCount">0</span> | Time: <span id="time">0.00</span>s</div>
+  <div style="margin-top:6px">
+    <button id="resetBtn">Restart</button>
+  </div>
+  <div class="hint">Controls: Tap to select ships, drag to marquee. Tap destination to attack-move. Pinch to zoom. Two-finger drag to pan.</div>
+</div>
+<canvas id="canvas"></canvas>
 <script>
 // Configuration — optimized for performance
 const cfg={
-  shipCount:28,
-  enemyCount:120, // Increased for challenge
-  maxSpeed:80,
-  enemyBaseSpeed: 45, // Enemy speed increased by 50% (was 30)
-  weaponRange:220,
-  allyWeaponRange:240,
-  damage:15,
-  allyDamage:40,
-  mapWidth:1600,
-  mapHeight:900,
-  spawnInterval:5,
-  enemySpawnInterval:0.328125,
-  allyMotherships:5,
-  frigateSpawnChance:0.12,
-  // AI behavior parameters
-  formationSpacing:60,
-  pursuitDistance:350,
-  retreatHealthPercent:0.25,
-  aggroRange:400,
-  // Touch parameters
-  touchSelectRadius:30,
-  doubleTapTime:300,
-  touchPanThreshold: 8, // New: required movement before touch is a pan/marquee
-  
-  // Glitch Octopus Config
-  glitchThreshold: 0.25, // 25% of max HP
-  glitchRadius: 200, // AOE radius for instant kill
-  glitchFactor: 2, // 2x HP and spawn rate
+  shipCount:28,
+  enemyCount:80,
+  maxSpeed:80,
+  weaponRange:220,
+  allyWeaponRange:240,
+  damage:15,
+  allyDamage:40,
+  mapWidth:1600,
+  mapHeight:900,
+  spawnInterval:5,
+  enemySpawnInterval:0.328125, // Slightly reduced: was 0.3125s, now +5%
+  allyMotherships:5,
+  frigateSpawnChance:0.12,
+  // AI behavior parameters
+  formationSpacing:60,
+  pursuitDistance:350,
+  retreatHealthPercent:0.25,
+  aggroRange:400,
+  // Touch parameters
+  touchSelectRadius:30,
+  doubleTapTime:300
 };
 
 const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
-let W=0,H=0; 
-function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight} 
+let W=0,H=0; 
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight} 
 window.addEventListener('resize',resize);
 resize();
 
-const cam={x:0,y:0,zoom:0.5};
+const cam={x:0,y:0,zoom:0.5}; // Start zoomed out
 let paused=false, simTime=0, victory=null, frameCount=0, gameStarted=false;
 
 // Optimized math functions
 const rand=(a,b)=>Math.random()*(b-a)+a;
 const dist=(a,b)=>{const dx=a.x-b.x,dy=a.y-b.y;return Math.hypot(dx,dy)};
-const distSq=(a,b)=>{const dx=a.x-b.x,dy=a.y-b.y;return dx*dx+dy*dy};
+const distSq=(a,b)=>{const dx=a.x-b.x,dy=a.y-b.y;return dx*dx+dy*dy}; // faster for comparisons
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,t)=>a+(b-a)*t;
 
@@ -53,902 +89,823 @@ const motherships={friend:[], enemy:null};
 
 // Spatial grid for optimization (collision detection)
 class SpatialGrid {
-  constructor(cellSize) {
-    this.cellSize = cellSize;
-    this.grid = new Map();
-  }
-  
-  clear() {
-    this.grid.clear();
-  }
-  
-  hash(x, y) {
-    return `${Math.floor(x/this.cellSize)},${Math.floor(y/this.cellSize)}`;
-  }
-  
-  insert(entity) {
-    const key = this.hash(entity.x, entity.y);
-    if (!this.grid.has(key)) this.grid.set(key, []);
-    this.grid.get(key).push(entity);
-  }
-  
-  nearby(x, y, range) {
-    const results = [];
-    const cellRange = Math.ceil(range / this.cellSize);
-    const cx = Math.floor(x / this.cellSize);
-    const cy = Math.floor(y / this.cellSize);
-    
-    for (let dx = -cellRange; dx <= cellRange; dx++) {
-      for (let dy = -cellRange; dy <= cellRange; dy++) {
-        const key = `${cx+dx},${cy+dy}`;
-        const cell = this.grid.get(key);
-        if (cell) results.push(...cell);
-      }
-    }
-    return results;
-  }
+  constructor(cellSize) {
+    this.cellSize = cellSize;
+    this.grid = new Map();
+  }
+  
+  clear() {
+    this.grid.clear();
+  }
+  
+  hash(x, y) {
+    return `${Math.floor(x/this.cellSize)},${Math.floor(y/this.cellSize)}`;
+  }
+  
+  insert(entity) {
+    const key = this.hash(entity.x, entity.y);
+    if (!this.grid.has(key)) this.grid.set(key, []);
+    this.grid.get(key).push(entity);
+  }
+  
+  nearby(x, y, range) {
+    const results = [];
+    const cellRange = Math.ceil(range / this.cellSize);
+    const cx = Math.floor(x / this.cellSize);
+    const cy = Math.floor(y / this.cellSize);
+    
+    for (let dx = -cellRange; dx <= cellRange; dx++) {
+      for (let dy = -cellRange; dy <= cellRange; dy++) {
+        const key = `${cx+dx},${cy+dy}`;
+        const cell = this.grid.get(key);
+        if (cell) results.push(...cell);
+      }
+    }
+    return results;
+  }
 }
 
 const spatialGrid = new SpatialGrid(200);
 
-function makeShip(x,y,team='friend',size='small'){ 
-  let spd=rand(40,70),hp=155; // Increased allied HP: was 135
-  if(size==='frigate'){spd=rand(25,45); hp=362;} // Increased allied Frigate HP: was 315
-  if(team==='enemy'){spd=rand(cfg.enemyBaseSpeed*0.8,cfg.enemyBaseSpeed*1.2); hp=135;}
-  return {
-    x,y,team,
-    id:Math.random().toString(36).slice(2),
-    speed:spd,
-    hp,
-    maxHp:hp,
-    weaponCooldown:rand(0,0.6),
-    size,
-    vx:0,
-    vy:0,
-    target:null,
-    selected:false,
-    state:'idle', // idle, moving, engage, retreat
-    angle:0 // facing direction
-  };
+function makeShip(x,y,team='friend',size='small'){ 
+  let spd=rand(40,70),hp=135; // Reduced by 10%: was 150
+  if(size==='frigate'){spd=rand(25,45); hp=315;} // Reduced by 10%: was 350
+  return {
+    x,y,team,
+    id:Math.random().toString(36).slice(2),
+    speed:spd,
+    hp,
+    maxHp:hp,
+    weaponCooldown:rand(0,0.6),
+    size,
+    vx:0,
+    vy:0,
+    target:null,
+    selected:false,
+    state:'idle', // idle, moving, engage, retreat
+    angle:0 // facing direction
+  };
 }
 
 function spawnShip(team){
-  if(victory) return;
-  let ms;
-  if(team==='friend'){ 
-    if(motherships.friend.length===0) return; 
-    ms = motherships.friend[Math.floor(Math.random()*motherships.friend.length)]; 
-  } else {
-    ms = motherships.enemy;
-  }
-  if(!ms || ms.hp<=0) return;
-  
-  let size = Math.random()<cfg.frigateSpawnChance?'frigate':'small';
-  let ship = makeShip(ms.x+rand(-120,120), ms.y+rand(-60,60), team, size);
-  if(team==='friend') ships.push(ship); 
-  else enemies.push(ship);
+  if(victory) return;
+  let ms;
+  if(team==='friend'){ 
+    if(motherships.friend.length===0) return; 
+    ms = motherships.friend[Math.floor(Math.random()*motherships.friend.length)]; 
+  } else {
+    ms = motherships.enemy;
+  }
+  if(!ms || ms.hp<=0) return;
+  
+  let size = Math.random()<cfg.frigateSpawnChance?'frigate':'small';
+  let ship = makeShip(ms.x+rand(-120,120), ms.y+rand(-60,60), team, size);
+  if(team==='friend') ships.push(ship); 
+  else enemies.push(ship);
 }
 
 function spawnWorld(){
-  ships.length=0; 
-  enemies.length=0; 
-  projectiles.length=0;
-  simTime=0; 
-  victory=null;
-  motherships.friend.length=0;
+  ships.length=0; 
+  enemies.length=0; 
+  projectiles.length=0;
+  simTime=0; 
+  victory=null;
+  motherships.friend.length=0;
 
-  const paddingX = 120;
-  const leftX = -cfg.mapWidth/2 + paddingX;
-  const rightX = cfg.mapWidth/2 - paddingX;
-  const paddingY = 80;
+  const paddingX = 120;
+  const leftX = -cfg.mapWidth/2 + paddingX;
+  const rightX = cfg.mapWidth/2 - paddingX;
+  const paddingY = 80;
 
-  // Mothership base HP increased from 1500*1.6 to 1800*1.6
-  motherships.enemy = {
-    x:rightX,
-    y:0,
-    hp:1800*1.6,
-    maxHp:1800*1.6,
-    spawnTimer:0,
-    size: 'mothership',
-    isGlitchOctopus: false, // NEW
-    initialMaxHp: 1800*1.6 // NEW
-  };
+  motherships.enemy = {x:rightX, y:0, hp:1500*1.6, maxHp:1500*1.6, spawnTimer:0};
 
-  for(let i=0;i<cfg.allyMotherships;i++){
-    const t = (cfg.allyMotherships===1)?0.5:(i/(cfg.allyMotherships-1));
-    const yPos = -cfg.mapHeight/2 + paddingY + t*(cfg.mapHeight - 2*paddingY);
-    motherships.friend.push({x:leftX, y:yPos, hp:1500, maxHp:1500, spawnTimer:0, size: 'mothership'});
-  }
+  for(let i=0;i<cfg.allyMotherships;i++){
+    const t = (cfg.allyMotherships===1)?0.5:(i/(cfg.allyMotherships-1));
+    const yPos = -cfg.mapHeight/2 + paddingY + t*(cfg.mapHeight - 2*paddingY);
+    motherships.friend.push({x:leftX, y:yPos, hp:1500, maxHp:1500, spawnTimer:0});
+  }
 
-  for(let i=0;i<cfg.shipCount;i++){
-    let size = i<3?'frigate':'small';
-    let ms = motherships.friend[i % motherships.friend.length];
-    ships.push(makeShip(ms.x+rand(-120,120), ms.y+rand(-60,60),'friend',size));
-  }
+  for(let i=0;i<cfg.shipCount;i++){
+    let size = i<3?'frigate':'small';
+    let ms = motherships.friend[i % motherships.friend.length];
+    ships.push(makeShip(ms.x+rand(-120,120), ms.y+rand(-60,60),'friend',size));
+  }
 
-  for(let i=0;i<cfg.enemyCount;i++){
-    enemies.push(makeShip(motherships.enemy.x + rand(-160,160), motherships.enemy.y + rand(-120,120),'enemy'));
-  }
+  for(let i=0;i<cfg.enemyCount;i++){
+    enemies.push(makeShip(motherships.enemy.x + rand(-160,160), motherships.enemy.y + rand(-120,120),'enemy'));
+  }
 }
 spawnWorld();
 
 // Title screen and game start
 document.getElementById('startBtn').addEventListener('click', () => {
-  document.getElementById('titleScreen').style.display = 'none';
-  document.getElementById('ui').style.display = 'block';
-  gameStarted = true;
-  paused = false;
+  document.getElementById('titleScreen').style.display = 'none';
+  document.getElementById('ui').style.display = 'block';
+  gameStarted = true;
+  paused = false;
 });
 
-document.getElementById('resetBtn').addEventListener('click', () => { 
-  spawnWorld(); 
-  cam.x = 0; 
-  cam.y = 0; 
-  cam.zoom = 0.5;
-  paused = false;
-  frameCount = 0;
-  gameStarted = true;
+document.getElementById('resetBtn').addEventListener('click', () => { 
+  spawnWorld(); 
+  cam.x = 0; 
+  cam.y = 0; 
+  cam.zoom = 0.5; // Reset to zoomed out view
+  paused = false;
+  frameCount = 0;
+  gameStarted = true;
 });
 
-let mouse={x:0,y:0,down:false,start:null,end:null, startScreenX:0, startScreenY:0}; // Added screen coords
-let touch={active:false,lastTap:0,pinchDist:0,initialZoom:1, startX:0, startY:0}; // Added start coords for threshold
+let mouse={x:0,y:0,down:false,start:null,end:null};
+let touch={active:false,lastTap:0,pinchDist:0,initialZoom:1};
 
 // Unified pointer handling for mouse and touch
 function getPointerPos(e) {
-  const r = canvas.getBoundingClientRect();
-  let clientX, clientY;
-  
-  if(e.touches && e.touches.length > 0) {
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else {
-    clientX = e.clientX;
-    clientY = e.clientY;
-  }
-  
-  return {
-    x: (clientX - r.left - W/2) / cam.zoom + cam.x,
-    y: (clientY - r.top - H/2) / cam.zoom + cam.y,
-    screenX: clientX, // NEW: Screen X
-    screenY: clientY // NEW: Screen Y
-  };
+  const r = canvas.getBoundingClientRect();
+  let clientX, clientY;
+  
+  if(e.touches && e.touches.length > 0) {
+    clientX = e.touches[0].clientX;
+    clientY = e.touches[0].clientY;
+  } else {
+    clientX = e.clientX;
+    clientY = e.clientY;
+  }
+  
+  return {
+    x: (clientX - r.left - W/2) / cam.zoom + cam.x,
+    y: (clientY - r.top - H/2) / cam.zoom + cam.y
+  };
 }
 
 canvas.addEventListener('touchstart', e => {
-  e.preventDefault();
-  
-  if(e.touches.length === 2) {
-    // Pinch zoom start
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    touch.pinchDist = Math.hypot(dx, dy);
-    touch.initialZoom = cam.zoom;
-    touch.active = false;
-    mouse.down = false; // Disable marquee if pinch starts
-  } else if(e.touches.length === 1) {
-    const pos = getPointerPos(e);
-    const now = Date.now();
-    
-    mouse.down = true;
-    mouse.start = pos;
-    mouse.end = null;
-    mouse.startScreenX = pos.screenX; // Store screen coords
-    mouse.startScreenY = pos.screenY;
-    touch.active = true;
-    touch.lastTap = now;
-  }
+  e.preventDefault();
+  
+  if(e.touches.length === 2) {
+    // Pinch zoom start
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    touch.pinchDist = Math.hypot(dx, dy);
+    touch.initialZoom = cam.zoom;
+    touch.active = false;
+  } else if(e.touches.length === 1) {
+    const pos = getPointerPos(e);
+    const now = Date.now();
+    
+    // Check for double tap (issue move command)
+    if(now - touch.lastTap < cfg.doubleTapTime) {
+      for(const s of ships) {
+        if(s.selected) {
+          s.target = {x: pos.x, y: pos.y};
+          s.state = 'moving';
+        }
+      }
+      touch.lastTap = 0;
+    } else {
+      // Single tap - start selection
+      mouse.down = true;
+      mouse.start = pos;
+      mouse.end = null;
+      touch.active = true;
+      touch.lastTap = now;
+    }
+  }
 }, {passive: false});
 
 canvas.addEventListener('touchmove', e => {
-  e.preventDefault();
-  
-  if(e.touches.length === 2) {
-    // Pinch zoom
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    const newDist = Math.hypot(dx, dy);
-    
-    if(touch.pinchDist > 0) {
-      cam.zoom = touch.initialZoom * (newDist / touch.pinchDist);
-      cam.zoom = clamp(cam.zoom, 0.3, 2);
-    }
-    
-    // Two-finger pan
-    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-    
-    if(touch.lastMidX !== undefined) {
-      // Increased pan sensitivity by removing zoom factor (for better feel)
-      const dx = (midX - touch.lastMidX);
-      const dy = (midY - touch.lastMidY);
-      cam.x -= dx / cam.zoom; // Keep cam.zoom correction
-      cam.y -= dy / cam.zoom;
-    }
-    
-    touch.lastMidX = midX;
-    touch.lastMidY = midY;
-    
-    mouse.down = false; // Stop marquee/single-touch ops
-  } else if(e.touches.length === 1 && touch.active) {
-    const pos = getPointerPos(e);
-    mouse.x = pos.x;
-    mouse.y = pos.y;
-    
-    if(mouse.down && mouse.start) {
-      mouse.end = pos;
-      
-      // Check if movement exceeds threshold to confirm a drag/marquee
-      const screenDist = Math.hypot(pos.screenX - mouse.startScreenX, pos.screenY - mouse.startScreenY);
-      if (screenDist < cfg.touchPanThreshold) {
-        // Below threshold: treat as still a tap (no marquee drawing)
-        mouse.end = null;
-      }
-    }
-  }
+  e.preventDefault();
+  
+  if(e.touches.length === 2) {
+    // Pinch zoom
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const newDist = Math.hypot(dx, dy);
+    
+    if(touch.pinchDist > 0) {
+      cam.zoom = touch.initialZoom * (newDist / touch.pinchDist);
+      cam.zoom = clamp(cam.zoom, 0.3, 2);
+    }
+    
+    // Two-finger pan
+    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    
+    if(touch.lastMidX !== undefined) {
+      const dx = (midX - touch.lastMidX) / cam.zoom;
+      const dy = (midY - touch.lastMidY) / cam.zoom;
+      cam.x -= dx;
+      cam.y -= dy;
+    }
+    
+    touch.lastMidX = midX;
+    touch.lastMidY = midY;
+  } else if(e.touches.length === 1 && touch.active) {
+    const pos = getPointerPos(e);
+    mouse.x = pos.x;
+    mouse.y = pos.y;
+    if(mouse.down && mouse.start) {
+      mouse.end = pos;
+    }
+  }
 }, {passive: false});
 
 canvas.addEventListener('touchend', e => {
-  e.preventDefault();
-  
-  if(e.touches.length === 0) {
-    touch.pinchDist = 0;
-    touch.lastMidX = undefined;
-    touch.lastMidY = undefined;
-    
-    if(touch.active && mouse.down) {
-      mouse.down = false;
-      
-      if(mouse.start && mouse.end) {
-        // Marquee selection
-        const x1=Math.min(mouse.start.x,mouse.end.x), 
-              x2=Math.max(mouse.start.x,mouse.end.x), 
-              y1=Math.min(mouse.start.y,mouse.end.y), 
-              y2=Math.max(mouse.start.y,mouse.end.y);
-        
-        for(const s of ships) {
-          s.selected = s.x>=x1 && s.x<=x2 && s.y>=y1 && s.y<=y2;
-        }
-      } else if(mouse.start && !mouse.end) {
-        // Single tap - check for double tap (move) or single tap (select)
-        const now = Date.now();
-        if(now - touch.lastTap < cfg.doubleTapTime) {
-          // Double tap: Issue move command
-          for(const s of ships) {
-            if(s.selected) {
-              s.target = {x: mouse.start.x, y: mouse.start.y};
-              s.state = 'moving';
-            }
-          }
-          touch.lastTap = 0;
-        } else {
-          // Single tap: Select nearest ship
-          let nearest = null;
-          let minDist = cfg.touchSelectRadius;
-          
-          for(const s of ships) {
-            const d = dist(s, mouse.start);
-            if(d < minDist) {
-              minDist = d;
-              nearest = s;
-            }
-          }
-          
-          if(nearest) {
-            for(const s of ships) s.selected = false;
-            nearest.selected = true;
-          } else {
-            // Tap on empty space deselects
-            for(const s of ships) s.selected = false;
-          }
-          touch.lastTap = now;
-        }
-      }
-      
-      mouse.start = null;
-      mouse.end = null;
-      touch.active = false;
-    }
-  }
+  e.preventDefault();
+  
+  if(e.touches.length === 0) {
+    touch.pinchDist = 0;
+    touch.lastMidX = undefined;
+    touch.lastMidY = undefined;
+    
+    if(touch.active) {
+      mouse.down = false;
+      
+      if(mouse.start && mouse.end) {
+        // Marquee selection
+        const x1=Math.min(mouse.start.x,mouse.end.x), 
+              x2=Math.max(mouse.start.x,mouse.end.x), 
+              y1=Math.min(mouse.start.y,mouse.end.y), 
+              y2=Math.max(mouse.start.y,mouse.end.y);
+        
+        for(const s of ships) {
+          s.selected = s.x>=x1 && s.x<=x2 && s.y>=y1 && s.y<=y2;
+        }
+      } else if(mouse.start && !mouse.end) {
+        // Single tap - select nearest ship
+        let nearest = null;
+        let minDist = cfg.touchSelectRadius;
+        
+        for(const s of ships) {
+          const d = dist(s, mouse.start);
+          if(d < minDist) {
+            minDist = d;
+            nearest = s;
+          }
+        }
+        
+        if(nearest) {
+          for(const s of ships) s.selected = false;
+          nearest.selected = true;
+        }
+      }
+      
+      mouse.start = null;
+      mouse.end = null;
+      touch.active = false;
+    }
+  }
 }, {passive: false});
 
-// Mouse support (desktop) - Unchanged for brevity, but note right-click is attack-move
+// Mouse support (desktop)
 canvas.addEventListener('mousemove',e=>{
-  const pos = getPointerPos(e);
-  mouse.x = pos.x;
-  mouse.y = pos.y;
-  if(mouse.down && mouse.start) mouse.end = pos;
+  const pos = getPointerPos(e);
+  mouse.x = pos.x;
+  mouse.y = pos.y;
+  if(mouse.down && mouse.start) mouse.end = pos;
 });
 
-canvas.addEventListener('mousedown',e=>{ 
-  if(e.button !== 2) {
-    const pos = getPointerPos(e);
-    mouse.down = true; 
-    mouse.start = pos; 
-    mouse.end = null;
-  } 
+canvas.addEventListener('mousedown',e=>{ 
+  if(e.button !== 2) {
+    const pos = getPointerPos(e);
+    mouse.down = true; 
+    mouse.start = pos; 
+    mouse.end = null;
+  } 
 });
 
-canvas.addEventListener('mouseup',e=>{ 
-  mouse.down = false; 
-  if(mouse.start && mouse.end) { 
-    const x1=Math.min(mouse.start.x,mouse.end.x), 
-          x2=Math.max(mouse.start.x,mouse.end.x), 
-          y1=Math.min(mouse.start.y,mouse.end.y), 
-          y2=Math.max(mouse.start.y,mouse.end.y); 
-    for(const s of ships){
-      s.selected=s.x>=x1&&s.x<=x2&&s.y>=y1&&s.y<=y2;
-    } 
-  } else if(mouse.start && !mouse.end) {
-    let nearest = null;
-    let minDist = 20;
-    for(const s of ships) {
-      const d = dist(s, mouse.start);
-      if(d < minDist) {
-        minDist = d;
-        nearest = s;
-      }
-    }
-    if(nearest) {
-      if(!e.shiftKey) {
-        for(const s of ships) s.selected = false;
-      }
-      nearest.selected = true;
-    } else if(!e.shiftKey) {
-      for(const s of ships) s.selected = false;
-    }
-  }
-  mouse.start=null; 
-  mouse.end=null; 
+canvas.addEventListener('mouseup',e=>{ 
+  mouse.down = false; 
+  if(mouse.start && mouse.end) { 
+    const x1=Math.min(mouse.start.x,mouse.end.x), 
+          x2=Math.max(mouse.start.x,mouse.end.x), 
+          y1=Math.min(mouse.start.y,mouse.end.y), 
+          y2=Math.max(mouse.start.y,mouse.end.y); 
+    for(const s of ships){
+      s.selected=s.x>=x1&&s.x<=x2&&s.y>=y1&&s.y<=y2;
+    } 
+  } else if(mouse.start && !mouse.end) {
+    let nearest = null;
+    let minDist = 20;
+    for(const s of ships) {
+      const d = dist(s, mouse.start);
+      if(d < minDist) {
+        minDist = d;
+        nearest = s;
+      }
+    }
+    if(nearest) {
+      if(!e.shiftKey) {
+        for(const s of ships) s.selected = false;
+      }
+      nearest.selected = true;
+    } else if(!e.shiftKey) {
+      for(const s of ships) s.selected = false;
+    }
+  }
+  mouse.start=null; 
+  mouse.end=null; 
 });
 
 canvas.addEventListener('contextmenu',e=>{
-  e.preventDefault(); 
-  const pos = getPointerPos(e);
-  for(const s of ships) {
-    if(s.selected) {
-      s.target = {x: pos.x, y: pos.y};
-      s.state = 'moving';
-    }
-  }
+  e.preventDefault(); 
+  const pos = getPointerPos(e);
+  for(const s of ships) {
+    if(s.selected) {
+      s.target = {x: pos.x, y: pos.y};
+      s.state = 'moving';
+    }
+  }
 });
 
-window.addEventListener('keydown',e=>{ 
-  if(e.key===' ') paused=!paused; 
-  if(e.key==='w') cam.y-=120/cam.zoom; 
-  if(e.key==='s') cam.y+=120/cam.zoom; 
-  if(e.key==='r') spawnWorld(); 
+window.addEventListener('keydown',e=>{ 
+  if(e.key===' ') paused=!paused; 
+  if(e.key==='w') cam.y-=120/cam.zoom; 
+  if(e.key==='s') cam.y+=120/cam.zoom; 
+  if(e.key==='r') spawnWorld(); 
 });
 
-canvas.addEventListener('wheel',e=>{ 
-  e.preventDefault(); 
-  cam.zoom*=(Math.sign(e.deltaY)>0?0.92:1.08); 
-  cam.zoom=clamp(cam.zoom,0.3,2); 
+canvas.addEventListener('wheel',e=>{ 
+  e.preventDefault(); 
+  cam.zoom*=(Math.sign(e.deltaY)>0?0.92:1.08); 
+  cam.zoom=clamp(cam.zoom,0.3,2); 
 });
 
 // Improved AI: Allied ships attack-move toward orders, or defend if idle
 function updateAlliedAI(s, dt) {
-  if(s.hp<=0) return;
-  
-  s.weaponCooldown-=dt;
-  
-  // Find nearest threat within aggro range using spatial grid
-  let nearestEnemy = null;
-  let minDist = cfg.aggroRange;
-  
-  const nearby = spatialGrid.nearby(s.x, s.y, cfg.aggroRange);
-  for(const e of nearby) {
-    if(e.team === 'enemy' && e.hp > 0) {
-      const d = dist(s, e);
-      if(d < minDist) {
-        minDist = d;
-        nearestEnemy = e;
-      }
-    }
-  }
-  
-  // Check enemy mothership if within range
-  if(motherships.enemy && motherships.enemy.hp > 0) {
-    const dToMothership = dist(s, motherships.enemy);
-    // Ally ships always prioritize the Mothership once in range
-    if(dToMothership < cfg.aggroRange) {
-      if(!nearestEnemy || (motherships.enemy.isGlitchOctopus && dToMothership < minDist * 1.5) || dToMothership < minDist) { // Prioritize octopus slightly more
-        nearestEnemy = motherships.enemy;
-        minDist = dToMothership;
-      }
-    }
-  }
-  
-  // State management
-  const healthPercent = s.hp / s.maxHp;
-  
-  if(healthPercent < cfg.retreatHealthPercent && s.size !== 'frigate') {
-    s.state = 'retreat';
-  } else if(nearestEnemy && minDist <= cfg.allyWeaponRange * 1.5) {
-    s.state = 'engage';
-  } else if(s.target) {
-    s.state = 'moving';
-  } else {
-    s.state = 'idle';
-  }
-  
-  // Behavior based on state
-  let targetX = s.x, targetY = s.y;
-  let shouldMove = false;
-  
-  if(s.state === 'retreat') {
-    // Retreat toward nearest friendly mothership
-    let nearestMS = motherships.friend[0];
-    let minMSDist = Infinity;
-    for(const ms of motherships.friend) {
-      if(ms.hp > 0) {
-        const d = dist(s, ms);
-        if(d < minMSDist) {
-          minMSDist = d;
-          nearestMS = ms;
-        }
-      }
-    }
-    if(nearestMS) {
-      targetX = nearestMS.x;
-      targetY = nearestMS.y;
-      shouldMove = true;
-    }
-  } else if(s.state === 'engage' && nearestEnemy) {
-    // Engage: move to optimal range and attack
-    const optimalRange = cfg.allyWeaponRange * 0.85;
-    const dx = nearestEnemy.x - s.x;
-    const dy = nearestEnemy.y - s.y;
-    const d = Math.hypot(dx, dy);
-    
-    if(d > optimalRange) {
-      targetX = nearestEnemy.x; // Simplified: just move toward target
-      targetY = nearestEnemy.y;
-      shouldMove = true;
-    } else if(d < optimalRange * 0.7) {
-      // Too close, back up slightly
-      targetX = s.x - (dx / d) * 30;
-      targetY = s.y - (dy / d) * 30;
-      shouldMove = true;
-    } else {
-      // Stop when in optimal range
-      shouldMove = false;
-    }
-    
-    // Fire at target
-    if(d <= cfg.allyWeaponRange && s.weaponCooldown <= 0) {
-      let dmg = s.size === 'frigate' ? cfg.allyDamage * 2 : cfg.allyDamage;
-      nearestEnemy.hp -= dmg;
-      s.weaponCooldown = 0.5;
-      
-      // Frigate splash damage
-      if(s.size === 'frigate' && nearestEnemy.team === 'enemy') {
-        for(const other of enemies) {
-          if(other !== nearestEnemy && other.hp > 0 && dist(nearestEnemy, other) < 45) {
-            other.hp -= dmg * 0.5;
-          }
-        }
-      }
-    }
-  } else if(s.state === 'moving' && s.target) {
-    // Attack-move toward target position
-    targetX = s.target.x;
-    targetY = s.target.y;
-    shouldMove = true;
-    
-    // Check if reached destination
-    const dx = targetX - s.x;
-    const dy = targetY - s.y;
-    const d = Math.hypot(dx, dy);
-    if(d < 10) {
-      s.target = null;
-      s.state = 'idle';
-      shouldMove = false;
-    }
-  }
-  // If idle, just hold position and engage if enemies come in range
-  
-  // Move toward target
-  if(shouldMove) {
-    const dx = targetX - s.x;
-    const dy = targetY - s.y;
-    const d = Math.hypot(dx, dy);
-    
-    if(d > 5) {
-      const moveSpeed = s.state === 'retreat' ? s.speed * 1.2 : s.speed;
-      s.vx = lerp(s.vx, (dx / d) * moveSpeed, 0.1);
-      s.vy = lerp(s.vy, (dy / d) * moveSpeed, 0.1);
-    } else {
-      s.vx *= 0.9;
-      s.vy *= 0.9;
-    }
-    
-    s.x += s.vx * dt;
-    s.y += s.vy * dt;
-  } else {
-    // Decelerate when not moving
-    s.vx *= 0.85;
-    s.vy *= 0.85;
-    s.x += s.vx * dt;
-    s.y += s.vy * dt;
-  }
+  if(s.hp<=0) return;
+  
+  s.weaponCooldown-=dt;
+  
+  // Find nearest threat within aggro range using spatial grid
+  let nearestEnemy = null;
+  let minDist = cfg.aggroRange;
+  
+  const nearby = spatialGrid.nearby(s.x, s.y, cfg.aggroRange);
+  for(const e of nearby) {
+    if(e.team === 'enemy' && e.hp > 0) {
+      const d = dist(s, e);
+      if(d < minDist) {
+        minDist = d;
+        nearestEnemy = e;
+      }
+    }
+  }
+  
+  // Check enemy mothership if within range
+  if(motherships.enemy && motherships.enemy.hp > 0) {
+    const dToMothership = dist(s, motherships.enemy);
+    if(dToMothership < cfg.aggroRange) {
+      if(!nearestEnemy || dToMothership < minDist) {
+        nearestEnemy = motherships.enemy;
+        minDist = dToMothership;
+      }
+    }
+  }
+  
+  // State management
+  const healthPercent = s.hp / s.maxHp;
+  
+  if(healthPercent < cfg.retreatHealthPercent && s.size !== 'frigate') {
+    s.state = 'retreat';
+  } else if(nearestEnemy && minDist <= cfg.allyWeaponRange * 1.5) {
+    s.state = 'engage';
+  } else if(s.target) {
+    s.state = 'moving';
+  } else {
+    s.state = 'idle';
+  }
+  
+  // Behavior based on state
+  let targetX = s.x, targetY = s.y;
+  let shouldMove = false;
+  
+  if(s.state === 'retreat') {
+    // Retreat toward nearest friendly mothership
+    let nearestMS = motherships.friend[0];
+    let minMSDist = Infinity;
+    for(const ms of motherships.friend) {
+      if(ms.hp > 0) {
+        const d = dist(s, ms);
+        if(d < minMSDist) {
+          minMSDist = d;
+          nearestMS = ms;
+        }
+      }
+    }
+    if(nearestMS) {
+      targetX = nearestMS.x;
+      targetY = nearestMS.y;
+      shouldMove = true;
+    }
+  } else if(s.state === 'engage' && nearestEnemy) {
+    // Engage: move to optimal range and attack
+    const optimalRange = cfg.allyWeaponRange * 0.85;
+    const dx = nearestEnemy.x - s.x;
+    const dy = nearestEnemy.y - s.y;
+    const d = Math.hypot(dx, dy);
+    
+    if(d > optimalRange) {
+      targetX = s.x + (dx / d) * optimalRange;
+      targetY = s.y + (dy / d) * optimalRange;
+      shouldMove = true;
+    } else if(d < optimalRange * 0.7) {
+      // Too close, back up slightly
+      targetX = s.x - (dx / d) * 30;
+      targetY = s.y - (dy / d) * 30;
+      shouldMove = true;
+    }
+    
+    // Fire at target
+    if(d <= cfg.allyWeaponRange && s.weaponCooldown <= 0) {
+      let dmg = s.size === 'frigate' ? cfg.allyDamage * 2 : cfg.allyDamage;
+      nearestEnemy.hp -= dmg;
+      s.weaponCooldown = 0.5;
+      
+      // Frigate splash damage
+      if(s.size === 'frigate' && nearestEnemy.team === 'enemy') {
+        for(const other of enemies) {
+          if(other !== nearestEnemy && other.hp > 0 && dist(nearestEnemy, other) < 45) {
+            other.hp -= dmg * 0.5;
+          }
+        }
+      }
+    }
+  } else if(s.state === 'moving' && s.target) {
+    // Attack-move toward target position
+    targetX = s.target.x;
+    targetY = s.target.y;
+    shouldMove = true;
+    
+    // Check if reached destination
+    const dx = targetX - s.x;
+    const dy = targetY - s.y;
+    const d = Math.hypot(dx, dy);
+    if(d < 10) {
+      s.target = null;
+      s.state = 'idle';
+      shouldMove = false;
+    }
+  }
+  // If idle, just hold position and engage if enemies come in range
+  
+  // Move toward target
+  if(shouldMove) {
+    const dx = targetX - s.x;
+    const dy = targetY - s.y;
+    const d = Math.hypot(dx, dy);
+    
+    if(d > 5) {
+      const moveSpeed = s.state === 'retreat' ? s.speed * 1.2 : s.speed;
+      s.vx = lerp(s.vx, (dx / d) * moveSpeed, 0.1);
+      s.vy = lerp(s.vy, (dy / d) * moveSpeed, 0.1);
+    } else {
+      s.vx *= 0.9;
+      s.vy *= 0.9;
+    }
+    
+    s.x += s.vx * dt;
+    s.y += s.vy * dt;
+  } else {
+    // Decelerate when not moving
+    s.vx *= 0.85;
+    s.vy *= 0.85;
+    s.x += s.vx * dt;
+    s.y += s.vy * dt;
+  }
 }
 
 // Improved enemy AI with better targeting
 function updateEnemyAI(e, dt) {
-  if(e.hp <= 0) return;
-  
-  e.weaponCooldown -= dt;
-  
-  // Prioritize nearest allied mothership, then nearest ship
-  let target = null;
-  let minDist = Infinity;
-  
-  const aliveAllies = motherships.friend.filter(ms => ms.hp > 0);
-  for(const ms of aliveAllies) {
-    const d = dist(e, ms);
-    if(d < minDist) {
-      minDist = d;
-      target = ms;
-    }
-  }
-  
-  // If no motherships, target nearby ships
-  if(!target) {
-    const nearby = spatialGrid.nearby(e.x, e.y, cfg.aggroRange);
-    for(const s of nearby) {
-      if(s.team === 'friend' && s.hp > 0) {
-        const d = dist(e, s);
-        if(d < minDist) {
-          minDist = d;
-          target = s;
-        }
-      }
-    }
-  }
-  
-  if(target) {
-    const dx = target.x - e.x;
-    const dy = target.y - e.y;
-    const d = Math.hypot(dx, dy);
-    
-    if(d > cfg.weaponRange * 0.8) {
-      const speed = e.speed; // Use ship's speed
-      e.x += (dx / d) * speed * dt;
-      e.y += (dy / d) * speed * dt;
-    }
-    
-    if(d <= cfg.weaponRange && e.weaponCooldown <= 0) {
-      target.hp -= cfg.damage;
-      e.weaponCooldown = 0.5;
-    }
-  }
+  if(e.hp <= 0) return;
+  
+  e.weaponCooldown -= dt;
+  
+  // Prioritize nearest allied mothership, then nearest ship
+  let target = null;
+  let minDist = Infinity;
+  
+  const aliveAllies = motherships.friend.filter(ms => ms.hp > 0);
+  for(const ms of aliveAllies) {
+    const d = dist(e, ms);
+    if(d < minDist) {
+      minDist = d;
+      target = ms;
+    }
+  }
+  
+  // If no motherships, target nearby ships
+  if(!target) {
+    const nearby = spatialGrid.nearby(e.x, e.y, cfg.aggroRange);
+    for(const s of nearby) {
+      if(s.team === 'friend' && s.hp > 0) {
+        const d = dist(e, s);
+        if(d < minDist) {
+          minDist = d;
+          target = s;
+        }
+      }
+    }
+  }
+  
+  if(target) {
+    const dx = target.x - e.x;
+    const dy = target.y - e.y;
+    const d = Math.hypot(dx, dy);
+    
+    if(d > cfg.weaponRange * 0.8) {
+      const speed = 30;
+      e.x += (dx / d) * speed * dt;
+      e.y += (dy / d) * speed * dt;
+    }
+    
+    if(d <= cfg.weaponRange && e.weaponCooldown <= 0) {
+      target.hp -= cfg.damage;
+      e.weaponCooldown = 0.5;
+    }
+  }
 }
 
+function update(dt) { 
+  if(victory || !gameStarted) return; 
+  simTime += dt;
+  frameCount++;
+  
+  // Rebuild spatial grid every few frames
+  if(frameCount % 3 === 0) {
+    spatialGrid.clear();
+    for(const s of ships) if(s.hp > 0) spatialGrid.insert(s);
+    for(const e of enemies) if(e.hp > 0) spatialGrid.insert(e);
+  }
+  
+  // Spawn timers - 2x faster for enemies
+  for(const ms of motherships.friend) {
+    if(ms.hp <= 0) continue;
+    ms.spawnTimer += dt;
+    if(ms.spawnTimer >= cfg.spawnInterval) {
+      spawnShip('friend');
+      ms.spawnTimer = 0;
+    }
+  }
+  
+  // Enemy spawns 2x faster
+  if(motherships.enemy && motherships.enemy.hp > 0) {
+    motherships.enemy.spawnTimer += dt;
+    if(motherships.enemy.spawnTimer >= cfg.enemySpawnInterval) {
+      spawnShip('enemy');
+      motherships.enemy.spawnTimer = 0;
+    }
+  }
 
-// Glitch Octopus Transformation Logic
-function checkGlitchOctopus(dt) {
-  const ems = motherships.enemy;
-  if (!ems || ems.hp <= 0 || ems.isGlitchOctopus) return;
+  // Update allies with improved AI
+  for(const s of ships) updateAlliedAI(s, dt);
+  
+  // Update enemies
+  for(const e of enemies) updateEnemyAI(e, dt);
 
-  const glitchHp = ems.initialMaxHp * cfg.glitchThreshold;
+  // Cleanup destroyed units (batch removal)
+  for(let i = ships.length - 1; i >= 0; i--) {
+    if(ships[i].hp <= 0) ships.splice(i, 1);
+  }
+  for(let i = enemies.length - 1; i >= 0; i--) {
+    if(enemies[i].hp <= 0) enemies.splice(i, 1);
+  }
 
-  if (ems.hp <= glitchHp) {
-    console.log("Glitch Octopus Transformation Triggered!");
-    ems.isGlitchOctopus = true;
-    
-    // 1. Instant Kill AOE
-    for (let i = ships.length - 1; i >= 0; i--) {
-      const s = ships[i];
-      if (s.hp > 0 && dist(s, ems) <= cfg.glitchRadius) {
-        s.hp = 0; // Instant death
-        // Maybe add an explosion/glitch effect here for flair
-      }
-    }
-    
-    // 2. Buff Mothership
-    ems.hp += ems.initialMaxHp * cfg.glitchFactor; // 2x HP
-    ems.maxHp = ems.hp;
-    ems.spawnTimer = 0; // Reset timer
-    motherships.enemy.spawnInterval = cfg.enemySpawnInterval / cfg.glitchFactor; // 2x spawn rate
-  }
+  // Victory conditions
+  if(motherships.enemy && motherships.enemy.hp <= 0) victory = 'Victory!';
+  if(!motherships.friend.some(ms => ms.hp > 0)) victory = 'Enemy Victory!';
 }
 
+function draw() { 
+  ctx.setTransform(1,0,0,1,0,0); 
+  ctx.clearRect(0,0,W,H); 
+  ctx.translate(W/2,H/2); 
+  ctx.scale(cam.zoom,cam.zoom); 
+  ctx.translate(-cam.x,-cam.y);
+  
+  // Map boundary
+  ctx.strokeStyle = 'rgba(0,255,0,0.06)'; 
+  ctx.strokeRect(-cfg.mapWidth/2,-cfg.mapHeight/2,cfg.mapWidth,cfg.mapHeight);
 
-function update(dt) { 
-  if(victory || !gameStarted) return; 
-  simTime += dt;
-  frameCount++;
-  
-  // Rebuild spatial grid every few frames
-  if(frameCount % 3 === 0) {
-    spatialGrid.clear();
-    for(const s of ships) if(s.hp > 0) spatialGrid.insert(s);
-    for(const e of enemies) if(e.hp > 0) spatialGrid.insert(e);
-  }
-  
-  // Glitch Octopus Check
-  checkGlitchOctopus(dt);
-  
-  // Spawn timers - 2x faster for enemies
-  for(const ms of motherships.friend) {
-    if(ms.hp <= 0) continue;
-    ms.spawnTimer += dt;
-    if(ms.spawnTimer >= cfg.spawnInterval) {
-      spawnShip('friend');
-      ms.spawnTimer = 0;
-    }
-  }
-  
-  // Enemy spawns 2x faster (or 4x faster if Glitch Octopus)
-  if(motherships.enemy && motherships.enemy.hp > 0) {
-    motherships.enemy.spawnTimer += dt;
-    const interval = motherships.enemy.isGlitchOctopus ? cfg.enemySpawnInterval / cfg.glitchFactor : cfg.enemySpawnInterval;
-    if(motherships.enemy.spawnTimer >= interval) {
-      spawnShip('enemy');
-      motherships.enemy.spawnTimer = 0;
-    }
-  }
+  // Marquee selection box
+  if(mouse.down&&mouse.start&&mouse.end){ 
+    ctx.strokeStyle='rgba(0,255,0,0.35)'; 
+    ctx.lineWidth=1; 
+    ctx.strokeRect(mouse.start.x,mouse.start.y,mouse.end.x-mouse.start.x,mouse.end.y-mouse.start.y); 
+  }
 
-  // Update allies with improved AI
-  for(const s of ships) updateAlliedAI(s, dt);
-  
-  // Update enemies
-  for(const e of enemies) updateEnemyAI(e, dt);
+  // Allied motherships
+  for(const ms of motherships.friend) { 
+    if(ms.hp <= 0) continue;
+    ctx.strokeStyle = '#0f0'; 
+    ctx.beginPath(); 
+    ctx.arc(ms.x,ms.y,22,0,Math.PI*2); 
+    ctx.stroke(); 
+    ctx.fillStyle = '#0f0'; 
+    ctx.fillRect(ms.x-22,ms.y-34,44*(ms.hp/ms.maxHp),6); 
+    ctx.strokeRect(ms.x-22,ms.y-34,44,6); 
+  }
 
-  // Cleanup destroyed units (batch removal)
-  for(let i = ships.length - 1; i >= 0; i--) {
-    if(ships[i].hp <= 0) ships.splice(i, 1);
-  }
-  for(let i = enemies.length - 1; i >= 0; i--) {
-    if(enemies[i].hp <= 0) enemies.splice(i, 1);
-  }
+  // Enemy mothership
+  if(motherships.enemy && motherships.enemy.hp > 0) { 
+    ctx.strokeStyle = '#f00'; 
+    let ems = motherships.enemy; 
+    ctx.beginPath(); 
+    ctx.arc(ems.x,ems.y,36,0,Math.PI*2); 
+    ctx.stroke(); 
+    ctx.fillStyle = '#f00'; 
+    ctx.fillRect(ems.x-36,ems.y-46,72*(ems.hp/ems.maxHp),6); 
+    ctx.strokeRect(ems.x-36,ems.y-46,72,6); 
+  }
 
-  // Victory conditions
-  if(motherships.enemy && motherships.enemy.hp <= 0) victory = 'Victory!';
-  if(!motherships.friend.some(ms => ms.hp > 0)) victory = 'Enemy Victory!';
+  // Draw allied ships with fresher modern look
+  ctx.lineWidth = 1;
+  for(const s of ships) { 
+    const isSelected = s.selected;
+    const isRetreating = s.state === 'retreat';
+    
+    // Color scheme based on state
+    let primaryColor = isSelected ? '#0ff' : '#0f0'; // Cyan when selected
+    let accentColor = isRetreating ? '#ff0' : '#0f8';
+    
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.rotate(s.angle); // Rotate to face direction
+    
+    if(s.size === 'frigate') {
+      // Frigate: Modern angular design with shield effect
+      
+      // Shield glow effect
+      if(isSelected) {
+        ctx.strokeStyle = 'rgba(0,255,255,0.3)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.rect(-14, -10, 28, 20);
+        ctx.stroke();
+      }
+      
+      // Main hull (pointing right)
+      ctx.strokeStyle = primaryColor;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(12, 0); // nose (front)
+      ctx.lineTo(8, -7);
+      ctx.lineTo(-8, -7);
+      ctx.lineTo(-12, 0);
+      ctx.lineTo(-8, 7);
+      ctx.lineTo(8, 7);
+      ctx.closePath();
+      ctx.stroke();
+      
+      // Engine glow (back)
+      ctx.fillStyle = accentColor;
+      ctx.fillRect(-12, -3, 3, 6);
+      
+      // Front cannon
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(12, 0);
+      ctx.lineTo(16, 0);
+      ctx.stroke();
+      
+      // Side details
+      ctx.strokeStyle = 'rgba(0,255,0,0.5)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(-3, -7);
+      ctx.lineTo(-3, -5);
+      ctx.moveTo(0, -7);
+      ctx.lineTo(0, -5);
+      ctx.moveTo(3, -7);
+      ctx.lineTo(3, -5);
+      ctx.stroke();
+      
+    } else {
+      // Small ship: Sleek fighter design (pointing right)
+      
+      // Glow effect when selected
+      if(isSelected) {
+        ctx.strokeStyle = 'rgba(0,255,255,0.4)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(10, 0);
+        ctx.lineTo(-10, -7);
+        ctx.lineTo(-10, 7);
+        ctx.closePath();
+        ctx.stroke();
+      }
+      
+      // Main body - modern triangle pointing right
+      ctx.strokeStyle = primaryColor;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(8, 0); // nose
+      ctx.lineTo(-8, -6);
+      ctx.lineTo(-8, 6);
+      ctx.closePath();
+      ctx.stroke();
+      
+      // Cockpit detail
+      ctx.fillStyle = accentColor;
+      ctx.beginPath();
+      ctx.arc(2, 0, 2, 0, Math.PI*2);
+      ctx.fill();
+      
+      // Engine trails (back)
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(-8, -4);
+      ctx.lineTo(-11, -4);
+      ctx.moveTo(-8, 4);
+      ctx.lineTo(-11, 4);
+      ctx.stroke();
+      
+      // Wing details
+      ctx.strokeStyle = 'rgba(0,255,0,0.6)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(-2, -3);
+      ctx.lineTo(-5, -6);
+      ctx.moveTo(-2, 3);
+      ctx.lineTo(-5, 6);
+      ctx.stroke();
+    }
+    
+    ctx.restore();
+    
+    // Modern health bar with gradient effect (always horizontal)
+    const healthPercent = s.hp / s.maxHp;
+    ctx.fillStyle = healthPercent > 0.6 ? '#0f0' : healthPercent > 0.3 ? '#ff0' : '#f00';
+    ctx.fillRect(s.x-12, s.y-18, 24*healthPercent, 3);
+    
+    ctx.strokeStyle = 'rgba(0,255,255,0.4)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(s.x-12, s.y-18, 24, 3);
+    
+    // Draw movement target line with modern style
+    if(isSelected && s.target) {
+      ctx.strokeStyle = 'rgba(0,255,255,0.5)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(s.target.x, s.target.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      // Target marker
+      ctx.strokeStyle = 'rgba(0,255,255,0.7)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(s.target.x, s.target.y, 6, 0, Math.PI*2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(s.target.x - 8, s.target.y);
+      ctx.lineTo(s.target.x + 8, s.target.y);
+      ctx.moveTo(s.target.x, s.target.y - 8);
+      ctx.lineTo(s.target.x, s.target.y + 8);
+      ctx.stroke();
+    }
+  }
+
+  // Draw enemies
+  for(const e of enemies) { 
+    ctx.strokeStyle = '#f00'; 
+    ctx.beginPath(); 
+    ctx.moveTo(e.x,e.y-7); 
+    for(let i=0;i<8;i++) { 
+      const a=i*Math.PI/4; 
+      ctx.lineTo(e.x+7*Math.cos(a),e.y+7*Math.sin(a)); 
+      ctx.moveTo(e.x,e.y);
+    } 
+    ctx.stroke(); 
+    
+    ctx.fillStyle = '#0f0'; 
+    ctx.fillRect(e.x-10,e.y-14,20*(e.hp/e.maxHp),3); 
+    ctx.strokeStyle = 'rgba(255,0,0,0.3)';
+    ctx.strokeRect(e.x-10,e.y-14,20,3); 
+  }
+
+  if(victory) { 
+    ctx.fillStyle = '#ff0'; 
+    ctx.font = '30px monospace'; 
+    ctx.fillText(victory, -40, -(cfg.mapHeight/2) - 10); 
+  }
 }
 
-function draw() { 
-  ctx.setTransform(1,0,0,1,0,0); 
-  ctx.clearRect(0,0,W,H); 
-  ctx.translate(W/2,H/2); 
-  ctx.scale(cam.zoom,cam.zoom); 
-  ctx.translate(-cam.x,-cam.y);
-  
-  // Map boundary
-  ctx.strokeStyle = 'rgba(0,255,0,0.06)'; 
-  ctx.strokeRect(-cfg.mapWidth/2,-cfg.mapHeight/2,cfg.mapWidth,cfg.mapHeight);
-
-  // Marquee selection box
-  if(mouse.down && mouse.start && mouse.end){ 
-    ctx.strokeStyle='rgba(0,255,255,0.7)'; // Cyan for selection
-    ctx.lineWidth=1; 
-    ctx.strokeRect(mouse.start.x,mouse.start.y,mouse.end.x-mouse.start.x,mouse.end.y-mouse.start.y); 
-  }
-
-  // Allied motherships
-  for(const ms of motherships.friend) { 
-    if(ms.hp <= 0) continue;
-    ctx.strokeStyle = '#0f0'; 
-    ctx.beginPath(); 
-    ctx.arc(ms.x,ms.y,22,0,Math.PI*2); 
-    ctx.stroke(); 
-    ctx.fillStyle = '#0f0'; 
-    ctx.fillRect(ms.x-22,ms.y-34,44*(ms.hp/ms.maxHp),6); 
-    ctx.strokeRect(ms.x-22,ms.y-34,44,6); 
-  }
-
-  // Enemy mothership / Glitch Octopus
-  if(motherships.enemy && motherships.enemy.hp > 0) { 
-    let ems = motherships.enemy; 
-    let isGlitch = ems.isGlitchOctopus;
-    let size = isGlitch ? 36 * cfg.glitchFactor : 36; // Double size when glitched
-    let color = isGlitch ? '#ff0000' : '#f00'; // Red for Octopus
-
-    ctx.strokeStyle = color; 
-    ctx.beginPath(); 
-    // Draw a more aggressive, multi-faceted shape when glitched
-    if (isGlitch) {
-      ctx.moveTo(ems.x + size, ems.y);
-      for(let i=0; i<16; i++) {
-        const a = i * Math.PI / 8;
-        const r = i % 2 === 0 ? size : size * 0.7; // Star/Glitchy shape
-        ctx.lineTo(ems.x + r * Math.cos(a), ems.y + r * Math.sin(a));
-      }
-      ctx.closePath();
-    } else {
-      ctx.arc(ems.x,ems.y,size,0,Math.PI*2); 
-    }
-    ctx.stroke(); 
-    
-    // Glitch AOE marker
-    if (isGlitch) {
-      ctx.strokeStyle = 'rgba(255,0,0,0.1)';
-      ctx.beginPath();
-      ctx.arc(ems.x, ems.y, cfg.glitchRadius, 0, Math.PI*2);
-      ctx.stroke();
-    }
-    
-    // Health bar
-    ctx.fillStyle = color; 
-    ctx.fillRect(ems.x-size,ems.y-size-10,2*size*(ems.hp/ems.maxHp),6); 
-    ctx.strokeRect(ems.x-size,ems.y-size-10,2*size,6); 
-  }
-
-  // Draw allied ships with fresher modern look
-  ctx.lineWidth = 1;
-  for(const s of ships) { 
-    const isSelected = s.selected;
-    const isRetreating = s.state === 'retreat';
-    
-    // Color scheme based on state
-    let primaryColor = isSelected ? '#0ff' : '#0f0';
-    let accentColor = isRetreating ? '#ff0' : '#0f8';
-    
-    ctx.save();
-    ctx.translate(s.x, s.y);
-    s.angle = Math.atan2(s.vy, s.vx) || s.angle; // Update angle
-    ctx.rotate(s.angle);
-    
-    if(s.size === 'frigate') {
-      // Frigate: Modern angular design with shield effect
-      ctx.lineWidth = 2;
-      if(isSelected) {
-        ctx.strokeStyle = 'rgba(0,255,255,0.3)';
-        ctx.beginPath();
-        ctx.rect(-14, -10, 28, 20);
-        ctx.stroke();
-      }
-      
-      ctx.strokeStyle = primaryColor;
-      ctx.beginPath();
-      ctx.moveTo(12, 0);
-      ctx.lineTo(8, -7);
-      ctx.lineTo(-8, -7);
-      ctx.lineTo(-12, 0);
-      ctx.lineTo(-8, 7);
-      ctx.lineTo(8, 7);
-      ctx.closePath();
-      ctx.stroke();
-      
-      ctx.fillStyle = accentColor;
-      ctx.fillRect(-12, -3, 3, 6);
-      
-      ctx.strokeStyle = accentColor;
-      ctx.beginPath();
-      ctx.moveTo(12, 0);
-      ctx.lineTo(16, 0);
-      ctx.stroke();
-      
-      ctx.strokeStyle = 'rgba(0,255,0,0.5)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(-3, -7);
-      ctx.lineTo(-3, -5);
-      ctx.moveTo(0, -7);
-      ctx.lineTo(0, -5);
-      ctx.moveTo(3, -7);
-      ctx.lineTo(3, -5);
-      ctx.stroke();
-      
-    } else {
-      // Small ship: Sleek fighter design
-      ctx.lineWidth = 2;
-      if(isSelected) {
-        ctx.strokeStyle = 'rgba(0,255,255,0.4)';
-        ctx.beginPath();
-        ctx.moveTo(10, 0);
-        ctx.lineTo(-10, -7);
-        ctx.lineTo(-10, 7);
-        ctx.closePath();
-        ctx.stroke();
-      }
-      
-      ctx.strokeStyle = primaryColor;
-      ctx.beginPath();
-      ctx.moveTo(8, 0);
-      ctx.lineTo(-8, -6);
-      ctx.lineTo(-8, 6);
-      ctx.closePath();
-      ctx.stroke();
-      
-      ctx.fillStyle = accentColor;
-      ctx.beginPath();
-      ctx.arc(2, 0, 2, 0, Math.PI*2);
-      ctx.fill();
-      
-      ctx.strokeStyle = accentColor;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(-8, -4);
-      ctx.lineTo(-11, -4);
-      ctx.moveTo(-8, 4);
-      ctx.lineTo(-11, 4);
-      ctx.stroke();
-      
-      ctx.strokeStyle = 'rgba(0,255,0,0.6)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(-2, -3);
-      ctx.lineTo(-5, -6);
-      ctx.moveTo(-2, 3);
-      ctx.lineTo(-5, 6);
-      ctx.stroke();
-    }
-    
-    ctx.restore();
-    
-    // Health bar
-    const healthPercent = s.hp / s.maxHp;
-    ctx.fillStyle = healthPercent > 0.6 ? '#0f0' : healthPercent > 0.3 ? '#ff0' : '#f00';
-    ctx.fillRect(s.x-12, s.y-18, 24*healthPercent, 3);
-    
-    ctx.strokeStyle = 'rgba(0,255,255,0.4)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(s.x-12, s.y-18, 24, 3);
-    
-    // Draw movement target line with modern style
-    if(isSelected && s.target) {
-      ctx.strokeStyle = 'rgba(0,255,255,0.5)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([5, 5]);
-      ctx.beginPath();
-      ctx.moveTo(s.x, s.y);
-      ctx.lineTo(s.target.x, s.target.y);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      
-      // Target marker
-      ctx.strokeStyle = 'rgba(0,255,255,0.7)';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(s.target.x, s.target.y, 6, 0, Math.PI*2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(s.target.x - 8, s.target.y);
-      ctx.lineTo(s.target.x + 8, s.target.y);
-      ctx.moveTo(s.target.x, s.target.y - 8);
-      ctx.lineTo(s.target.x, s.target.y + 8);
-      ctx.stroke();
-    }
-  }
-
-  // Draw enemies
-  for(const e of enemies) { 
-    ctx.strokeStyle = '#f00'; 
-    ctx.beginPath(); 
-    ctx.moveTo(e.x,e.y-7); 
-    for(let i=0;i<8;i++) { 
-      const a=i*Math.PI/4; 
-      ctx.lineTo(e.x+7*Math.cos(a),e.y+7*Math.sin(a)); 
-      ctx.moveTo(e.x,e.y);
-    } 
-    ctx.stroke(); 
-    
-    ctx.fillStyle = '#f00'; 
-    ctx.fillRect(e.x-10,e.y-14,20*(e.hp/e.maxHp),3); 
-    ctx.strokeStyle = 'rgba(255,0,0,0.3)';
-    ctx.strokeRect(e.x-10,e.y-14,20,3); 
-  }
-
-  if(victory) { 
-    ctx.fillStyle = '#ff0'; 
-    ctx.font = '30px monospace'; 
-    ctx.fillText(victory, -40, -(cfg.mapHeight/2) - 10); 
-  }
-}
-
-requestAnimationFrame(function loop(t) { 
-  const dt = Math.min(0.05,(t-(window.last||t))/1000); 
-  if(!paused && gameStarted) update(dt); 
-  draw(); 
-  window.last = t; 
-  requestAnimationFrame(loop); 
-  
-  if(gameStarted) {
-    document.getElementById('time').innerText = simTime.toFixed(2); 
-    document.getElementById('shipCount').innerText = ships.length;
-    document.getElementById('enemyCount').innerText = enemies.length;
-  }
+requestAnimationFrame(function loop(t) { 
+  const dt = Math.min(0.05,(t-(window.last||t))/1000); 
+  if(!paused && gameStarted) update(dt); 
+  draw(); 
+  window.last = t; 
+  requestAnimationFrame(loop); 
+  
+  if(gameStarted) {
+    document.getElementById('time').innerText = simTime.toFixed(2); 
+    document.getElementById('shipCount').innerText = ships.length;
+    document.getElementById('enemyCount').innerText = enemies.length;
+  }
 });
 </script>
+</body>
+</html>
