@@ -228,9 +228,6 @@ a { color: #0ff; text-decoration: underline; }
 <button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Stumble</button>
 <button id="emailBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Join Email List</button>
 </div>
-<div class="panel" id="mediaplayerPanel" style="max-width: 50%; margin: 0 auto;">
-    <iframe src="mediaplayer.html" style="width:100%; height:100%; border:none; min-height: 52px;"></iframe>
-</div>
 <div class="panel" id="serverSelectPanel">
 <div class="small">SELECT SERVER</div>
 <div class="controls">
@@ -269,6 +266,14 @@ a { color: #0ff; text-decoration: underline; }
 <div class="yt-wrap" style="margin:8px">
 <iframe src="https://www.youtube.com/embed/videoseries?list=PLc1nF09D92pJCy_TQVOpfZg0BE-vAJJVq" allowfullscreen></iframe>
 </div>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
+<a href="https://sora.chatgpt.com/p/s_692415a63f0081918d36fcfb2535670c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kJdH5e8d4z6b" target="_blank"><div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div></a>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//MINDGAME (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="mindgameBody">
+<iframe src="https://robustpvp-lang.github.io/before-us-universe/mindgame.html" style="width:100%; height:100%; border:none;"></iframe>
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
@@ -338,16 +343,6 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<a href="https://sora.chatgpt.com/p/s_692415a63f0081918d36fcfb2535670c?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.kJdH5e8d4z6b" target="_blank"><div class="ad-banner">Service: Time Travel Tours - See Dinosaurs!</div></a>
-<div class="panel collapsible collapsed">
-<div class="panel-title"><div class="title">//sora.ai</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-<div class="panel-body" id="soraAiBody">
-<div id="soraai-wrap">
-<iframe src="https://robustpvp-lang.github.io/before-us-universe/soraai.html" allowfullscreen allow="autoplay; fullscreen"></iframe>
-</div>
-</div>
-<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-</div>
 <a href="https://sora.chatgpt.com/p/s_692415c7495c81919299dd5fccc83844?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.v5d8OyNRYbyD" target="_blank"><div class="ad-banner">Have you or a loved one been affected by the mandela effect? Contact our time anomaly attorneys today!</div></a>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//DISCORD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -389,7 +384,6 @@ a { color: #0ff; text-decoration: underline; }
 <div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<button id="mindGameBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:100%;">//Mind Game (Under Construction)</button>
 <div id="ortegaPanel">
   <button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
   <div id="ortegaIframeContainer">
@@ -594,6 +588,8 @@ if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' left //${ch.toU
 }
 // Global flag to track if we are in the Ortega Iframe mode
 let inOrtegaMode = false;
+// Global flag to track if we are in the MindGame Iframe mode
+let inMindGameMode = false;
 function enterOrtegaChat() {
     // 1. Visually trigger glitch/transition
     document.body.classList.add('glitch-transition');
@@ -602,15 +598,12 @@ function enterOrtegaChat() {
     currentChannel = 'ortega'; // Use a temporary placeholder 'channel'
     // Update title
     chatTitle.innerHTML = `//ORTEGA <span class="small">[Command Interface]</span>`;
-  
     // 3. Clear existing chat messages
     chatMessages.innerHTML = '';
-  
     // 4. Create and inject the iframe
     const ortegaIframe = document.createElement('iframe');
     ortegaIframe.id = 'ortegaChatIframe';
     ortegaIframe.src = 'ortega.html';
-  
     // Hide the chat input and users list
     document.querySelector('.chat-users').style.display = 'none';
     document.querySelector('.chat-controls').style.display = 'none';
@@ -628,6 +621,39 @@ function enterOrtegaChat() {
     setTimeout(() => {
         document.body.classList.remove('glitch-transition');
         appendSystem(`[SYSTEM] Entering secured channel //ORTEGA. Type /exitortega to return.`);
+    }, 800);
+}
+function enterMindGameChat() {
+    // 1. Visually trigger glitch/transition
+    document.body.classList.add('glitch-transition');
+    // 2. Set the global flag and update title
+    inMindGameMode = true;
+    currentChannel = 'mindgame'; // Use a temporary placeholder 'channel'
+    // Update title
+    chatTitle.innerHTML = `//MINDGAME <span class="small">[Command Interface]</span>`;
+    // 3. Clear existing chat messages
+    chatMessages.innerHTML = '';
+    // 4. Create and inject the iframe
+    const mindgameIframe = document.createElement('iframe');
+    mindgameIframe.id = 'mindgameChatIframe';
+    mindgameIframe.src = 'mindgame.html';
+    // Hide the chat input and users list
+    document.querySelector('.chat-users').style.display = 'none';
+    document.querySelector('.chat-controls').style.display = 'none';
+    document.getElementById('typingIndicator').style.display = 'none';
+    // Make the chatMessages container full height for the iframe
+    chatMessages.style.flex = '1';
+    chatMessages.style.padding = '0';
+    chatMessages.style.position = 'absolute';
+    chatMessages.style.top = '0';
+    chatMessages.style.left = '0';
+    chatMessages.style.right = '0';
+    chatMessages.style.bottom = '0';
+    chatMessages.appendChild(mindgameIframe);
+    // 5. Remove glitch effect after delay
+    setTimeout(() => {
+        document.body.classList.remove('glitch-transition');
+        appendSystem(`[SYSTEM] Entering secured channel //MINDGAME. Type /exitmotherlode to return.`);
     }, 800);
 }
 // NEW FUNCTION: Exit Ortega Chat Mode
@@ -662,10 +688,44 @@ function exitOrtegaChat() {
         appendSystem(`[SYSTEM] Exited //ORTEGA. Returned to //${currentChannel.toUpperCase()}.`);
     }, 800);
 }
+function exitMindGameChat() {
+    if (!inMindGameMode) return;
+    // 1. Visually trigger glitch/transition
+    document.body.classList.add('glitch-transition');
+    // 2. Remove iframe and restore chat/input
+    const mindgameIframe = document.getElementById('mindgameChatIframe');
+    if (mindgameIframe) mindgameIframe.remove();
+    // Restore chat elements
+    document.querySelector('.chat-users').style.display = '';
+    document.querySelector('.chat-controls').style.display = 'flex';
+    document.getElementById('typingIndicator').style.display = '';
+    chatMessages.style.position = 'relative';
+    chatMessages.style.padding = '8px';
+    chatMessages.style.flex = '';
+    chatMessages.style.top = '';
+    chatMessages.style.left = '';
+    chatMessages.style.right = '';
+    chatMessages.style.bottom = '';
+    // 3. Reset state and listeners
+    inMindGameMode = false;
+    currentChannel = channelSelect.value; // Revert to selected channel
+    listenChannel(currentChannel);
+    setPresence(myHandle, currentChannel); // Update presence
+    // 4. Update Title
+    updateUserCount({}); // Forces a title refresh based on new currentChannel
+    // 5. Remove glitch effect after delay
+    setTimeout(() => {
+        document.body.classList.remove('glitch-transition');
+        appendSystem(`[SYSTEM] Exited //MINDGAME. Returned to //${currentChannel.toUpperCase()}.`);
+    }, 800);
+}
 function listenChannel(ch){
 // If we are exiting Ortega mode, remove the iframe
 if (inOrtegaMode) {
     exitOrtegaChat();
+}
+if (inMindGameMode) {
+    exitMindGameChat();
 }
 for(const k in channelListeners){
 if(channelListeners[k].ref) off(channelListeners[k].ref);
@@ -686,6 +746,8 @@ listenBoard(ch);
 function renderChatMessage(o, key){
 // Do not render normal messages if we are in Ortega mode
 if (inOrtegaMode) return;
+// Do not render normal messages if we are in MindGame mode
+if (inMindGameMode) return;
 const row = document.createElement('div'); row.className = 'chat-row';
 const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
 const bub = document.createElement('div'); bub.className = 'chat-bubble';
@@ -782,8 +844,24 @@ if(normalizedVal === '/exitortega' && inOrtegaMode){
     chatInput.value = '';
     return;
 }
+if(normalizedVal === '/motherlode' && !inMindGameMode){
+    enterMindGameChat();
+    chatInput.value = '';
+    update(ref(db, `online/${currentChannel}/${uid}`), { typing: false });
+    return;
+}
+if(normalizedVal === '/exitmotherlode' && inMindGameMode){
+    exitMindGameChat();
+    chatInput.value = '';
+    return;
+}
 // If in Ortega mode, simply clear input and don't send to database
 if (inOrtegaMode) {
+    chatInput.value = '';
+    return;
+}
+// If in MindGame mode, simply clear input and don't send to database
+if (inMindGameMode) {
     chatInput.value = '';
     return;
 }
@@ -1001,7 +1079,7 @@ await remove(ref(db, `chat/${ch}/${id}`));
 } catch(e){ appendSystem('Purge error'); }
 }, 60*60*1000);
 setInterval(() => {
-if (uid && currentChannel && !inOrtegaMode) {
+if (uid && currentChannel && !inOrtegaMode && !inMindGameMode) {
 set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
 }
 }, 300000);
@@ -1036,11 +1114,6 @@ window.open(`${randomLink}?t=${timestamp}`, '_blank');
 };
 document.getElementById('emailBtn').onclick = () => {
 window.open('https://forms.gle/LBAkMsnVT7xrraYT8', '_blank');
-};
-document.getElementById('mindGameBtn').onclick = () => {
-document.body.classList.add('glitch-transition');
-setTimeout(() => window.open('mindgame.html', '_blank'), 500);
-setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
 };
 document.getElementById('buyBookBtn').onclick = () => {
 window.open('bookpage.html', '_blank');
