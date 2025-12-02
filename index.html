@@ -180,6 +180,8 @@ a { color: #0ff; text-decoration: underline; }
     left: 0;
     background-color: #e6e6fa; /* Match chat background */
 }
+#mindgameBody {height:520px;}
+@media(max-width:600px){#mindgameBody {height:400px;}}
 </style>
 </head>
 <body>
@@ -604,9 +606,8 @@ function enterOrtegaChat() {
     const ortegaIframe = document.createElement('iframe');
     ortegaIframe.id = 'ortegaChatIframe';
     ortegaIframe.src = 'ortega.html';
-    // Hide the chat input and users list
+    // Hide the users list
     document.querySelector('.chat-users').style.display = 'none';
-    document.querySelector('.chat-controls').style.display = 'none';
     document.getElementById('typingIndicator').style.display = 'none';
     // Make the chatMessages container full height for the iframe
     chatMessages.style.flex = '1';
@@ -637,9 +638,9 @@ function enterMindGameChat() {
     const mindgameIframe = document.createElement('iframe');
     mindgameIframe.id = 'mindgameChatIframe';
     mindgameIframe.src = 'mindgame.html';
-    // Hide the chat input and users list
+    mindgameIframe.setAttribute('scrolling', 'yes');
+    // Hide the users list
     document.querySelector('.chat-users').style.display = 'none';
-    document.querySelector('.chat-controls').style.display = 'none';
     document.getElementById('typingIndicator').style.display = 'none';
     // Make the chatMessages container full height for the iframe
     chatMessages.style.flex = '1';
@@ -649,6 +650,7 @@ function enterMindGameChat() {
     chatMessages.style.left = '0';
     chatMessages.style.right = '0';
     chatMessages.style.bottom = '0';
+    chatMessages.style.overflowY = 'scroll';
     chatMessages.appendChild(mindgameIframe);
     // 5. Remove glitch effect after delay
     setTimeout(() => {
@@ -666,7 +668,6 @@ function exitOrtegaChat() {
     if (ortegaIframe) ortegaIframe.remove();
     // Restore chat elements
     document.querySelector('.chat-users').style.display = '';
-    document.querySelector('.chat-controls').style.display = 'flex';
     document.getElementById('typingIndicator').style.display = '';
     chatMessages.style.position = 'relative';
     chatMessages.style.padding = '8px';
@@ -697,7 +698,6 @@ function exitMindGameChat() {
     if (mindgameIframe) mindgameIframe.remove();
     // Restore chat elements
     document.querySelector('.chat-users').style.display = '';
-    document.querySelector('.chat-controls').style.display = 'flex';
     document.getElementById('typingIndicator').style.display = '';
     chatMessages.style.position = 'relative';
     chatMessages.style.padding = '8px';
@@ -706,6 +706,7 @@ function exitMindGameChat() {
     chatMessages.style.left = '';
     chatMessages.style.right = '';
     chatMessages.style.bottom = '';
+    chatMessages.style.overflowY = 'auto';
     // 3. Reset state and listeners
     inMindGameMode = false;
     currentChannel = channelSelect.value; // Revert to selected channel
