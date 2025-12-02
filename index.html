@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -98,10 +97,10 @@ a.link-btn{background:var(--accent);color:#000;padding:6px 12px;border-radius:4p
 #serverConfirm{background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;box-shadow:0 0 10px var(--accent)}
 /* NEW MEDIAPLAYER PANEL STYLES - Matches #serverSelectPanel height/padding */
 #mediaplayerPanel{
-    margin-bottom:12px;
-    padding:8px;
-    border:3px solid var(--border);
-    background:var(--panel-bg);
+margin-bottom:12px;
+padding:8px;
+border:3px solid var(--border);
+background:var(--panel-bg);
 }
 #ortegaPanel button{width:100%;background:var(--accent);color:#000;padding:12px;border:3px solid #000;border-radius:6px;font-weight:900;cursor:pointer;font-size:14px; margin-bottom: 12px; /* Added spacing to separate from Mind Game */ }
 #serverTrackingPanel .server-branch{margin-bottom:12px}
@@ -172,22 +171,22 @@ a { color: #0ff; text-decoration: underline; }
 }
 /* New style for Ortega iframe within chat */
 #ortegaChatIframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: #e6e6fa; /* Match chat background */
+width: 100%;
+height: 100%;
+border: none;
+position: absolute;
+top: 0;
+left: 0;
+background-color: #e6e6fa; /* Match chat background */
 }
 </style>
 </head>
 <body>
 <div id="prebootOverlay">
-    <iframe id="prebootIframe" src="preboot.html"></iframe>
-    <div style="margin-top:10px; font-size:12px; color:var(--accent);">
-        [PRESS ANY KEY OR CLICK TO PROCEED TO BUU BOOT SEQUENCE]
-    </div>
+<iframe id="prebootIframe" src="preboot.html"></iframe>
+<div style="margin-top:10px; font-size:12px; color:var(--accent);">
+[PRESS ANY KEY OR CLICK TO PROCEED TO BUU BOOT SEQUENCE]
+</div>
 </div>
 <div id="marqueeWrap">
 <div id="marqueeLabel">SYSTEM:</div>
@@ -227,9 +226,6 @@ a { color: #0ff; text-decoration: underline; }
 <button id="buyBookBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Buy book 1 now!</button>
 <button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Stumble</button>
 <button id="emailBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Join Email List</button>
-</div>
-<div class="panel" id="mediaplayerPanel" style="max-width: 50%; margin: 0 auto;">
-    <iframe src="mediaplayer.html" style="width:100%; height:100%; border:none; min-height: 52px;"></iframe>
 </div>
 <div class="panel" id="serverSelectPanel">
 <div class="small">SELECT SERVER</div>
@@ -272,8 +268,15 @@ a { color: #0ff; text-decoration: underline; }
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+<div class="panel collapsible collapsed">
+<div class="panel-title"><div class="title">//MINDGAME (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" id="mindgameBody">
+<iframe src="https://robustpvp-lang.github.io/before-us-universe/mindgame.html" style="width:100%; height:100%; border:none;"></iframe>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
 <a href="https://sora.chatgpt.com/p/s_69278071de0481919d1764ce40b81c22?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1._aX63zk9-xAy" target="_blank" rel="noopener noreferrer">
-    <div class="ad-banner">Jellyfish Jello 99 Cents!</div>
+<div class="ad-banner">Jellyfish Jello 99 Cents!</div>
 </a>
 <div class="panel collapsible collapsed" id="shortstreamsPanel">
 <div class="panel-title"><div class="title">//shortstreams.youtube</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -285,7 +288,7 @@ a { color: #0ff; text-decoration: underline; }
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <a href="https://sora.chatgpt.com/p/s_69278054d8d881918c47de923ed8c35d?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.mZxkJyvAxigD" target="_blank" rel="noopener noreferrer">
-    <div class="ad-banner">Get your Govt Issued Mind Helmet before next year to avoid memory fines!</div>
+<div class="ad-banner">Get your Govt Issued Mind Helmet before next year to avoid memory fines!</div>
 </a>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//fleetcommand (Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -295,7 +298,7 @@ a { color: #0ff; text-decoration: underline; }
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <a href="https://sora.chatgpt.com/p/s_6927924fc9a4819180e05a376996fefe?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.5GZLT1qAezDD" target="_blank" rel="noopener noreferrer">
-    <div class="ad-banner">Hollow Earth Beaches! Visit Today!</div>
+<div class="ad-banner">Hollow Earth Beaches! Visit Today!</div>
 </a>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title" id="boardTitle">//SAM MESSAGE BOARD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -311,7 +314,7 @@ a { color: #0ff; text-decoration: underline; }
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <a href="https://sora.chatgpt.com/p/s_6927808f3a548191831e0d21a0e5d291?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.KqMaMs2tvKbZ" target="_blank" rel="noopener noreferrer">
-    <div class="ad-banner">Atomic Peanut Butter! It glows with Flavor!</div>
+<div class="ad-banner">Atomic Peanut Butter! It glows with Flavor!</div>
 </a>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//ENTITY(Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -321,7 +324,7 @@ a { color: #0ff; text-decoration: underline; }
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <a href="https://sora.chatgpt.com/p/s_6927928c86b4819190193828389729b9?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.P0D-ROhWunI5" target="_blank" rel="noopener noreferrer">
-    <div class="ad-banner">Did another you from the multiverse steal your credit? we can help!</div>
+<div class="ad-banner">Did another you from the multiverse steal your credit? we can help!</div>
 </a>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//TACTICALCOMMAND(Under Construction)</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
@@ -359,24 +362,24 @@ a { color: #0ff; text-decoration: underline; }
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
 <a href="https://sora.chatgpt.com/p/s_692ca6a70dd081919ac6abe067dc9aed?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.8ydvJ2rkXlgu" target="_blank" rel="noopener noreferrer">
-    <div class="ad-banner">Discount Dwarven Steel! Buy today! </div>
+<div class="ad-banner">Discount Dwarven Steel! Buy today! </div>
 </a>
 <div class="bottom-section">
-  <div class="panel collapsible collapsed" id="galleriesPanel">
-    <div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-    <div class="panel-body">
-      <iframe src="https://robustpvp-lang.github.io/before-us-universe/galleries.html" style="width:100%;height:500px;border:none;"></iframe>
-    </div>
-    <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-  </div>
+<div class="panel collapsible collapsed" id="galleriesPanel">
+<div class="panel-title"><div class="title">//GALLERIES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body">
+<iframe src="https://robustpvp-lang.github.io/before-us-universe/galleries.html" style="width:100%;height:500px;border:none;"></iframe>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
 <a href="https://sora.chatgpt.com/p/s_6917fddaa4288191b1f8ebac4e791e56?psh=HXVzZXItQ1F0ZXFVc3BzQ09hMzI5am9ycW5JS1Y1.Sigsv6ochclj" target="_blank"><div class="ad-banner">Do you need more arms? Try Hexapro!</div></a>
-  <div class="panel collapsible collapsed" id="revivalSitesPanel">
-    <div class="panel-title"><div class="small">//REVIVAL.SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
-    <div class="panel-body" style="max-height:500px;overflow:auto">
-      <iframe src="https://robustpvp-lang.github.io/before-us-universe/revival.html" style="width:100%;height:100%;border:none;min-height:400px;"></iframe>
-    </div>
-    <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
-  </div>
+<div class="panel collapsible collapsed" id="revivalSitesPanel">
+<div class="panel-title"><div class="small">//REVIVAL.SITES</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
+<div class="panel-body" style="max-height:500px;overflow:auto">
+<iframe src="https://robustpvp-lang.github.io/before-us-universe/revival.html" style="width:100%;height:100%;border:none;min-height:400px;"></iframe>
+</div>
+<div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
+</div>
 </div>
 </div>
 <div>
@@ -389,12 +392,11 @@ a { color: #0ff; text-decoration: underline; }
 <div class="panel-body" id="serverTrackingList" style="height:auto;min-height:150px;"></div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
-<button id="mindGameBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:100%;">//Mind Game (Under Construction)</button>
 <div id="ortegaPanel">
-  <button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
-  <div id="ortegaIframeContainer">
-    <iframe id="ortegaIframe" src="" style="width:100%; height:100%;"></iframe>
-  </div>
+<button id="ortegaBtn" aria-label="Project Ortega">Project ://ORTEGA (Under Maintenance)</button>
+<div id="ortegaIframeContainer">
+<iframe id="ortegaIframe" src="" style="width:100%; height:100%;"></iframe>
+</div>
 </div>
 <div class="link-row">
 <a class="link-btn" href="https://spacehey.com/profile?id=4317004" target="_blank" rel="noopener noreferrer" title="Find Patrick on Spacehey">SpaceHey</a>
@@ -594,78 +596,144 @@ if (u && u.uid !== uid && u.name) appendSystem(`User '${u.name}' left //${ch.toU
 }
 // Global flag to track if we are in the Ortega Iframe mode
 let inOrtegaMode = false;
+// Global flag to track if we are in the MindGame Iframe mode
+let inMindGameMode = false;
 function enterOrtegaChat() {
-    // 1. Visually trigger glitch/transition
-    document.body.classList.add('glitch-transition');
-    // 2. Set the global flag and update title
-    inOrtegaMode = true;
-    currentChannel = 'ortega'; // Use a temporary placeholder 'channel'
-    // Update title
-    chatTitle.innerHTML = `//ORTEGA <span class="small">[Command Interface]</span>`;
-  
-    // 3. Clear existing chat messages
-    chatMessages.innerHTML = '';
-  
-    // 4. Create and inject the iframe
-    const ortegaIframe = document.createElement('iframe');
-    ortegaIframe.id = 'ortegaChatIframe';
-    ortegaIframe.src = 'ortega.html';
-  
-    // Hide the chat input and users list
-    document.querySelector('.chat-users').style.display = 'none';
-    document.querySelector('.chat-controls').style.display = 'none';
-    document.getElementById('typingIndicator').style.display = 'none';
-    // Make the chatMessages container full height for the iframe
-    chatMessages.style.flex = '1';
-    chatMessages.style.padding = '0';
-    chatMessages.style.position = 'absolute';
-    chatMessages.style.top = '0';
-    chatMessages.style.left = '0';
-    chatMessages.style.right = '0';
-    chatMessages.style.bottom = '0';
-    chatMessages.appendChild(ortegaIframe);
-    // 5. Remove glitch effect after delay
-    setTimeout(() => {
-        document.body.classList.remove('glitch-transition');
-        appendSystem(`[SYSTEM] Entering secured channel //ORTEGA. Type /exitortega to return.`);
-    }, 800);
+// 1. Visually trigger glitch/transition
+document.body.classList.add('glitch-transition');
+// 2. Set the global flag and update title
+inOrtegaMode = true;
+currentChannel = 'ortega'; // Use a temporary placeholder 'channel'
+// Update title
+chatTitle.innerHTML = `//ORTEGA <span class="small">[Command Interface]</span>`;
+// 3. Clear existing chat messages
+chatMessages.innerHTML = '';
+// 4. Create and inject the iframe
+const ortegaIframe = document.createElement('iframe');
+ortegaIframe.id = 'ortegaChatIframe';
+ortegaIframe.src = 'ortega.html';
+// Hide the chat input and users list
+document.querySelector('.chat-users').style.display = 'none';
+document.querySelector('.chat-controls').style.display = 'none';
+document.getElementById('typingIndicator').style.display = 'none';
+// Make the chatMessages container full height for the iframe
+chatMessages.style.flex = '1';
+chatMessages.style.padding = '0';
+chatMessages.style.position = 'absolute';
+chatMessages.style.top = '0';
+chatMessages.style.left = '0';
+chatMessages.style.right = '0';
+chatMessages.style.bottom = '0';
+chatMessages.appendChild(ortegaIframe);
+// 5. Remove glitch effect after delay
+setTimeout(() => {
+document.body.classList.remove('glitch-transition');
+appendSystem([SYSTEM] Entering secured channel //ORTEGA. Type /exitortega to return.);
+}, 800);
+}
+function enterMindGameChat() {
+// 1. Visually trigger glitch/transition
+document.body.classList.add('glitch-transition');
+// 2. Set the global flag and update title
+inMindGameMode = true;
+currentChannel = 'mindgame'; // Use a temporary placeholder 'channel'
+// Update title
+chatTitle.innerHTML = //MINDGAME <span class="small">[Command Interface]</span>;
+// 3. Clear existing chat messages
+chatMessages.innerHTML = '';
+// 4. Create and inject the iframe
+const mindgameIframe = document.createElement('iframe');
+mindgameIframe.id = 'mindgameChatIframe';
+mindgameIframe.src = 'mindgame.html';
+// Hide the chat input and users list
+document.querySelector('.chat-users').style.display = 'none';
+document.querySelector('.chat-controls').style.display = 'none';
+document.getElementById('typingIndicator').style.display = 'none';
+// Make the chatMessages container full height for the iframe
+chatMessages.style.flex = '1';
+chatMessages.style.padding = '0';
+chatMessages.style.position = 'absolute';
+chatMessages.style.top = '0';
+chatMessages.style.left = '0';
+chatMessages.style.right = '0';
+chatMessages.style.bottom = '0';
+chatMessages.appendChild(mindgameIframe);
+// 5. Remove glitch effect after delay
+setTimeout(() => {
+document.body.classList.remove('glitch-transition');
+appendSystem([SYSTEM] Entering secured channel //MINDGAME. Type /exitmotherlode to return.);
+}, 800);
 }
 // NEW FUNCTION: Exit Ortega Chat Mode
 function exitOrtegaChat() {
-    if (!inOrtegaMode) return;
-    // 1. Visually trigger glitch/transition
-    document.body.classList.add('glitch-transition');
-    // 2. Remove iframe and restore chat/input
-    const ortegaIframe = document.getElementById('ortegaChatIframe');
-    if (ortegaIframe) ortegaIframe.remove();
-    // Restore chat elements
-    document.querySelector('.chat-users').style.display = '';
-    document.querySelector('.chat-controls').style.display = 'flex';
-    document.getElementById('typingIndicator').style.display = '';
-    chatMessages.style.position = 'relative';
-    chatMessages.style.padding = '8px';
-    chatMessages.style.flex = '';
-    chatMessages.style.top = '';
-    chatMessages.style.left = '';
-    chatMessages.style.right = '';
-    chatMessages.style.bottom = '';
-    // 3. Reset state and listeners
-    inOrtegaMode = false;
-    currentChannel = channelSelect.value; // Revert to selected channel
-    listenChannel(currentChannel);
-    setPresence(myHandle, currentChannel); // Update presence
-    // 4. Update Title
-    updateUserCount({}); // Forces a title refresh based on new currentChannel
-    // 5. Remove glitch effect after delay
-    setTimeout(() => {
-        document.body.classList.remove('glitch-transition');
-        appendSystem(`[SYSTEM] Exited //ORTEGA. Returned to //${currentChannel.toUpperCase()}.`);
-    }, 800);
+if (!inOrtegaMode) return;
+// 1. Visually trigger glitch/transition
+document.body.classList.add('glitch-transition');
+// 2. Remove iframe and restore chat/input
+const ortegaIframe = document.getElementById('ortegaChatIframe');
+if (ortegaIframe) ortegaIframe.remove();
+// Restore chat elements
+document.querySelector('.chat-users').style.display = '';
+document.querySelector('.chat-controls').style.display = 'flex';
+document.getElementById('typingIndicator').style.display = '';
+chatMessages.style.position = 'relative';
+chatMessages.style.padding = '8px';
+chatMessages.style.flex = '';
+chatMessages.style.top = '';
+chatMessages.style.left = '';
+chatMessages.style.right = '';
+chatMessages.style.bottom = '';
+// 3. Reset state and listeners
+inOrtegaMode = false;
+currentChannel = channelSelect.value; // Revert to selected channel
+listenChannel(currentChannel);
+setPresence(myHandle, currentChannel); // Update presence
+// 4. Update Title
+updateUserCount({}); // Forces a title refresh based on new currentChannel
+// 5. Remove glitch effect after delay
+setTimeout(() => {
+document.body.classList.remove('glitch-transition');
+appendSystem([SYSTEM] Exited //ORTEGA. Returned to //${currentChannel.toUpperCase()}.);
+}, 800);
+}
+function exitMindGameChat() {
+if (!inMindGameMode) return;
+// 1. Visually trigger glitch/transition
+document.body.classList.add('glitch-transition');
+// 2. Remove iframe and restore chat/input
+const mindgameIframe = document.getElementById('mindgameChatIframe');
+if (mindgameIframe) mindgameIframe.remove();
+// Restore chat elements
+document.querySelector('.chat-users').style.display = '';
+document.querySelector('.chat-controls').style.display = 'flex';
+document.getElementById('typingIndicator').style.display = '';
+chatMessages.style.position = 'relative';
+chatMessages.style.padding = '8px';
+chatMessages.style.flex = '';
+chatMessages.style.top = '';
+chatMessages.style.left = '';
+chatMessages.style.right = '';
+chatMessages.style.bottom = '';
+// 3. Reset state and listeners
+inMindGameMode = false;
+currentChannel = channelSelect.value; // Revert to selected channel
+listenChannel(currentChannel);
+setPresence(myHandle, currentChannel); // Update presence
+// 4. Update Title
+updateUserCount({}); // Forces a title refresh based on new currentChannel
+// 5. Remove glitch effect after delay
+setTimeout(() => {
+document.body.classList.remove('glitch-transition');
+appendSystem([SYSTEM] Exited //MINDGAME. Returned to //${currentChannel.toUpperCase()}.);
+}, 800);
 }
 function listenChannel(ch){
 // If we are exiting Ortega mode, remove the iframe
 if (inOrtegaMode) {
-    exitOrtegaChat();
+exitOrtegaChat();
+}
+if (inMindGameMode) {
+exitMindGameChat();
 }
 for(const k in channelListeners){
 if(channelListeners[k].ref) off(channelListeners[k].ref);
@@ -673,7 +741,7 @@ if(channelListeners[k].ref) off(channelListeners[k].ref);
 channelListeners = {};
 currentChannel = ch;
 chatMessages.innerHTML = '';
-const r = ref(db, `chat/${ch}`);
+const r = ref(db, chat/${ch});
 const q = query(r, orderByChild('ts'));
 const fn = snap => {
 const o = snap.val();
@@ -686,17 +754,19 @@ listenBoard(ch);
 function renderChatMessage(o, key){
 // Do not render normal messages if we are in Ortega mode
 if (inOrtegaMode) return;
+// Do not render normal messages if we are in MindGame mode
+if (inMindGameMode) return;
 const row = document.createElement('div'); row.className = 'chat-row';
 const av = document.createElement('div'); av.className = 'chat-avatar'; av.textContent = (o.name||'?').slice(0,2).toUpperCase();
 const bub = document.createElement('div'); bub.className = 'chat-bubble';
 if(o.uid === uid) bub.classList.add('me');
-bub.innerHTML = `<div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>`;
+bub.innerHTML = <div class="chat-meta">${o.name} · ${new Date(o.ts).toLocaleTimeString()}</div><div>${esc(o.msg)}</div>;
 if(o.uid === uid){
 const edit = document.createElement('span'); edit.textContent = ' [Edit]'; edit.style.cursor = 'pointer';
-edit.onclick = () => { /* edit logic */ };
+edit.onclick = () => { /* edit logic / };
 const del = document.createElement('span'); del.textContent = ' [Delete]'; del.style.cursor = 'pointer';
 del.onclick = () => {
-update(ref(db, `chat/${currentChannel}/${key}`), {deleted: true}).catch(e => appendSystem('Delete failed: ' + e.message));
+update(ref(db, chat/${currentChannel}/${key}), {deleted: true}).catch(e => appendSystem('Delete failed: ' + e.message));
 row.style.display = 'none';
 };
 bub.append(edit, del);
@@ -719,13 +789,13 @@ return;
 const m = msg.trim();
 if(!m || m.length > 500) return;
 const ts = Date.now();
-const h = await hash(`${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)}`);
-const key = push(ref(db, `chat/${ch}`)).key;
+const h = await hash(${ch}|${name}|${m}|${uid}|${Math.floor(ts/1000)});
+const key = push(ref(db, chat/${ch})).key;
 const updates = {};
-updates[`/chat/${ch}/${key}`] = {name, msg: m, ts, uid, hash: h};
-updates[`/msgHashes/${h}`] = {channel: ch, key, ts, uid};
+updates[/chat/${ch}/${key}] = {name, msg: m, ts, uid, hash: h};
+updates[/msgHashes/${h}] = {channel: ch, key, ts, uid};
 await update(ref(db), updates).catch(e => appendSystem('Chat post error: ' + e.message));
-set(ref(db, `online/${ch}/${uid}/ts`), Date.now());
+set(ref(db, online/${ch}/${uid}/ts), Date.now());
 }
 function listenBoard(ch){
 for(const k in boardListeners){
@@ -733,7 +803,7 @@ if(boardListeners[k].ref) off(boardListeners[k].ref);
 }
 boardListeners = {};
 boardList.innerHTML = '';
-const r = ref(db, `board/${ch}`);
+const r = ref(db, board/${ch});
 get(r).then(snap => {
 const data = snap.val() || {};
 Object.entries(data).sort((a,b) => a[1].ts - b[1].ts).forEach(([id,o]) => {
@@ -750,13 +820,13 @@ boardListeners[ch] = {ref: r, fn};
 }
 function renderBoardPost(p, id){
 const el = document.createElement('div'); el.className = 'board-thread';
-el.innerHTML = `<strong>${esc(p.name)}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>`;
+el.innerHTML = <strong>${esc(p.name)}</strong><pre>${esc(p.msg)}</pre><div class="small">Posted: ${new Date(p.ts).toLocaleString()}</div>;
 const reply = document.createElement('span');
 reply.textContent = '[Reply]';
 reply.style.cursor = 'pointer';
 reply.style.color = 'var(--accent)';
 reply.onclick = () => {
-boardMsg.value = `>>${id}\n` + boardMsg.value;
+boardMsg.value = >>${id}\n + boardMsg.value;
 boardMsg.focus();
 };
 el.appendChild(reply);
@@ -772,28 +842,44 @@ const val = chatInput.value.trim();
 const normalizedVal = val.toLowerCase();
 // NEW: Command Check for /operationcwal and /exitortega
 if(normalizedVal === '/operationcwal' && !inOrtegaMode){
-    enterOrtegaChat();
-    chatInput.value = '';
-    update(ref(db, `online/${currentChannel}/${uid}`), { typing: false });
-    return;
+enterOrtegaChat();
+chatInput.value = '';
+update(ref(db, online/${currentChannel}/${uid}), { typing: false });
+return;
 }
 if(normalizedVal === '/exitortega' && inOrtegaMode){
-    exitOrtegaChat();
-    chatInput.value = '';
-    return;
+exitOrtegaChat();
+chatInput.value = '';
+return;
+}
+if(normalizedVal === '/motherlode' && !inMindGameMode){
+enterMindGameChat();
+chatInput.value = '';
+update(ref(db, online/${currentChannel}/${uid}), { typing: false });
+return;
+}
+if(normalizedVal === '/exitmotherlode' && inMindGameMode){
+exitMindGameChat();
+chatInput.value = '';
+return;
 }
 // If in Ortega mode, simply clear input and don't send to database
 if (inOrtegaMode) {
-    chatInput.value = '';
-    return;
+chatInput.value = '';
+return;
+}
+// If in MindGame mode, simply clear input and don't send to database
+if (inMindGameMode) {
+chatInput.value = '';
+return;
 }
 // END NEW Command Check
 if(normalizedVal.startsWith('/d6')){
 const roll = Math.floor(Math.random() * 6) + 1;
-postMessage(currentChannel, myHandle, `rolled d6: ${roll}`);
+postMessage(currentChannel, myHandle, rolled d6: ${roll});
 } else if(normalizedVal.startsWith('/d20')){
 const roll = Math.floor(Math.random() * 20) + 1;
-postMessage(currentChannel, myHandle, `rolled d20: ${roll}`);
+postMessage(currentChannel, myHandle, rolled d20: ${roll});
 } else {
 postMessage(currentChannel, myHandle, val);
 }
@@ -810,7 +896,7 @@ return;
 }
 const m = boardMsg.value.trim();
 if(!m || m.length > 1000) return;
-const r = push(ref(db, `board/${currentChannel}`));
+const r = push(ref(db, board/${currentChannel}));
 await set(r, {name: myHandle, msg: m, ts: Date.now(), uid}).catch(e => appendSystem('Board error: ' + e.message));
 boardMsg.value = '';
 };
@@ -819,7 +905,7 @@ if(e.ctrlKey && e.key === 'Enter'){ e.preventDefault(); postBoardBtn.click(); }
 });
 serverConfirm.onclick = () => {
 const newCh = channelSelect.value;
-if(newCh !== currentChannel && confirm(`Switch to //${newCh.toUpperCase()}?`)){
+if(newCh !== currentChannel && confirm(Switch to //${newCh.toUpperCase()}?)){
 document.body.classList.add('glitch-transition');
 setTimeout(() => {
 listenChannel(newCh);
@@ -827,7 +913,7 @@ setPresence(myHandle, newCh);
 currentChannel = newCh;
 document.body.classList.remove('glitch-transition');
 }, 1000);
-appendSystem(`User '${myHandle}' switched to //${newCh.toUpperCase()}`);
+appendSystem(User '${myHandle}' switched to //${newCh.toUpperCase()});
 }
 };
 ortegaBtn.onclick = () => {
@@ -846,24 +932,24 @@ let typingTimeout = null;
 chatInput.addEventListener('input', () => {
 if(!uid || uid.startsWith('offline_')) return;
 const isTyping = chatInput.value.trim().length > 0;
-set(ref(db, `online/${currentChannel}/${uid}/typing`), isTyping);
+set(ref(db, online/${currentChannel}/${uid}/typing), isTyping);
 clearTimeout(typingTimeout);
-typingTimeout = setTimeout(() => set(ref(db, `online/${currentChannel}/${uid}/typing`), false), 2200);
+typingTimeout = setTimeout(() => set(ref(db, online/${currentChannel}/${uid}/typing), false), 2200);
 resetIdleTimer();
 });
 function updateTypingIndicator(obj){
 const typing = Object.values(obj || {}).filter(u => u.typing && u.uid !== uid).map(u => u.name);
-document.getElementById('typingIndicator').textContent = typing.length > 0 ? `${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing...` : '';
+document.getElementById('typingIndicator').textContent = typing.length > 0 ? ${typing.join(', ')} ${typing.length > 1 ? 'are' : 'is'} typing... : '';
 }
-function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&','<':'<','>':'>','"':'"',"'":'''}[c])); }
 function appendSystem(t){
 const d = document.createElement('div');
-d.textContent = `[${new Date().toLocaleTimeString()}] ${t}`;
+d.textContent = [${new Date().toLocaleTimeString()}] ${t};
 d.style.fontSize = '12px';
 systemFeed.prepend(d);
 }
 bootBtn.addEventListener('click', async () => {
-let raw = bootInput.value.trim().replace(/[^\w\-]/g,'').slice(0,30);
+let raw = bootInput.value.trim().replace(/[^\w-]/g,'').slice(0,30);
 if(!raw){
 bootStatus.textContent = "Please enter a handle.";
 return;
@@ -876,9 +962,9 @@ uid = credential.user.uid;
 // Hit Counter increment and display logic (Triggered only after successful boot/sign-in)
 const hitsRef = ref(db, 'hits/count');
 get(hitsRef).then(snap => {
-    let count = snap.val() || 0;
-    document.getElementById('hitCounter').textContent = 'Hits: ' + (count + 1);
-    set(hitsRef, count + 1).catch(() => {});
+let count = snap.val() || 0;
+document.getElementById('hitCounter').textContent = 'Hits: ' + (count + 1);
+set(hitsRef, count + 1).catch(() => {});
 }).catch(() => {document.getElementById('hitCounter').textContent = 'Hits: Error';});
 // END HIT COUNTER
 const logRef = push(ref(db, 'visitors/logs'));
@@ -892,7 +978,7 @@ myHandle = raw;
 currentChannel = bootChannel.value || 'exuro';
 let isGuilty = Math.random() < 0.01;
 if(isGuilty){
-bootStatus.textContent = `CAST IN THE NAME OF GOD : [ YE GUILTY ]`;
+bootStatus.textContent = CAST IN THE NAME OF GOD : [ YE GUILTY ];
 document.body.classList.add('degauss');
 const dn = document.createElement('div');
 dn.id = 'dngodmode';
@@ -902,7 +988,7 @@ return;
 }
 // Try DB in background - never block load
 setTimeout(() => {
-set(ref(db, `users/${uid}`), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
+set(ref(db, users/${uid}), {name: myHandle, uid, firstSeen: Date.now()}).catch(e => {
 appendSystem('Profile save failed: ' + e.message);
 });
 setPresence(myHandle, currentChannel);
@@ -911,7 +997,7 @@ finishBoot();
 resetIdleTimer();
 });
 function finishBoot(){
-bootStatus.textContent = `CAST IN THE NAME OF GOD : [ YE NOT GUILTY ]`;
+bootStatus.textContent = CAST IN THE NAME OF GOD : [ YE NOT GUILTY ];
 setTimeout(() => {
 bootOverlay.style.display = 'none';
 appRoot.style.display = 'block';
@@ -925,32 +1011,32 @@ function initializePanels(){
 document.querySelectorAll('.panel .panel-body').forEach(body => body.style.maxHeight = 'none');
 document.querySelectorAll('.toggle-btn.bottom-toggle').forEach(btn => {
 btn.onclick = () => {
-    const panel = btn.closest('.panel');
-    panel.classList.toggle('collapsed');
-    // Glitch effect when toggling panels
-    panel.classList.add('glitch-update');
-    setTimeout(() => panel.classList.remove('glitch-update'), 500);
+const panel = btn.closest('.panel');
+panel.classList.toggle('collapsed');
+// Glitch effect when toggling panels
+panel.classList.add('glitch-update');
+setTimeout(() => panel.classList.remove('glitch-update'), 500);
 };
 });
 }
 // Pre-Boot Functions
 function startPreBoot() {
-    prebootOverlay.style.display = 'flex';
-    bootOverlay.style.display = 'none';
-    appRoot.style.display = 'none';
-    document.addEventListener('keydown', dismissPreBoot, { once: true });
-    document.addEventListener('mousedown', dismissPreBoot, { once: true });
-    document.addEventListener('touchstart', dismissPreBoot, { once: true });
+prebootOverlay.style.display = 'flex';
+bootOverlay.style.display = 'none';
+appRoot.style.display = 'none';
+document.addEventListener('keydown', dismissPreBoot, { once: true });
+document.addEventListener('mousedown', dismissPreBoot, { once: true });
+document.addEventListener('touchstart', dismissPreBoot, { once: true });
 }
 function dismissPreBoot() {
-    document.removeEventListener('keydown', dismissPreBoot);
-    document.removeEventListener('mousedown', dismissPreBoot);
-    document.removeEventListener('touchstart', dismissPreBoot);
-    prebootOverlay.style.display = 'none';
-    bootOverlay.style.display = 'flex';
-    if (lineIdx < bootLines.length) {
-        typeBootLine();
-    }
+document.removeEventListener('keydown', dismissPreBoot);
+document.removeEventListener('mousedown', dismissPreBoot);
+document.removeEventListener('touchstart', dismissPreBoot);
+prebootOverlay.style.display = 'none';
+bootOverlay.style.display = 'flex';
+if (lineIdx < bootLines.length) {
+typeBootLine();
+}
 }
 // START APPLICATION WITH PRE-BOOT
 startPreBoot();
@@ -961,14 +1047,14 @@ appendSystem('Initializing...');
 setTimeout(() => updateMarqueeFromCache(), 800);
 setInterval(() => {
 const p = 80 + Math.floor(Math.random() * 11);
-bootBroadcast.textContent = `Timeline stability.. ${p}%`;
+bootBroadcast.textContent = Timeline stability.. ${p}%;
 bootBroadcast.classList.add('glitch-update');
 setTimeout(() => bootBroadcast.classList.remove('glitch-update'), 500);
 }, 5000);
 for(let i=0; i<8; i++){
 const p = document.createElement('div'); p.className = 'particle';
-p.style.left = Math.random()*100 + '%';
-p.style.animationDelay = Math.random()*5 + 's';
+p.style.left = Math.random()100 + '%';
+p.style.animationDelay = Math.random()5 + 's';
 marqueeWrap.appendChild(p);
 }
 document.querySelectorAll('.collapsible .toggle-btn:not(.bottom-toggle)').forEach(btn => {
@@ -993,16 +1079,16 @@ const snap = await get(ref(db,'chat'));
 const data = snap.val()||{};
 for(const ch in data){
 for(const id in data[ch]){
-if(data[ch][id].ts && Date.now() - data[ch][id].ts > 24*60*60*1000){
-await remove(ref(db, `chat/${ch}/${id}`));
+if(data[ch][id].ts && Date.now() - data[ch][id].ts > 2460601000){
+await remove(ref(db, chat/${ch}/${id}));
 }
 }
 }
 } catch(e){ appendSystem('Purge error'); }
-}, 60*60*1000);
+}, 60601000);
 setInterval(() => {
-if (uid && currentChannel && !inOrtegaMode) {
-set(ref(db, `online/${currentChannel}/${uid}/ts`), Date.now());
+if (uid && currentChannel && !inOrtegaMode && !inMindGameMode) {
+set(ref(db, online/${currentChannel}/${uid}/ts), Date.now());
 }
 }, 300000);
 let idleTimer;
@@ -1032,15 +1118,10 @@ revivalLinks.push(...toolbarLinks);
 document.getElementById('stumbleBtn').onclick = () => {
 const randomLink = revivalLinks[Math.floor(Math.random() * revivalLinks.length)];
 const timestamp = Date.now();
-window.open(`${randomLink}?t=${timestamp}`, '_blank');
+window.open(${randomLink}?t=${timestamp}, '_blank');
 };
 document.getElementById('emailBtn').onclick = () => {
 window.open('https://forms.gle/LBAkMsnVT7xrraYT8', '_blank');
-};
-document.getElementById('mindGameBtn').onclick = () => {
-document.body.classList.add('glitch-transition');
-setTimeout(() => window.open('mindgame.html', '_blank'), 500);
-setTimeout(() => document.body.classList.remove('glitch-transition'), 1000);
 };
 document.getElementById('buyBookBtn').onclick = () => {
 window.open('bookpage.html', '_blank');
