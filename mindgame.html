@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,199 +5,197 @@
 <title>Before Us Universe — The Mind Game Text Adventure</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --bg: #001a1a;
-        --fg: #00ffff;
-        --accent: #ffcc00;
-        --border: #00cccc;
-        --panel-bg: #002b2b;
-        --text-gray: #e6f7f7;
-        --muted: #00aaaa;
-        --online: #00ff9d;
-        --yahoo-blue: #1e73be;
-        --yahoo-dark: #0961a6;
-    }
-    body {
-        font-family: 'Roboto Mono', monospace;
-        background: var(--bg);
-        color: var(--fg);
-        margin: 0;
-        padding: 0;
-    }
-    /* Updated panel style to handle glitch */
-    .panel {
-        background: var(--panel-bg);
-        border: 3px solid var(--border);
-        border-radius: 4px;
-        margin-bottom: 20px;
-        overflow: hidden;
-        transition: filter 0.2s, transform 0.2s; /* Smooth out non-glitch effects */
-    }
-  
-    /* === DEGAUSS GLITCH EFFECTS === */
-    /* Keyframe animation for a CRT/Degauss effect */
-    @keyframes degauss-glitch {
-        0% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
-        5% { filter: hue-rotate(50deg) contrast(1.5); transform: skew(0.5deg); }
-        10% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
-        15% { filter: hue-rotate(-20deg) contrast(1.2); transform: skew(-0.8deg); }
-        20% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
-        100% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
-    }
-    /* Class applied by JavaScript to trigger the effect */
-    .glitch-active {
-        animation: degauss-glitch 0.5s linear infinite alternate;
-        box-shadow: 0 0 20px var(--fg);
-    }
-    /* ============================== */
-    .panel-title {
-        padding: 6px;
-        background: linear-gradient(90deg, var(--yahoo-blue), var(--yahoo-dark));
-        color: #fff;
-        font-family: 'Press Start 2P';
-        font-size: 12px;
-    }
-    .chat-win {
-        display: flex;
-        flex-direction: column;
-        height: 520px;
-        position: relative;
-    }
-    @media (max-width: 600px) {
-        .chat-win { height: 400px; }
-    }
-    #chat-interface {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        width: 100%;
-    }
-    .chat-main {
-        display: flex;
-        flex: 1;
-        overflow: hidden;
-    }
-    .chat-messages {
-        flex: 1;
-        overflow: auto;
-        background: #e6e6fa;
-        border-right: 1px solid rgba(0,0,0,0.1);
-        padding: 8px;
-        color: #000;
-    }
-    .chat-row {
-        display: flex;
-        gap: 8px;
-        margin: 6px 0;
-        align-items: flex-start;
-    }
-    .chat-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: #add8e6;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 12px;
-        color: #001a1a;
-        flex-shrink: 0;
-    }
-    .chat-bubble {
-        max-width: 78%;
-        padding: 10px;
-        border-radius: 8px;
-        background: #e6e6fa;
-        border: 1px solid rgba(0,0,0,0.1);
-        font-family: Arial;
-        color: #000;
-    }
-    .chat-bubble.me {
-        background: #fffacd;
-        border: 1px solid #f0d280;
-        text-align: right;
-        color: #222;
-    }
-    .chat-meta {
-        font-size: 11px;
-        color: #808080;
-        font-weight: 700;
-        margin-bottom: 4px;
-    }
-    .chat-controls {
-        display: flex;
-        gap: 6px;
-        padding: 8px;
-        background: #fffacd;
-        border-top: 1px solid rgba(0,0,0,0.1);
-    }
-    .chat-controls input {
-        flex: 1;
-        padding: 8px;
-        border: 2px inset rgba(0,0,0,0.1);
-        background: #fff;
-        color: #000;
-    }
-    .chat-controls button {
-        padding: 8px 16px;
-        border: 2px outset rgba(0,0,0,0.1);
-        background: #add8e6;
-        cursor: pointer;
-        color: #000;
-        font-weight: bold;
-    }
-    .typing-indicator {
-        font-size: 12px;
-        color: var(--muted);
-        padding: 6px 8px;
-        font-style: italic;
-        min-height: 24px;
-    }
-    #project-display {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: var(--bg); /* Dark background for project view */
-        border: none;
-        box-sizing: border-box;
-        display: none;
-        overflow: auto;
-        padding: 10px;
-    }
-    #project-display button {
-        margin: 10px;
-        padding: 5px 10px;
-        background: var(--accent);
-        color: var(--bg);
-        border: 2px solid var(--fg);
-        cursor: pointer;
-        font-family: 'Press Start 2P', monospace;
-    }
+:root {
+--bg: #001a1a;
+--fg: #00ffff;
+--accent: #ffcc00;
+--border: #00cccc;
+--panel-bg: #002b2b;
+--text-gray: #e6f7f7;
+--muted: #00aaaa;
+--online: #00ff9d;
+--yahoo-blue: #1e73be;
+--yahoo-dark: #0961a6;
+}
+body {
+font-family: 'Roboto Mono', monospace;
+background: var(--bg);
+color: var(--fg);
+margin: 0;
+padding: 0;
+}
+/* Updated panel style to handle glitch */
+.panel {
+background: var(--panel-bg);
+border: 3px solid var(--border);
+border-radius: 4px;
+margin-bottom: 20px;
+overflow: hidden;
+transition: filter 0.2s, transform 0.2s; /* Smooth out non-glitch effects */
+}
+/* === DEGAUSS GLITCH EFFECTS === /
+/ Keyframe animation for a CRT/Degauss effect /
+@keyframes degauss-glitch {
+0% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
+5% { filter: hue-rotate(50deg) contrast(1.5); transform: skew(0.5deg); }
+10% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
+15% { filter: hue-rotate(-20deg) contrast(1.2); transform: skew(-0.8deg); }
+20% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
+100% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
+}
+/ Class applied by JavaScript to trigger the effect /
+.glitch-active {
+animation: degauss-glitch 0.5s linear infinite alternate;
+box-shadow: 0 0 20px var(--fg);
+}
+/ ============================== /
+.panel-title {
+padding: 6px;
+background: linear-gradient(90deg, var(--yahoo-blue), var(--yahoo-dark));
+color: #fff;
+font-family: 'Press Start 2P';
+font-size: 12px;
+}
+.chat-win {
+display: flex;
+flex-direction: column;
+height: 520px;
+position: relative;
+}
+@media (max-width: 600px) {
+.chat-win { height: 400px; }
+}
+#chat-interface {
+display: flex;
+flex-direction: column;
+height: 100%;
+width: 100%;
+}
+.chat-main {
+display: flex;
+flex: 1;
+overflow: hidden;
+}
+.chat-messages {
+flex: 1;
+overflow: auto;
+background: #e6e6fa;
+border-right: 1px solid rgba(0,0,0,0.1);
+padding: 8px;
+color: #000;
+}
+.chat-row {
+display: flex;
+gap: 8px;
+margin: 6px 0;
+align-items: flex-start;
+}
+.chat-avatar {
+width: 36px;
+height: 36px;
+border-radius: 50%;
+background: #add8e6;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 12px;
+color: #001a1a;
+flex-shrink: 0;
+}
+.chat-bubble {
+max-width: 78%;
+padding: 10px;
+border-radius: 8px;
+background: #e6e6fa;
+border: 1px solid rgba(0,0,0,0.1);
+font-family: Arial;
+color: #000;
+}
+.chat-bubble.me {
+background: #fffacd;
+border: 1px solid #f0d280;
+text-align: right;
+color: #222;
+}
+.chat-meta {
+font-size: 11px;
+color: #808080;
+font-weight: 700;
+margin-bottom: 4px;
+}
+.chat-controls {
+display: flex;
+gap: 6px;
+padding: 8px;
+background: #fffacd;
+border-top: 1px solid rgba(0,0,0,0.1);
+}
+.chat-controls input {
+flex: 1;
+padding: 8px;
+border: 2px inset rgba(0,0,0,0.1);
+background: #fff;
+color: #000;
+}
+.chat-controls button {
+padding: 8px 16px;
+border: 2px outset rgba(0,0,0,0.1);
+background: #add8e6;
+cursor: pointer;
+color: #000;
+font-weight: bold;
+}
+.typing-indicator {
+font-size: 12px;
+color: var(--muted);
+padding: 6px 8px;
+font-style: italic;
+min-height: 24px;
+}
+#project-display {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: var(--bg); / Dark background for project view */
+border: none;
+box-sizing: border-box;
+display: none;
+overflow: auto;
+padding: 10px;
+}
+#project-display button {
+margin: 10px;
+padding: 5px 10px;
+background: var(--accent);
+color: var(--bg);
+border: 2px solid var(--fg);
+cursor: pointer;
+font-family: 'Press Start 2P', monospace;
+}
 </style>
 </head>
 <body>
 <div class="panel" id="mainPanel"> <div class="panel-title">
-        //<span id="channelName">THE MIND GAME</span> <span class="small" id="userCountSmall">Text Adventure</span>
-    </div>
-    <div class="panel-body chat-win">
-      
-        <div id="project-display">
-            </div>
-        <div id="chat-interface">
-            <div class="chat-main">
-                <div class="chat-messages" id="chatMessages">Waiting for boot...</div>
-            </div>
-            <div id="typingIndicator" class="typing-indicator"></div>
-            <div class="chat-controls">
-                <input id="chatInput" placeholder="Waiting for boot data..." disabled>
-                <button id="sendBtn" disabled>SEND</button>
-            </div>
-        </div>
-    </div>
+//<span id="channelName">THE MIND GAME</span> <span class="small" id="userCountSmall">Text Adventure</span>
 </div>
+<div class="panel-body chat-win">
+        
+            
+        
+            
+                Waiting for boot...
+            
+            
+            
+                
+                <button id="sendBtn" disabled>SEND</button>
+            
+        
+    
+
 <script>
 // CORE GAME DATA & SETUP (Adapted for text adventure)
 const ALL_PATHS = [
@@ -257,7 +254,7 @@ const MBTI_DESCRIPTIONS = {
   'ENFP': 'The Campaigner - Enthusiastic, creative free spirits who love social connections.',
   'ESFJ': 'The Consul - Caring, social people who value harmony and cooperation.'
 };
-function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&','<':'<','>':'>','"':'"',"'":'''}[c])); }
 /* SCENARIOS (Full list with more branching and psychological depth) */
 const scenarios = {
   0: {
@@ -541,6 +538,22 @@ const scenarios = {
       {text:'Embrace the present calm', path:'Nero', next:null}
     ]
   },
+  35: {
+    text:"Speaking the truth saves the city, but you are exiled.",
+    options:[
+      {text:'Accept exile with dignity', path:'Nero', next:107},
+      {text:'Plan a return in disguise', path:'Nora', next:108},
+      {text:'Rally supporters for revolution', path:'Exuro', next:109}
+    ]
+  },
+  36: {
+    text:"Silence preserves your position, but the city suffers.",
+    options:[
+      {text:'Use influence subtly to mitigate', path:'Micromegas', next:111},
+      {text:'Regret and confess later', path:'Surrender/Flow', next:112},
+      {text:'Rationalize and move on', path:'Wisdom/Reason', next:110}
+    ]
+  },
   37: {
     text:"They discover the truth, but credit goes to another.",
     options:[
@@ -693,6 +706,14 @@ const scenarios = {
       {text:'Integrate into life', path:'Nero', next:null}
     ]
   },
+  110: {
+    text:"The crisis escalates, and a subordinate questions your orders.",
+    options:[
+      {text:'Assert authority and demand obedience', path:'Loktal', next:113}, // High dominance profile
+      {text:'Explain your reasoning calmly', path:'Wisdom/Reason', next:114},
+      {text:'Step back and let them take the lead', path:'Surrender/Flow', next:115}
+    ]
+  },
   111: {
     text:"Gathering information reveals hidden threats.",
     options:[
@@ -709,22 +730,6 @@ const scenarios = {
       {text:'Allow full autonomy', path:'Surrender/Flow', next:null}
     ]
   },
-  115: {
-    text:"Letting them lead resolves the crisis differently.",
-    options:[
-      {text:'Reflect on the outcome', path:'Micromegas', next:null},
-      {text:'Learn from their approach', path:'Nora', next:null},
-      {text:'Celebrate the success', path:'Exuro', next:null}
-    ]
-  },
-  110: {
-    text:"The crisis escalates, and a subordinate questions your orders.",
-    options:[
-      {text:'Assert authority and demand obedience', path:'Loktal', next:113}, // High dominance profile
-      {text:'Explain your reasoning calmly', path:'Wisdom/Reason', next:114},
-      {text:'Step back and let them take the lead', path:'Surrender/Flow', next:115}
-    ]
-  },
   113: {
     text:"Your assertion leads to mutiny. How do you respond?",
     options:[
@@ -739,6 +744,14 @@ const scenarios = {
       {text:'Prioritize logic over emotion', path:'Wisdom/Reason', next:null}, // Profile: Rationalist
       {text:'Consider team feelings', path:'Nero', next:null},
       {text:'Act on instinct', path:'Action/Ego', next:null}
+    ]
+  },
+  115: {
+    text:"Letting them lead resolves the crisis differently.",
+    options:[
+      {text:'Reflect on the outcome', path:'Micromegas', next:null},
+      {text:'Learn from their approach', path:'Nora', next:null},
+      {text:'Celebrate the success', path:'Exuro', next:null}
     ]
   },
   // Expand all branches similarly for deeper psychological profiling, adding scenarios that test traits like resilience, ethics, creativity, etc.
@@ -773,7 +786,7 @@ function displayMessage(sender, msg) {
   const bubble = document.createElement('div');
   bubble.className = 'chat-bubble' + (sender === username ? ' me' : '');
   const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-  bubble.innerHTML = `<div class="chat-meta">${esc(sender)} <span style="color:#666;">${time}</span></div>${esc(msg)}`;
+  bubble.innerHTML = `${esc(sender)} ${time}${esc(msg)}`;
   row.appendChild(avatar);
   row.appendChild(bubble);
   chatMessages.appendChild(row);
@@ -921,5 +934,3 @@ chatInput.addEventListener('keypress', (e) => {
 chatMessages.innerHTML = '';
 startGame();
 </script>
-</body>
-</html>
