@@ -168,7 +168,7 @@ class Ship {
     this.lastSpawn = performance.now();
     if (type === 'fighter') {
       this.maxSpeed = 5 * TARGET_FPS * ALLIED_SPEED_MULT;
-      this.accel = .8 * TARGET_FPS;
+      this.accel = 5 * TARGET_FPS;
       this.health = 100;
       this.maxHealth = 100;
       this.fireRateMs = 5 * FRAME_TIME;
@@ -176,7 +176,7 @@ class Ship {
       this.hitRadius = 10;
     } else if (type === 'carrier') {
       this.maxSpeed = 4 * TARGET_FPS * ALLIED_SPEED_MULT;
-      this.accel = 1 * TARGET_FPS;
+      this.accel = 4 * TARGET_FPS;
       this.health = 250;
       this.maxHealth = 250;
       this.fireRateMs = 320 * FRAME_TIME;
@@ -187,7 +187,7 @@ class Ship {
       this.maxBoostSpeed = 14 * TARGET_FPS * ALLIED_SPEED_MULT;
     } else if (type === 'brute') {
       this.maxSpeed = 4 * TARGET_FPS * ALLIED_SPEED_MULT;
-      this.accel = .8 * TARGET_FPS;
+      this.accel = 4 * TARGET_FPS;
       this.health = 150;
       this.maxHealth = 150;
       this.fireRateMs = 53 * FRAME_TIME;
