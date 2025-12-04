@@ -254,16 +254,37 @@ const MBTI_DESCRIPTIONS = {
   'ENFP': 'The Campaigner - Enthusiastic, creative free spirits who love social connections.',
   'ESFJ': 'The Consul - Caring, social people who value harmony and cooperation.'
 };
+const PATH_STRENGTHS = {
+  'Action/Ego': 'Decisive, courageous, proactive, leadership in crisis, quick resolutions.',
+  'Wisdom/Reason': 'Analytical, strategic, objective, problem-solving, long-term planning.',
+  'Surrender/Flow': 'Adaptable, resilient, peaceful, intuitive, harmonious relationships.',
+  'Nero': 'Empathetic, present, wise, emotionally intelligent, spiritual depth.',
+  'Nora': 'Innovative, curious, investigative, scientific, detail-oriented.',
+  'Loktal': 'Ambitious, visionary, commanding, transformative, determined.',
+  'Sam': 'Exploratory, creative, enthusiastic, idea-generating, adaptable.',
+  'Exuro': 'Passionate, charismatic, catalytic, inspirational, bold.',
+  'Micromegas': 'Perspective-taking, humble, knowledgeable, abstract thinking, objective.'
+};
+const PATH_WEAKNESSES = {
+  'Action/Ego': 'Impulsive, lacks empathy, burnout risk, overlooks nuances, domineering.',
+  'Wisdom/Reason': 'Analysis paralysis, detached, overcritical, indecisive, rigid.',
+  'Surrender/Flow': 'Passive, complacent, avoids conflict, lacks direction, indecisive.',
+  'Nero': 'Detached from practicalities, overly idealistic, avoids confrontation, subtle pride.',
+  'Loktal': 'Tyrannical, lacks compassion, power-hungry, overlooks human cost, ruthless.',
+  'Sam': 'Scattered focus, superficial, undisciplined, overly optimistic, inconsistent.',
+  'Exuro': 'Destructive, consuming, fanatical, overlooks preservation, volatile.',
+  'Micromegas': 'Nihilistic, cold, disconnected, over-detached, lacks engagement.'
+};
 function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&','<':'<','>':'>','"':'"',"'":'''}[c])); }
 /* SCENARIOS (Full list with more branching and psychological depth) */
 const scenarios = {
   0: {
     text:"You stand before a grove where ancient trees cast deep shadows. A presence watches.",
     options:[
-      {text:'Enter boldly, illuminate every hidden corner', path:'Action/Ego', next:1}, // Leads to aggressive branch
-      {text:'Call out from the edge, seeking conversation', path:'Nero', next:2}, // Leads to reflective branch
-      {text:'Turn away and try another road', path:'Sam', next:3}, // Leads to curious branch
-      {text:'Sit and observe, let the shadows be', path:'Surrender/Flow', next:4} // Leads to passive branch
+      {text:'Enter boldly, illuminate every hidden corner', path:'Action/Ego', next:1},
+      {text:'Call out from the edge, seeking conversation', path:'Nero', next:2},
+      {text:'Turn away and try another road', path:'Sam', next:3},
+      {text:'Sit and observe, let the shadows be', path:'Surrender/Flow', next:4}
     ]
   },
   1: {
@@ -397,145 +418,145 @@ const scenarios = {
   17: {
     text:"You find a way to extend your life, but it requires sacrificing something precious.",
     options:[
-      {text:'Accept the end and cherish the present', path:'Surrender/Flow', next:null},
-      {text:'Analyze the sacrifice and proceed if logical', path:'Wisdom/Reason', next:null},
-      {text:'Reject it and seek alternative paths', path:'Sam', next:null}
+      {text:'Accept the end and cherish the present', path:'Surrender/Flow', next:53},
+      {text:'Analyze the sacrifice and proceed if logical', path:'Wisdom/Reason', next:54},
+      {text:'Reject it and seek alternative paths', path:'Sam', next:55}
     ]
   },
   18: {
     text:"A promising treatment is available, but it's untested and risky.",
     options:[
-      {text:'Dive into the unknown with hope', path:'Exuro', next:null},
-      {text:'Weigh the data carefully before deciding', path:'Nora', next:null},
-      {text:'Let fate decide without interference', path:'Micromegas', next:null}
+      {text:'Dive into the unknown with hope', path:'Exuro', next:56},
+      {text:'Weigh the data carefully before deciding', path:'Nora', next:57},
+      {text:'Let fate decide without interference', path:'Micromegas', next:58}
     ]
   },
   19: {
     text:"Your determination inspires others, but exhausts your resources.",
     options:[
-      {text:'Push harder, no matter the cost', path:'Loktal', next:null},
-      {text:'Reevaluate and adjust strategy', path:'Wisdom/Reason', next:null},
-      {text:'Accept support from the community', path:'Nero', next:null}
+      {text:'Push harder, no matter the cost', path:'Loktal', next:59},
+      {text:'Reevaluate and adjust strategy', path:'Wisdom/Reason', next:60},
+      {text:'Accept support from the community', path:'Nero', next:61}
     ]
   },
   20: {
     text:"Resistance grows, but supplies are low.",
     options:[
-      {text:'Raid enemy lines for resources', path:'Action/Ego', next:null},
-      {text:'Negotiate alliances for aid', path:'Nora', next:null},
-      {text:'Inspire with words of endurance', path:'Exuro', next:null}
+      {text:'Raid enemy lines for resources', path:'Action/Ego', next:62},
+      {text:'Negotiate alliances for aid', path:'Nora', next:63},
+      {text:'Inspire with words of endurance', path:'Exuro', next:64}
     ]
   },
   21: {
     text:"The pause allows regrouping, but the enemy advances.",
     options:[
-      {text:'Launch a surprise counterattack', path:'Loktal', next:null},
-      {text:'Fortify defenses logically', path:'Wisdom/Reason', next:null},
-      {text:'Observe and adapt to changes', path:'Sam', next:null}
+      {text:'Launch a surprise counterattack', path:'Loktal', next:65},
+      {text:'Fortify defenses logically', path:'Wisdom/Reason', next:66},
+      {text:'Observe and adapt to changes', path:'Sam', next:67}
     ]
   },
   22: {
     text:"Defeat brings reflection on what truly matters.",
     options:[
-      {text:'Plan for future resurgence', path:'Nora', next:null},
-      {text:'Embrace peace in the moment', path:'Surrender/Flow', next:null},
-      {text:'Seek wisdom from the loss', path:'Micromegas', next:null}
+      {text:'Plan for future resurgence', path:'Nora', next:68},
+      {text:'Embrace peace in the moment', path:'Surrender/Flow', next:69},
+      {text:'Seek wisdom from the loss', path:'Micromegas', next:70}
     ]
   },
   23: {
     text:"Breaking the monopoly angers powerful allies.",
     options:[
-      {text:'Confront them head-on', path:'Exuro', next:null},
-      {text:'Build new alliances', path:'Nora', next:null},
-      {text:'Let tensions resolve naturally', path:'Surrender/Flow', next:null}
+      {text:'Confront them head-on', path:'Exuro', next:71},
+      {text:'Build new alliances', path:'Nora', next:72},
+      {text:'Let tensions resolve naturally', path:'Surrender/Flow', next:73}
     ]
   },
   24: {
     text:"The coalition forms, but internal conflicts arise.",
     options:[
-      {text:'Assert leadership to unify', path:'Loktal', next:null},
-      {text:'Mediate with reason', path:'Wisdom/Reason', next:null},
-      {text:'Allow organic resolution', path:'Nero', next:null}
+      {text:'Assert leadership to unify', path:'Loktal', next:74},
+      {text:'Mediate with reason', path:'Wisdom/Reason', next:75},
+      {text:'Allow organic resolution', path:'Nero', next:76}
     ]
   },
   25: {
     text:"Market forces shift slowly, causing suffering.",
     options:[
-      {text:'Intervene subtly to accelerate', path:'Sam', next:null},
-      {text:'Study patterns for prediction', path:'Micromegas', next:null},
-      {text:'Accept the cycle', path:'Surrender/Flow', next:null}
+      {text:'Intervene subtly to accelerate', path:'Sam', next:77},
+      {text:'Study patterns for prediction', path:'Micromegas', next:78},
+      {text:'Accept the cycle', path:'Surrender/Flow', next:79}
     ]
   },
   26: {
     text:"The confrontation reveals deeper issues.",
     options:[
-      {text:'Fight to rebuild trust', path:'Action/Ego', next:null},
-      {text:'Analyze the root causes', path:'Nora', next:null},
-      {text:'Forgive and move forward', path:'Nero', next:null}
+      {text:'Fight to rebuild trust', path:'Action/Ego', next:80},
+      {text:'Analyze the root causes', path:'Nora', next:81},
+      {text:'Forgive and move forward', path:'Nero', next:82}
     ]
   },
   27: {
     text:"Your investigation uncovers surprising truths.",
     options:[
-      {text:'Use them to your advantage', path:'Loktal', next:null},
-      {text:'Share openly for resolution', path:'Wisdom/Reason', next:null},
-      {text:'Reflect on the bigger picture', path:'Micromegas', next:null}
+      {text:'Use them to your advantage', path:'Loktal', next:83},
+      {text:'Share openly for resolution', path:'Wisdom/Reason', next:84},
+      {text:'Reflect on the bigger picture', path:'Micromegas', next:85}
     ]
   },
   28: {
     text:"Time passes, and the lie festers.",
     options:[
-      {text:'Address it gently now', path:'Nero', next:null},
-      {text:'Let it unfold as is', path:'Surrender/Flow', next:null},
-      {text:'Seek external advice', path:'Sam', next:null}
+      {text:'Address it gently now', path:'Nero', next:86},
+      {text:'Let it unfold as is', path:'Surrender/Flow', next:87},
+      {text:'Seek external advice', path:'Sam', next:88}
     ]
   },
   29: {
     text:"Crushing opposition unites some but alienates others.",
     options:[
-      {text:'Consolidate power firmly', path:'Loktal', next:null},
-      {text:'Offer olive branches', path:'Nora', next:null},
-      {text:'Allow healing time', path:'Surrender/Flow', next:null}
+      {text:'Consolidate power firmly', path:'Loktal', next:89},
+      {text:'Offer olive branches', path:'Nora', next:90},
+      {text:'Allow healing time', path:'Surrender/Flow', next:91}
     ]
   },
   30: {
     text:"Local authority brings diversity but chaos.",
     options:[
-      {text:'Impose central guidelines', path:'Wisdom/Reason', next:null},
-      {text:'Embrace the variety', path:'Sam', next:null},
-      {text:'Observe outcomes passively', path:'Micromegas', next:null}
+      {text:'Impose central guidelines', path:'Wisdom/Reason', next:92},
+      {text:'Embrace the variety', path:'Sam', next:93},
+      {text:'Observe outcomes passively', path:'Micromegas', next:94}
     ]
   },
   31: {
     text:"Debate reveals innovative ideas.",
     options:[
-      {text:'Implement the strongest boldly', path:'Exuro', next:null},
-      {text:'Test them systematically', path:'Nora', next:null},
-      {text:'Integrate harmoniously', path:'Nero', next:null}
+      {text:'Implement the strongest boldly', path:'Exuro', next:95},
+      {text:'Test them systematically', path:'Nora', next:96},
+      {text:'Integrate harmoniously', path:'Nero', next:97}
     ]
   },
   32: {
     text:"Unifying against an enemy builds strength but breeds hate.",
     options:[
-      {text:'Channel it strategically', path:'Loktal', next:null},
-      {text:'Promote understanding later', path:'Wisdom/Reason', next:null},
-      {text:'Seek internal healing', path:'Nero', next:null}
+      {text:'Channel it strategically', path:'Loktal', next:98},
+      {text:'Promote understanding later', path:'Wisdom/Reason', next:99},
+      {text:'Seek internal healing', path:'Nero', next:100}
     ]
   },
   33: {
     text:"Consensus is reached, but slowly.",
     options:[
-      {text:'Push for faster action', path:'Action/Ego', next:null},
-      {text:'Refine through more discussion', path:'Sam', next:null},
-      {text:'Accept the pace', path:'Surrender/Flow', next:null}
+      {text:'Push for faster action', path:'Action/Ego', next:101},
+      {text:'Refine through more discussion', path:'Sam', next:102},
+      {text:'Accept the pace', path:'Surrender/Flow', next:103}
     ]
   },
   34: {
     text:"Time heals, but opportunities are lost.",
     options:[
-      {text:'Seize remaining chances', path:'Exuro', next:null},
-      {text:'Learn from the wait', path:'Micromegas', next:null},
-      {text:'Embrace the present calm', path:'Nero', next:null}
+      {text:'Seize remaining chances', path:'Exuro', next:104},
+      {text:'Learn from the wait', path:'Micromegas', next:105},
+      {text:'Embrace the present calm', path:'Nero', next:106}
     ]
   },
   35: {
@@ -557,129 +578,562 @@ const scenarios = {
   37: {
     text:"They discover the truth, but credit goes to another.",
     options:[
-      {text:'Claim your role assertively', path:'Action/Ego', next:null},
-      {text:'Let it be for the greater good', path:'Surrender/Flow', next:null},
-      {text:'Document for future reference', path:'Nora', next:null}
+      {text:'Claim your role assertively', path:'Action/Ego', next:116},
+      {text:'Let it be for the greater good', path:'Surrender/Flow', next:117},
+      {text:'Document for future reference', path:'Nora', next:118}
     ]
   },
   38: {
     text:"Your intervention saves the stranger, but you get injured.",
     options:[
-      {text:'Endure and fight on', path:'Exuro', next:null},
-      {text:'Seek medical help wisely', path:'Wisdom/Reason', next:null},
-      {text:'Reflect on the heroism', path:'Nero', next:null}
+      {text:'Endure and fight on', path:'Exuro', next:119},
+      {text:'Seek medical help wisely', path:'Wisdom/Reason', next:120},
+      {text:'Reflect on the heroism', path:'Nero', next:121}
     ]
   },
   39: {
     text:"Help arrives, but the attacker escapes.",
     options:[
-      {text:'Pursue relentlessly', path:'Loktal', next:null},
-      {text:'Analyze for prevention', path:'Nora', next:null},
-      {text:'Comfort the victim', path:'Surrender/Flow', next:null}
+      {text:'Pursue relentlessly', path:'Loktal', next:122},
+      {text:'Analyze for prevention', path:'Nora', next:123},
+      {text:'Comfort the victim', path:'Surrender/Flow', next:124}
     ]
   },
   40: {
     text:"The situation resolves without your help.",
     options:[
-      {text:'Question your hesitation', path:'Sam', next:null},
-      {text:'Accept the outcome', path:'Micromegas', next:null},
-      {text:'Learn for next time', path:'Wisdom/Reason', next:null}
+      {text:'Question your hesitation', path:'Sam', next:125},
+      {text:'Accept the outcome', path:'Micromegas', next:126},
+      {text:'Learn for next time', path:'Wisdom/Reason', next:127}
     ]
   },
   41: {
     text:"Indifference to externals brings inner peace.",
     options:[
-      {text:'Share this wisdom', path:'Nero', next:null},
-      {text:'Explore new philosophies', path:'Micromegas', next:null},
-      {text:'Rebuild mindfully', path:'Surrender/Flow', next:null}
+      {text:'Share this wisdom', path:'Nero', next:128},
+      {text:'Explore new philosophies', path:'Micromegas', next:129},
+      {text:'Rebuild mindfully', path:'Surrender/Flow', next:130}
     ]
   },
   42: {
     text:"Rebuilding starts with small steps.",
     options:[
-      {text:'Accelerate with bold moves', path:'Action/Ego', next:null},
-      {text:'Plan strategically', path:'Wisdom/Reason', next:null},
-      {text:'Follow curiosities', path:'Sam', next:null}
+      {text:'Accelerate with bold moves', path:'Action/Ego', next:131},
+      {text:'Plan strategically', path:'Wisdom/Reason', next:132},
+      {text:'Follow curiosities', path:'Sam', next:133}
     ]
   },
   43: {
     text:"Study reveals patterns of failure.",
     options:[
-      {text:'Apply lessons aggressively', path:'Exuro', next:null},
-      {text:'Innovate solutions', path:'Nora', next:null},
-      {text:'Accept and adapt', path:'Nero', next:null}
+      {text:'Apply lessons aggressively', path:'Exuro', next:134},
+      {text:'Innovate solutions', path:'Nora', next:135},
+      {text:'Accept and adapt', path:'Nero', next:136}
     ]
   },
   44: {
     text:"Simplicity restores order, but some resist.",
     options:[
-      {text:'Enforce gently', path:'Nero', next:null},
-      {text:'Demonstrate benefits', path:'Wisdom/Reason', next:null},
-      {text:'Allow adaptation time', path:'Surrender/Flow', next:null}
+      {text:'Enforce gently', path:'Nero', next:137},
+      {text:'Demonstrate benefits', path:'Wisdom/Reason', next:138},
+      {text:'Allow adaptation time', path:'Surrender/Flow', next:139}
     ]
   },
   45: {
     text:"New laws bring efficiency, but stifle creativity.",
     options:[
-      {text:'Maintain strict control', path:'Loktal', next:null},
-      {text:'Adjust based on feedback', path:'Sam', next:null},
-      {text:'Observe long-term effects', path:'Micromegas', next:null}
+      {text:'Maintain strict control', path:'Loktal', next:140},
+      {text:'Adjust based on feedback', path:'Sam', next:141},
+      {text:'Observe long-term effects', path:'Micromegas', next:142}
     ]
   },
   46: {
     text:"Changes improve the system gradually.",
     options:[
-      {text:'Push for more reforms', path:'Exuro', next:null},
-      {text:'Monitor and refine', path:'Nora', next:null},
-      {text:'Celebrate progress', path:'Nero', next:null}
+      {text:'Push for more reforms', path:'Exuro', next:143},
+      {text:'Monitor and refine', path:'Nora', next:144},
+      {text:'Celebrate progress', path:'Nero', next:145}
     ]
   },
   47: {
     text:"Refusal brings clarity of mind.",
     options:[
-      {text:'Teach others this lesson', path:'Nero', next:null},
-      {text:'Explore inner strengths', path:'Wisdom/Reason', next:null},
-      {text:'Embrace simplicity', path:'Surrender/Flow', next:null}
+      {text:'Teach others this lesson', path:'Nero', next:146},
+      {text:'Explore inner strengths', path:'Wisdom/Reason', next:147},
+      {text:'Embrace simplicity', path:'Surrender/Flow', next:148}
     ]
   },
   48: {
     text:"Power corrupts subtly over time.",
     options:[
-      {text:'Wield it with iron will', path:'Loktal', next:null},
-      {text:'Seek checks and balances', path:'Nora', next:null},
-      {text:'Reflect on changes', path:'Micromegas', next:null}
+      {text:'Wield it with iron will', path:'Loktal', next:149},
+      {text:'Seek checks and balances', path:'Nora', next:150},
+      {text:'Reflect on changes', path:'Micromegas', next:151}
     ]
   },
   49: {
     text:"Partial power achieves balanced outcomes.",
     options:[
-      {text:'Negotiate for more', path:'Action/Ego', next:null},
-      {text:'Use wisely as is', path:'Wisdom/Reason', next:null},
-      {text:'Share with others', path:'Sam', next:null}
+      {text:'Negotiate for more', path:'Action/Ego', next:152},
+      {text:'Use wisely as is', path:'Wisdom/Reason', next:153},
+      {text:'Share with others', path:'Sam', next:154}
     ]
   },
   50: {
     text:"Withdrawal restores your strength.",
     options:[
-      {text:'Return with renewed vision', path:'Exuro', next:null},
-      {text:'Guide from afar', path:'Micromegas', next:null},
-      {text:'Encourage independence', path:'Nero', next:null}
+      {text:'Return with renewed vision', path:'Exuro', next:155},
+      {text:'Guide from afar', path:'Micromegas', next:156},
+      {text:'Encourage independence', path:'Nero', next:157}
     ]
   },
   51: {
     text:"Shining depletes you further.",
     options:[
-      {text:'Persevere through willpower', path:'Loktal', next:null},
-      {text:'Seek help to sustain', path:'Nora', next:null},
-      {text:'Accept the limits', path:'Surrender/Flow', next:null}
+      {text:'Persevere through willpower', path:'Loktal', next:158},
+      {text:'Seek help to sustain', path:'Nora', next:159},
+      {text:'Accept the limits', path:'Surrender/Flow', next:160}
     ]
   },
   52: {
     text:"They find their light, empowering all.",
     options:[
-      {text:'Facilitate more growth', path:'Nero', next:null},
-      {text:'Study the process', path:'Sam', next:null},
-      {text:'Celebrate collectively', path:'Wisdom/Reason', next:null}
+      {text:'Facilitate more growth', path:'Nero', next:161},
+      {text:'Study the process', path:'Sam', next:162},
+      {text:'Celebrate collectively', path:'Wisdom/Reason', next:163}
+    ]
+  },
+  // Adding terminal scenarios for previous nulls
+  53: {
+    text:"A storm approaches as you contemplate the end.",
+    options:[
+      {text:'Face it head-on', path:'Action/Ego', next:null},
+      {text:'Seek shelter wisely', path:'Wisdom/Reason', next:null},
+      {text:'Embrace the rain', path:'Surrender/Flow', next:null}
+    ]
+  },
+  54: {
+    text:"The sacrifice weighs heavy, but logic prevails.",
+    options:[
+      {text:'Proceed with caution', path:'Nora', next:null},
+      {text:'Reconsider emotions', path:'Nero', next:null},
+      {text:'Abandon the plan', path:'Micromegas', next:null}
+    ]
+  },
+  55: {
+    text:"Alternatives emerge from unexpected sources.",
+    options:[
+      {text:'Pursue them boldly', path:'Exuro', next:null},
+      {text:'Analyze viability', path:'Wisdom/Reason', next:null},
+      {text:'Let intuition guide', path:'Sam', next:null}
+    ]
+  },
+  56: {
+    text:"The treatment brings new challenges.",
+    options:[
+      {text:'Fight through side effects', path:'Loktal', next:null},
+      {text:'Adapt daily routines', path:'Surrender/Flow', next:null},
+      {text:'Document the journey', path:'Nora', next:null}
+    ]
+  },
+  57: {
+    text:"Data reveals hidden risks.",
+    options:[
+      {text:'Mitigate them strategically', path:'Wisdom/Reason', next:null},
+      {text:'Seek second opinions', path:'Sam', next:null},
+      {text:'Trust the process', path:'Nero', next:null}
+    ]
+  },
+  58: {
+    text:"Fate takes its course, bringing peace.",
+    options:[
+      {text:'Reflect on life', path:'Micromegas', next:null},
+      {text:'Share stories', path:'Exuro', next:null},
+      {text:'Embrace each moment', path:'Surrender/Flow', next:null}
+    ]
+  },
+  59: {
+    text:"Pushing leads to victory, but at great cost.",
+    options:[
+      {text:'Celebrate the win', path:'Action/Ego', next:null},
+      {text:'Mourn the losses', path:'Nero', next:null},
+      {text:'Plan recovery', path:'Nora', next:null}
+    ]
+  },
+  60: {
+    text:"Adjustment brings sustainable progress.",
+    options:[
+      {text:'Implement new tactics', path:'Wisdom/Reason', next:null},
+      {text:'Inspire the team', path:'Exuro', next:null},
+      {text:'Observe results', path:'Sam', next:null}
+    ]
+  },
+  61: {
+    text:"Community support renews your strength.",
+    options:[
+      {text:'Lead collaboratively', path:'Nero', next:null},
+      {text:'Innovate together', path:'Nora', next:null},
+      {text:'Flow with the group', path:'Surrender/Flow', next:null}
+    ]
+  },
+  62: {
+    text:"Raiding succeeds, but risks exposure.",
+    options:[
+      {text:'Press the advantage', path:'Loktal', next:null},
+      {text:'Retreat strategically', path:'Wisdom/Reason', next:null},
+      {text:'Adapt to new threats', path:'Sam', next:null}
+    ]
+  },
+  63: {
+    text:"Alliances form, strengthening your position.",
+    options:[
+      {text:'Negotiate terms firmly', path:'Nora', next:null},
+      {text:'Build trust slowly', path:'Nero', next:null},
+      {text:'Launch joint operations', path:'Exuro', next:null}
+    ]
+  },
+  64: {
+    text:"Words rally the troops, boosting morale.",
+    options:[
+      {text:'Lead a charge', path:'Action/Ego', next:null},
+      {text:'Plan next moves', path:'Wisdom/Reason', next:null},
+      {text:'Celebrate small wins', path:'Surrender/Flow', next:null}
+    ]
+  },
+  65: {
+    text:"Counterattack turns the tide.",
+    options:[
+      {text:'Consolidate gains', path:'Loktal', next:null},
+      {text:'Negotiate peace', path:'Nora', next:null},
+      {text:'Reflect on victory', path:'Micromegas', next:null}
+    ]
+  },
+  66: {
+    text:"Defenses hold, buying time.",
+    options:[
+      {text:'Counter plan logically', path:'Wisdom/Reason', next:null},
+      {text:'Inspire endurance', path:'Exuro', next:null},
+      {text:'Adapt to siege', path:'Sam', next:null}
+    ]
+  },
+  67: {
+    text:"Adaptation leads to innovative solutions.",
+    options:[
+      {text:'Implement quickly', path:'Action/Ego', next:null},
+      {text:'Test thoroughly', path:'Nora', next:null},
+      {text:'Flow with changes', path:'Surrender/Flow', next:null}
+    ]
+  },
+  68: {
+    text:"Plans for resurgence build hope.",
+    options:[
+      {text:'Execute boldly', path:'Exuro', next:null},
+      {text:'Analyze risks', path:'Wisdom/Reason', next:null},
+      {text:'Gather allies', path:'Nero', next:null}
+    ]
+  },
+  69: {
+    text:"Peace brings new beginnings.",
+    options:[
+      {text:'Embrace fully', path:'Surrender/Flow', next:null},
+      {text:'Explore opportunities', path:'Sam', next:null},
+      {text:'Reflect deeply', path:'Micromegas', next:null}
+    ]
+  },
+  70: {
+    text:"Wisdom from loss guides future actions.",
+    options:[
+      {text:'Teach others', path:'Nero', next:null},
+      {text:'Innovate defenses', path:'Nora', next:null},
+      {text:'Accept cycles', path:'Surrender/Flow', next:null}
+    ]
+  },
+  71: {
+    text:"Confrontation resolves tensions.",
+    options:[
+      {text:'Forge stronger bonds', path:'Exuro', next:null},
+      {text:'Negotiate compromises', path:'Wisdom/Reason', next:null},
+      {text:'Allow healing', path:'Nero', next:null}
+    ]
+  },
+  72: {
+    text:"New alliances bring fresh perspectives.",
+    options:[
+      {text:'Integrate ideas', path:'Nora', next:null},
+      {text:'Lead united front', path:'Loktal', next:null},
+      {text:'Flow with dynamics', path:'Surrender/Flow', next:null}
+    ]
+  },
+  73: {
+    text:"Tensions ease over time.",
+    options:[
+      {text:'Monitor progress', path:'Sam', next:null},
+      {text:'Reflect on growth', path:'Micromegas', next:null},
+      {text:'Celebrate harmony', path:'Nero', next:null}
+    ]
+  },
+  74: {
+    text:"Leadership unifies the group.",
+    options:[
+      {text:'Push forward aggressively', path:'Loktal', next:null},
+      {text:'Balance interests', path:'Wisdom/Reason', next:null},
+      {text:'Foster empathy', path:'Nero', next:null}
+    ]
+  },
+  75: {
+    text:"Mediation resolves conflicts.",
+    options:[
+      {text:'Implement agreements', path:'Wisdom/Reason', next:null},
+      {text:'Innovate solutions', path:'Nora', next:null},
+      {text:'Allow organic growth', path:'Surrender/Flow', next:null}
+    ]
+  },
+  76: {
+    text:"Organic resolution strengthens bonds.",
+    options:[
+      {text:'Guide subtly', path:'Nero', next:null},
+      {text:'Analyze outcomes', path:'Micromegas', next:null},
+      {text:'Explore new paths', path:'Sam', next:null}
+    ]
+  },
+  77: {
+    text:"Subtle intervention accelerates change.",
+    options:[
+      {text:'Monitor effects', path:'Sam', next:null},
+      {text:'Adjust as needed', path:'Wisdom/Reason', next:null},
+      {text:'Accept results', path:'Surrender/Flow', next:null}
+    ]
+  },
+  78: {
+    text:"Patterns predict future shifts.",
+    options:[
+      {text:'Prepare strategically', path:'Nora', next:null},
+      {text:'Observe detachedly', path:'Micromegas', next:null},
+      {text:'Flow with predictions', path:'Surrender/Flow', next:null}
+    ]
+  },
+  79: {
+    text:"Acceptance of cycle brings peace.",
+    options:[
+      {text:'Teach resilience', path:'Exuro', next:null},
+      {text:'Reflect on lessons', path:'Nero', next:null},
+      {text:'Explore alternatives', path:'Sam', next:null}
+    ]
+  },
+  80: {
+    text:"Rebuilding trust takes effort.",
+    options:[
+      {text:'Commit fully', path:'Action/Ego', next:null},
+      {text:'Analyze progress', path:'Nora', next:null},
+      {text:'Forgive deeply', path:'Nero', next:null}
+    ]
+  },
+  81: {
+    text:"Root causes reveal patterns.",
+    options:[
+      {text:'Address systematically', path:'Wisdom/Reason', next:null},
+      {text:'Innovate fixes', path:'Nora', next:null},
+      {text:'Reflect holistically', path:'Micromegas', next:null}
+    ]
+  },
+  82: {
+    text:"Forgiveness opens new doors.",
+    options:[
+      {text:'Move forward boldly', path:'Exuro', next:null},
+      {text:'Explore new relations', path:'Sam', next:null},
+      {text:'Embrace present', path:'Surrender/Flow', next:null}
+    ]
+  },
+  83: {
+    text:"Advantage strengthens position.",
+    options:[
+      {text:'Consolidate gains', path:'Loktal', next:null},
+      {text:'Share benefits', path:'Nero', next:null},
+      {text:'Analyze long-term', path:'Wisdom/Reason', next:null}
+    ]
+  },
+  84: {
+    text:"Open sharing resolves issues.",
+    options:[
+      {text:'Build consensus', path:'Wisdom/Reason', next:null},
+      {text:'Innovate together', path:'Nora', next:null},
+      {text:'Heal emotionally', path:'Nero', next:null}
+    ]
+  },
+  85: {
+    text:"Bigger picture brings understanding.",
+    options:[
+      {text:'Detach further', path:'Micromegas', next:null},
+      {text:'Act on insights', path:'Exuro', next:null},
+      {text:'Flow with knowledge', path:'Surrender/Flow', next:null}
+    ]
+  },
+  86: {
+    text:"Gentle address mends the relationship.",
+    options:[
+      {text:'Nurture growth', path:'Nero', next:null},
+      {text:'Monitor changes', path:'Sam', next:null},
+      {text:'Accept outcomes', path:'Surrender/Flow', next:null}
+    ]
+  },
+  87: {
+    text:"Unfolding reveals truths naturally.",
+    options:[
+      {text:'Adapt accordingly', path:'Surrender/Flow', next:null},
+      {text:'Seek advice later', path:'Nora', next:null},
+      {text:'Reflect deeply', path:'Micromegas', next:null}
+    ]
+  },
+  88: {
+    text:"External advice provides clarity.",
+    options:[
+      {text:'Implement suggestions', path:'Action/Ego', next:null},
+      {text:'Analyze options', path:'Wisdom/Reason', next:null},
+      {text:'Integrate intuitively', path:'Sam', next:null}
+    ]
+  },
+  89: {
+    text:"Firm consolidation secures power.",
+    options:[
+      {text:'Expand influence', path:'Loktal', next:null},
+      {text:'Balance with mercy', path:'Nero', next:null},
+      {text:'Plan next moves', path:'Wisdom/Reason', next:null}
+    ]
+  },
+  90: {
+    text:"Olive branches rebuild unity.",
+    options:[
+      {text:'Negotiate peace', path:'Nora', next:null},
+      {text:'Foster collaboration', path:'Sam', next:null},
+      {text:'Heal divisions', path:'Surrender/Flow', next:null}
+    ]
+  },
+  91: {
+    text:"Healing time restores harmony.",
+    options:[
+      {text:'Monitor recovery', path:'Micromegas', next:null},
+      {text:'Inspire renewal', path:'Exuro', next:null},
+      {text:'Embrace peace', path:'Nero', next:null}
+    ]
+  },
+  92: {
+    text:"Guidelines bring order to chaos.",
+    options:[
+      {text:'Enforce strictly', path:'Loktal', next:null},
+      {text:'Adjust flexibly', path:'Wisdom/Reason', next:null},
+      {text:'Observe effects', path:'Sam', next:null}
+    ]
+  },
+  93: {
+    text:"Variety sparks innovation.",
+    options:[
+      {text:'Explore fully', path:'Sam', next:null},
+      {text:'Integrate wisely', path:'Nora', next:null},
+      {text:'Flow with diversity', path:'Surrender/Flow', next:null}
+    ]
+  },
+  94: {
+    text:"Passive observation yields insights.",
+    options:[
+      {text:'Act on findings', path:'Exuro', next:null},
+      {text:'Analyze deeply', path:'Micromegas', next:null},
+      {text:'Share knowledge', path:'Nero', next:null}
+    ]
+  },
+  95: {
+    text:"Bold implementation transforms reality.",
+    options:[
+      {text:'Push boundaries', path:'Exuro', next:null},
+      {text:'Evaluate results', path:'Wisdom/Reason', next:null},
+      {text:'Adapt as needed', path:'Sam', next:null}
+    ]
+  },
+  96: {
+    text:"Systematic testing refines ideas.",
+    options:[
+      {text:'Scale successful ones', path:'Nora', next:null},
+      {text:'Innovate further', path:'Action/Ego', next:null},
+      {text:'Integrate harmoniously', path:'Nero', next:null}
+    ]
+  },
+  97: {
+    text:"Harmonious integration creates balance.",
+    options:[
+      {text:'Nurture growth', path:'Nero', next:null},
+      {text:'Monitor synergy', path:'Micromegas', next:null},
+      {text:'Explore potentials', path:'Sam', next:null}
+    ]
+  },
+  98: {
+    text:"Strategic channeling achieves goals.",
+    options:[
+      {text:'Consolidate power', path:'Loktal', next:null},
+      {text:'Promote peace later', path:'Wisdom/Reason', next:null},
+      {text:'Heal internally', path:'Nero', next:null}
+    ]
+  },
+  99: {
+    text:"Understanding diffuses hate.",
+    options:[
+      {text:'Educate others', path:'Nora', next:null},
+      {text:'Foster empathy', path:'Surrender/Flow', next:null},
+      {text:'Reflect on progress', path:'Micromegas', next:null}
+    ]
+  },
+  100: {
+    text:"Internal healing strengthens the nation.",
+    options:[
+      {text:'Build resilience', path:'Exuro', next:null},
+      {text:'Plan future', path:'Wisdom/Reason', next:null},
+      {text:'Embrace present', path:'Nero', next:null}
+    ]
+  },
+  101: {
+    text:"Faster action accelerates change.",
+    options:[
+      {text:'Lead charge', path:'Action/Ego', next:null},
+      {text:'Monitor risks', path:'Nora', next:null},
+      {text:'Adapt dynamically', path:'Sam', next:null}
+    ]
+  },
+  102: {
+    text:"More discussion refines consensus.",
+    options:[
+      {text:'Innovate ideas', path:'Sam', next:null},
+      {text:'Implement carefully', path:'Wisdom/Reason', next:null},
+      {text:'Flow with group', path:'Surrender/Flow', next:null}
+    ]
+  },
+  103: {
+    text:"Accepting pace brings patience.",
+    options:[
+      {text:'Observe developments', path:'Micromegas', next:null},
+      {text:'Inspire endurance', path:'Exuro', next:null},
+      {text:'Embrace calm', path:'Surrender/Flow', next:null}
+    ]
+  },
+  104: {
+    text:"Seizing chances leads to recovery.",
+    options:[
+      {text:'Push limits', path:'Exuro', next:null},
+      {text:'Plan strategically', path:'Nora', next:null},
+      {text:'Reflect on gains', path:'Nero', next:null}
+    ]
+  },
+  105: {
+    text:"Learning from wait enhances wisdom.",
+    options:[
+      {text:'Apply insights', path:'Wisdom/Reason', next:null},
+      {text:'Explore new paths', path:'Sam', next:null},
+      {text:'Detach further', path:'Micromegas', next:null}
+    ]
+  },
+  106: {
+    text:"Present calm restores balance.",
+    options:[
+      {text:'Nurture peace', path:'Nero', next:null},
+      {text:'Innovate quietly', path:'Nora', next:null},
+      {text:'Flow onward', path:'Surrender/Flow', next:null}
     ]
   },
   107: {
@@ -709,7 +1163,7 @@ const scenarios = {
   110: {
     text:"The crisis escalates, and a subordinate questions your orders.",
     options:[
-      {text:'Assert authority and demand obedience', path:'Loktal', next:113}, // High dominance profile
+      {text:'Assert authority and demand obedience', path:'Loktal', next:113},
       {text:'Explain your reasoning calmly', path:'Wisdom/Reason', next:114},
       {text:'Step back and let them take the lead', path:'Surrender/Flow', next:115}
     ]
@@ -733,7 +1187,7 @@ const scenarios = {
   113: {
     text:"Your assertion leads to mutiny. How do you respond?",
     options:[
-      {text:'Suppress the mutiny with force', path:'Loktal', next:null}, // Profile: Authoritarian
+      {text:'Suppress the mutiny with force', path:'Loktal', next:null},
       {text:'Negotiate to regain control', path:'Wisdom/Reason', next:null},
       {text:'Accept the shift in power', path:'Surrender/Flow', next:null}
     ]
@@ -741,7 +1195,7 @@ const scenarios = {
   114: {
     text:"Your explanation calms the situation. Now, a moral dilemma arises.",
     options:[
-      {text:'Prioritize logic over emotion', path:'Wisdom/Reason', next:null}, // Profile: Rationalist
+      {text:'Prioritize logic over emotion', path:'Wisdom/Reason', next:null},
       {text:'Consider team feelings', path:'Nero', next:null},
       {text:'Act on instinct', path:'Action/Ego', next:null}
     ]
@@ -754,8 +1208,390 @@ const scenarios = {
       {text:'Celebrate the success', path:'Exuro', next:null}
     ]
   },
-  // Expand all branches similarly for deeper psychological profiling, adding scenarios that test traits like resilience, ethics, creativity, etc.
-  // For example, add 10 more branching scenarios per major path to probe deeper.
+  116: {
+    text:"Claiming role restores credit.",
+    options:[
+      {text:'Leverage recognition', path:'Loktal', next:null},
+      {text:'Share humbly', path:'Nero', next:null},
+      {text:'Move on gracefully', path:'Surrender/Flow', next:null}
+    ]
+  },
+  117: {
+    text:"Letting it be promotes humility.",
+    options:[
+      {text:'Focus on impact', path:'Micromegas', next:null},
+      {text:'Explore new truths', path:'Sam', next:null},
+      {text:'Embrace detachment', path:'Surrender/Flow', next:null}
+    ]
+  },
+  118: {
+    text:"Documentation preserves knowledge.",
+    options:[
+      {text:'Publish findings', path:'Nora', next:null},
+      {text:'Teach others', path:'Wisdom/Reason', next:null},
+      {text:'Reflect on process', path:'Nero', next:null}
+    ]
+  },
+  119: {
+    text:"Enduring injury builds character.",
+    options:[
+      {text:'Inspire with story', path:'Exuro', next:null},
+      {text:'Analyze mistakes', path:'Nora', next:null},
+      {text:'Heal mindfully', path:'Nero', next:null}
+    ]
+  },
+  120: {
+    text:"Medical help aids recovery.",
+    options:[
+      {text:'Plan prevention', path:'Wisdom/Reason', next:null},
+      {text:'Adapt lifestyle', path:'Surrender/Flow', next:null},
+      {text:'Explore therapies', path:'Sam', next:null}
+    ]
+  },
+  121: {
+    text:"Reflection on heroism brings wisdom.",
+    options:[
+      {text:'Share insights', path:'Nero', next:null},
+      {text:'Detach from ego', path:'Micromegas', next:null},
+      {text:'Act again boldly', path:'Action/Ego', next:null}
+    ]
+  },
+  122: {
+    text:"Pursuit captures the attacker.",
+    options:[
+      {text:'Seek justice firmly', path:'Loktal', next:null},
+      {text:'Forgive if possible', path:'Nero', next:null},
+      {text:'Analyze system flaws', path:'Wisdom/Reason', next:null}
+    ]
+  },
+  123: {
+    text:"Analysis prevents future attacks.",
+    options:[
+      {text:'Implement changes', path:'Nora', next:null},
+      {text:'Educate community', path:'Exuro', next:null},
+      {text:'Observe impacts', path:'Sam', next:null}
+    ]
+  },
+  124: {
+    text:"Comfort aids the victim's healing.",
+    options:[
+      {text:'Build support network', path:'Surrender/Flow', next:null},
+      {text:'Reflect together', path:'Nero', next:null},
+      {text:'Advocate for change', path:'Action/Ego', next:null}
+    ]
+  },
+  125: {
+    text:"Questioning hesitation leads to growth.",
+    options:[
+      {text:'Explore motivations', path:'Sam', next:null},
+      {text:'Accept self', path:'Nero', next:null},
+      {text:'Train for future', path:'Wisdom/Reason', next:null}
+    ]
+  },
+  126: {
+    text:"Accepting outcome brings peace.",
+    options:[
+      {text:'Detach further', path:'Micromegas', next:null},
+      {text:'Learn detachment', path:'Surrender/Flow', next:null},
+      {text:'Reflect philosophically', path:'Nero', next:null}
+    ]
+  },
+  127: {
+    text:"Learning prepares for next time.",
+    options:[
+      {text:'Plan strategies', path:'Wisdom/Reason', next:null},
+      {text:'Practice scenarios', path:'Action/Ego', next:null},
+      {text:'Explore ethics', path:'Nora', next:null}
+    ]
+  },
+  128: {
+    text:"Sharing wisdom inspires others.",
+    options:[
+      {text:'Teach actively', path:'Exuro', next:null},
+      {text:'Write teachings', path:'Nora', next:null},
+      {text:'Live example', path:'Nero', next:null}
+    ]
+  },
+  129: {
+    text:"New philosophies expand horizons.",
+    options:[
+      {text:'Integrate insights', path:'Micromegas', next:null},
+      {text:'Debate ideas', path:'Sam', next:null},
+      {text:'Meditate deeply', path:'Surrender/Flow', next:null}
+    ]
+  },
+  130: {
+    text:"Mindful rebuilding creates stability.",
+    options:[
+      {text:'Flow with process', path:'Surrender/Flow', next:null},
+      {text:'Plan carefully', path:'Wisdom/Reason', next:null},
+      {text:'Act decisively', path:'Action/Ego', next:null}
+    ]
+  },
+  131: {
+    text:"Bold moves accelerate rebuilding.",
+    options:[
+      {text:'Take risks', path:'Exuro', next:null},
+      {text:'Balance ambition', path:'Nero', next:null},
+      {text:'Explore opportunities', path:'Sam', next:null}
+    ]
+  },
+  132: {
+    text:"Strategic planning ensures success.",
+    options:[
+      {text:'Execute plan', path:'Loktal', next:null},
+      {text:'Monitor progress', path:'Wisdom/Reason', next:null},
+      {text:'Adapt as needed', path:'Nora', next:null}
+    ]
+  },
+  133: {
+    text:"Curiosities lead to discoveries.",
+    options:[
+      {text:'Pursue passionately', path:'Sam', next:null},
+      {text:'Analyze findings', path:'Micromegas', next:null},
+      {text:'Share excitement', path:'Exuro', next:null}
+    ]
+  },
+  134: {
+    text:"Aggressive application transforms outcomes.",
+    options:[
+      {text:'Push forward', path:'Exuro', next:null},
+      {text:'Evaluate impacts', path:'Wisdom/Reason', next:null},
+      {text:'Integrate lessons', path:'Nero', next:null}
+    ]
+  },
+  135: {
+    text:"Innovative solutions prevent recurrence.",
+    options:[
+      {text:'Implement creatively', path:'Nora', next:null},
+      {text:'Test rigorously', path:'Wisdom/Reason', next:null},
+      {text:'Adapt flexibly', path:'Sam', next:null}
+    ]
+  },
+  136: {
+    text:"Acceptance leads to adaptation.",
+    options:[
+      {text:'Embrace change', path:'Surrender/Flow', next:null},
+      {text:'Reflect wisely', path:'Nero', next:null},
+      {text:'Explore new paths', path:'Micromegas', next:null}
+    ]
+  },
+  137: {
+    text:"Gentle enforcement gains acceptance.",
+    options:[
+      {text:'Nurture adoption', path:'Nero', next:null},
+      {text:'Demonstrate value', path:'Exuro', next:null},
+      {text:'Allow time', path:'Surrender/Flow', next:null}
+    ]
+  },
+  138: {
+    text:"Benefits convince resisters.",
+    options:[
+      {text:'Educate logically', path:'Wisdom/Reason', next:null},
+      {text:'Innovate improvements', path:'Nora', next:null},
+      {text:'Celebrate wins', path:'Sam', next:null}
+    ]
+  },
+  139: {
+    text:"Adaptation time smooths transition.",
+    options:[
+      {text:'Monitor gently', path:'Micromegas', next:null},
+      {text:'Support individuals', path:'Nero', next:null},
+      {text:'Flow with changes', path:'Surrender/Flow', next:null}
+    ]
+  },
+  140: {
+    text:"Strict control maintains order.",
+    options:[
+      {text:'Expand rules', path:'Loktal', next:null},
+      {text:'Balance with freedom', path:'Wisdom/Reason', next:null},
+      {text:'Observe creativity', path:'Sam', next:null}
+    ]
+  },
+  141: {
+    text:"Feedback adjustments foster creativity.",
+    options:[
+      {text:'Encourage ideas', path:'Sam', next:null},
+      {text:'Integrate innovations', path:'Nora', next:null},
+      {text:'Celebrate diversity', path:'Exuro', next:null}
+    ]
+  },
+  142: {
+    text:"Long-term effects reveal truths.",
+    options:[
+      {text:'Analyze deeply', path:'Micromegas', next:null},
+      {text:'Adapt policies', path:'Wisdom/Reason', next:null},
+      {text:'Accept evolution', path:'Surrender/Flow', next:null}
+    ]
+  },
+  143: {
+    text:"More reforms drive progress.",
+    options:[
+      {text:'Push relentlessly', path:'Exuro', next:null},
+      {text:'Plan sequentially', path:'Nora', next:null},
+      {text:'Inspire masses', path:'Loktal', next:null}
+    ]
+  },
+  144: {
+    text:"Monitoring refines the system.",
+    options:[
+      {text:'Optimize continuously', path:'Nora', next:null},
+      {text:'Celebrate improvements', path:'Nero', next:null},
+      {text:'Explore extensions', path:'Sam', next:null}
+    ]
+  },
+  145: {
+    text:"Celebrating progress builds morale.",
+    options:[
+      {text:'Motivate further', path:'Exuro', next:null},
+      {text:'Reflect collectively', path:'Nero', next:null},
+      {text:'Plan next phase', path:'Wisdom/Reason', next:null}
+    ]
+  },
+  146: {
+    text:"Teaching the lesson empowers others.",
+    options:[
+      {text:'Guide disciples', path:'Nero', next:null},
+      {text:'Document wisdom', path:'Nora', next:null},
+      {text:'Inspire action', path:'Action/Ego', next:null}
+    ]
+  },
+  147: {
+    text:"Inner strengths reveal potential.",
+    options:[
+      {text:'Develop systematically', path:'Wisdom/Reason', next:null},
+      {text:'Explore boundaries', path:'Sam', next:null},
+      {text:'Embrace fully', path:'Surrender/Flow', next:null}
+    ]
+  },
+  148: {
+    text:"Simplicity brings freedom.",
+    options:[
+      {text:'Live minimally', path:'Nero', next:null},
+      {text:'Detach possessions', path:'Micromegas', next:null},
+      {text:'Flow unencumbered', path:'Surrender/Flow', next:null}
+    ]
+  },
+  149: {
+    text:"Iron will maintains control.",
+    options:[
+      {text:'Rule decisively', path:'Loktal', next:null},
+      {text:'Seek advisors', path:'Wisdom/Reason', next:null},
+      {text:'Reflect on corruption', path:'Nero', next:null}
+    ]
+  },
+  150: {
+    text:"Checks prevent corruption.",
+    options:[
+      {text:'Balance power', path:'Nora', next:null},
+      {text:'Foster accountability', path:'Nero', next:null},
+      {text:'Adapt systems', path:'Sam', next:null}
+    ]
+  },
+  151: {
+    text:"Reflection halts corruption.",
+    options:[
+      {text:'Change course', path:'Exuro', next:null},
+      {text:'Detach from power', path:'Micromegas', next:null},
+      {text:'Surrender ego', path:'Surrender/Flow', next:null}
+    ]
+  },
+  152: {
+    text:"More power enhances impact.",
+    options:[
+      {text:'Wield boldly', path:'Action/Ego', next:null},
+      {text:'Negotiate wisely', path:'Wisdom/Reason', next:null},
+      {text:'Share gains', path:'Nero', next:null}
+    ]
+  },
+  153: {
+    text:"Wise use maximizes benefits.",
+    options:[
+      {text:'Optimize outcomes', path:'Wisdom/Reason', next:null},
+      {text:'Innovate applications', path:'Nora', next:null},
+      {text:'Flow with limitations', path:'Surrender/Flow', next:null}
+    ]
+  },
+  154: {
+    text:"Sharing empowers community.",
+    options:[
+      {text:'Collaborate freely', path:'Sam', next:null},
+      {text:'Build networks', path:'Exuro', next:null},
+      {text:'Foster growth', path:'Nero', next:null}
+    ]
+  },
+  155: {
+    text:"Renewed vision inspires return.",
+    options:[
+      {text:'Lead transformation', path:'Exuro', next:null},
+      {text:'Plan comeback', path:'Loktal', next:null},
+      {text:'Share insights', path:'Nero', next:null}
+    ]
+  },
+  156: {
+    text:"Guiding from afar influences subtly.",
+    options:[
+      {text:'Observe impacts', path:'Micromegas', next:null},
+      {text:'Advise wisely', path:'Wisdom/Reason', next:null},
+      {text:'Allow independence', path:'Surrender/Flow', next:null}
+    ]
+  },
+  157: {
+    text:"Independence strengthens others.",
+    options:[
+      {text:'Empower fully', path:'Nero', next:null},
+      {text:'Monitor growth', path:'Nora', next:null},
+      {text:'Celebrate autonomy', path:'Sam', next:null}
+    ]
+  },
+  158: {
+    text:"Willpower sustains through depletion.",
+    options:[
+      {text:'Achieve goals', path:'Loktal', next:null},
+      {text:'Seek recovery', path:'Nora', next:null},
+      {text:'Accept burnout', path:'Micromegas', next:null}
+    ]
+  },
+  159: {
+    text:"Help sustains your shine.",
+    options:[
+      {text:'Collaborate effectively', path:'Nora', next:null},
+      {text:'Build support', path:'Nero', next:null},
+      {text:'Adapt roles', path:'Sam', next:null}
+    ]
+  },
+  160: {
+    text:"Accepting limits brings rest.",
+    options:[
+      {text:'Heal fully', path:'Surrender/Flow', next:null},
+      {text:'Reflect on boundaries', path:'Wisdom/Reason', next:null},
+      {text:'Explore alternatives', path:'Action/Ego', next:null}
+    ]
+  },
+  161: {
+    text:"More growth expands empowerment.",
+    options:[
+      {text:'Facilitate deeply', path:'Nero', next:null},
+      {text:'Innovate methods', path:'Nora', next:null},
+      {text:'Celebrate milestones', path:'Exuro', next:null}
+    ]
+  },
+  162: {
+    text:"Studying process yields knowledge.",
+    options:[
+      {text:'Apply findings', path:'Sam', next:null},
+      {text:'Analyze patterns', path:'Micromegas', next:null},
+      {text:'Share discoveries', path:'Wisdom/Reason', next:null}
+    ]
+  },
+  163: {
+    text:"Collective celebration unites.",
+    options:[
+      {text:'Plan future', path:'Loktal', next:null},
+      {text:'Reflect together', path:'Nero', next:null},
+      {text:'Flow with joy', path:'Surrender/Flow', next:null}
+    ]
+  }
 };
 /* STATE */
 let currentScenarioId = 0;
@@ -843,7 +1679,7 @@ function showAnalysis() {
       (MBTI_MAPPINGS[d]||[]).forEach(m => {
         msg += `- ${m}: ${MBTI_DESCRIPTIONS[m] || 'No description available'}\n`;
       });
-      msg += '\nStrengths: [Expanded strengths based on path]\nWeaknesses: [Expanded weaknesses]\nAdvice: Integrate this path with others for balance.\n';
+      msg += `\nStrengths: ${PATH_STRENGTHS[d]}\nWeaknesses: ${PATH_WEAKNESSES[d]}\nAdvice: Integrate this path with others for balance.\n`;
     });
   }
   msg += '\nOverall Insights: Your choices indicate a blend of paths. Consider how these align with your daily life for personal growth.';
