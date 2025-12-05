@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Life of a Tiamat</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #050508;
+            touch-action: none;
+            font-family: 'Segoe UI', sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        canvas {
+            display: block;
+            background-color: #050508;
+        }
+        
+        /* UI LAYERS */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 5;
+        }
+        .stat-box {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 800;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* MENU SCREENS */
+        .menu-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+        }
+        
+        h1 { color: #2E93FF; font-size: 48px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 4px; text-align: center; text-shadow: 0 0 20px rgba(46, 147, 255, 0.6); }
+        h2 { color: #888; font-size: 14px; margin-top: 0; margin-bottom: 40px; font-weight: normal; letter-spacing: 1px; }
+        p { color: #aab; font-size: 16px; margin-bottom: 20px; text-align: center; }
+        
+        .btn-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            background: linear-gradient(135deg, #2E93FF, #0055ff);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(46, 147, 255, 0.4);
+            font-weight: bold;
+            transition: transform 0.1s, box-shadow 0.2s;
+            min-width: 200px;
+        }
+        button:hover { box-shadow: 0 0 35px rgba(46, 147, 255, 0.6); }
+        button:active { transform: scale(0.96); }
+
+        #game-over-screen { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" class="menu-overlay">
+        <h1>Life of a Tiamat</h1>
+        <h2>By Patrick McDonald and Gemini</h2>
+        
+        <p>Choose Control Style:</p>
+        
+        <div class="btn-container">
+            <button id="btn-desktop">DESKTOP (WASD)</button>
+            <button id="btn-mobile">MOBILE (TOUCH)</button>
+        </div>
+    </div>
+
+    <div id="game-over-screen" class="menu-overlay">
+        <h1 style="color:#FF3333">CONSUMED</h1>
+        <p>Final Size: <span id="final-score">0</span></p>
+        <button id="restart-btn">RESPAWN</button>
+    </div>
+
+    <div id="ui-layer">
+        <div class="stat-box" style="color:#00ff64">BIOMASS: <span id="dna-display">0</span></div>
+        <div class="stat-box" style="color:#2E93FF">SIZE: <span id="size-display">15</span></div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        window.onload = function() {
+            // --- CONSTANTS ---
+            const WORLD_SIZE = 6000;
+            const MAX_FOOD = 350;    
+            const MAX_PREDATORS = 25; 
+            const ZOOM_FACTOR = 0.9; 
+            
+            // MINIMAP CONFIG
+            const MAP_SIZE = 140; 
+            const MAP_MARGIN = 20;
+            
+            // --- COLORS ---
+            const C_PLAYER = '#2E93FF'; 
+            const C_PREDATOR = '#FF3333'; 
+            const C_FOOD = '#00ff64';
+            const C_GRID = '#15151a';
+
+            // --- DOM ---
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const startScreen = document.getElementById('start-screen');
+            const gameOverScreen = document.getElementById('game-over-screen');
+            const btnDesktop = document.getElementById('btn-desktop');
+            const btnMobile = document.getElementById('btn-mobile');
+            const restartBtn = document.getElementById('restart-btn');
+            const dnaDisplay = document.getElementById('dna-display');
+            const sizeDisplay = document.getElementById('size-display');
+            const finalScoreDisplay = document.getElementById('final-score');
+
+            // --- STATE ---
+            let SCREEN_W = window.innerWidth;
+            let SCREEN_H = window.innerHeight;
+            canvas.width = SCREEN_W;
+            canvas.height = SCREEN_H;
+
+            let gameRunning = false;
+            let animationId;
+            let dna = 0;
+            
+            let camX = 0;
+            let camY = 0;
+
+            // INPUT STATE
+            let controlMode = 'touch'; // 'touch' or 'keys'
+            
+            // Touch/Mouse Follow Input
+            let inputActive = false;
+            let inputX = SCREEN_W / 2;
+            let inputY = SCREEN_H / 2;
+            
+            // Keyboard Input
+            let keys = { up: false, down: false, left: false, right: false };
+
+            let player = null;
+            let predators = [];
+            let foodPellets = [];
+
+            // --- CLASSES ---
+            class Cell {
+                constructor(x, y, size, color, speed, isAI) {
+                    this.x = x;
+                    this.y = y;
+                    this.size = size;
+                    this.color = color;
+                    this.baseSpeed = speed;
+                    this.isAI = isAI;
+                    this.velX = 0;
+                    this.velY = 0;
+                    this.growEffect = 0;
+                }
+
+                draw() {
+                    let screenX = (this.x - camX);
+                    let screenY = (this.y - camY);
+                    
+                    let renderSize = this.size * ZOOM_FACTOR;
+
+                    // Culling
+                    if (screenX < -renderSize || screenX > SCREEN_W + renderSize || 
+                        screenY < -renderSize || screenY > SCREEN_H + renderSize) return;
+
+                    // Growth Ripple
+                    if (this.growEffect > 0) {
+                        ctx.strokeStyle = 'rgba(255, 255, 255, ' + (this.growEffect/10) + ')';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(screenX, screenY, renderSize + (10 - this.growEffect), 0, Math.PI * 2);
+                        ctx.stroke();
+                        this.growEffect--;
+                    }
+
+                    // Body
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(screenX, screenY, renderSize, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Detail (Inner Glow)
+                    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                    ctx.beginPath();
+                    ctx.arc(screenX, screenY, renderSize * 0.8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Size Text
+                    let fontSize = Math.max(10, renderSize * 0.6);
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold ' + fontSize + 'px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.shadowColor = 'black';
+                    ctx.shadowBlur = 4;
+                    ctx.fillText(Math.floor(this.size), screenX, screenY);
+                    ctx.shadowBlur = 0; 
+                }
+
+                update(dx, dy) {
+                    const friction = 0.93;
+                    let speed = this.baseSpeed * (1 - Math.min(this.size, 300)/800);
+
+                    this.velX += dx * speed * 0.1;
+                    this.velY += dy * speed * 0.1;
+                    this.velX *= friction;
+                    this.velY *= friction;
+                    
+                    this.x += this.velX;
+                    this.y += this.velY;
+
+                    if (this.x < this.size) { this.x = this.size; this.velX *= -1; }
+                    if (this.y < this.size) { this.y = this.size; this.velY *= -1; }
+                    if (this.x > WORLD_SIZE - this.size) { this.x = WORLD_SIZE - this.size; this.velX *= -1; }
+                    if (this.y > WORLD_SIZE - this.size) { this.y = WORLD_SIZE - this.size; this.velY *= -1; }
+                }
+            }
+
+            // --- GAME LOGIC ---
+            function initGame(mode) {
+                controlMode = mode;
+                dna = 0;
+                predators = [];
+                foodPellets = [];
+
+                // Reset keys
+                keys = { up: false, down: false, left: false, right: false };
+
+                // Spawn Player
+                player = new Cell(WORLD_SIZE/2, WORLD_SIZE/2, 18, C_PLAYER, 5.0, false);
+                updateHUD();
+
+                for(let i=0; i<MAX_FOOD; i++) spawnFood();
+                for(let i=0; i<8; i++) spawnPredator();
+
+                gameRunning = true;
+                if(animationId) cancelAnimationFrame(animationId);
+                loop();
+            }
+
+            function spawnFood() {
+                foodPellets.push({
+                    x: Math.random() * WORLD_SIZE,
+                    y: Math.random() * WORLD_SIZE,
+                    size: 5 + Math.random() * 3,
+                    color: C_FOOD
+                });
+            }
+
+            function spawnPredator() {
+                let px, py, d;
+                do {
+                    px = Math.random() * WORLD_SIZE;
+                    py = Math.random() * WORLD_SIZE;
+                    d = Math.hypot(px - player.x, py - player.y);
+                } while(d < 1000); 
+
+                let pSize = 20 + Math.random() * 50;
+                let pSpeed = (3 + Math.random()) * 0.95; // 5% slower enemies
+                
+                predators.push(new Cell(px, py, pSize, C_PREDATOR, pSpeed, true));
+            }
+
+            function updateHUD() {
+                dnaDisplay.innerText = dna;
+                if(player) sizeDisplay.innerText = player.size.toFixed(1);
+            }
+
+            function drawMinimap() {
+                let mapX = SCREEN_W - MAP_SIZE - MAP_MARGIN;
+                let mapY = SCREEN_H - MAP_SIZE - MAP_MARGIN;
+                
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                ctx.strokeStyle = '#444';
+                ctx.lineWidth = 2;
+                ctx.fillRect(mapX, mapY, MAP_SIZE, MAP_SIZE);
+                ctx.strokeRect(mapX, mapY, MAP_SIZE, MAP_SIZE);
+
+                function toMap(val) {
+                    return (val / WORLD_SIZE) * MAP_SIZE;
+                }
+
+                ctx.fillStyle = C_PREDATOR;
+                for(let p of predators) {
+                    ctx.beginPath();
+                    ctx.arc(mapX + toMap(p.x), mapY + toMap(p.y), 3, 0, Math.PI*2);
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = '#44aaff'; 
+                ctx.beginPath();
+                ctx.arc(mapX + toMap(player.x), mapY + toMap(player.y), 4, 0, Math.PI*2);
+                ctx.fill();
+
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(
+                    mapX + toMap(camX), 
+                    mapY + toMap(camY), 
+                    toMap(SCREEN_W), 
+                    toMap(SCREEN_H)
+                );
+            }
+
+            function loop() {
+                if (!gameRunning) return;
+
+                // Camera
+                let targetCamX = player.x - (SCREEN_W / 2);
+                let targetCamY = player.y - (SCREEN_H / 2);
+                camX += (targetCamX - camX) * 0.1;
+                camY += (targetCamY - camY) * 0.1;
+                camX = Math.max(0, Math.min(camX, WORLD_SIZE - SCREEN_W));
+                camY = Math.max(0, Math.min(camY, WORLD_SIZE - SCREEN_H));
+
+                // Background
+                ctx.fillStyle = '#050508';
+                ctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
+                drawGrid();
+
+                // --- INPUT HANDLING ---
+                let moveX = 0, moveY = 0;
+
+                if (controlMode === 'keys') {
+                    // KEYBOARD MODE
+                    if (keys.up) moveY -= 1;
+                    if (keys.down) moveY += 1;
+                    if (keys.left) moveX -= 1;
+                    if (keys.right) moveX += 1;
+                    
+                    // Normalize diagonal movement
+                    let len = Math.hypot(moveX, moveY);
+                    if (len > 0) {
+                        moveX /= len;
+                        moveY /= len;
+                    }
+
+                } else {
+                    // MOBILE/TOUCH MODE
+                    if (inputActive) {
+                        let dx = inputX - (SCREEN_W/2);
+                        let dy = inputY - (SCREEN_H/2);
+                        let dist = Math.hypot(dx, dy);
+                        if (dist > 10) {
+                            moveX = dx / dist;
+                            moveY = dy / dist;
+                        }
+                    }
+                }
+                
+                player.update(moveX, moveY);
+
+                // Food
+                if (foodPellets.length < MAX_FOOD) { spawnFood(); spawnFood(); }
+
+                for (let i = foodPellets.length - 1; i >= 0; i--) {
+                    let f = foodPellets[i];
+                    let sx = f.x - camX;
+                    let sy = f.y - camY;
+                    
+                    if (sx > -20 && sx < SCREEN_W+20 && sy > -20 && sy < SCREEN_H+20) {
+                        ctx.fillStyle = f.color;
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, f.size * ZOOM_FACTOR, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                    
+                    if (Math.hypot(player.x - f.x, player.y - f.y) < player.size + f.size) {
+                        foodPellets.splice(i, 1);
+                        player.size += 1.2; 
+                        player.growEffect = 10;
+                        dna++;
+                        updateHUD();
+                    }
+                }
+
+                // Predators
+                if (predators.length < MAX_PREDATORS && Math.random() < 0.05) spawnPredator();
+                
+                for (let i = predators.length - 1; i >= 0; i--) {
+                    let p = predators[i];
+                    let dist = Math.hypot(player.x - p.x, player.y - p.y);
+                    
+                    if (dist < 900) {
+                        p.update((player.x - p.x)/dist, (player.y - p.y)/dist);
+                    } else {
+                        p.update(Math.random()-0.5, Math.random()-0.5);
+                    }
+                    p.draw();
+
+                    if (dist < player.size + p.size) {
+                        if (player.size > p.size * 1.1) {
+                            predators.splice(i, 1);
+                            player.size += p.size * 0.4;
+                            player.growEffect = 15;
+                            dna += 10;
+                            updateHUD();
+                        } else if (p.size > player.size * 1.1) {
+                            gameOver();
+                            return;
+                        }
+                    }
+                }
+
+                player.draw();
+                drawMinimap();
+                animationId = requestAnimationFrame(loop);
+            }
+
+            function drawGrid() {
+                ctx.strokeStyle = C_GRID;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                let gs = 150 * ZOOM_FACTOR;
+                let offX = -camX % gs;
+                let offY = -camY % gs;
+                for (let x = offX; x < SCREEN_W; x += gs) {
+                    ctx.moveTo(x, 0); ctx.lineTo(x, SCREEN_H);
+                }
+                for (let y = offY; y < SCREEN_H; y += gs) {
+                    ctx.moveTo(0, y); ctx.lineTo(SCREEN_W, y);
+                }
+                ctx.stroke();
+            }
+
+            function gameOver() {
+                gameRunning = false;
+                finalScoreDisplay.innerText = player.size.toFixed(1);
+                gameOverScreen.style.display = 'flex';
+            }
+
+            // --- LISTENERS ---
+            window.addEventListener('resize', () => {
+                SCREEN_W = window.innerWidth;
+                SCREEN_H = window.innerHeight;
+                canvas.width = SCREEN_W;
+                canvas.height = SCREEN_H;
+            });
+
+            // Touch/Mouse Follow Helpers
+            function setInput(x, y) {
+                inputActive = true;
+                inputX = x;
+                inputY = y;
+            }
+
+            // Mouse Move (Only used if mode is touch, but we track it anyway)
+            canvas.addEventListener('touchstart', e => { e.preventDefault(); setInput(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
+            canvas.addEventListener('touchmove', e => { e.preventDefault(); setInput(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
+            canvas.addEventListener('touchend', () => { inputActive = false; });
+
+            let mDown = false;
+            canvas.addEventListener('mousedown', e => { mDown=true; setInput(e.clientX, e.clientY); });
+            canvas.addEventListener('mousemove', e => { if(mDown) setInput(e.clientX, e.clientY); });
+            canvas.addEventListener('mouseup', () => { mDown=false; inputActive=false; });
+
+            // Keyboard Listeners (WASD + Arrows)
+            window.addEventListener('keydown', e => {
+                const k = e.key.toLowerCase();
+                if (k === 'w' || k === 'arrowup') keys.up = true;
+                if (k === 's' || k === 'arrowdown') keys.down = true;
+                if (k === 'a' || k === 'arrowleft') keys.left = true;
+                if (k === 'd' || k === 'arrowright') keys.right = true;
+            });
+
+            window.addEventListener('keyup', e => {
+                const k = e.key.toLowerCase();
+                if (k === 'w' || k === 'arrowup') keys.up = false;
+                if (k === 's' || k === 'arrowdown') keys.down = false;
+                if (k === 'a' || k === 'arrowleft') keys.left = false;
+                if (k === 'd' || k === 'arrowright') keys.right = false;
+            });
+
+            // Button Logic
+            btnDesktop.addEventListener('click', () => { 
+                startScreen.style.display = 'none'; 
+                initGame('keys'); 
+            });
+
+            btnMobile.addEventListener('click', () => { 
+                startScreen.style.display = 'none'; 
+                initGame('touch'); 
+            });
+
+            restartBtn.addEventListener('click', () => { 
+                gameOverScreen.style.display = 'none'; 
+                startScreen.style.display = 'flex'; // Go back to start to choose controls again
+            });
+        };
+    </script>
+</body>
+</html>
