@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Life of a Tiamat</title>
+    <title>Life of a Tiamat: Evolution</title>
     <style>
         body, html {
             margin: 0;
@@ -62,7 +62,7 @@
         
         h1 { color: #2E93FF; font-size: 48px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 4px; text-align: center; text-shadow: 0 0 20px rgba(46, 147, 255, 0.6); }
         h2 { color: #888; font-size: 14px; margin-top: 0; margin-bottom: 40px; font-weight: normal; letter-spacing: 1px; }
-        p { color: #aab; font-size: 16px; margin-bottom: 20px; text-align: center; }
+        p { color: #aab; font-size: 16px; margin-bottom: 20px; text-align: center; max-width: 600px; line-height: 1.5; }
         
         .btn-container {
             display: flex;
@@ -96,7 +96,7 @@
         <h1>Life of a Tiamat</h1>
         <h2>By Patrick McDonald and Gemini</h2>
         
-        <p>Choose Control Style:</p>
+        <p>Start as a microbe (Size 1). Scramble for food. <br>Enemies will now devour each other to grow stronger.<br>Survive the chaos.</p>
         
         <div class="btn-container">
             <button id="btn-desktop">DESKTOP (WASD)</button>
@@ -112,7 +112,7 @@
 
     <div id="ui-layer">
         <div class="stat-box" style="color:#00ff64">BIOMASS: <span id="dna-display">0</span></div>
-        <div class="stat-box" style="color:#2E93FF">SIZE: <span id="size-display">15</span></div>
+        <div class="stat-box" style="color:#2E93FF">SIZE: <span id="size-display">1.0</span></div>
     </div>
 
     <canvas id="gameCanvas"></canvas>
@@ -121,12 +121,11 @@
         window.onload = function() {
             // --- CONSTANTS ---
             const WORLD_SIZE = 6000;
-            const MAX_FOOD = 350;    
-            const MAX_PREDATORS = 25; 
-            const ZOOM_FACTOR = 0.9; 
+            const MAX_FOOD = 400; // Increased food density for small starts   
+            const MAX_PREDATORS = 30; 
             
             // MINIMAP CONFIG
-            const MAP_SIZE = 140; 
+            const MAP_SIZE = 150; 
             const MAP_MARGIN = 20;
             
             // --- COLORS ---
@@ -157,18 +156,16 @@
             let animationId;
             let dna = 0;
             
+            // Camera Zoom
+            let zoom = 1.0;
             let camX = 0;
             let camY = 0;
 
             // INPUT STATE
-            let controlMode = 'touch'; // 'touch' or 'keys'
-            
-            // Touch/Mouse Follow Input
+            let controlMode = 'touch'; 
             let inputActive = false;
             let inputX = SCREEN_W / 2;
             let inputY = SCREEN_H / 2;
-            
-            // Keyboard Input
             let keys = { up: false, down: false, left: false, right: false };
 
             let player = null;
@@ -190,10 +187,10 @@
                 }
 
                 draw() {
-                    let screenX = (this.x - camX);
-                    let screenY = (this.y - camY);
+                    let screenX = (this.x - camX) * zoom + (SCREEN_W/2);
+                    let screenY = (this.y - camY) * zoom + (SCREEN_H/2);
                     
-                    let renderSize = this.size * ZOOM_FACTOR;
+                    let renderSize = this.size * zoom;
 
                     // Culling
                     if (screenX < -renderSize || screenX > SCREEN_W + renderSize || 
@@ -202,9 +199,9 @@
                     // Growth Ripple
                     if (this.growEffect > 0) {
                         ctx.strokeStyle = 'rgba(255, 255, 255, ' + (this.growEffect/10) + ')';
-                        ctx.lineWidth = 3;
+                        ctx.lineWidth = 3 * zoom;
                         ctx.beginPath();
-                        ctx.arc(screenX, screenY, renderSize + (10 - this.growEffect), 0, Math.PI * 2);
+                        ctx.arc(screenX, screenY, renderSize + (10*zoom - this.growEffect*zoom*0.5), 0, Math.PI * 2);
                         ctx.stroke();
                         this.growEffect--;
                     }
@@ -222,20 +219,25 @@
                     ctx.fill();
                     
                     // Size Text
-                    let fontSize = Math.max(10, renderSize * 0.6);
-                    ctx.fillStyle = 'white';
-                    ctx.font = 'bold ' + fontSize + 'px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.shadowColor = 'black';
-                    ctx.shadowBlur = 4;
-                    ctx.fillText(Math.floor(this.size), screenX, screenY);
-                    ctx.shadowBlur = 0; 
+                    // If size is very small, we might hide text or make it minimal, 
+                    // but with dynamic zoom, size on screen should be readable.
+                    if (renderSize > 8) {
+                        let fontSize = Math.max(10, renderSize * 0.7);
+                        ctx.fillStyle = 'white';
+                        ctx.font = 'bold ' + fontSize + 'px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.shadowColor = 'black';
+                        ctx.shadowBlur = 4;
+                        ctx.fillText(Math.floor(this.size), screenX, screenY);
+                        ctx.shadowBlur = 0; 
+                    }
                 }
 
                 update(dx, dy) {
                     const friction = 0.93;
-                    let speed = this.baseSpeed * (1 - Math.min(this.size, 300)/800);
+                    // Cap speed penalty so you don't stop moving when huge
+                    let speed = this.baseSpeed * (1 - Math.min(this.size, 500)/1200);
 
                     this.velX += dx * speed * 0.1;
                     this.velY += dy * speed * 0.1;
@@ -258,16 +260,21 @@
                 dna = 0;
                 predators = [];
                 foodPellets = [];
-
-                // Reset keys
                 keys = { up: false, down: false, left: false, right: false };
 
-                // Spawn Player
-                player = new Cell(WORLD_SIZE/2, WORLD_SIZE/2, 18, C_PLAYER, 5.0, false);
+                // Spawn Player - SIZE 1
+                player = new Cell(WORLD_SIZE/2, WORLD_SIZE/2, 1, C_PLAYER, 5.0, false);
+                
+                // Initialize Zoom
+                zoom = 2.5; // Start zoomed in
+                camX = player.x;
+                camY = player.y;
+
                 updateHUD();
 
                 for(let i=0; i<MAX_FOOD; i++) spawnFood();
-                for(let i=0; i<8; i++) spawnPredator();
+                // Enemies start small too (Size 1)
+                for(let i=0; i<MAX_PREDATORS; i++) spawnPredator();
 
                 gameRunning = true;
                 if(animationId) cancelAnimationFrame(animationId);
@@ -278,7 +285,7 @@
                 foodPellets.push({
                     x: Math.random() * WORLD_SIZE,
                     y: Math.random() * WORLD_SIZE,
-                    size: 5 + Math.random() * 3,
+                    size: 5 + Math.random() * 2, // Visual size
                     color: C_FOOD
                 });
             }
@@ -289,10 +296,11 @@
                     px = Math.random() * WORLD_SIZE;
                     py = Math.random() * WORLD_SIZE;
                     d = Math.hypot(px - player.x, py - player.y);
-                } while(d < 1000); 
+                } while(d < 600); // Allow closer spawns since everyone is tiny
 
-                let pSize = 20 + Math.random() * 50;
-                let pSpeed = (3 + Math.random()) * 0.95; // 5% slower enemies
+                // Size 1 start for fairness
+                let pSize = 1; 
+                let pSpeed = (3 + Math.random()) * 0.95; 
                 
                 predators.push(new Cell(px, py, pSize, C_PREDATOR, pSpeed, true));
             }
@@ -306,134 +314,220 @@
                 let mapX = SCREEN_W - MAP_SIZE - MAP_MARGIN;
                 let mapY = SCREEN_H - MAP_SIZE - MAP_MARGIN;
                 
+                // Background
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
                 ctx.strokeStyle = '#444';
                 ctx.lineWidth = 2;
                 ctx.fillRect(mapX, mapY, MAP_SIZE, MAP_SIZE);
                 ctx.strokeRect(mapX, mapY, MAP_SIZE, MAP_SIZE);
 
-                function toMap(val) {
-                    return (val / WORLD_SIZE) * MAP_SIZE;
+                function toMapX(val) { return (val / WORLD_SIZE) * MAP_SIZE + mapX; }
+                function toMapY(val) { return (val / WORLD_SIZE) * MAP_SIZE + mapY; }
+
+                // --- NEW: Draw Food on Minimap ---
+                ctx.fillStyle = C_FOOD;
+                for(let f of foodPellets) {
+                    // Optimization: Draw 1x1 rects for speed
+                    ctx.fillRect(toMapX(f.x), toMapY(f.y), 1.5, 1.5);
                 }
 
+                // Draw Predators
                 ctx.fillStyle = C_PREDATOR;
                 for(let p of predators) {
                     ctx.beginPath();
-                    ctx.arc(mapX + toMap(p.x), mapY + toMap(p.y), 3, 0, Math.PI*2);
+                    ctx.arc(toMapX(p.x), toMapY(p.y), 3, 0, Math.PI*2);
                     ctx.fill();
                 }
 
+                // Draw Player
                 ctx.fillStyle = '#44aaff'; 
                 ctx.beginPath();
-                ctx.arc(mapX + toMap(player.x), mapY + toMap(player.y), 4, 0, Math.PI*2);
+                ctx.arc(toMapX(player.x), toMapY(player.y), 4, 0, Math.PI*2);
                 ctx.fill();
 
+                // Draw Viewport Rect (Scales with Zoom)
+                let viewW = (SCREEN_W / zoom) / WORLD_SIZE * MAP_SIZE;
+                let viewH = (SCREEN_H / zoom) / WORLD_SIZE * MAP_SIZE;
+                
                 ctx.strokeStyle = 'white';
                 ctx.lineWidth = 1;
                 ctx.strokeRect(
-                    mapX + toMap(camX), 
-                    mapY + toMap(camY), 
-                    toMap(SCREEN_W), 
-                    toMap(SCREEN_H)
+                    toMapX(camX - (SCREEN_W/zoom)/2), 
+                    toMapY(camY - (SCREEN_H/zoom)/2), 
+                    viewW, 
+                    viewH
                 );
             }
 
             function loop() {
                 if (!gameRunning) return;
 
-                // Camera
-                let targetCamX = player.x - (SCREEN_W / 2);
-                let targetCamY = player.y - (SCREEN_H / 2);
+                // --- 1. DYNAMIC ZOOM CALCULATION ---
+                // We want high zoom (close up) when small, low zoom (far away) when big.
+                // Target zoom decreases as size increases.
+                // Logic: 35 is a visual constant. As size grows, divisor grows, zoom shrinks.
+                let targetZoom = 35 / (player.size + 15);
+                // Clamp zoom so it doesn't get ridiculous
+                targetZoom = Math.max(0.2, Math.min(targetZoom, 2.5));
+                
+                // Smoothly interpolate zoom
+                zoom += (targetZoom - zoom) * 0.05;
+
+                // --- 2. CAMERA ---
+                // Camera centers on player
+                let targetCamX = player.x;
+                let targetCamY = player.y;
                 camX += (targetCamX - camX) * 0.1;
                 camY += (targetCamY - camY) * 0.1;
-                camX = Math.max(0, Math.min(camX, WORLD_SIZE - SCREEN_W));
-                camY = Math.max(0, Math.min(camY, WORLD_SIZE - SCREEN_H));
+                
+                // Clamp Camera so we don't look into the void too much
+                // Note: With zoom centered, calculations get tricky. 
+                // Simple clamping to world edges:
+                camX = Math.max(0, Math.min(camX, WORLD_SIZE));
+                camY = Math.max(0, Math.min(camY, WORLD_SIZE));
 
                 // Background
                 ctx.fillStyle = '#050508';
                 ctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
                 drawGrid();
 
-                // --- INPUT HANDLING ---
+                // --- 3. INPUT ---
                 let moveX = 0, moveY = 0;
-
                 if (controlMode === 'keys') {
-                    // KEYBOARD MODE
                     if (keys.up) moveY -= 1;
                     if (keys.down) moveY += 1;
                     if (keys.left) moveX -= 1;
                     if (keys.right) moveX += 1;
-                    
-                    // Normalize diagonal movement
                     let len = Math.hypot(moveX, moveY);
-                    if (len > 0) {
-                        moveX /= len;
-                        moveY /= len;
-                    }
-
+                    if (len > 0) { moveX /= len; moveY /= len; }
                 } else {
-                    // MOBILE/TOUCH MODE
                     if (inputActive) {
                         let dx = inputX - (SCREEN_W/2);
                         let dy = inputY - (SCREEN_H/2);
                         let dist = Math.hypot(dx, dy);
-                        if (dist > 10) {
-                            moveX = dx / dist;
-                            moveY = dy / dist;
-                        }
+                        if (dist > 10) { moveX = dx / dist; moveY = dy / dist; }
                     }
                 }
-                
                 player.update(moveX, moveY);
 
-                // Food
+                // --- 4. FOOD (Value = 0.5) ---
                 if (foodPellets.length < MAX_FOOD) { spawnFood(); spawnFood(); }
 
                 for (let i = foodPellets.length - 1; i >= 0; i--) {
                     let f = foodPellets[i];
-                    let sx = f.x - camX;
-                    let sy = f.y - camY;
-                    
-                    if (sx > -20 && sx < SCREEN_W+20 && sy > -20 && sy < SCREEN_H+20) {
+                    // Render (Zoom applied in logic below)
+                    let screenX = (f.x - camX) * zoom + (SCREEN_W/2);
+                    let screenY = (f.y - camY) * zoom + (SCREEN_H/2);
+                    let renderSize = f.size * zoom;
+
+                    if (screenX > -renderSize && screenX < SCREEN_W+renderSize && screenY > -renderSize && screenY < SCREEN_H+renderSize) {
                         ctx.fillStyle = f.color;
                         ctx.beginPath();
-                        ctx.arc(sx, sy, f.size * ZOOM_FACTOR, 0, Math.PI*2);
+                        ctx.arc(screenX, screenY, renderSize, 0, Math.PI*2);
                         ctx.fill();
                     }
                     
                     if (Math.hypot(player.x - f.x, player.y - f.y) < player.size + f.size) {
                         foodPellets.splice(i, 1);
-                        player.size += 1.2; 
+                        player.size += 0.5; // NEW VALUE
                         player.growEffect = 10;
                         dna++;
                         updateHUD();
                     }
                 }
 
-                // Predators
+                // --- 5. PREDATORS (Eat Player AND Each Other) ---
                 if (predators.length < MAX_PREDATORS && Math.random() < 0.05) spawnPredator();
                 
+                // Sort predators by size descending (simplifies eating logic slightly, bigger updates first)
+                predators.sort((a, b) => b.size - a.size);
+
                 for (let i = predators.length - 1; i >= 0; i--) {
                     let p = predators[i];
-                    let dist = Math.hypot(player.x - p.x, player.y - p.y);
                     
-                    if (dist < 900) {
-                        p.update((player.x - p.x)/dist, (player.y - p.y)/dist);
+                    // A. MOVEMENT AI
+                    // Check distance to player
+                    let distToPlayer = Math.hypot(player.x - p.x, player.y - p.y);
+                    
+                    // Check distance to nearest OTHER predator (Cannibalism AI)
+                    let nearestPrey = null;
+                    let nearestPreyDist = Infinity;
+
+                    // Look for smaller predators to eat
+                    for(let j = 0; j < predators.length; j++) {
+                        if(i === j) continue; // Don't check self
+                        let other = predators[j];
+                        // If I am 10% bigger than them
+                        if (p.size > other.size * 1.1) {
+                            let d = Math.hypot(p.x - other.x, p.y - other.y);
+                            if (d < 800 && d < nearestPreyDist) {
+                                nearestPrey = other;
+                                nearestPreyDist = d;
+                            }
+                        }
+                    }
+
+                    // Decision Making:
+                    // 1. If Player is edible and close, chase Player.
+                    // 2. Else if there is a smaller predator close, chase them.
+                    // 3. Else if Player is scary and close, Run away? (Basic AI: Just chase)
+                    
+                    let target = null;
+                    
+                    // If player is smaller, prioritize player
+                    if (p.size > player.size * 1.1 && distToPlayer < 800) {
+                        target = player;
+                    } else if (nearestPrey) {
+                        target = nearestPrey;
+                    } else if (distToPlayer < 800) {
+                         // Player is here but maybe too big? Chase anyway (Aggressive)
+                         target = player;
+                    }
+
+                    if (target) {
+                        let dx = target.x - p.x;
+                        let dy = target.y - p.y;
+                        let d = Math.hypot(dx, dy);
+                        if(d > 0) p.update(dx/d, dy/d);
                     } else {
+                        // Wander
                         p.update(Math.random()-0.5, Math.random()-0.5);
                     }
+
                     p.draw();
 
-                    if (dist < player.size + p.size) {
+                    // B. COLLISION: Predator vs Player
+                    if (distToPlayer < player.size + p.size) {
                         if (player.size > p.size * 1.1) {
                             predators.splice(i, 1);
                             player.size += p.size * 0.4;
                             player.growEffect = 15;
                             dna += 10;
                             updateHUD();
+                            continue; // Predator died, next iteration
                         } else if (p.size > player.size * 1.1) {
                             gameOver();
                             return;
+                        }
+                    }
+
+                    // C. COLLISION: Predator vs Predator
+                    // Since we sorted by size, we just check against smaller ones in the list? 
+                    // No, brute force check against remaining array is safer for now.
+                    for (let j = predators.length - 1; j >= 0; j--) {
+                        if (i === j) continue;
+                        let other = predators[j];
+                        let d = Math.hypot(p.x - other.x, p.y - other.y);
+                        
+                        if (d < p.size + other.size) {
+                            // Current 'p' is bigger (logic handled by sort mostly, but verify)
+                            if (p.size > other.size * 1.1) {
+                                // P eats Other
+                                p.size += other.size * 0.4; // Predator grows!
+                                predators.splice(j, 1); // Remove victim
+                                // Adjust index if we removed something before current index
+                                if (j < i) i--; 
+                            }
                         }
                     }
                 }
@@ -447,9 +541,12 @@
                 ctx.strokeStyle = C_GRID;
                 ctx.lineWidth = 2;
                 ctx.beginPath();
-                let gs = 150 * ZOOM_FACTOR;
-                let offX = -camX % gs;
-                let offY = -camY % gs;
+                // Grid needs to scale with zoom and offset by camera
+                let gs = 150 * zoom; 
+                // Calculate offset relative to screen center
+                let offX = ((SCREEN_W/2) - camX * zoom) % gs;
+                let offY = ((SCREEN_H/2) - camY * zoom) % gs;
+                
                 for (let x = offX; x < SCREEN_W; x += gs) {
                     ctx.moveTo(x, 0); ctx.lineTo(x, SCREEN_H);
                 }
@@ -473,14 +570,12 @@
                 canvas.height = SCREEN_H;
             });
 
-            // Touch/Mouse Follow Helpers
             function setInput(x, y) {
                 inputActive = true;
                 inputX = x;
                 inputY = y;
             }
 
-            // Mouse Move (Only used if mode is touch, but we track it anyway)
             canvas.addEventListener('touchstart', e => { e.preventDefault(); setInput(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
             canvas.addEventListener('touchmove', e => { e.preventDefault(); setInput(e.touches[0].clientX, e.touches[0].clientY); }, {passive: false});
             canvas.addEventListener('touchend', () => { inputActive = false; });
@@ -490,7 +585,6 @@
             canvas.addEventListener('mousemove', e => { if(mDown) setInput(e.clientX, e.clientY); });
             canvas.addEventListener('mouseup', () => { mDown=false; inputActive=false; });
 
-            // Keyboard Listeners (WASD + Arrows)
             window.addEventListener('keydown', e => {
                 const k = e.key.toLowerCase();
                 if (k === 'w' || k === 'arrowup') keys.up = true;
@@ -507,21 +601,9 @@
                 if (k === 'd' || k === 'arrowright') keys.right = false;
             });
 
-            // Button Logic
-            btnDesktop.addEventListener('click', () => { 
-                startScreen.style.display = 'none'; 
-                initGame('keys'); 
-            });
-
-            btnMobile.addEventListener('click', () => { 
-                startScreen.style.display = 'none'; 
-                initGame('touch'); 
-            });
-
-            restartBtn.addEventListener('click', () => { 
-                gameOverScreen.style.display = 'none'; 
-                startScreen.style.display = 'flex'; // Go back to start to choose controls again
-            });
+            btnDesktop.addEventListener('click', () => { startScreen.style.display = 'none'; initGame('keys'); });
+            btnMobile.addEventListener('click', () => { startScreen.style.display = 'none'; initGame('touch'); });
+            restartBtn.addEventListener('click', () => { gameOverScreen.style.display = 'none'; startScreen.style.display = 'flex'; });
         };
     </script>
 </body>
