@@ -96,7 +96,7 @@
         <h1>Life of a Tiamat</h1>
         <h2>By Patrick McDonald and Gemini</h2>
         
-        <p>Start as a microbe (Size 1). Scramble for food. <br>Enemies will now devour each other to grow stronger.<br>Survive the chaos.</p>
+        <p>Start as a microbe (Size 10). Scramble for food. <br>Enemies will now devour each other to grow stronger.<br>Survive the chaos.</p>
         
         <div class="btn-container">
             <button id="btn-desktop">DESKTOP (WASD)</button>
@@ -123,14 +123,17 @@
             const WORLD_SIZE = 6000;
             const MAX_FOOD = 400; // Increased food density for small starts   
             const MAX_PREDATORS = 30; 
+            const MAGNETISM_RANGE = 200;
+            const MAGNETISM_STRENGTH = 0.5;
             
             // MINIMAP CONFIG
             const MAP_SIZE = 150; 
             const MAP_MARGIN = 20;
             
             // --- COLORS ---
-            const C_PLAYER = '#2E93FF'; 
+            const C_PLAYER = '#8A2BE2'; // Purple
             const C_PREDATOR = '#FF3333'; 
+            const C_SMALL_PREDATOR = '#2E93FF'; // Blue for smaller enemies
             const C_FOOD = '#00ff64';
             const C_GRID = '#15151a';
 
@@ -184,6 +187,7 @@
                     this.velX = 0;
                     this.velY = 0;
                     this.growEffect = 0;
+                    this.particles = [];
                 }
 
                 draw() {
@@ -196,7 +200,7 @@
                     if (screenX < -renderSize || screenX > SCREEN_W + renderSize || 
                         screenY < -renderSize || screenY > SCREEN_H + renderSize) return;
 
-                    // Growth Ripple
+                    // Growth Ripple (dialed back)
                     if (this.growEffect > 0) {
                         ctx.strokeStyle = 'rgba(255, 255, 255, ' + (this.growEffect/10) + ')';
                         ctx.lineWidth = 3 * zoom;
@@ -206,21 +210,60 @@
                         this.growEffect--;
                     }
 
-                    // Body
-                    ctx.fillStyle = this.color;
+                    // Particles for growth (dialed back)
+                    this.particles = this.particles.filter(p => p.life > 0);
+                    for (let p of this.particles) {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.life--;
+                        ctx.fillStyle = 'rgba(255, 255, 255, ' + (p.life / 10) + ')';
+                        ctx.beginPath();
+                        ctx.arc(screenX + p.x * zoom, screenY + p.y * zoom, 2 * zoom, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    // Body - Simplified Amoeba shape
+                    let drawColor = this.color;
+                    if (this.isAI && this.size < player.size) {
+                        drawColor = C_SMALL_PREDATOR;
+                    }
+                    ctx.fillStyle = drawColor;
                     ctx.beginPath();
-                    ctx.arc(screenX, screenY, renderSize, 0, Math.PI * 2);
+                    const numPoints = 8; // Reduced from 12
+                    const variation = 0.1; // Reduced variation
+                    const time = Date.now() / 1000;
+                    for (let i = 0; i < numPoints; i++) {
+                        const angle = (i / numPoints) * Math.PI * 2;
+                        const r = renderSize * (1 + variation * Math.sin(angle * 4 + time)); // Simplified math
+                        const px = screenX + Math.cos(angle) * r;
+                        const py = screenY + Math.sin(angle) * r;
+                        if (i === 0) {
+                            ctx.moveTo(px, py);
+                        } else {
+                            ctx.lineTo(px, py);
+                        }
+                    }
+                    ctx.closePath();
                     ctx.fill();
 
-                    // Detail (Inner Glow)
+                    // Detail (Inner Glow) - Simplified
                     ctx.fillStyle = 'rgba(255,255,255,0.15)';
                     ctx.beginPath();
-                    ctx.arc(screenX, screenY, renderSize * 0.8, 0, Math.PI * 2);
+                    for (let i = 0; i < numPoints; i++) {
+                        const angle = (i / numPoints) * Math.PI * 2;
+                        const r = renderSize * 0.8 * (1 + variation * Math.sin(angle * 4 + time));
+                        const px = screenX + Math.cos(angle) * r;
+                        const py = screenY + Math.sin(angle) * r;
+                        if (i === 0) {
+                            ctx.moveTo(px, py);
+                        } else {
+                            ctx.lineTo(px, py);
+                        }
+                    }
+                    ctx.closePath();
                     ctx.fill();
                     
                     // Size Text
-                    // If size is very small, we might hide text or make it minimal, 
-                    // but with dynamic zoom, size on screen should be readable.
                     if (renderSize > 8) {
                         let fontSize = Math.max(10, renderSize * 0.7);
                         ctx.fillStyle = 'white';
@@ -252,6 +295,18 @@
                     if (this.x > WORLD_SIZE - this.size) { this.x = WORLD_SIZE - this.size; this.velX *= -1; }
                     if (this.y > WORLD_SIZE - this.size) { this.y = WORLD_SIZE - this.size; this.velY *= -1; }
                 }
+
+                addParticles(count = 5) {
+                    for (let i = 0; i < count; i++) {
+                        this.particles.push({
+                            x: 0,
+                            y: 0,
+                            vx: (Math.random() - 0.5) * 3,
+                            vy: (Math.random() - 0.5) * 3,
+                            life: 10 + Math.random() * 5
+                        });
+                    }
+                }
             }
 
             // --- GAME LOGIC ---
@@ -262,8 +317,8 @@
                 foodPellets = [];
                 keys = { up: false, down: false, left: false, right: false };
 
-                // Spawn Player - SIZE 1
-                player = new Cell(WORLD_SIZE/2, WORLD_SIZE/2, 1, C_PLAYER, 5.0, false);
+                // Spawn Player - SIZE 10
+                player = new Cell(WORLD_SIZE/2, WORLD_SIZE/2, 10, C_PLAYER, 5.0, false);
                 
                 // Initialize Zoom
                 zoom = 2.5; // Start zoomed in
@@ -273,7 +328,7 @@
                 updateHUD();
 
                 for(let i=0; i<MAX_FOOD; i++) spawnFood();
-                // Enemies start small too (Size 1)
+                // Enemies start small too (Size 10)
                 for(let i=0; i<MAX_PREDATORS; i++) spawnPredator();
 
                 gameRunning = true;
@@ -285,21 +340,23 @@
                 foodPellets.push({
                     x: Math.random() * WORLD_SIZE,
                     y: Math.random() * WORLD_SIZE,
-                    size: 5 + Math.random() * 2, // Visual size
+                    size: 10 + Math.random() * 2, // Visual size
                     color: C_FOOD
                 });
             }
 
             function spawnPredator() {
                 let px, py, d;
+                let minDist = 500 + player.size * 5;
                 do {
                     px = Math.random() * WORLD_SIZE;
                     py = Math.random() * WORLD_SIZE;
                     d = Math.hypot(px - player.x, py - player.y);
-                } while(d < 600); // Allow closer spawns since everyone is tiny
+                } while(d < minDist);
 
-                // Size 1 start for fairness
-                let pSize = 1; 
+                // Scale size to player
+                let pSize = player.size * (0.9 + (Math.random() - 0.5) * 0.4);
+                pSize = Math.max(1, pSize);
                 let pSpeed = (3 + Math.random()) * 0.95; 
                 
                 predators.push(new Cell(px, py, pSize, C_PREDATOR, pSpeed, true));
@@ -332,15 +389,15 @@
                 }
 
                 // Draw Predators
-                ctx.fillStyle = C_PREDATOR;
                 for(let p of predators) {
+                    ctx.fillStyle = (p.size < player.size) ? C_SMALL_PREDATOR : C_PREDATOR;
                     ctx.beginPath();
                     ctx.arc(toMapX(p.x), toMapY(p.y), 3, 0, Math.PI*2);
                     ctx.fill();
                 }
 
                 // Draw Player
-                ctx.fillStyle = '#44aaff'; 
+                ctx.fillStyle = '#C154C1'; // Lighter purple for minimap
                 ctx.beginPath();
                 ctx.arc(toMapX(player.x), toMapY(player.y), 4, 0, Math.PI*2);
                 ctx.fill();
@@ -411,10 +468,21 @@
                 player.update(moveX, moveY);
 
                 // --- 4. FOOD (Value = 0.5) ---
-                if (foodPellets.length < MAX_FOOD) { spawnFood(); spawnFood(); }
+                if (foodPellets.length <= MAX_FOOD * 0.5) {
+                    while (foodPellets.length < MAX_FOOD) spawnFood();
+                }
 
                 for (let i = foodPellets.length - 1; i >= 0; i--) {
                     let f = foodPellets[i];
+                    // Magnetism towards player
+                    let dx = player.x - f.x;
+                    let dy = player.y - f.y;
+                    let d = Math.hypot(dx, dy);
+                    if (d < MAGNETISM_RANGE && d > player.size + f.size) {
+                        f.x += (dx / d) * MAGNETISM_STRENGTH;
+                        f.y += (dy / d) * MAGNETISM_STRENGTH;
+                    }
+
                     // Render (Zoom applied in logic below)
                     let screenX = (f.x - camX) * zoom + (SCREEN_W/2);
                     let screenY = (f.y - camY) * zoom + (SCREEN_H/2);
@@ -429,15 +497,18 @@
                     
                     if (Math.hypot(player.x - f.x, player.y - f.y) < player.size + f.size) {
                         foodPellets.splice(i, 1);
-                        player.size += 0.5; // NEW VALUE
-                        player.growEffect = 10;
+                        player.size += 0.5 / (player.size / 10); // Scaled growth
+                        player.growEffect = 10; // Dialed back
+                        player.addParticles(5); // Reduced particles
                         dna++;
                         updateHUD();
                     }
                 }
 
                 // --- 5. PREDATORS (Eat Player AND Each Other) ---
-                if (predators.length < MAX_PREDATORS && Math.random() < 0.05) spawnPredator();
+                if (predators.length <= MAX_PREDATORS * 0.5) {
+                    while (predators.length < MAX_PREDATORS) spawnPredator();
+                }
                 
                 // Sort predators by size descending (simplifies eating logic slightly, bigger updates first)
                 predators.sort((a, b) => b.size - a.size);
@@ -446,62 +517,74 @@
                     let p = predators[i];
                     
                     // A. MOVEMENT AI
-                    // Check distance to player
-                    let distToPlayer = Math.hypot(player.x - p.x, player.y - p.y);
-                    
-                    // Check distance to nearest OTHER predator (Cannibalism AI)
-                    let nearestPrey = null;
-                    let nearestPreyDist = Infinity;
-
-                    // Look for smaller predators to eat
-                    for(let j = 0; j < predators.length; j++) {
-                        if(i === j) continue; // Don't check self
-                        let other = predators[j];
-                        // If I am 10% bigger than them
-                        if (p.size > other.size * 1.1) {
+                    // Find nearest threat (larger cells)
+                    let nearestThreat = null;
+                    let nearestThreatDist = Infinity;
+                    let allCells = [player, ...predators.filter(o => o !== p)];
+                    allCells.forEach(other => {
+                        if (other.size > p.size * 1.1) {
                             let d = Math.hypot(p.x - other.x, p.y - other.y);
-                            if (d < 800 && d < nearestPreyDist) {
-                                nearestPrey = other;
-                                nearestPreyDist = d;
+                            if (d < nearestThreatDist) {
+                                nearestThreatDist = d;
+                                nearestThreat = other;
                             }
                         }
-                    }
+                    });
 
-                    // Decision Making:
-                    // 1. If Player is edible and close, chase Player.
-                    // 2. Else if there is a smaller predator close, chase them.
-                    // 3. Else if Player is scary and close, Run away? (Basic AI: Just chase)
-                    
-                    let target = null;
-                    
-                    // If player is smaller, prioritize player
-                    if (p.size > player.size * 1.1 && distToPlayer < 800) {
-                        target = player;
-                    } else if (nearestPrey) {
-                        target = nearestPrey;
-                    } else if (distToPlayer < 800) {
-                         // Player is here but maybe too big? Chase anyway (Aggressive)
-                         target = player;
-                    }
-
-                    if (target) {
-                        let dx = target.x - p.x;
-                        let dy = target.y - p.y;
+                    const threatRange = 800;
+                    if (nearestThreat && nearestThreatDist < threatRange) {
+                        // Run away
+                        let dx = nearestThreat.x - p.x;
+                        let dy = nearestThreat.y - p.y;
                         let d = Math.hypot(dx, dy);
-                        if(d > 0) p.update(dx/d, dy/d);
+                        if (d > 0) p.update(-dx / d, -dy / d);
                     } else {
-                        // Wander
-                        p.update(Math.random()-0.5, Math.random()-0.5);
+                        // Find nearest target: food or weaker cells
+                        let nearestTarget = null;
+                        let nearestTargetDist = Infinity;
+
+                        // Food
+                        foodPellets.forEach(f => {
+                            let d = Math.hypot(p.x - f.x, p.y - f.y);
+                            if (d < nearestTargetDist) {
+                                nearestTargetDist = d;
+                                nearestTarget = f;
+                            }
+                        });
+
+                        // Weaker cells
+                        allCells.forEach(other => {
+                            if (other.size < p.size / 1.1) {
+                                let d = Math.hypot(p.x - other.x, p.y - other.y);
+                                if (d < nearestTargetDist) {
+                                    nearestTargetDist = d;
+                                    nearestTarget = other;
+                                }
+                            }
+                        });
+
+                        const targetRange = 800;
+                        if (nearestTarget && nearestTargetDist < targetRange) {
+                            let dx = nearestTarget.x - p.x;
+                            let dy = nearestTarget.y - p.y;
+                            let d = Math.hypot(dx, dy);
+                            if (d > 0) p.update(dx / d, dy / d);
+                        } else {
+                            // Wander
+                            p.update(Math.random() - 0.5, Math.random() - 0.5);
+                        }
                     }
 
                     p.draw();
 
                     // B. COLLISION: Predator vs Player
+                    let distToPlayer = Math.hypot(player.x - p.x, player.y - p.y);
                     if (distToPlayer < player.size + p.size) {
                         if (player.size > p.size * 1.1) {
                             predators.splice(i, 1);
-                            player.size += p.size * 0.4;
-                            player.growEffect = 15;
+                            player.size += p.size * 0.4 / (player.size / 10); // Scaled growth
+                            player.growEffect = 10;
+                            player.addParticles(10); // Reduced
                             dna += 10;
                             updateHUD();
                             continue; // Predator died, next iteration
@@ -512,22 +595,31 @@
                     }
 
                     // C. COLLISION: Predator vs Predator
-                    // Since we sorted by size, we just check against smaller ones in the list? 
-                    // No, brute force check against remaining array is safer for now.
                     for (let j = predators.length - 1; j >= 0; j--) {
                         if (i === j) continue;
                         let other = predators[j];
                         let d = Math.hypot(p.x - other.x, p.y - other.y);
                         
                         if (d < p.size + other.size) {
-                            // Current 'p' is bigger (logic handled by sort mostly, but verify)
                             if (p.size > other.size * 1.1) {
                                 // P eats Other
-                                p.size += other.size * 0.4; // Predator grows!
+                                p.size += other.size * 0.4 / (p.size / 10); // Scaled growth
+                                p.growEffect = 10;
+                                p.addParticles(10); // Reduced
                                 predators.splice(j, 1); // Remove victim
-                                // Adjust index if we removed something before current index
                                 if (j < i) i--; 
                             }
+                        }
+                    }
+
+                    // D. COLLISION: Predator vs Food
+                    for (let k = foodPellets.length - 1; k >= 0; k--) {
+                        let f = foodPellets[k];
+                        if (Math.hypot(p.x - f.x, p.y - f.y) < p.size + f.size) {
+                            foodPellets.splice(k, 1);
+                            p.size += 0.5 / (p.size / 10); // Scaled growth
+                            p.growEffect = 10;
+                            p.addParticles(5); // Reduced
                         }
                     }
                 }
