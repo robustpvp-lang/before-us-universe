@@ -94,6 +94,10 @@
         .p-4 {
             padding: 1rem;
         }
+        .border {
+            border-width: 1px;
+            border-style: solid;
+        }
         .border-2 {
             border-width: 2px;
             border-style: solid;
@@ -101,17 +105,17 @@
         .border-cyan-400 {
             border-color: #0ff;
         }
-        .border-yellow-400 {
-            border-color: #ff0;
-        }
         .border-green-400 {
             border-color: #0f0;
         }
         .border-red-400, .border-red-500 {
             border-color: #f00;
         }
-        .text-yellow-400 {
-            color: #ff0;
+        .bg-white {
+            background: #fff;
+        }
+        .text-black {
+            color: #000;
         }
         .text-green-400 {
             color: #0f0;
@@ -124,10 +128,6 @@
         }
         .hover-bg-cyan-400:hover {
             background: #0ff;
-            color: black;
-        }
-        .hover-bg-yellow-400:hover {
-            background: #ff0;
             color: black;
         }
         .hover-bg-green-400:hover {
@@ -187,9 +187,6 @@
         .max-w-6xl {
             max-width: 80rem;
             margin: 0 auto;
-        }
-        .max-h-96 {
-            max-height: 24rem;
         }
         .animate-pulse {
             animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -548,35 +545,8 @@
             render();
         }
 
-        function flee() {
-            if (Math.random() < 0.3) {
-                messageLog.push('Successfully fled!');
-                enemyShip = null;
-                messageLog = [];
-                currentPlanet = destination;
-                destination = null;
-                gameState = 'trading';
-            } else {
-                const enemyDamage = enemyShip.weapons + Math.floor(Math.random() * 20);
-                const newPlayerHull = ship.hull - enemyDamage;
-                
-                messageLog = [...messageLog, `Flee failed! Took heavy ${enemyDamage} damage`].slice(-6);
-                
-                if (newPlayerHull <= 0) {
-                    ship.hull = 0;
-                    setTimeout(() => {
-                        gameState = 'title';
-                        resetGame();
-                    }, 3000);
-                } else {
-                    ship.hull = newPlayerHull;
-                }
-            }
-            render();
-        }
-
         function bribe() {
-            const bribeAmount = 300 + Math.floor(Math.random() * 200);
+            const bribeAmount = Math.max(100, Math.floor(ship.credits * 0.1));
             
             if (ship.credits >= bribeAmount) {
                 if (Math.random() < 0.7) {
@@ -785,7 +755,7 @@
                             ${messageLog.map(log => `<div class="mb-1 text-base">&gt; ${log}</div>`).join('')}
                         </div>
                         ${ship.hull > 0 && enemyShip ? `
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <button 
                                     onclick="attack()"
                                     class="py-4 text-xl border-2 border-cyan-400 hover-bg-cyan-400 transition-all"
@@ -794,8 +764,8 @@
                                 </button>
                                 <button 
                                     onclick="bribe()"
-                                    class="py-4 text-xl border-2 border-yellow-400 text-yellow-400 hover-bg-yellow-400 transition-all"
-                                    ${ship.credits < 300 ? 'disabled' : ''}
+                                    class="py-4 text-xl border-2 border-cyan-400 bg-white text-black hover-bg-cyan-400 transition-all"
+                                    ${ship.credits < 100 ? 'disabled' : ''}
                                 >
                                     [ BRIBE ]
                                 </button>
@@ -805,12 +775,6 @@
                                 >
                                     [ EVADE ]
                                 </button>
-                                <button 
-                                    onclick="flee()"
-                                    class="py-4 text-xl border-2 border-green-400 text-green-400 hover-bg-green-400 transition-all"
-                                >
-                                    
-                
                             </div>
                         ` : ''}
                     </div>
@@ -864,7 +828,7 @@
                                     </button>
                                     <button 
                                         onclick="repairShip()"
-                                        class="py-2 px-4 border border-yellow-400 text-yellow-400 hover-bg-yellow-400 text-base"
+                                        class="py-2 px-4 border border-cyan-400 bg-white text-black hover-bg-cyan-400 text-base"
                                         ${ship.hull >= ship.maxHull || ship.credits < (ship.maxHull - ship.hull) * 2 ? 'disabled' : ''}
                                     >
                                         Repair ($${(ship.maxHull - ship.hull) * 2})
@@ -899,7 +863,7 @@
                                                     </button>
                                                     <button 
                                                         onclick="withdrawItem('${item}', 1)"
-                                                        class="px-2 py-1 text-xs border border-yellow-400 text-yellow-400 hover-bg-yellow-400"
+                                                        class="px-2 py-1 text-xs border border-cyan-400 bg-white text-black hover-bg-cyan-400"
                                                         ${bankInventory[item] < 1 || getUsedCargo() + 1 > ship.maxCargo ? 'disabled' : ''}
                                                     >
                                                         Withdraw 1
@@ -960,14 +924,21 @@
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div class="border-2 border-cyan-400 p-4">
                                 <div class="text-2xl mb-4">MARKET</div>
-                                <div class="max-h-96 overflow-y-auto">
-                                    ${Object.entries(planets[currentPlanet]).map(([item, price]) => `
+                                <div>
+                                    ${Object.entries(planets[currentPlanet]).filter(([item]) => item !== 'exotic_animals' || currentPlanet === 'vestus-vi').map(([item, price]) => `
                                         <div key="${item}" class="mb-3 pb-3 border-b border-cyan-400 border-opacity-30">
                                             <div class="flex justify-between items-center mb-2">
                                                 <span class="text-base font-bold">${item}: $${price}</span>
                                                 <span class="text-xs text-gray-400">Stock: ${inventory[item]}</span>
                                             </div>
-                                            <div class="grid grid-cols-3 gap-2 mb-1">
+                                            <div class="grid grid-cols-4 gap-2 mb-1">
+                                                <button 
+                                                    onclick="buyItem('${item}', 1)"
+                                                    class="px-2 py-1 text-xs border border-cyan-400 hover-bg-cyan-400"
+                                                    ${ship.credits < price * 1 || getUsedCargo() + 1 > ship.maxCargo ? 'disabled' : ''}
+                                                >
+                                                    BUY 1
+                                                </button>
                                                 <button 
                                                     onclick="buyItem('${item}', 5)"
                                                     class="px-2 py-1 text-xs border border-cyan-400 hover-bg-cyan-400"
@@ -990,24 +961,31 @@
                                                     BUY 50
                                                 </button>
                                             </div>
-                                            <div class="grid grid-cols-3 gap-2">
+                                            <div class="grid grid-cols-4 gap-2">
+                                                <button 
+                                                    onclick="sellItem('${item}', 1)"
+                                                    class="px-2 py-1 text-xs border border-cyan-400 bg-white text-black hover-bg-cyan-400"
+                                                    ${inventory[item] < 1 ? 'disabled' : ''}
+                                                >
+                                                    SELL 1
+                                                </button>
                                                 <button 
                                                     onclick="sellItem('${item}', 5)"
-                                                    class="px-2 py-1 text-xs border border-yellow-400 text-yellow-400 hover-bg-yellow-400"
+                                                    class="px-2 py-1 text-xs border border-cyan-400 bg-white text-black hover-bg-cyan-400"
                                                     ${inventory[item] < 5 ? 'disabled' : ''}
                                                 >
                                                     SELL 5
                                                 </button>
                                                 <button 
                                                     onclick="sellItem('${item}', 10)"
-                                                    class="px-2 py-1 text-xs border border-yellow-400 text-yellow-400 hover-bg-yellow-400"
+                                                    class="px-2 py-1 text-xs border border-cyan-400 bg-white text-black hover-bg-cyan-400"
                                                     ${inventory[item] < 10 ? 'disabled' : ''}
                                                 >
                                                     SELL 10
                                                 </button>
                                                 <button 
                                                     onclick="sellItem('${item}', 50)"
-                                                    class="px-2 py-1 text-xs border border-yellow-400 text-yellow-400 hover-bg-yellow-400"
+                                                    class="px-2 py-1 text-xs border border-cyan-400 bg-white text-black hover-bg-cyan-400"
                                                     ${inventory[item] < 50 ? 'disabled' : ''}
                                                 >
                                                     SELL 50
