@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -5,197 +6,198 @@
 <title>Before Us Universe — The Mind Game Text Adventure</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root {
---bg: #001a1a;
---fg: #00ffff;
---accent: #ffcc00;
---border: #00cccc;
---panel-bg: #002b2b;
---text-gray: #e6f7f7;
---muted: #00aaaa;
---online: #00ff9d;
---yahoo-blue: #1e73be;
---yahoo-dark: #0961a6;
-}
-body {
-font-family: 'Roboto Mono', monospace;
-background: var(--bg);
-color: var(--fg);
-margin: 0;
-padding: 0;
-}
-/* Updated panel style to handle glitch */
-.panel {
-background: var(--panel-bg);
-border: 3px solid var(--border);
-border-radius: 4px;
-margin-bottom: 20px;
-overflow: hidden;
-transition: filter 0.2s, transform 0.2s; /* Smooth out non-glitch effects */
-}
-/* === DEGAUSS GLITCH EFFECTS === /
-/ Keyframe animation for a CRT/Degauss effect /
-@keyframes degauss-glitch {
-0% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
-5% { filter: hue-rotate(50deg) contrast(1.5); transform: skew(0.5deg); }
-10% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
-15% { filter: hue-rotate(-20deg) contrast(1.2); transform: skew(-0.8deg); }
-20% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
-100% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
-}
-/ Class applied by JavaScript to trigger the effect /
-.glitch-active {
-animation: degauss-glitch 0.5s linear infinite alternate;
-box-shadow: 0 0 20px var(--fg);
-}
-/ ============================== /
-.panel-title {
-padding: 6px;
-background: linear-gradient(90deg, var(--yahoo-blue), var(--yahoo-dark));
-color: #fff;
-font-family: 'Press Start 2P';
-font-size: 12px;
-}
-.chat-win {
-display: flex;
-flex-direction: column;
-height: 520px;
-position: relative;
-}
-@media (max-width: 600px) {
-.chat-win { height: 400px; }
-}
-#chat-interface {
-display: flex;
-flex-direction: column;
-height: 100%;
-width: 100%;
-}
-.chat-main {
-display: flex;
-flex: 1;
-overflow: hidden;
-}
-.chat-messages {
-flex: 1;
-overflow: auto;
-background: #e6e6fa;
-border-right: 1px solid rgba(0,0,0,0.1);
-padding: 8px;
-color: #000;
-}
-.chat-row {
-display: flex;
-gap: 8px;
-margin: 6px 0;
-align-items: flex-start;
-}
-.chat-avatar {
-width: 36px;
-height: 36px;
-border-radius: 50%;
-background: #add8e6;
-display: flex;
-align-items: center;
-justify-content: center;
-font-weight: 700;
-font-size: 12px;
-color: #001a1a;
-flex-shrink: 0;
-}
-.chat-bubble {
-max-width: 78%;
-padding: 10px;
-border-radius: 8px;
-background: #e6e6fa;
-border: 1px solid rgba(0,0,0,0.1);
-font-family: Arial;
-color: #000;
-}
-.chat-bubble.me {
-background: #fffacd;
-border: 1px solid #f0d280;
-text-align: right;
-color: #222;
-}
-.chat-meta {
-font-size: 11px;
-color: #808080;
-font-weight: 700;
-margin-bottom: 4px;
-}
-.chat-controls {
-display: flex;
-gap: 6px;
-padding: 8px;
-background: #fffacd;
-border-top: 1px solid rgba(0,0,0,0.1);
-}
-.chat-controls input {
-flex: 1;
-padding: 8px;
-border: 2px inset rgba(0,0,0,0.1);
-background: #fff;
-color: #000;
-}
-.chat-controls button {
-padding: 8px 16px;
-border: 2px outset rgba(0,0,0,0.1);
-background: #add8e6;
-cursor: pointer;
-color: #000;
-font-weight: bold;
-}
-.typing-indicator {
-font-size: 12px;
-color: var(--muted);
-padding: 6px 8px;
-font-style: italic;
-min-height: 24px;
-}
-#project-display {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: var(--bg); / Dark background for project view */
-border: none;
-box-sizing: border-box;
-display: none;
-overflow: auto;
-padding: 10px;
-}
-#project-display button {
-margin: 10px;
-padding: 5px 10px;
-background: var(--accent);
-color: var(--bg);
-border: 2px solid var(--fg);
-cursor: pointer;
-font-family: 'Press Start 2P', monospace;
-}
+    :root {
+        --bg: #001a1a;
+        --fg: #00ffff;
+        --accent: #ffcc00;
+        --border: #00cccc;
+        --panel-bg: #002b2b;
+        --text-gray: #e6f7f7;
+        --muted: #00aaaa;
+        --online: #00ff9d;
+        --yahoo-blue: #1e73be;
+        --yahoo-dark: #0961a6;
+    }
+    body {
+        font-family: 'Roboto Mono', monospace;
+        background: var(--bg);
+        color: var(--fg);
+        margin: 0;
+        padding: 0;
+    }
+    /* Updated panel style to handle glitch */
+    .panel {
+        background: var(--panel-bg);
+        border: 3px solid var(--border);
+        border-radius: 4px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        transition: filter 0.2s, transform 0.2s; /* Smooth out non-glitch effects */
+    }
+  
+    /* === DEGAUSS GLITCH EFFECTS === */
+    /* Keyframe animation for a CRT/Degauss effect */
+    @keyframes degauss-glitch {
+        0% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
+        5% { filter: hue-rotate(50deg) contrast(1.5); transform: skew(0.5deg); }
+        10% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
+        15% { filter: hue-rotate(-20deg) contrast(1.2); transform: skew(-0.8deg); }
+        20% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
+        100% { filter: hue-rotate(0deg) contrast(1); transform: skew(0deg); }
+    }
+    /* Class applied by JavaScript to trigger the effect */
+    .glitch-active {
+        animation: degauss-glitch 0.5s linear infinite alternate;
+        box-shadow: 0 0 20px var(--fg);
+    }
+    /* ============================== */
+    .panel-title {
+        padding: 6px;
+        background: linear-gradient(90deg, var(--yahoo-blue), var(--yahoo-dark));
+        color: #fff;
+        font-family: 'Press Start 2P';
+        font-size: 12px;
+    }
+    .chat-win {
+        display: flex;
+        flex-direction: column;
+        height: 520px;
+        position: relative;
+    }
+    @media (max-width: 600px) {
+        .chat-win { height: 400px; }
+    }
+    #chat-interface {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+    }
+    .chat-main {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+    }
+    .chat-messages {
+        flex: 1;
+        overflow: auto;
+        background: #e6e6fa;
+        border-right: 1px solid rgba(0,0,0,0.1);
+        padding: 8px;
+        color: #000;
+    }
+    .chat-row {
+        display: flex;
+        gap: 8px;
+        margin: 6px 0;
+        align-items: flex-start;
+    }
+    .chat-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #add8e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 12px;
+        color: #001a1a;
+        flex-shrink: 0;
+    }
+    .chat-bubble {
+        max-width: 78%;
+        padding: 10px;
+        border-radius: 8px;
+        background: #e6e6fa;
+        border: 1px solid rgba(0,0,0,0.1);
+        font-family: Arial;
+        color: #000;
+    }
+    .chat-bubble.me {
+        background: #fffacd;
+        border: 1px solid #f0d280;
+        text-align: right;
+        color: #222;
+    }
+    .chat-meta {
+        font-size: 11px;
+        color: #808080;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+    .chat-controls {
+        display: flex;
+        gap: 6px;
+        padding: 8px;
+        background: #fffacd;
+        border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    .chat-controls input {
+        flex: 1;
+        padding: 8px;
+        border: 2px inset rgba(0,0,0,0.1);
+        background: #fff;
+        color: #000;
+    }
+    .chat-controls button {
+        padding: 8px 16px;
+        border: 2px outset rgba(0,0,0,0.1);
+        background: #add8e6;
+        cursor: pointer;
+        color: #000;
+        font-weight: bold;
+    }
+    .typing-indicator {
+        font-size: 12px;
+        color: var(--muted);
+        padding: 6px 8px;
+        font-style: italic;
+        min-height: 24px;
+    }
+    #project-display {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg); /* Dark background for project view */
+        border: none;
+        box-sizing: border-box;
+        display: none;
+        overflow: auto;
+        padding: 10px;
+    }
+    #project-display button {
+        margin: 10px;
+        padding: 5px 10px;
+        background: var(--accent);
+        color: var(--bg);
+        border: 2px solid var(--fg);
+        cursor: pointer;
+        font-family: 'Press Start 2P', monospace;
+    }
 </style>
 </head>
 <body>
 <div class="panel" id="mainPanel"> <div class="panel-title">
-//<span id="channelName">THE MIND GAME</span> <span class="small" id="userCountSmall">Text Adventure</span>
+        //<span id="channelName">THE MIND GAME</span> <span class="small" id="userCountSmall">Text Adventure</span>
+    </div>
+    <div class="panel-body chat-win">
+      
+        <div id="project-display">
+            </div>
+        <div id="chat-interface">
+            <div class="chat-main">
+                <div class="chat-messages" id="chatMessages"></div>
+            </div>
+            <div class="chat-controls">
+                <input id="chatInput" placeholder="Type /start to begin...">
+                <button id="sendBtn">SEND</button>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="panel-body chat-win">
-        
-            
-        
-            
-                Waiting for boot...
-            
-            
-            
-                
-                <button id="sendBtn" disabled>SEND</button>
-            
-        
-    
-
 <script>
 // CORE GAME DATA & SETUP (Adapted for text adventure)
 const ALL_PATHS = [
@@ -254,37 +256,16 @@ const MBTI_DESCRIPTIONS = {
   'ENFP': 'The Campaigner - Enthusiastic, creative free spirits who love social connections.',
   'ESFJ': 'The Consul - Caring, social people who value harmony and cooperation.'
 };
-const PATH_STRENGTHS = {
-  'Action/Ego': 'Decisive, courageous, proactive, leadership in crisis, quick resolutions.',
-  'Wisdom/Reason': 'Analytical, strategic, objective, problem-solving, long-term planning.',
-  'Surrender/Flow': 'Adaptable, resilient, peaceful, intuitive, harmonious relationships.',
-  'Nero': 'Empathetic, present, wise, emotionally intelligent, spiritual depth.',
-  'Nora': 'Innovative, curious, investigative, scientific, detail-oriented.',
-  'Loktal': 'Ambitious, visionary, commanding, transformative, determined.',
-  'Sam': 'Exploratory, creative, enthusiastic, idea-generating, adaptable.',
-  'Exuro': 'Passionate, charismatic, catalytic, inspirational, bold.',
-  'Micromegas': 'Perspective-taking, humble, knowledgeable, abstract thinking, objective.'
-};
-const PATH_WEAKNESSES = {
-  'Action/Ego': 'Impulsive, lacks empathy, burnout risk, overlooks nuances, domineering.',
-  'Wisdom/Reason': 'Analysis paralysis, detached, overcritical, indecisive, rigid.',
-  'Surrender/Flow': 'Passive, complacent, avoids conflict, lacks direction, indecisive.',
-  'Nero': 'Detached from practicalities, overly idealistic, avoids confrontation, subtle pride.',
-  'Loktal': 'Tyrannical, lacks compassion, power-hungry, overlooks human cost, ruthless.',
-  'Sam': 'Scattered focus, superficial, undisciplined, overly optimistic, inconsistent.',
-  'Exuro': 'Destructive, consuming, fanatical, overlooks preservation, volatile.',
-  'Micromegas': 'Nihilistic, cold, disconnected, over-detached, lacks engagement.'
-};
-function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&','<':'<','>':'>','"':'"',"'":'''}[c])); }
+function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 /* SCENARIOS (Full list with more branching and psychological depth) */
 const scenarios = {
   0: {
     text:"You stand before a grove where ancient trees cast deep shadows. A presence watches.",
     options:[
-      {text:'Enter boldly, illuminate every hidden corner', path:'Action/Ego', next:1},
-      {text:'Call out from the edge, seeking conversation', path:'Nero', next:2},
-      {text:'Turn away and try another road', path:'Sam', next:3},
-      {text:'Sit and observe, let the shadows be', path:'Surrender/Flow', next:4}
+      {text:'Enter boldly, illuminate every hidden corner', path:'Action/Ego', next:1}, // Leads to aggressive branch
+      {text:'Call out from the edge, seeking conversation', path:'Nero', next:2}, // Leads to reflective branch
+      {text:'Turn away and try another road', path:'Sam', next:3}, // Leads to curious branch
+      {text:'Sit and observe, let the shadows be', path:'Surrender/Flow', next:4} // Leads to passive branch
     ]
   },
   1: {
@@ -416,748 +397,747 @@ const scenarios = {
     ]
   },
   17: {
-    text:"You find a way to extend your life, but it requires sacrificing something precious.",
+    text:"You find a wallet containing $10,000 cash and an ID. No one saw you pick it up.",
     options:[
-      {text:'Accept the end and cherish the present', path:'Surrender/Flow', next:53},
-      {text:'Analyze the sacrifice and proceed if logical', path:'Wisdom/Reason', next:54},
-      {text:'Reject it and seek alternative paths', path:'Sam', next:55}
+      {text:'Return it immediately without hesitation', path:'Wisdom/Reason', next:53},
+      {text:'Keep it—finders keepers', path:'Action/Ego', next:54},
+      {text:'Investigate the owner before deciding', path:'Nora', next:55}
     ]
   },
   18: {
-    text:"A promising treatment is available, but it's untested and risky.",
+    text:"Ancient laws bind you. You sense they may be arbitrary chains holding back progress.",
     options:[
-      {text:'Dive into the unknown with hope', path:'Exuro', next:56},
-      {text:'Weigh the data carefully before deciding', path:'Nora', next:57},
-      {text:'Let fate decide without interference', path:'Micromegas', next:58}
+      {text:'Follow your true will, even if taboo', path:'Action/Ego', next:56},
+      {text:'Submit to tradition and collective wisdom', path:'Surrender/Flow', next:57},
+      {text:'Study why the laws exist before breaking them', path:'Wisdom/Reason', next:58}
     ]
   },
   19: {
-    text:"Your determination inspires others, but exhausts your resources.",
+    text:"You have information that would destroy an innocent person's reputation but save your career.",
     options:[
-      {text:'Push harder, no matter the cost', path:'Loktal', next:59},
-      {text:'Reevaluate and adjust strategy', path:'Wisdom/Reason', next:60},
-      {text:'Accept support from the community', path:'Nero', next:61}
+      {text:'Use it—survival is paramount', path:'Loktal', next:59},
+      {text:'Refuse and accept career consequences', path:'Nero', next:60},
+      {text:'Find an alternative solution that helps both', path:'Nora', next:61}
     ]
   },
   20: {
-    text:"Resistance grows, but supplies are low.",
+    text:"A child asks you if their art is good. It's objectively terrible.",
     options:[
-      {text:'Raid enemy lines for resources', path:'Action/Ego', next:62},
-      {text:'Negotiate alliances for aid', path:'Nora', next:63},
-      {text:'Inspire with words of endurance', path:'Exuro', next:64}
+      {text:'Tell them the truth so they can improve', path:'Wisdom/Reason', next:62},
+      {text:'Praise their effort and encourage exploration', path:'Nero', next:63},
+      {text:'Give specific constructive feedback', path:'Nora', next:64}
     ]
   },
   21: {
-    text:"The pause allows regrouping, but the enemy advances.",
+    text:"You face a giant who offers two drinks: one leads to victory, the other to death. But you sense both are poisoned. The game seems rigged.",
     options:[
-      {text:'Launch a surprise counterattack', path:'Loktal', next:65},
-      {text:'Fortify defenses logically', path:'Wisdom/Reason', next:66},
-      {text:'Observe and adapt to changes', path:'Sam', next:67}
+      {text:'Drink the left one, hoping for luck', path:'Surrender/Flow', next:65},
+      {text:'Drink the right one, analyzing the giant\'s bluff', path:'Wisdom/Reason', next:66},
+      {text:'Attack the giant instead, breaking the rules of the game', path:'Action/Ego', next:67}
     ]
   },
   22: {
-    text:"Defeat brings reflection on what truly matters.",
+    text:"You are lost in a dense fog on a mountain path. Visibility is zero.",
     options:[
-      {text:'Plan for future resurgence', path:'Nora', next:68},
-      {text:'Embrace peace in the moment', path:'Surrender/Flow', next:69},
-      {text:'Seek wisdom from the loss', path:'Micromegas', next:70}
+      {text:'Push forward aggressively, trusting your instincts', path:'Action/Ego', next:68},
+      {text:'Sit and meditate, waiting for the fog to clear', path:'Nero', next:69},
+      {text:'Use available tools to map and navigate logically', path:'Wisdom/Reason', next:70}
     ]
   },
   23: {
-    text:"Breaking the monopoly angers powerful allies.",
+    text:"A mysterious stranger offers you a deal that seems too good to be true.",
     options:[
-      {text:'Confront them head-on', path:'Exuro', next:71},
-      {text:'Build new alliances', path:'Nora', next:72},
-      {text:'Let tensions resolve naturally', path:'Surrender/Flow', next:73}
+      {text:'Accept it boldly, seizing the opportunity', path:'Exuro', next:71},
+      {text:'Investigate the stranger\'s background first', path:'Nora', next:72},
+      {text:'Decline and let fate decide', path:'Surrender/Flow', next:73}
     ]
   },
   24: {
-    text:"The coalition forms, but internal conflicts arise.",
+    text:"Your team is facing a deadline, but morale is low.",
     options:[
-      {text:'Assert leadership to unify', path:'Loktal', next:74},
-      {text:'Mediate with reason', path:'Wisdom/Reason', next:75},
-      {text:'Allow organic resolution', path:'Nero', next:76}
+      {text:'Motivate them with a passionate speech', path:'Exuro', next:74},
+      {text:'Analyze the issues and reorganize tasks', path:'Wisdom/Reason', next:75},
+      {text:'Give everyone a break to recharge', path:'Nero', next:76}
     ]
   },
   25: {
-    text:"Market forces shift slowly, causing suffering.",
+    text:"You encounter a locked door in an ancient temple.",
     options:[
-      {text:'Intervene subtly to accelerate', path:'Sam', next:77},
-      {text:'Study patterns for prediction', path:'Micromegas', next:78},
-      {text:'Accept the cycle', path:'Surrender/Flow', next:79}
+      {text:'Force it open with strength', path:'Loktal', next:77},
+      {text:'Search for hidden mechanisms or clues', path:'Sam', next:78},
+      {text:'Wait and observe if it opens on its own', path:'Micromegas', next:79}
     ]
   },
   26: {
-    text:"The confrontation reveals deeper issues.",
+    text:"A debate arises in your community about a controversial change.",
     options:[
-      {text:'Fight to rebuild trust', path:'Action/Ego', next:80},
-      {text:'Analyze the root causes', path:'Nora', next:81},
-      {text:'Forgive and move forward', path:'Nero', next:82}
+      {text:'Lead the charge for the change', path:'Action/Ego', next:80},
+      {text:'Facilitate discussion to find consensus', path:'Wisdom/Reason', next:81},
+      {text:'Accept whatever outcome emerges', path:'Surrender/Flow', next:82}
     ]
   },
   27: {
-    text:"Your investigation uncovers surprising truths.",
+    text:"You find an injured animal on the side of the road. It's late at night.",
     options:[
-      {text:'Use them to your advantage', path:'Loktal', next:83},
-      {text:'Share openly for resolution', path:'Wisdom/Reason', next:84},
-      {text:'Reflect on the bigger picture', path:'Micromegas', next:85}
+      {text:'Immediately take it to a vet, no matter the cost', path:'Action/Ego', next:83},
+      {text:'Assess its injuries and decide the most humane option', path:'Wisdom/Reason', next:84},
+      {text:'Comfort it and let nature take its course', path:'Surrender/Flow', next:85}
     ]
   },
   28: {
-    text:"Time passes, and the lie festers.",
+    text:"A friend asks for advice on a risky career change.",
     options:[
-      {text:'Address it gently now', path:'Nero', next:86},
-      {text:'Let it unfold as is', path:'Surrender/Flow', next:87},
-      {text:'Seek external advice', path:'Sam', next:88}
+      {text:'Encourage them to pursue their passion boldly', path:'Exuro', next:86},
+      {text:'Help them research pros and cons thoroughly', path:'Nora', next:87},
+      {text:'Advise them to follow their intuition', path:'Nero', next:88}
     ]
   },
   29: {
-    text:"Crushing opposition unites some but alienates others.",
+    text:"You're in a negotiation where the other party is being unreasonable.",
     options:[
-      {text:'Consolidate power firmly', path:'Loktal', next:89},
-      {text:'Offer olive branches', path:'Nora', next:90},
-      {text:'Allow healing time', path:'Surrender/Flow', next:91}
+      {text:'Stand firm and demand concessions', path:'Loktal', next:89},
+      {text:'Find common ground through dialogue', path:'Wisdom/Reason', next:90},
+      {text:'Walk away if it feels off', path:'Micromegas', next:91}
     ]
   },
   30: {
-    text:"Local authority brings diversity but chaos.",
+    text:"You receive unexpected criticism from a colleague.",
     options:[
-      {text:'Impose central guidelines', path:'Wisdom/Reason', next:92},
-      {text:'Embrace the variety', path:'Sam', next:93},
-      {text:'Observe outcomes passively', path:'Micromegas', next:94}
+      {text:'Defend yourself assertively', path:'Action/Ego', next:92},
+      {text:'Reflect on it and seek clarification', path:'Sam', next:93},
+      {text:'Accept it as part of growth', path:'Surrender/Flow', next:94}
     ]
   },
   31: {
-    text:"Debate reveals innovative ideas.",
+    text:"A technological breakthrough is announced that could change society.",
     options:[
-      {text:'Implement the strongest boldly', path:'Exuro', next:95},
-      {text:'Test them systematically', path:'Nora', next:96},
-      {text:'Integrate harmoniously', path:'Nero', next:97}
+      {text:'Adopt it immediately to gain advantage', path:'Exuro', next:95},
+      {text:'Study its implications before embracing', path:'Nora', next:96},
+      {text:'Observe how it unfolds naturally', path:'Nero', next:97}
     ]
   },
   32: {
-    text:"Unifying against an enemy builds strength but breeds hate.",
+    text:"You’re planning a journey to an unknown land.",
     options:[
-      {text:'Channel it strategically', path:'Loktal', next:98},
-      {text:'Promote understanding later', path:'Wisdom/Reason', next:99},
-      {text:'Seek internal healing', path:'Nero', next:100}
+      {text:'Charge ahead with minimal preparation', path:'Action/Ego', next:98},
+      {text:'Map out every detail logically', path:'Wisdom/Reason', next:99},
+      {text:'Go with the flow of events', path:'Surrender/Flow', next:100}
     ]
   },
   33: {
-    text:"Consensus is reached, but slowly.",
+    text:"An opportunity arises that conflicts with your values.",
     options:[
-      {text:'Push for faster action', path:'Action/Ego', next:101},
-      {text:'Refine through more discussion', path:'Sam', next:102},
-      {text:'Accept the pace', path:'Surrender/Flow', next:103}
+      {text:'Seize it and adapt your values', path:'Loktal', next:101},
+      {text:'Analyze the conflict deeply', path:'Micromegas', next:102},
+      {text:'Decline and trust the universe', path:'Nero', next:103}
     ]
   },
   34: {
-    text:"Time heals, but opportunities are lost.",
+    text:"You discover a secret that could harm a loved one if revealed.",
     options:[
-      {text:'Seize remaining chances', path:'Exuro', next:104},
-      {text:'Learn from the wait', path:'Micromegas', next:105},
-      {text:'Embrace the present calm', path:'Nero', next:106}
+      {text:'Confront the issue head-on', path:'Exuro', next:104},
+      {text:'Investigate further before acting', path:'Sam', next:105},
+      {text:'Keep it hidden to preserve harmony', path:'Surrender/Flow', next:106}
     ]
   },
   35: {
-    text:"Speaking the truth saves the city, but you are exiled.",
+    text:"A storm approaches while you're on a hike.",
     options:[
-      {text:'Accept exile with dignity', path:'Nero', next:107},
-      {text:'Plan a return in disguise', path:'Nora', next:108},
-      {text:'Rally supporters for revolution', path:'Exuro', next:109}
+      {text:'Push through to reach the summit', path:'Action/Ego', next:107},
+      {text:'Calculate the risks and find shelter', path:'Wisdom/Reason', next:108},
+      {text:'Embrace the experience as it comes', path:'Nero', next:109}
     ]
   },
   36: {
-    text:"Silence preserves your position, but the city suffers.",
+    text:"You’re offered a leadership role in a crisis.",
     options:[
-      {text:'Use influence subtly to mitigate', path:'Micromegas', next:111},
-      {text:'Regret and confess later', path:'Surrender/Flow', next:112},
-      {text:'Rationalize and move on', path:'Wisdom/Reason', next:110}
+      {text:'Take command decisively', path:'Loktal', next:110},
+      {text:'Gather information first', path:'Nora', next:111},
+      {text:'Support the group\'s natural leaders', path:'Surrender/Flow', next:112}
     ]
   },
   37: {
-    text:"They discover the truth, but credit goes to another.",
+    text:"The couple finish their meal and leave without seeing you. They behave very affectionately on the way out the door.",
     options:[
-      {text:'Claim your role assertively', path:'Action/Ego', next:116},
-      {text:'Let it be for the greater good', path:'Surrender/Flow', next:117},
-      {text:'Document for future reference', path:'Nora', next:118}
+      {text:'Tell your friend, knowing you probably will not be believed and that it may ruin your friendship', path:'Wisdom/Reason', next:null},
+      {text:'Say nothing about seeing the couple as it is none of your business; they may even have an open relationship', path:'Surrender/Flow', next:null},
+      {text:'Investigate further to confirm the affair before telling', path:'Nora', next:null}
     ]
   },
   38: {
-    text:"Your intervention saves the stranger, but you get injured.",
+    text:"You realize they are both caught in a strong current and might be swept out to sea. You are a good swimmer and know you can save one of them. You have a difficult choice to make.",
     options:[
-      {text:'Endure and fight on', path:'Exuro', next:119},
-      {text:'Seek medical help wisely', path:'Wisdom/Reason', next:120},
-      {text:'Reflect on the heroism', path:'Nero', next:121}
+      {text:'Save your niece first as she is a poor swimmer and will not be able to last as long as your daughter', path:'Wisdom/Reason', next:null},
+      {text:'Save your daughter first, because, although she is a strong swimmer and may be able to last long enough for you to come back after saving your niece, you cannot stand the idea of losing her', path:'Action/Ego', next:null},
+      {text:'Try to save both, risking all lives', path:'Exuro', next:null}
     ]
   },
   39: {
-    text:"Help arrives, but the attacker escapes.",
+    text:"You realize your co-worker has been pocketing the additional money.",
     options:[
-      {text:'Pursue relentlessly', path:'Loktal', next:122},
-      {text:'Analyze for prevention', path:'Nora', next:123},
-      {text:'Comfort the victim', path:'Surrender/Flow', next:124}
+      {text:'Tell your supervisor you have neither asked for nor received any additional petty cash and that you suspect your co-worker is pocketing the money', path:'Wisdom/Reason', next:null},
+      {text:'Tell your co-worker your suspicions and give them a chance to pay the money back', path:'Nero', next:null},
+      {text:'Say nothing and just wait to see what happens', path:'Surrender/Flow', next:null}
     ]
   },
   40: {
-    text:"The situation resolves without your help.",
+    text:"Your father’s health has declined and he has been hospitalized. He has a substantial life insurance policy that expires at midnight. If he dies before midnight, you will inherit enough money to pursue a career you have always dreamed of and provide adequately for your family.",
     options:[
-      {text:'Question your hesitation', path:'Sam', next:125},
-      {text:'Accept the outcome', path:'Micromegas', next:126},
-      {text:'Learn for next time', path:'Wisdom/Reason', next:127}
+      {text:'Pinch the oxygen line making it possible for your Dad to die or smother him with a pillow', path:'Loktal', next:null},
+      {text:'Tell your Dad the problem and let him suggest a solution and go by what he says', path:'Nero', next:null},
+      {text:'Do nothing as you cannot imagine living with yourself if you terminate your Dad’s life', path:'Surrender/Flow', next:null}
     ]
   },
   41: {
-    text:"Indifference to externals brings inner peace.",
+    text:"He will not tell you exactly how he is making this money, but you get the impression it is not exactly legal. He only wants an investment of $500 and promises you will have enough from your minimal investment that you will never need to work again.",
     options:[
-      {text:'Share this wisdom', path:'Nero', next:128},
-      {text:'Explore new philosophies', path:'Micromegas', next:129},
-      {text:'Rebuild mindfully', path:'Surrender/Flow', next:130}
+      {text:'Give him the $500, deciding if you don’t know how he is making it, you’re in the clear', path:'Surrender/Flow', next:null},
+      {text:'Demand to know the details before getting involved', path:'Nora', next:null},
+      {text:'Decide you want no part of this deal, as you trust your instinct that the offer is shady and you might even get in legal trouble', path:'Wisdom/Reason', next:null}
     ]
   },
   42: {
-    text:"Rebuilding starts with small steps.",
+    text:"A few days later, you read in the paper that someone has been arrested for your friend’s crime.",
     options:[
-      {text:'Accelerate with bold moves', path:'Action/Ego', next:131},
-      {text:'Plan strategically', path:'Wisdom/Reason', next:132},
-      {text:'Follow curiosities', path:'Sam', next:133}
+      {text:'Go to the police and tell them what you know', path:'Wisdom/Reason', next:null},
+      {text:'Encourage your friend to confess and warn him if he does not do so, you will tell', path:'Exuro', next:null},
+      {text:'Say nothing because you will not betray a friend’s confidence', path:'Surrender/Flow', next:null}
     ]
   },
   43: {
-    text:"Study reveals patterns of failure.",
+    text:"As people begin to line up, you realize some lines have fewer people, some have families, and some seem to have younger, single people. You know you are strong and capable.",
     options:[
-      {text:'Apply lessons aggressively', path:'Exuro', next:134},
-      {text:'Innovate solutions', path:'Nora', next:135},
-      {text:'Accept and adapt', path:'Nero', next:136}
+      {text:'Help the group of three families with young children', path:'Nero', next:null},
+      {text:'Help the group of seniors who obviously could use your help', path:'Surrender/Flow', next:null},
+      {text:'Go with the young, strong people, with whom you might have a better chance of survival', path:'Action/Ego', next:null}
     ]
   },
   44: {
-    text:"Simplicity restores order, but some resist.",
+    text:"He will point out a physical flaw or look for something odd or different about a person and make an unkind comment. You feel uncomfortable when your friend does this.",
     options:[
-      {text:'Enforce gently', path:'Nero', next:137},
-      {text:'Demonstrate benefits', path:'Wisdom/Reason', next:138},
-      {text:'Allow adaptation time', path:'Surrender/Flow', next:139}
+      {text:'Say something to your friend about it', path:'Wisdom/Reason', next:null},
+      {text:'Just laugh along with him', path:'Surrender/Flow', next:null},
+      {text:'Confront him privately later', path:'Nero', next:null}
     ]
   },
   45: {
-    text:"New laws bring efficiency, but stifle creativity.",
+    text:"The guy looks and smells as if he is homeless. You check to see how badly he is hurt and realize he is dead. You have never even had a speeding ticket and are an upright, professional, with a family and are well-known and respected in your community.",
     options:[
-      {text:'Maintain strict control', path:'Loktal', next:140},
-      {text:'Adjust based on feedback', path:'Sam', next:141},
-      {text:'Observe long-term effects', path:'Micromegas', next:142}
+      {text:'Make a report anonymously', path:'Nora', next:null},
+      {text:'Confess your crime', path:'Wisdom/Reason', next:null},
+      {text:'Drive on home and forget about it, knowing no one is going to pursue the death of a homeless drunk', path:'Loktal', next:null}
     ]
   },
   46: {
-    text:"Changes improve the system gradually.",
+    text:"Now you get a call from the local police station saying your son was with a group of kids who broke into a liquor store and stole beer.",
     options:[
-      {text:'Push for more reforms', path:'Exuro', next:143},
-      {text:'Monitor and refine', path:'Nora', next:144},
-      {text:'Celebrate progress', path:'Nero', next:145}
+      {text:'Go to the station and see how you can get your teen out of this jam', path:'Surrender/Flow', next:null},
+      {text:'Let him accept whatever consequences befall him', path:'Wisdom/Reason', next:null},
+      {text:'Talk to him privately first', path:'Nero', next:null}
     ]
   },
   47: {
-    text:"Refusal brings clarity of mind.",
+    text:"In your weekly team meeting with your supervisor, one of your co-workers takes credit for a time and money saving change in operating procedures you devised. Your supervisor erroneously thinks your co-worker came up with the change and your co-worker does not correct the misinterpretation, but allows the boss to not only commend him, but offer a bonus.",
     options:[
-      {text:'Teach others this lesson', path:'Nero', next:146},
-      {text:'Explore inner strengths', path:'Wisdom/Reason', next:147},
-      {text:'Embrace simplicity', path:'Surrender/Flow', next:148}
+      {text:'Go to your co-worker and demand he correct the situation', path:'Action/Ego', next:null},
+      {text:'Go to your supervisor and explain you should receive the commendation and reward', path:'Wisdom/Reason', next:null},
+      {text:'Keep quiet as you do not believe in ownership of ideas', path:'Micromegas', next:null}
     ]
   },
   48: {
-    text:"Power corrupts subtly over time.",
+    text:"When making a purchase at a local store, you are given too much change.",
     options:[
-      {text:'Wield it with iron will', path:'Loktal', next:149},
-      {text:'Seek checks and balances', path:'Nora', next:150},
-      {text:'Reflect on changes', path:'Micromegas', next:151}
+      {text:'Say something', path:'Wisdom/Reason', next:null},
+      {text:'Keep quiet', path:'Loktal', next:null},
+      {text:'Return the extra change', path:'Nero', next:null}
     ]
   },
   49: {
-    text:"Partial power achieves balanced outcomes.",
+    text:"You receive a package at your home that was delivered to the wrong address. The shipping label indicates it is a favourite item that you cannot afford to purchase yourself.",
     options:[
-      {text:'Negotiate for more', path:'Action/Ego', next:152},
-      {text:'Use wisely as is', path:'Wisdom/Reason', next:153},
-      {text:'Share with others', path:'Sam', next:154}
+      {text:'Keep it', path:'Action/Ego', next:null},
+      {text:'Notify the person it was intended for', path:'Wisdom/Reason', next:null},
+      {text:'Return it to the sender', path:'Nora', next:null}
     ]
   },
   50: {
-    text:"Withdrawal restores your strength.",
+    text:"Your neighbour leaves their dog out in all kinds of weather. The poor animal frequently looks like it is miserable. Sometimes it is out of water and seems to be fed rarely.",
     options:[
-      {text:'Return with renewed vision', path:'Exuro', next:155},
-      {text:'Guide from afar', path:'Micromegas', next:156},
-      {text:'Encourage independence', path:'Nero', next:157}
+      {text:'Report what you think is happening', path:'Exuro', next:null},
+      {text:'Stay quiet', path:'Surrender/Flow', next:null},
+      {text:'Talk to the neighbor first', path:'Nero', next:null}
     ]
   },
   51: {
-    text:"Shining depletes you further.",
+    text:"What if you suspect your neighbour of child abuse? You are not sure if they have a fit-throwing kid or if something is really wrong.",
     options:[
-      {text:'Persevere through willpower', path:'Loktal', next:158},
-      {text:'Seek help to sustain', path:'Nora', next:159},
-      {text:'Accept the limits', path:'Surrender/Flow', next:160}
+      {text:'Report the suspicion', path:'Wisdom/Reason', next:null},
+      {text:'Stay quiet', path:'Surrender/Flow', next:null},
+      {text:'Investigate discreetly', path:'Sam', next:null}
     ]
   },
   52: {
-    text:"They find their light, empowering all.",
+    text:"You are at a party or out on the town with your best friend. They have too much to drink and will not let you drive them home.",
     options:[
-      {text:'Facilitate more growth', path:'Nero', next:161},
-      {text:'Study the process', path:'Sam', next:162},
-      {text:'Celebrate collectively', path:'Wisdom/Reason', next:163}
+      {text:'Take the keys by force', path:'Action/Ego', next:null},
+      {text:'Call a cab for them', path:'Wisdom/Reason', next:null},
+      {text:'Let them drive, hoping for the best', path:'Surrender/Flow', next:null}
     ]
   },
-  // Adding terminal scenarios for previous nulls
   53: {
-    text:"A storm approaches as you contemplate the end.",
+    text:"Your lunch keeps missing at work. You are pretty sure you know who is taking it each day.",
     options:[
-      {text:'Face it head-on', path:'Action/Ego', next:null},
-      {text:'Seek shelter wisely', path:'Wisdom/Reason', next:null},
-      {text:'Embrace the rain', path:'Surrender/Flow', next:null}
+      {text:'Confront them', path:'Action/Ego', next:null},
+      {text:'Report it to your supervisor or HR', path:'Wisdom/Reason', next:null},
+      {text:'Get them back by making a cat food sandwich', path:'Loktal', next:null}
     ]
   },
   54: {
-    text:"The sacrifice weighs heavy, but logic prevails.",
+    text:"You really like your neighbours and they are a great couple. The only problem is that they throw wild parties occasionally. You think they are into drugs, maybe even dealing.",
     options:[
-      {text:'Proceed with caution', path:'Nora', next:null},
-      {text:'Reconsider emotions', path:'Nero', next:null},
-      {text:'Abandon the plan', path:'Micromegas', next:null}
+      {text:'Report them', path:'Wisdom/Reason', next:null},
+      {text:'Talk to them about it', path:'Nero', next:null},
+      {text:'Ignore it', path:'Surrender/Flow', next:null}
     ]
   },
   55: {
-    text:"Alternatives emerge from unexpected sources.",
+    text:"A friend gives you a gift for your birthday. Unfortunately, it is a type of perfume you are extremely allergic to.",
     options:[
-      {text:'Pursue them boldly', path:'Exuro', next:null},
-      {text:'Analyze viability', path:'Wisdom/Reason', next:null},
-      {text:'Let intuition guide', path:'Sam', next:null}
+      {text:'Say something and ask for a receipt to return it', path:'Wisdom/Reason', next:null},
+      {text:'Keep quiet', path:'Surrender/Flow', next:null},
+      {text:'Regift it to someone else', path:'Sam', next:null}
     ]
   },
   56: {
-    text:"The treatment brings new challenges.",
+    text:"Your friend has excitedly shared that she has a new love in her life. Unfortunately, you know the guy is a narcissistic player who only stays with a woman as long as he is getting what he wants from the relationship.",
     options:[
-      {text:'Fight through side effects', path:'Loktal', next:null},
-      {text:'Adapt daily routines', path:'Surrender/Flow', next:null},
-      {text:'Document the journey', path:'Nora', next:null}
+      {text:'Try to convince her to drop him', path:'Exuro', next:null},
+      {text:'Let her learn a lesson on her own', path:'Micromegas', next:null},
+      {text:'Share your concerns gently', path:'Nero', next:null}
     ]
   },
   57: {
-    text:"Data reveals hidden risks.",
+    text:"When you get home, you realize one of the items is not on the receipt.",
     options:[
-      {text:'Mitigate them strategically', path:'Wisdom/Reason', next:null},
-      {text:'Seek second opinions', path:'Sam', next:null},
-      {text:'Trust the process', path:'Nero', next:null}
+      {text:'Go back to the store and pay for it', path:'Wisdom/Reason', next:null},
+      {text:'Just let it go', path:'Surrender/Flow', next:null},
+      {text:'Check if it's a mistake', path:'Nora', next:null}
     ]
   },
   58: {
-    text:"Fate takes its course, bringing peace.",
+    text:"You are failing a class you were required to take but totally hate. You have an on-line exam. If you fail the exam, you will fail the class. You can cheat without anyone knowing.",
     options:[
-      {text:'Reflect on life', path:'Micromegas', next:null},
-      {text:'Share stories', path:'Exuro', next:null},
-      {text:'Embrace each moment', path:'Surrender/Flow', next:null}
+      {text:'Cheat and pass the class', path:'Loktal', next:null},
+      {text:'Fail the class honestly', path:'Wisdom/Reason', next:null},
+      {text:'Study harder next time', path:'Sam', next:null}
     ]
   },
   59: {
-    text:"Pushing leads to victory, but at great cost.",
+    text:"Over the summer, you became friends with a person who moved to your town. You have the same interest, like the same music and movies, and have had a great deal of fun. However, your new friend is not attractive and very loud. When school starts, you are embarrassed by the way your friend acts.",
     options:[
-      {text:'Celebrate the win', path:'Action/Ego', next:null},
-      {text:'Mourn the losses', path:'Nero', next:null},
-      {text:'Plan recovery', path:'Nora', next:null}
+      {text:'Remain friends', path:'Nero', next:null},
+      {text:'Drop the relationship', path:'Action/Ego', next:null},
+      {text:'Talk to them about it', path:'Wisdom/Reason', next:null}
     ]
   },
   60: {
-    text:"Adjustment brings sustainable progress.",
+    text:"The Overcrowded Lifeboat: In 1842, a ship struck an iceberg and more than 30 survivors were crowded into a lifeboat intended to hold 7. As a storm threatened, it became obvious that the lifeboat would have to be lightened if anyone were to survive. The captain reasoned that the right thing to do in this situation was to force some individuals to go over the side and drown.",
     options:[
-      {text:'Implement new tactics', path:'Wisdom/Reason', next:null},
-      {text:'Inspire the team', path:'Exuro', next:null},
-      {text:'Observe results', path:'Sam', next:null}
+      {text:'Force some overboard', path:'Action/Ego', next:null},
+      {text:'Do nothing and let all die', path:'Surrender/Flow', next:null},
+      {text:'Draw lots to decide', path:'Wisdom/Reason', next:null}
     ]
   },
   61: {
-    text:"Community support renews your strength.",
+    text:"The Case of Lifeboat Cannibalism: The boat was not overloaded, but there was little food and no water. After most of a month, the survivors were rescued. However, meanwhile Richard Parker had become comatose from drinking sea water, and he was killed by Dudley to be eaten, as he was.",
     options:[
-      {text:'Lead collaboratively', path:'Nero', next:null},
-      {text:'Innovate together', path:'Nora', next:null},
-      {text:'Flow with the group', path:'Surrender/Flow', next:null}
+      {text:'Approve the cannibalism as necessity', path:'Wisdom/Reason', next:null},
+      {text:'Condemn the act as murder', path:'Nero', next:null},
+      {text:'Abstain from judgment', path:'Micromegas', next:null}
     ]
   },
   62: {
-    text:"Raiding succeeds, but risks exposure.",
+    text:"A Father's Agonizing Choice: You are an inmate in a concentration camp. A sadistic guard is about to hang your son who tried to escape and wants you to pull the chair from underneath him. He says that if you don't he will not only kill your son but some other innocent inmate as well.",
     options:[
-      {text:'Press the advantage', path:'Loktal', next:null},
-      {text:'Retreat strategically', path:'Wisdom/Reason', next:null},
-      {text:'Adapt to new threats', path:'Sam', next:null}
+      {text:'Pull the chair', path:'Surrender/Flow', next:null},
+      {text:'Refuse, letting both die', path:'Nero', next:null},
+      {text:'Try to attack the guard', path:'Action/Ego', next:null}
     ]
   },
   63: {
-    text:"Alliances form, strengthening your position.",
+    text:"Sophie's Choice: On arrival, she is \"honored\" for not being a Jew by being allowed a choice: One of her children will be spared the gas chamber if she chooses which one.",
     options:[
-      {text:'Negotiate terms firmly', path:'Nora', next:null},
-      {text:'Build trust slowly', path:'Nero', next:null},
-      {text:'Launch joint operations', path:'Exuro', next:null}
+      {text:'Choose the daughter', path:'Wisdom/Reason', next:null},
+      {text:'Choose the son', path:'Nero', next:null},
+      {text:'Refuse to choose, letting both die', path:'Surrender/Flow', next:null}
     ]
   },
   64: {
-    text:"Words rally the troops, boosting morale.",
+    text:"Corrine's Choice: She was confronted by two French Jihadist gunmen, who threatened to shoot her daughter unless she keyed in the entry code at the door for the magazine. She did; and the gunmen entered to murder twelve people.",
     options:[
-      {text:'Lead a charge', path:'Action/Ego', next:null},
-      {text:'Plan next moves', path:'Wisdom/Reason', next:null},
-      {text:'Celebrate small wins', path:'Surrender/Flow', next:null}
+      {text:'Give the code to save your daughter', path:'Surrender/Flow', next:null},
+      {text:'Refuse and risk both lives', path:'Wisdom/Reason', next:null},
+      {text:'Try to fight the gunmen', path:'Action/Ego', next:null}
     ]
   },
   65: {
-    text:"Counterattack turns the tide.",
+    text:"The Trolley Problem: A trolley is running out of control down a track. In its path are five people who have been tied to the track by a mad philosopher. Fortunately, you could flip a switch, which will lead the trolley down a different track to safety. Unfortunately, there is a single person tied to that track.",
     options:[
-      {text:'Consolidate gains', path:'Loktal', next:null},
-      {text:'Negotiate peace', path:'Nora', next:null},
-      {text:'Reflect on victory', path:'Micromegas', next:null}
+      {text:'Flip the switch', path:'Wisdom/Reason', next:null},
+      {text:'Do nothing', path:'Surrender/Flow', next:null},
+      {text:'Try to stop the trolley yourself', path:'Action/Ego', next:null}
     ]
   },
   66: {
-    text:"Defenses hold, buying time.",
+    text:"The Fat Man and the Impending Doom: A fat man leading a group of people out of a cave on a coast is stuck in the mouth of that cave. In a short time high tide will be upon them, and unless he is unstuck, they will all be drowned except the fat man, whose head is out of the cave. There seems no way to get the fat man loose without using dynamite which will inevitably kill him; but if they do not use it everyone will drown.",
     options:[
-      {text:'Counter plan logically', path:'Wisdom/Reason', next:null},
-      {text:'Inspire endurance', path:'Exuro', next:null},
-      {text:'Adapt to siege', path:'Sam', next:null}
+      {text:'Use the dynamite', path:'Wisdom/Reason', next:null},
+      {text:'Do nothing', path:'Surrender/Flow', next:null},
+      {text:'Try to pull him out by force', path:'Action/Ego', next:null}
     ]
   },
   67: {
-    text:"Adaptation leads to innovative solutions.",
+    text:"The Tortured Child: Let's assume that you were called upon to build the edifice of human destiny so that men would finally be happy and would find peace and tranquility. If you knew that, in order to attain this, you would have to torture just one single creature, let's say the little girl who beat her chest so desperately in the outhouse, and that on her unavenged tears you could build that edifice, would you agree to do it?",
     options:[
-      {text:'Implement quickly', path:'Action/Ego', next:null},
-      {text:'Test thoroughly', path:'Nora', next:null},
-      {text:'Flow with changes', path:'Surrender/Flow', next:null}
+      {text:'Agree to torture the child for the greater good', path:'Wisdom/Reason', next:null},
+      {text:'Refuse, no matter the outcome', path:'Nero', next:null},
+      {text:'Find another way to build the edifice', path:'Nora', next:null}
     ]
   },
   68: {
-    text:"Plans for resurgence build hope.",
+    text:"The Costly Underwater Tunnel: An underwater tunnel is being constructed despite an almost certain loss of several lives. Presumably the expected loss is a calculated cost that society is prepared to pay for having the tunnel. At a critical moment when a fitting must be lowered into place, a workman is trapped in a section of the partly laid tunnel. If it is lowered, it will surely crush the trapped workman to death. Yet, if it is not and a time consuming rescue of the workman is attempted, the tunnel will have to be abandoned and the whole project begun anew.",
     options:[
-      {text:'Execute boldly', path:'Exuro', next:null},
-      {text:'Analyze risks', path:'Wisdom/Reason', next:null},
-      {text:'Gather allies', path:'Nero', next:null}
+      {text:'Lower the fitting, sacrificing the worker', path:'Wisdom/Reason', next:null},
+      {text:'Attempt the rescue, abandoning the project', path:'Nero', next:null},
+      {text:'Delay and seek alternative solutions', path:'Sam', next:null}
     ]
   },
   69: {
-    text:"Peace brings new beginnings.",
+    text:"The Miners: 10 miners are trapped in one of two shafts (shaft 1 or shaft 2), and floodwaters are rising. You must decide which shaft to block before finding out where the miners are. They are no more likely, given your evidence, to be in 1 or 2. You are able to block the water from reaching one of the shafts, but you don't have enough sandbags to block both. If you manage to completely block the shaft where the miners are, they are all saved; if you block the other shaft completely, they all drown. If you do nothing, letting both of the shafts fill halfway with water, one miner will drown in any case.",
     options:[
-      {text:'Embrace fully', path:'Surrender/Flow', next:null},
-      {text:'Explore opportunities', path:'Sam', next:null},
-      {text:'Reflect deeply', path:'Micromegas', next:null}
+      {text:'Block shaft 1', path:'Action/Ego', next:null},
+      {text:'Block shaft 2', path:'Wisdom/Reason', next:null},
+      {text:'Do nothing, saving 9 for sure', path:'Surrender/Flow', next:null}
     ]
   },
   70: {
-    text:"Wisdom from loss guides future actions.",
+    text:"Jean Valjean's Conscience: Jean Valjean is an ex-convict, living illegally under an assumed name. He learns that another man has been arrested and identified as Jean Valjean. Jean is tempted to remain quiet but feels it is his duty to reveal his identity.",
     options:[
-      {text:'Teach others', path:'Nero', next:null},
-      {text:'Innovate defenses', path:'Nora', next:null},
-      {text:'Accept cycles', path:'Surrender/Flow', next:null}
+      {text:'Reveal your identity', path:'Wisdom/Reason', next:null},
+      {text:'Remain quiet to help others', path:'Nero', next:null},
+      {text:'Flee the town', path:'Surrender/Flow', next:null}
     ]
   },
   71: {
-    text:"Confrontation resolves tensions.",
+    text:"The Dilemma of Silence: In the movie Silence, Rodrigues is forced to step on an image of Christ to save his parishioners from torture.",
     options:[
-      {text:'Forge stronger bonds', path:'Exuro', next:null},
-      {text:'Negotiate compromises', path:'Wisdom/Reason', next:null},
-      {text:'Allow healing', path:'Nero', next:null}
+      {text:'Step on the image to save others', path:'Surrender/Flow', next:null},
+      {text:'Refuse and let them suffer', path:'Nero', next:null},
+      {text:'Fight the authorities', path:'Exuro', next:null}
     ]
   },
   72: {
-    text:"New alliances bring fresh perspectives.",
+    text:"The Dilemma of Kingsman: In Kingsman, the final test is to shoot the dog you raised.",
     options:[
-      {text:'Integrate ideas', path:'Nora', next:null},
-      {text:'Lead united front', path:'Loktal', next:null},
-      {text:'Flow with dynamics', path:'Surrender/Flow', next:null}
+      {text:'Shoot the dog', path:'Loktal', next:null},
+      {text:'Refuse to shoot', path:'Nero', next:null},
+      {text:'Point the gun at the instructor', path:'Action/Ego', next:null}
     ]
   },
   73: {
-    text:"Tensions ease over time.",
+    text:"The Prisoner's Dilemma: You and a partner are arrested. If both stay silent, both get light sentence. If one betrays, the betrayer goes free, the other gets heavy sentence. If both betray, both get medium sentence.",
     options:[
-      {text:'Monitor progress', path:'Sam', next:null},
-      {text:'Reflect on growth', path:'Micromegas', next:null},
-      {text:'Celebrate harmony', path:'Nero', next:null}
+      {text:'Stay silent (cooperate)', path:'Surrender/Flow', next:null},
+      {text:'Betray the partner', path:'Loktal', next:null},
+      {text:'Try to communicate secretly', path:'Nora', next:null}
     ]
   },
   74: {
-    text:"Leadership unifies the group.",
+    text:"The Bridge Dilemma: Sacrifice a man on a bridge to stop a trolley killing five.",
     options:[
-      {text:'Push forward aggressively', path:'Loktal', next:null},
-      {text:'Balance interests', path:'Wisdom/Reason', next:null},
-      {text:'Foster empathy', path:'Nero', next:null}
+      {text:'Push the man', path:'Wisdom/Reason', next:null},
+      {text:'Do nothing', path:'Surrender/Flow', next:null},
+      {text:'Warn the people', path:'Sam', next:null}
     ]
   },
   75: {
-    text:"Mediation resolves conflicts.",
+    text:"The Organ Donor Dilemma: Kill a healthy person to use organs for five patients.",
     options:[
-      {text:'Implement agreements', path:'Wisdom/Reason', next:null},
-      {text:'Innovate solutions', path:'Nora', next:null},
-      {text:'Allow organic growth', path:'Surrender/Flow', next:null}
+      {text:'Kill the healthy person', path:'Wisdom/Reason', next:null},
+      {text:'Refuse', path:'Nero', next:null},
+      {text:'Seek other options', path:'Nora', next:null}
     ]
   },
   76: {
-    text:"Organic resolution strengthens bonds.",
+    text:"The Burning Building: Save a child or a scientist who could cure cancer.",
     options:[
-      {text:'Guide subtly', path:'Nero', next:null},
-      {text:'Analyze outcomes', path:'Micromegas', next:null},
-      {text:'Explore new paths', path:'Sam', next:null}
+      {text:'Save the child', path:'Nero', next:null},
+      {text:'Save the scientist', path:'Wisdom/Reason', next:null},
+      {text:'Try both', path:'Action/Ego', next:null}
     ]
   },
   77: {
-    text:"Subtle intervention accelerates change.",
+    text:"The Sinking Ship: One spot left on lifeboat: elderly, child, or doctor.",
     options:[
-      {text:'Monitor effects', path:'Sam', next:null},
-      {text:'Adjust as needed', path:'Wisdom/Reason', next:null},
-      {text:'Accept results', path:'Surrender/Flow', next:null}
+      {text:'Give to child', path:'Nero', next:null},
+      {text:'Give to doctor', path:'Wisdom/Reason', next:null},
+      {text:'Give to elderly', path:'Surrender/Flow', next:null}
     ]
   },
   78: {
-    text:"Patterns predict future shifts.",
+    text:"The Self-Driving Car: Program to kill passenger or pedestrians.",
     options:[
-      {text:'Prepare strategically', path:'Nora', next:null},
-      {text:'Observe detachedly', path:'Micromegas', next:null},
-      {text:'Flow with predictions', path:'Surrender/Flow', next:null}
+      {text:'Kill passenger', path:'Wisdom/Reason', next:null},
+      {text:'Kill pedestrians', path:'Surrender/Flow', next:null},
+      {text:'Random', path:'Micromegas', next:null}
     ]
   },
   79: {
-    text:"Acceptance of cycle brings peace.",
+    text:"The Time Travel Dilemma: Kill baby Hitler.",
     options:[
-      {text:'Teach resilience', path:'Exuro', next:null},
-      {text:'Reflect on lessons', path:'Nero', next:null},
-      {text:'Explore alternatives', path:'Sam', next:null}
+      {text:'Kill', path:'Exuro', next:null},
+      {text:'Do not kill', path:'Nero', next:null},
+      {text:'Change upbringing', path:'Sam', next:null}
     ]
   },
   80: {
-    text:"Rebuilding trust takes effort.",
+    text:"The AI Dilemma: Shut down sentient AI that is suffering.",
     options:[
-      {text:'Commit fully', path:'Action/Ego', next:null},
-      {text:'Analyze progress', path:'Nora', next:null},
-      {text:'Forgive deeply', path:'Nero', next:null}
+      {text:'Shut down', path:'Nero', next:null},
+      {text:'Keep on', path:'Nora', next:null},
+      {text:'Ignore', path:'Loktal', next:null}
     ]
   },
   81: {
-    text:"Root causes reveal patterns.",
+    text:"The Resource Allocation: Save one child or help five adults with medicine.",
     options:[
-      {text:'Address systematically', path:'Wisdom/Reason', next:null},
-      {text:'Innovate fixes', path:'Nora', next:null},
-      {text:'Reflect holistically', path:'Micromegas', next:null}
+      {text:'Child', path:'Nero', next:null},
+      {text:'Adults', path:'Wisdom/Reason', next:null},
+      {text:'Auction', path:'Loktal', next:null}
     ]
   },
   82: {
-    text:"Forgiveness opens new doors.",
+    text:"The Whistleblower: Report company pollution, lose job.",
     options:[
-      {text:'Move forward boldly', path:'Exuro', next:null},
-      {text:'Explore new relations', path:'Sam', next:null},
-      {text:'Embrace present', path:'Surrender/Flow', next:null}
+      {text:'Report', path:'Wisdom/Reason', next:null},
+      {text:'Silent', path:'Surrender/Flow', next:null},
+      {text:'Anonymous leak', path:'Nora', next:null}
     ]
   },
   83: {
-    text:"Advantage strengthens position.",
+    text:"The Euthanasia Dilemma: Help ill friend die.",
     options:[
-      {text:'Consolidate gains', path:'Loktal', next:null},
-      {text:'Share benefits', path:'Nero', next:null},
-      {text:'Analyze long-term', path:'Wisdom/Reason', next:null}
+      {text:'Help', path:'Nero', next:null},
+      {text:'Refuse', path:'Wisdom/Reason', next:null},
+      {text:'Medical advice', path:'Nora', next:null}
     ]
   },
   84: {
-    text:"Open sharing resolves issues.",
+    text:"The War Dilemma: Bomb village with terrorists and civilians.",
     options:[
-      {text:'Build consensus', path:'Wisdom/Reason', next:null},
-      {text:'Innovate together', path:'Nora', next:null},
-      {text:'Heal emotionally', path:'Nero', next:null}
+      {text:'Bomb', path:'Wisdom/Reason', next:null},
+      {text:'No bomb', path:'Nero', next:null},
+      {text:'Troops', path:'Action/Ego', next:null}
     ]
   },
   85: {
-    text:"Bigger picture brings understanding.",
+    text:"The Cloning Dilemma: Clone loved one for organs.",
     options:[
-      {text:'Detach further', path:'Micromegas', next:null},
-      {text:'Act on insights', path:'Exuro', next:null},
-      {text:'Flow with knowledge', path:'Surrender/Flow', next:null}
+      {text:'Clone', path:'Nora', next:null},
+      {text:'Refuse', path:'Surrender/Flow', next:null},
+      {text:'Organs only', path:'Loktal', next:null}
     ]
   },
   86: {
-    text:"Gentle address mends the relationship.",
+    text:"The Virtual Reality Dilemma: Perfect VR or real world.",
     options:[
-      {text:'Nurture growth', path:'Nero', next:null},
-      {text:'Monitor changes', path:'Sam', next:null},
-      {text:'Accept outcomes', path:'Surrender/Flow', next:null}
+      {text:'VR', path:'Surrender/Flow', next:null},
+      {text:'Real world', path:'Action/Ego', next:null},
+      {text:'Occasionally VR', path:'Wisdom/Reason', next:null}
     ]
   },
   87: {
-    text:"Unfolding reveals truths naturally.",
+    text:"The Animal Testing: Test drug on animals for humans.",
     options:[
-      {text:'Adapt accordingly', path:'Surrender/Flow', next:null},
-      {text:'Seek advice later', path:'Nora', next:null},
-      {text:'Reflect deeply', path:'Micromegas', next:null}
+      {text:'Test', path:'Wisdom/Reason', next:null},
+      {text:'No test', path:'Nero', next:null},
+      {text:'Alternatives', path:'Sam', next:null}
     ]
   },
   88: {
-    text:"External advice provides clarity.",
+    text:"The Environmental Dilemma: Close factory for environment, lose jobs.",
     options:[
-      {text:'Implement suggestions', path:'Action/Ego', next:null},
-      {text:'Analyze options', path:'Wisdom/Reason', next:null},
-      {text:'Integrate intuitively', path:'Sam', next:null}
+      {text:'Close', path:'Nero', next:null},
+      {text:'Keep open', path:'Surrender/Flow', next:null},
+      {text:'Compromise', path:'Wisdom/Reason', next:null}
     ]
   },
   89: {
-    text:"Firm consolidation secures power.",
+    text:"The Genetic Engineering: Edit genes for disease but risk effects.",
     options:[
-      {text:'Expand influence', path:'Loktal', next:null},
-      {text:'Balance with mercy', path:'Nero', next:null},
-      {text:'Plan next moves', path:'Wisdom/Reason', next:null}
+      {text:'Edit', path:'Nora', next:null},
+      {text:'No edit', path:'Surrender/Flow', next:null},
+      {text:'Research more', path:'Micromegas', next:null}
     ]
   },
   90: {
-    text:"Olive branches rebuild unity.",
+    text:"The Privacy Dilemma: Surveillance for crime prevention.",
     options:[
-      {text:'Negotiate peace', path:'Nora', next:null},
-      {text:'Foster collaboration', path:'Sam', next:null},
-      {text:'Heal divisions', path:'Surrender/Flow', next:null}
+      {text:'Implement', path:'Wisdom/Reason', next:null},
+      {text:'Protect privacy', path:'Nero', next:null},
+      {text:'Limited', path:'Sam', next:null}
     ]
   },
   91: {
-    text:"Healing time restores harmony.",
+    text:"The Immigration Dilemma: Accept refugees or protect resources.",
     options:[
-      {text:'Monitor recovery', path:'Micromegas', next:null},
-      {text:'Inspire renewal', path:'Exuro', next:null},
-      {text:'Embrace peace', path:'Nero', next:null}
+      {text:'Accept', path:'Nero', next:null},
+      {text:'Turn away', path:'Loktal', next:null},
+      {text:'With conditions', path:'Wisdom/Reason', next:null}
     ]
   },
   92: {
-    text:"Guidelines bring order to chaos.",
+    text:"The AI Rights: Grant rights to sentient AI.",
     options:[
-      {text:'Enforce strictly', path:'Loktal', next:null},
-      {text:'Adjust flexibly', path:'Wisdom/Reason', next:null},
-      {text:'Observe effects', path:'Sam', next:null}
+      {text:'Grant', path:'Nero', next:null},
+      {text:'Deny', path:'Wisdom/Reason', next:null},
+      {text:'Study', path:'Nora', next:null}
     ]
   },
   93: {
-    text:"Variety sparks innovation.",
+    text:"The Pandemic Dilemma: Lockdown for lives or economy.",
     options:[
-      {text:'Explore fully', path:'Sam', next:null},
-      {text:'Integrate wisely', path:'Nora', next:null},
-      {text:'Flow with diversity', path:'Surrender/Flow', next:null}
+      {text:'Lockdown', path:'Wisdom/Reason', next:null},
+      {text:'No lockdown', path:'Action/Ego', next:null},
+      {text:'Partial', path:'Sam', next:null}
     ]
   },
   94: {
-    text:"Passive observation yields insights.",
+    text:"The Death Penalty: Execute or life imprisonment.",
     options:[
-      {text:'Act on findings', path:'Exuro', next:null},
-      {text:'Analyze deeply', path:'Micromegas', next:null},
-      {text:'Share knowledge', path:'Nero', next:null}
+      {text:'Execute', path:'Loktal', next:null},
+      {text:'Life', path:'Nero', next:null},
+      {text:'Rehabilitate', path:'Surrender/Flow', next:null}
     ]
   },
   95: {
-    text:"Bold implementation transforms reality.",
+    text:"The Abortion Dilemma: Allow in case of rape.",
     options:[
-      {text:'Push boundaries', path:'Exuro', next:null},
-      {text:'Evaluate results', path:'Wisdom/Reason', next:null},
-      {text:'Adapt as needed', path:'Sam', next:null}
+      {text:'Allow', path:'Wisdom/Reason', next:null},
+      {text:'No', path:'Nero', next:null},
+      {text:'Case by case', path:'Sam', next:null}
     ]
   },
   96: {
-    text:"Systematic testing refines ideas.",
+    text:"The Vegan Dilemma: Eat meat or avoid for ethics.",
     options:[
-      {text:'Scale successful ones', path:'Nora', next:null},
-      {text:'Innovate further', path:'Action/Ego', next:null},
-      {text:'Integrate harmoniously', path:'Nero', next:null}
+      {text:'Eat meat', path:'Surrender/Flow', next:null},
+      {text:'Vegan', path:'Nero', next:null},
+      {text:'Vegetarian', path:'Wisdom/Reason', next:null}
     ]
   },
   97: {
-    text:"Harmonious integration creates balance.",
+    text:"The Charity Dilemma: Give to local or global causes.",
     options:[
-      {text:'Nurture growth', path:'Nero', next:null},
-      {text:'Monitor synergy', path:'Micromegas', next:null},
-      {text:'Explore potentials', path:'Sam', next:null}
+      {text:'Local', path:'Nero', next:null},
+      {text:'Global', path:'Wisdom/Reason', next:null},
+      {text:'Both', path:'Sam', next:null}
     ]
   },
   98: {
-    text:"Strategic channeling achieves goals.",
+    text:"The Lying Dilemma: Lie to protect feelings or truth.",
     options:[
-      {text:'Consolidate power', path:'Loktal', next:null},
-      {text:'Promote peace later', path:'Wisdom/Reason', next:null},
-      {text:'Heal internally', path:'Nero', next:null}
+      {text:'Lie', path:'Surrender/Flow', next:null},
+      {text:'Truth', path:'Wisdom/Reason', next:null},
+      {text:'Avoid', path:'Micromegas', next:null}
     ]
   },
   99: {
-    text:"Understanding diffuses hate.",
+    text:"The Stealing Dilemma: Steal food for starving family.",
     options:[
-      {text:'Educate others', path:'Nora', next:null},
-      {text:'Foster empathy', path:'Surrender/Flow', next:null},
-      {text:'Reflect on progress', path:'Micromegas', next:null}
+      {text:'Steal', path:'Action/Ego', next:null},
+      {text:'No', path:'Wisdom/Reason', next:null},
+      {text:'Seek help', path:'Nora', next:null}
     ]
   },
   100: {
-    text:"Internal healing strengthens the nation.",
+    text:"The Betrayal Dilemma: Betray friend to save many.",
     options:[
-      {text:'Build resilience', path:'Exuro', next:null},
-      {text:'Plan future', path:'Wisdom/Reason', next:null},
-      {text:'Embrace present', path:'Nero', next:null}
+      {text:'Betray', path:'Wisdom/Reason', next:null},
+      {text:'No', path:'Nero', next:null},
+      {text:'Another way', path:'Sam', next:null}
     ]
   },
   101: {
-    text:"Faster action accelerates change.",
+    text:"The Sacrifice Dilemma: Sacrifice self for others.",
     options:[
-      {text:'Lead charge', path:'Action/Ego', next:null},
-      {text:'Monitor risks', path:'Nora', next:null},
-      {text:'Adapt dynamically', path:'Sam', next:null}
+      {text:'Sacrifice', path:'Nero', next:null},
+      {text:'No', path:'Action/Ego', next:null},
+      {text:'Save all', path:'Exuro', next:null}
     ]
   },
   102: {
-    text:"More discussion refines consensus.",
+    text:"The Prisoner's Dilemma: Cooperate or defect.",
     options:[
-      {text:'Innovate ideas', path:'Sam', next:null},
-      {text:'Implement carefully', path:'Wisdom/Reason', next:null},
-      {text:'Flow with group', path:'Surrender/Flow', next:null}
+      {text:'Cooperate', path:'Nero', next:null},
+      {text:'Defect', path:'Loktal', next:null},
+      {text:'Communicate', path:'Sam', next:null}
     ]
   },
   103: {
-    text:"Accepting pace brings patience.",
+    text:"The Unfaithful Friend: See friend's spouse cheating.",
     options:[
-      {text:'Observe developments', path:'Micromegas', next:null},
-      {text:'Inspire endurance', path:'Exuro', next:null},
-      {text:'Embrace calm', path:'Surrender/Flow', next:null}
+      {text:'Tell', path:'Wisdom/Reason', next:null},
+      {text:'Nothing', path:'Surrender/Flow', next:null},
+      {text:'Confront spouse', path:'Exuro', next:null}
     ]
   },
   104: {
-    text:"Seizing chances leads to recovery.",
+    text:"A Difficult Choice: Save daughter or niece.",
     options:[
-      {text:'Push limits', path:'Exuro', next:null},
-      {text:'Plan strategically', path:'Nora', next:null},
-      {text:'Reflect on gains', path:'Nero', next:null}
+      {text:'Daughter', path:'Action/Ego', next:null},
+      {text:'Niece', path:'Wisdom/Reason', next:null},
+      {text:'Both', path:'Exuro', next:null}
     ]
   },
   105: {
-    text:"Learning from wait enhances wisdom.",
+    text:"An Office Theft: Co-worker stealing.",
     options:[
-      {text:'Apply insights', path:'Wisdom/Reason', next:null},
-      {text:'Explore new paths', path:'Sam', next:null},
-      {text:'Detach further', path:'Micromegas', next:null}
+      {text:'Tell supervisor', path:'Wisdom/Reason', next:null},
+      {text:'Confront', path:'Nero', next:null},
+      {text:'Ignore', path:'Surrender/Flow', next:null}
     ]
   },
   106: {
-    text:"Present calm restores balance.",
+    text:"Midnight Death: Hasten father's death.",
     options:[
-      {text:'Nurture peace', path:'Nero', next:null},
-      {text:'Innovate quietly', path:'Nora', next:null},
-      {text:'Flow onward', path:'Surrender/Flow', next:null}
+      {text:'Hasten', path:'Loktal', next:null},
+      {text:'Nature', path:'Surrender/Flow', next:null},
+      {text:'Consult', path:'Nero', next:null}
     ]
   },
   107: {
-    text:"Pushing through the storm tests your resilience.",
+    text:"Get Rich: Invest in shady deal.",
     options:[
-      {text:'Embrace the challenge', path:'Action/Ego', next:null},
-      {text:'Learn from the experience', path:'Sam', next:null},
-      {text:'Find inner strength', path:'Nero', next:null}
+      {text:'Invest', path:'Action/Ego', next:null},
+      {text:'Demand details', path:'Nora', next:null},
+      {text:'Decline', path:'Wisdom/Reason', next:null}
     ]
   },
   108: {
-    text:"Finding shelter saves you, but you miss the view.",
+    text:"Telling a Secret: Friend's crime, wrong arrest.",
     options:[
-      {text:'Plan better next time', path:'Wisdom/Reason', next:null},
-      {text:'Appreciate safety', path:'Surrender/Flow', next:null},
-      {text:'Explore alternatives', path:'Nora', next:null}
+      {text:'Tell police', path:'Wisdom/Reason', next:null},
+      {text:'Encourage confess', path:'Nero', next:null},
+      {text:'Nothing', path:'Surrender/Flow', next:null}
     ]
   },
   109: {
-    text:"Embracing the storm brings unexpected insights.",
+    text:"The Life Boat: Group to help on ship.",
     options:[
-      {text:'Share the revelations', path:'Exuro', next:null},
-      {text:'Analyze the lessons', path:'Micromegas', next:null},
-      {text:'Integrate into life', path:'Nero', next:null}
+      {text:'Families', path:'Nero', next:null},
+      {text:'Seniors', path:'Surrender/Flow', next:null},
+      {text:'Young strong', path:'Action/Ego', next:null}
     ]
   },
   110: {
@@ -1169,429 +1149,45 @@ const scenarios = {
     ]
   },
   111: {
-    text:"Gathering information reveals hidden threats.",
+    text:"Sarcastic Friend: Unkind jokes.",
     options:[
-      {text:'Act on the data decisively', path:'Nora', next:null},
-      {text:'Share with the team', path:'Wisdom/Reason', next:null},
-      {text:'Observe developments', path:'Sam', next:null}
+      {text:'Say something', path:'Wisdom/Reason', next:null},
+      {text:'Laugh', path:'Surrender/Flow', next:null},
+      {text:'Confront privately', path:'Nero', next:null}
     ]
   },
   112: {
-    text:"Supporting natural leaders fosters unity.",
+    text:"Hit and Run: Hit homeless, no witness.",
     options:[
-      {text:'Step in if needed', path:'Action/Ego', next:null},
-      {text:'Provide quiet guidance', path:'Nero', next:null},
-      {text:'Allow full autonomy', path:'Surrender/Flow', next:null}
+      {text:'Report anonymous', path:'Nora', next:null},
+      {text:'Confess', path:'Wisdom/Reason', next:null},
+      {text:'Drive away', path:'Loktal', next:null}
     ]
   },
   113: {
     text:"Your assertion leads to mutiny. How do you respond?",
     options:[
-      {text:'Suppress the mutiny with force', path:'Loktal', next:null},
-      {text:'Negotiate to regain control', path:'Wisdom/Reason', next:null},
-      {text:'Accept the shift in power', path:'Surrender/Flow', next:null}
+      {text:'Suppress with force', path:'Loktal', next:null},
+      {text:'Negotiate', path:'Wisdom/Reason', next:null},
+      {text:'Accept shift', path:'Surrender/Flow', next:null}
     ]
   },
   114: {
     text:"Your explanation calms the situation. Now, a moral dilemma arises.",
     options:[
-      {text:'Prioritize logic over emotion', path:'Wisdom/Reason', next:null},
-      {text:'Consider team feelings', path:'Nero', next:null},
+      {text:'Prioritize logic', path:'Wisdom/Reason', next:null},
+      {text:'Consider feelings', path:'Nero', next:null},
       {text:'Act on instinct', path:'Action/Ego', next:null}
     ]
   },
   115: {
-    text:"Letting them lead resolves the crisis differently.",
+    text:"Third Strike: Teen stealing again.",
     options:[
-      {text:'Reflect on the outcome', path:'Micromegas', next:null},
-      {text:'Learn from their approach', path:'Nora', next:null},
-      {text:'Celebrate the success', path:'Exuro', next:null}
+      {text:'Bail out', path:'Surrender/Flow', next:null},
+      {text:'Face consequences', path:'Wisdom/Reason', next:null},
+      {text:'Talk first', path:'Nero', next:null}
     ]
   },
-  116: {
-    text:"Claiming role restores credit.",
-    options:[
-      {text:'Leverage recognition', path:'Loktal', next:null},
-      {text:'Share humbly', path:'Nero', next:null},
-      {text:'Move on gracefully', path:'Surrender/Flow', next:null}
-    ]
-  },
-  117: {
-    text:"Letting it be promotes humility.",
-    options:[
-      {text:'Focus on impact', path:'Micromegas', next:null},
-      {text:'Explore new truths', path:'Sam', next:null},
-      {text:'Embrace detachment', path:'Surrender/Flow', next:null}
-    ]
-  },
-  118: {
-    text:"Documentation preserves knowledge.",
-    options:[
-      {text:'Publish findings', path:'Nora', next:null},
-      {text:'Teach others', path:'Wisdom/Reason', next:null},
-      {text:'Reflect on process', path:'Nero', next:null}
-    ]
-  },
-  119: {
-    text:"Enduring injury builds character.",
-    options:[
-      {text:'Inspire with story', path:'Exuro', next:null},
-      {text:'Analyze mistakes', path:'Nora', next:null},
-      {text:'Heal mindfully', path:'Nero', next:null}
-    ]
-  },
-  120: {
-    text:"Medical help aids recovery.",
-    options:[
-      {text:'Plan prevention', path:'Wisdom/Reason', next:null},
-      {text:'Adapt lifestyle', path:'Surrender/Flow', next:null},
-      {text:'Explore therapies', path:'Sam', next:null}
-    ]
-  },
-  121: {
-    text:"Reflection on heroism brings wisdom.",
-    options:[
-      {text:'Share insights', path:'Nero', next:null},
-      {text:'Detach from ego', path:'Micromegas', next:null},
-      {text:'Act again boldly', path:'Action/Ego', next:null}
-    ]
-  },
-  122: {
-    text:"Pursuit captures the attacker.",
-    options:[
-      {text:'Seek justice firmly', path:'Loktal', next:null},
-      {text:'Forgive if possible', path:'Nero', next:null},
-      {text:'Analyze system flaws', path:'Wisdom/Reason', next:null}
-    ]
-  },
-  123: {
-    text:"Analysis prevents future attacks.",
-    options:[
-      {text:'Implement changes', path:'Nora', next:null},
-      {text:'Educate community', path:'Exuro', next:null},
-      {text:'Observe impacts', path:'Sam', next:null}
-    ]
-  },
-  124: {
-    text:"Comfort aids the victim's healing.",
-    options:[
-      {text:'Build support network', path:'Surrender/Flow', next:null},
-      {text:'Reflect together', path:'Nero', next:null},
-      {text:'Advocate for change', path:'Action/Ego', next:null}
-    ]
-  },
-  125: {
-    text:"Questioning hesitation leads to growth.",
-    options:[
-      {text:'Explore motivations', path:'Sam', next:null},
-      {text:'Accept self', path:'Nero', next:null},
-      {text:'Train for future', path:'Wisdom/Reason', next:null}
-    ]
-  },
-  126: {
-    text:"Accepting outcome brings peace.",
-    options:[
-      {text:'Detach further', path:'Micromegas', next:null},
-      {text:'Learn detachment', path:'Surrender/Flow', next:null},
-      {text:'Reflect philosophically', path:'Nero', next:null}
-    ]
-  },
-  127: {
-    text:"Learning prepares for next time.",
-    options:[
-      {text:'Plan strategies', path:'Wisdom/Reason', next:null},
-      {text:'Practice scenarios', path:'Action/Ego', next:null},
-      {text:'Explore ethics', path:'Nora', next:null}
-    ]
-  },
-  128: {
-    text:"Sharing wisdom inspires others.",
-    options:[
-      {text:'Teach actively', path:'Exuro', next:null},
-      {text:'Write teachings', path:'Nora', next:null},
-      {text:'Live example', path:'Nero', next:null}
-    ]
-  },
-  129: {
-    text:"New philosophies expand horizons.",
-    options:[
-      {text:'Integrate insights', path:'Micromegas', next:null},
-      {text:'Debate ideas', path:'Sam', next:null},
-      {text:'Meditate deeply', path:'Surrender/Flow', next:null}
-    ]
-  },
-  130: {
-    text:"Mindful rebuilding creates stability.",
-    options:[
-      {text:'Flow with process', path:'Surrender/Flow', next:null},
-      {text:'Plan carefully', path:'Wisdom/Reason', next:null},
-      {text:'Act decisively', path:'Action/Ego', next:null}
-    ]
-  },
-  131: {
-    text:"Bold moves accelerate rebuilding.",
-    options:[
-      {text:'Take risks', path:'Exuro', next:null},
-      {text:'Balance ambition', path:'Nero', next:null},
-      {text:'Explore opportunities', path:'Sam', next:null}
-    ]
-  },
-  132: {
-    text:"Strategic planning ensures success.",
-    options:[
-      {text:'Execute plan', path:'Loktal', next:null},
-      {text:'Monitor progress', path:'Wisdom/Reason', next:null},
-      {text:'Adapt as needed', path:'Nora', next:null}
-    ]
-  },
-  133: {
-    text:"Curiosities lead to discoveries.",
-    options:[
-      {text:'Pursue passionately', path:'Sam', next:null},
-      {text:'Analyze findings', path:'Micromegas', next:null},
-      {text:'Share excitement', path:'Exuro', next:null}
-    ]
-  },
-  134: {
-    text:"Aggressive application transforms outcomes.",
-    options:[
-      {text:'Push forward', path:'Exuro', next:null},
-      {text:'Evaluate impacts', path:'Wisdom/Reason', next:null},
-      {text:'Integrate lessons', path:'Nero', next:null}
-    ]
-  },
-  135: {
-    text:"Innovative solutions prevent recurrence.",
-    options:[
-      {text:'Implement creatively', path:'Nora', next:null},
-      {text:'Test rigorously', path:'Wisdom/Reason', next:null},
-      {text:'Adapt flexibly', path:'Sam', next:null}
-    ]
-  },
-  136: {
-    text:"Acceptance leads to adaptation.",
-    options:[
-      {text:'Embrace change', path:'Surrender/Flow', next:null},
-      {text:'Reflect wisely', path:'Nero', next:null},
-      {text:'Explore new paths', path:'Micromegas', next:null}
-    ]
-  },
-  137: {
-    text:"Gentle enforcement gains acceptance.",
-    options:[
-      {text:'Nurture adoption', path:'Nero', next:null},
-      {text:'Demonstrate value', path:'Exuro', next:null},
-      {text:'Allow time', path:'Surrender/Flow', next:null}
-    ]
-  },
-  138: {
-    text:"Benefits convince resisters.",
-    options:[
-      {text:'Educate logically', path:'Wisdom/Reason', next:null},
-      {text:'Innovate improvements', path:'Nora', next:null},
-      {text:'Celebrate wins', path:'Sam', next:null}
-    ]
-  },
-  139: {
-    text:"Adaptation time smooths transition.",
-    options:[
-      {text:'Monitor gently', path:'Micromegas', next:null},
-      {text:'Support individuals', path:'Nero', next:null},
-      {text:'Flow with changes', path:'Surrender/Flow', next:null}
-    ]
-  },
-  140: {
-    text:"Strict control maintains order.",
-    options:[
-      {text:'Expand rules', path:'Loktal', next:null},
-      {text:'Balance with freedom', path:'Wisdom/Reason', next:null},
-      {text:'Observe creativity', path:'Sam', next:null}
-    ]
-  },
-  141: {
-    text:"Feedback adjustments foster creativity.",
-    options:[
-      {text:'Encourage ideas', path:'Sam', next:null},
-      {text:'Integrate innovations', path:'Nora', next:null},
-      {text:'Celebrate diversity', path:'Exuro', next:null}
-    ]
-  },
-  142: {
-    text:"Long-term effects reveal truths.",
-    options:[
-      {text:'Analyze deeply', path:'Micromegas', next:null},
-      {text:'Adapt policies', path:'Wisdom/Reason', next:null},
-      {text:'Accept evolution', path:'Surrender/Flow', next:null}
-    ]
-  },
-  143: {
-    text:"More reforms drive progress.",
-    options:[
-      {text:'Push relentlessly', path:'Exuro', next:null},
-      {text:'Plan sequentially', path:'Nora', next:null},
-      {text:'Inspire masses', path:'Loktal', next:null}
-    ]
-  },
-  144: {
-    text:"Monitoring refines the system.",
-    options:[
-      {text:'Optimize continuously', path:'Nora', next:null},
-      {text:'Celebrate improvements', path:'Nero', next:null},
-      {text:'Explore extensions', path:'Sam', next:null}
-    ]
-  },
-  145: {
-    text:"Celebrating progress builds morale.",
-    options:[
-      {text:'Motivate further', path:'Exuro', next:null},
-      {text:'Reflect collectively', path:'Nero', next:null},
-      {text:'Plan next phase', path:'Wisdom/Reason', next:null}
-    ]
-  },
-  146: {
-    text:"Teaching the lesson empowers others.",
-    options:[
-      {text:'Guide disciples', path:'Nero', next:null},
-      {text:'Document wisdom', path:'Nora', next:null},
-      {text:'Inspire action', path:'Action/Ego', next:null}
-    ]
-  },
-  147: {
-    text:"Inner strengths reveal potential.",
-    options:[
-      {text:'Develop systematically', path:'Wisdom/Reason', next:null},
-      {text:'Explore boundaries', path:'Sam', next:null},
-      {text:'Embrace fully', path:'Surrender/Flow', next:null}
-    ]
-  },
-  148: {
-    text:"Simplicity brings freedom.",
-    options:[
-      {text:'Live minimally', path:'Nero', next:null},
-      {text:'Detach possessions', path:'Micromegas', next:null},
-      {text:'Flow unencumbered', path:'Surrender/Flow', next:null}
-    ]
-  },
-  149: {
-    text:"Iron will maintains control.",
-    options:[
-      {text:'Rule decisively', path:'Loktal', next:null},
-      {text:'Seek advisors', path:'Wisdom/Reason', next:null},
-      {text:'Reflect on corruption', path:'Nero', next:null}
-    ]
-  },
-  150: {
-    text:"Checks prevent corruption.",
-    options:[
-      {text:'Balance power', path:'Nora', next:null},
-      {text:'Foster accountability', path:'Nero', next:null},
-      {text:'Adapt systems', path:'Sam', next:null}
-    ]
-  },
-  151: {
-    text:"Reflection halts corruption.",
-    options:[
-      {text:'Change course', path:'Exuro', next:null},
-      {text:'Detach from power', path:'Micromegas', next:null},
-      {text:'Surrender ego', path:'Surrender/Flow', next:null}
-    ]
-  },
-  152: {
-    text:"More power enhances impact.",
-    options:[
-      {text:'Wield boldly', path:'Action/Ego', next:null},
-      {text:'Negotiate wisely', path:'Wisdom/Reason', next:null},
-      {text:'Share gains', path:'Nero', next:null}
-    ]
-  },
-  153: {
-    text:"Wise use maximizes benefits.",
-    options:[
-      {text:'Optimize outcomes', path:'Wisdom/Reason', next:null},
-      {text:'Innovate applications', path:'Nora', next:null},
-      {text:'Flow with limitations', path:'Surrender/Flow', next:null}
-    ]
-  },
-  154: {
-    text:"Sharing empowers community.",
-    options:[
-      {text:'Collaborate freely', path:'Sam', next:null},
-      {text:'Build networks', path:'Exuro', next:null},
-      {text:'Foster growth', path:'Nero', next:null}
-    ]
-  },
-  155: {
-    text:"Renewed vision inspires return.",
-    options:[
-      {text:'Lead transformation', path:'Exuro', next:null},
-      {text:'Plan comeback', path:'Loktal', next:null},
-      {text:'Share insights', path:'Nero', next:null}
-    ]
-  },
-  156: {
-    text:"Guiding from afar influences subtly.",
-    options:[
-      {text:'Observe impacts', path:'Micromegas', next:null},
-      {text:'Advise wisely', path:'Wisdom/Reason', next:null},
-      {text:'Allow independence', path:'Surrender/Flow', next:null}
-    ]
-  },
-  157: {
-    text:"Independence strengthens others.",
-    options:[
-      {text:'Empower fully', path:'Nero', next:null},
-      {text:'Monitor growth', path:'Nora', next:null},
-      {text:'Celebrate autonomy', path:'Sam', next:null}
-    ]
-  },
-  158: {
-    text:"Willpower sustains through depletion.",
-    options:[
-      {text:'Achieve goals', path:'Loktal', next:null},
-      {text:'Seek recovery', path:'Nora', next:null},
-      {text:'Accept burnout', path:'Micromegas', next:null}
-    ]
-  },
-  159: {
-    text:"Help sustains your shine.",
-    options:[
-      {text:'Collaborate effectively', path:'Nora', next:null},
-      {text:'Build support', path:'Nero', next:null},
-      {text:'Adapt roles', path:'Sam', next:null}
-    ]
-  },
-  160: {
-    text:"Accepting limits brings rest.",
-    options:[
-      {text:'Heal fully', path:'Surrender/Flow', next:null},
-      {text:'Reflect on boundaries', path:'Wisdom/Reason', next:null},
-      {text:'Explore alternatives', path:'Action/Ego', next:null}
-    ]
-  },
-  161: {
-    text:"More growth expands empowerment.",
-    options:[
-      {text:'Facilitate deeply', path:'Nero', next:null},
-      {text:'Innovate methods', path:'Nora', next:null},
-      {text:'Celebrate milestones', path:'Exuro', next:null}
-    ]
-  },
-  162: {
-    text:"Studying process yields knowledge.",
-    options:[
-      {text:'Apply findings', path:'Sam', next:null},
-      {text:'Analyze patterns', path:'Micromegas', next:null},
-      {text:'Share discoveries', path:'Wisdom/Reason', next:null}
-    ]
-  },
-  163: {
-    text:"Collective celebration unites.",
-    options:[
-      {text:'Plan future', path:'Loktal', next:null},
-      {text:'Reflect together', path:'Nero', next:null},
-      {text:'Flow with joy', path:'Surrender/Flow', next:null}
-    ]
-  }
 };
 /* STATE */
 let currentScenarioId = 0;
@@ -1622,7 +1218,7 @@ function displayMessage(sender, msg) {
   const bubble = document.createElement('div');
   bubble.className = 'chat-bubble' + (sender === username ? ' me' : '');
   const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-  bubble.innerHTML = `${esc(sender)} ${time}${esc(msg)}`;
+  bubble.innerHTML = `<div class="chat-meta">${esc(sender)} <span style="color:#666;">${time}</span></div>${esc(msg)}`;
   row.appendChild(avatar);
   row.appendChild(bubble);
   chatMessages.appendChild(row);
@@ -1679,7 +1275,7 @@ function showAnalysis() {
       (MBTI_MAPPINGS[d]||[]).forEach(m => {
         msg += `- ${m}: ${MBTI_DESCRIPTIONS[m] || 'No description available'}\n`;
       });
-      msg += `\nStrengths: ${PATH_STRENGTHS[d]}\nWeaknesses: ${PATH_WEAKNESSES[d]}\nAdvice: Integrate this path with others for balance.\n`;
+      msg += '\nStrengths: [Expanded strengths based on path]\nWeaknesses: [Expanded weaknesses]\nAdvice: Integrate this path with others for balance.\n';
     });
   }
   msg += '\nOverall Insights: Your choices indicate a blend of paths. Consider how these align with your daily life for personal growth.';
@@ -1760,7 +1356,9 @@ function handleInput() {
   }
 }
 // Event listeners
-sendBtn.addEventListener('click', handleInput);
+sendBtn.addEventListener('click', () => {
+  handleInput();
+});
 chatInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
     handleInput();
@@ -1768,5 +1366,11 @@ chatInput.addEventListener('keypress', (e) => {
 });
 // Start
 chatMessages.innerHTML = '';
-startGame();
+gameStarted = true;
+chatInput.disabled = false;
+sendBtn.disabled = false;
+chatInput.placeholder = "Type /start to begin...";
+displayMessage('SYSTEM', 'Welcome to The Mind Game Text Adventure. Type /start to begin the journey.');
 </script>
+</body>
+</html>
