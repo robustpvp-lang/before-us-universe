@@ -2,337 +2,269 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Before Us Universe — Media Player</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Custom Media Player for Before Us Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #001a1a;
-            --fg: #00ffff;
-            --accent: #00aaff;
-            --border: #00cccc;
-            --panel-bg: #002b2b;
-            --text-gray: #e6f7f7;
-            --muted: #00aaaa;
-            --online: #00ff9d;
-            --yahoo-blue: #1e73be;
-            --yahoo-dark: #0961a6;
-        }
         body {
-            margin: 0;
-            background: var(--bg);
+            background-color: #000; /* Dark space background */
+            color: #00ffff; /* Teal/cyan accent for text */
             font-family: 'Roboto Mono', monospace;
-            color: var(--fg);
             display: flex;
-            flex-direction: column;
-            align-items: stretch;
             justify-content: center;
+            align-items: center;
             height: 100vh;
-            overflow: auto;
-            transition: filter 0.4s;
-        }
-        #player-container {
-            width: 100%;
-            height: auto;
-            border-bottom: 2px solid var(--border);
-            background: rgba(0, 20, 40, 0.8);
-            box-shadow: 0 0 20px var(--fg);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px 0;
-        }
-        .aplayer {
-            background: transparent !important;
-            border: none !important;
-            width: 100%;
-            max-width: 800px;
-            font-family: 'Press Start 2P', cursive !important;
-            font-size: 12px !important; /* Larger font */
-            color: var(--fg) !important;
-            display: flex !important;
-            flex-direction: column !important;
-            height: auto !important;
-        }
-        .aplayer .aplayer-body {
-            background: var(--panel-bg) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 4px;
-            padding: 5px;
-            height: auto !important;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-        }
-       
-        /* 1. Fix the layout of the info/title area */
-        .aplayer .aplayer-info {
-            display: flex !important;
-            flex-direction: column; /* Stack title and time vertically */
-            justify-content: center;
-            height: 100%;
-            flex-grow: 1;
-            padding: 0 10px;
-        }
-        /* 2. Fix the layout of the controls/progress bar */
-        .aplayer .aplayer-controller {
-            display: flex !important;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        /* 3. Give title more visibility */
-        .aplayer-title, .aplayer-author {
-            color: var(--fg) !important;
-            text-shadow: 0 0 5px var(--fg);
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 300px; /* Increased max width */
-            display: block !important;
-            line-height: 1.4;
-        }
-       
-        /* 4. Increase bar wrap margin to fit time better */
-        .aplayer-bar-wrap {
-            height: 4px !important;
-            margin: 0 10px;
-            flex-grow: 1; /* Allow the bar to expand */
-        }
-        .aplayer-bar, .aplayer-played {
-            background-color: var(--accent) !important;
-            height: 4px !important;
-        }
-        .aplayer-play .aplayer-icon,
-        .aplayer-pause .aplayer-icon,
-        .aplayer-icon {
-            fill: var(--fg) !important;
-            stroke: var(--border) !important;
-            width: 20px; /* Larger icons */
-            height: 20px;
-        }
-       
-        /* 5. Fix time display */
-        .aplayer .aplayer-time {
-            font-size: 12px;
-            display: block;
-            text-align: right;
-            margin-left: auto; /* Push time to the right */
-        }
-        /* Keep lyrics hidden */
-        .aplayer .aplayer-lrc { display: none; }
-       
-        /* Show and enlarge tracklist */
-        .aplayer .aplayer-list {
-            display: block !important;
-            background: var(--panel-bg) !important;
-            border: 1px solid var(--border) !important;
-            border-top: none !important;
-            border-radius: 0 0 4px 4px;
-            margin-top: 10px;
-        }
-        .aplayer .aplayer-list ol {
-            max-height: 60vh !important;
-            overflow-y: auto !important;
-            font-size: 14px !important;
-            list-style: none;
-            padding: 0;
             margin: 0;
+            position: relative;
         }
-        .aplayer .aplayer-list li {
-            padding: 15px 10px !important;
-            border-top: 1px solid var(--border) !important;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .aplayer .aplayer-list li:hover,
-        .aplayer .aplayer-list li.aplayer-list-light {
-            background: rgba(0, 170, 255, 0.1) !important;
-        }
-       
-        /* static render layer */
-        #static-overlay {
-            position: fixed;
-            inset: 0;
-            opacity: 0;
-            pointer-events: none;
-            mix-blend-mode: screen;
-            z-index: 50;
-            transition: opacity 0.3s linear;
-            object-fit: cover;
+
+        /* CRT scanline effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-        }
-        /* glitch keyframes */
-        @keyframes glitchshake {
-            0% { transform: translate(0,0); }
-            20% { transform: translate(3px,-2px); }
-            40% { transform: translate(-3px,1px); }
-            60% { transform: translate(2px,2px); }
-            80% { transform: translate(-2px,-3px); }
-            100% { transform: translate(0,0); }
-        }
-        @keyframes luxpulse {
-            0% { box-shadow: 0 0 10px var(--fg); }
-            50% { box-shadow: 0 0 25px var(--fg); }
-            100% { box-shadow: 0 0 10px var(--fg); }
-        }
-        .glitching {
-            animation: glitchshake 0.25s infinite;
-        }
-        .luxpulse {
-            animation: luxpulse 1s infinite;
-        }
-        /* hidden whisper popup */
-        #whisper {
-            position: fixed;
-            bottom: 10%;
-            width: 100%;
-            text-align: center;
-            color: var(--fg);
-            font-size: 24px;
-            text-shadow: 0 0 20px var(--fg);
-            opacity: 0;
-            transition: opacity 1.2s;
-            z-index: 200;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                rgba(0, 0, 0, 0.05) 1px,
+                transparent 2px
+            );
             pointer-events: none;
-            font-family: Georgia, serif;
-            letter-spacing: 2px;
+            z-index: 1;
+        }
+
+        .media-player {
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark panel */
+            border: 2px solid #ffcc00; /* Yellow accent border */
+            padding: 5px;
+            border-radius: 4px; /* Slight rounding for retro feel */
+            box-shadow: 0 0 10px #00ffff; /* Cyan glow */
+            position: relative;
+            z-index: 2;
+            width: 90%;
+            max-width: 800px; /* Long and thin, like the server selection panel */
+            height: 40px; /* Thin height */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        #display {
+            background-color: #000;
+            border: 1px solid #ffcc00;
+            padding: 2px 5px;
+            flex-grow: 1;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            color: #ffcc00;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            white-space: nowrap;
+            margin-right: 10px;
+        }
+
+        #display marquee {
+            width: 100%;
+        }
+
+        .time-display {
+            font-size: 10px;
+            color: #00ffff;
+            white-space: nowrap;
+            margin-right: 10px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .controls button {
+            background-color: #00ffff; /* Cyan buttons */
+            color: #000;
+            border: 2px solid #ffcc00; /* Yellow border */
+            font-family: 'Roboto Mono', monospace;
+            padding: 2px 5px;
+            margin: 0 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 10px;
+            min-width: 30px;
+        }
+
+        .controls button:hover {
+            background-color: #ffcc00;
+            color: #00ffff;
+            box-shadow: 0 0 5px #00ffff;
+        }
+
+        .controls button:active {
+            transform: translateY(1px);
+        }
+
+        /* Glitch animation */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-1px, 1px); }
+            40% { transform: translate(1px, -1px); }
+            60% { transform: translate(-1px, 1px); }
+            80% { transform: translate(1px, -1px); }
+            100% { transform: translate(0); }
+        }
+
+        .controls button:hover {
+            animation: glitch 0.5s infinite;
+        }
+
+        .progress-container {
+            background-color: #333;
+            border: 1px solid #ffcc00;
+            height: 4px;
+            width: 100px; /* Compact progress bar */
+            position: relative;
+            margin-right: 10px;
+        }
+
+        #progress {
+            background-color: #00ffff;
+            width: 0%;
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        /* Responsive for mobile */
+        @media (max-width: 600px) {
+            .media-player {
+                height: 50px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            #display {
+                flex-basis: 100%;
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+
+            .time-display, .progress-container {
+                margin-right: 5px;
+            }
+
+            .controls button {
+                padding: 2px 4px;
+                font-size: 8px;
+                margin: 0 1px;
+                min-width: 25px;
+            }
         }
     </style>
 </head>
 <body>
-<div id="player-container">
-    <div id="aplayer"></div>
-</div>
-<video id="static-overlay" loop muted playsinline src="https://static.vecteezy.com/system/resources/previews/026/716/053/non_2x/user-upload.mp4"></video>
-<div id="whisper">“…you should not be here…”</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script>
-<script>
-async function loadPlaylist() {
-    try {
-        const response = await fetch("playlist.json");
-        if (!response.ok) throw new Error(`Failed to load playlist: ${response.statusText}`);
-        const playlist = await response.json();
-        const shuffle = (array) => array.sort(() => Math.random() - 0.5);
-        shuffle(playlist);
-        const player = new APlayer({
-            container: document.getElementById('aplayer'),
-            audio: playlist,
-            autoplay: false,
-            theme: '#0ff',
-            loop: 'all',
-            order: 'random',
-            mini: false,
-            fixed: false
+    <div class="media-player">
+        <div id="display">
+            <marquee behavior="scroll" direction="left" scrollamount="3">No track playing</marquee>
+        </div>
+        <div class="progress-container">
+            <div id="progress"></div>
+        </div>
+        <span class="time-display" id="current-time">0:00 / <span id="duration">0:00</span></span>
+        <div class="controls">
+            <button id="prev">&lt;&lt;</button>
+            <button id="play">&gt;</button>
+            <button id="pause">||</button>
+            <button id="stop">[]</button>
+            <button id="next">&gt;&gt;</button>
+        </div>
+        <audio id="audio-player"></audio>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audio-player');
+        const playBtn = document.getElementById('play');
+        const pauseBtn = document.getElementById('pause');
+        const stopBtn = document.getElementById('stop');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const display = document.querySelector('#display marquee');
+        const progress = document.getElementById('progress');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+
+        const playlist = [
+            { title: '90s Kid s StarCraft Cosmic War Training - Public Domain', src: 'https://drive.google.com/uc?export=download&id=1rXV071LLvfhGBlRL-WOZSYwpUtr90ncB' },
+            { title: 'Cosmic War in a Nine-Year-Old s Head - Public Domain', src: 'https://drive.google.com/uc?export=download&id=1AK2SJBphpV7RkmjxiNjEsFaj9FF937pv' },
+            { title: 'Erebus IV Nero vs - Public Domain', src: 'https://drive.google.com/uc?export=download&id=1QS8plXbPocr4k5h6jSgAfEHSzzo8B8XM' },
+            { title: 'Lux Commanders Destructive Strategy Psychological War Culture - Public Domain', src: 'https://drive.google.com/uc?export=download&id=1CDQG6vzI084PZOClRM5lT3dQdKxBhfKV' },
+            { title: 'Micromegas Cosmic Titan Repairman With Humility - Public Domain', src: 'https://drive.google.com/uc?export=download&id=1Zoeni1s1wpAOOzq9qDTtbRNTzRmHMD54' },
+            { title: 'Nora Warrior Scientist Defies Lux Command - Public Domain', src: 'https://drive.google.com/uc?export=download&id=17skFbi1aQWU2J27dmLHiAoLDD83bcMeM' }
+        ];
+
+        let currentIndex = 0;
+        let isPlaying = false;
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function loadTrack(index) {
+            audio.src = playlist[index].src;
+            display.textContent = playlist[index].title;
+            audio.load();
+            audio.addEventListener('loadedmetadata', () => {
+                durationEl.textContent = formatTime(audio.duration);
+                currentTimeEl.textContent = `0:00 / ${durationEl.textContent}`;
+            }, { once: true });
+        }
+
+        loadTrack(currentIndex);
+
+        playBtn.addEventListener('click', () => {
+            audio.play();
+            isPlaying = true;
         });
-        // --- DISTORTION + GLITCH ENGINE SETUP ---
-        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let trackSource = null; // Will store the MediaElementSourceNode
-        let distortionActive = false;
-        let distortionTimer = null;
-        let intervals = [];
-        const staticOverlay = document.getElementById("static-overlay");
-        const whisper = document.getElementById("whisper");
-        const container = document.getElementById("player-container");
-        let staticNoise = null; // Declare staticNoise here
-        // Function to set up the Web Audio graph (Run only ONCE)
-        function setupAudioContext() {
-            if (trackSource) return; // Already set up
-            // Create the source from the existing APlayer audio element
-            trackSource = audioCtx.createMediaElementSource(player.audio);
-           
-            // Connect the source directly to the destination
-            trackSource.connect(audioCtx.destination);
-           
-            console.log("Web Audio Context initialized and connected.");
-        }
-        function createStaticNoise() {
-            const bufferSize = audioCtx.sampleRate * 3;
-            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.07;
-            const noise = audioCtx.createBufferSource();
-            noise.buffer = buffer;
-            noise.loop = true;
-            const gain = audioCtx.createGain();
-            gain.gain.value = 0.12;
-            noise.connect(gain).connect(audioCtx.destination);
-            return { noise, gain };
-        }
-        function whisperEvent() {
-            whisper.textContent = Math.random() > 0.5
-                ? "“…you opened the wrong door…”"
-                : "“…Tiamat is awake…”";
-            whisper.style.opacity = 1;
-            setTimeout(() => whisper.style.opacity = 0, 2500);
-        }
-        function activateDistortionMode() {
-            if (distortionActive) return;
-            // Ensure audio context is resumed (required for all audio manipulation)
-            audioCtx.resume();
-           
-            distortionActive = true;
-            staticOverlay.currentTime = 0;
-            staticOverlay.play().catch(console.error);
-            staticOverlay.style.opacity = 0.25;
-            container.classList.add("luxpulse");
-            intervals.push(setInterval(() => { container.classList.add("glitching"); setTimeout(() => container.classList.remove("glitching"), 300); }, 4000));
-            intervals.push(setInterval(() => { document.body.style.filter = "invert(1)"; setTimeout(() => document.body.style.filter = "invert(0)", 500); }, 10000));
-            intervals.push(setInterval(() => { if (Math.random() < 0.33) whisperEvent(); }, 12000));
-           
-            const sn = createStaticNoise();
-            sn.noise.start();
-            staticNoise = sn;
-           
-            intervals.push(setInterval(() => {
-                // Adjust volume and rate directly on the player's underlying audio element
-                player.audio.volume = 0.7 + Math.random() * 0.25;
-                player.audio.playbackRate = 1 + (Math.random() * 0.07 - 0.035);
-            }, 8000));
-        }
-        function resetDistortion() {
-            distortionActive = false;
-            staticOverlay.pause();
-            staticOverlay.currentTime = 0;
-            staticOverlay.style.opacity = 0;
-            container.classList.remove("luxpulse", "glitching");
-            document.body.style.filter = "invert(0)";
-            if (staticNoise) { staticNoise.noise.stop(); staticNoise = null; }
-           
-            // Set volume and rate back to normal
-            player.audio.playbackRate = 1.0;
-            player.audio.volume = 1.0;
-           
-            if (distortionTimer) { clearTimeout(distortionTimer); distortionTimer = null; }
-            intervals.forEach(clearInterval);
-            intervals = [];
-        }
-        // --- PLAYER HOOKS ---
-        player.on('play', () => {
-            // CRITICAL STEP: Setup the context only once
-            setupAudioContext();
-           
-            resetDistortion();
-            audioCtx.resume();
-           
-            // Start the timer for distortion mode
-            distortionTimer = setTimeout(activateDistortionMode, 30000);
+
+        pauseBtn.addEventListener('click', () => {
+            audio.pause();
+            isPlaying = false;
         });
-       
-        // Ensure distortion is reset on pause/end/track switch
-        player.on('pause', resetDistortion);
-        player.on('ended', resetDistortion);
-        player.on('listswitch', resetDistortion);
-        window.addEventListener('beforeunload', resetDistortion);
-    } catch (error) {
-        console.error('Playlist load failed:', error);
-        document.getElementById("aplayer").innerHTML = "<p style='color: red; text-align: center;'>Error loading playlist. Please try again.</p>";
-    }
-}
-loadPlaylist();
-</script>
+
+        stopBtn.addEventListener('click', () => {
+            audio.pause();
+            audio.currentTime = 0;
+            isPlaying = false;
+            progress.style.width = '0%';
+            currentTimeEl.textContent = `0:00 / ${durationEl.textContent}`;
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % playlist.length;
+            loadTrack(currentIndex);
+            if (isPlaying) audio.play();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+            loadTrack(currentIndex);
+            if (isPlaying) audio.play();
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            const percent = (audio.currentTime / audio.duration) * 100;
+            progress.style.width = `${percent}%`;
+            currentTimeEl.textContent = `${formatTime(audio.currentTime)} / ${durationEl.textContent}`;
+        });
+
+        audio.addEventListener('ended', () => {
+            nextBtn.click();
+        });
+    </script>
 </body>
 </html>
