@@ -10,7 +10,7 @@
         --color-primary: #00FFFF; /* Cyan */
         --color-secondary-text: #CFD8DC;
         --color-background: #050f0e;
-      
+     
         --glow-primary: 0 0 10px rgba(0, 255, 255, 0.7);
     }
     body {
@@ -31,7 +31,6 @@
         padding: 20px;
         position: relative;
     }
-
     /* --- Companion Disclaimer Header --- */
     .companion-disclaimer {
         font-family: 'VT323', monospace;
@@ -51,7 +50,6 @@
         0%, 100% { opacity: 1; text-shadow: var(--glow-primary); }
         50% { opacity: 0.3; text-shadow: none; }
     }
-
     /* --- DOS/CMD Source Code Overlay --- */
     .source-code-overlay {
         position: relative;
@@ -66,9 +64,8 @@
         border-bottom: 1px dashed rgba(0, 255, 255, 0.3);
         pointer-events: none;
         z-index: 2;
-        background-color: #000; 
+        background-color: #000;
     }
-
     /* The grid lines sit on top of video but behind text */
     .source-code-overlay::after {
         content: "";
@@ -83,10 +80,9 @@
             transparent 3px,
             rgba(0, 20, 20, 0.5) 4px
         );
-        z-index: 2; 
+        z-index: 2;
         pointer-events: none;
     }
-
     /* Video Styling */
     .background-video {
         position: absolute;
@@ -95,12 +91,12 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        z-index: 1; 
-        opacity: 0.6; 
+        z-index: 1;
+        opacity: 0.6;
         /* Optional filter to make the video look more 'cyber' */
-        filter: contrast(1.2) hue-rotate(180deg) grayscale(0.3); 
+        filter: contrast(1.2) hue-rotate(180deg) grayscale(0.3);
     }
-  
+ 
     .code-line {
         font-family: 'VT323', monospace;
         color: var(--color-primary);
@@ -112,11 +108,10 @@
         text-shadow: 0 0 2px var(--color-primary);
         z-index: 3; /* Topmost layer */
     }
-
     /* Glitch Animation */
     .glitch-anim {
         animation: codeScroll 15s linear infinite, textTwitch 0.3s infinite !important;
-        color: #fff !important; 
+        color: #fff !important;
         opacity: 1 !important;
     }
     @keyframes textTwitch {
@@ -127,33 +122,31 @@
         80% { transform: translateX(2px) skewX(5deg); }
         100% { transform: translateX(0) skewX(0deg); }
     }
-
-    /* Drifting Code Configuration 
-       Note: nth-child numbers are shifted by +1 because the video is now child #1 
+    /* Drifting Code Configuration
+       Note: nth-child numbers are shifted by +1 because the video is now child #1
     */
     .code-line:nth-child(2) { top: 5%; left: 100%; animation-duration: 12s; }
     .code-line:nth-child(3) { top: 15%; left: 100%; animation-duration: 18s; animation-delay: -5s; font-size: 1rem;}
     .code-line:nth-child(4) { top: 25%; left: 100%; animation-duration: 15s; animation-delay: -2s; }
-    
+   
     /* The Glitch Line */
     .code-line:nth-child(5) { top: 35%; left: 100%; animation-duration: 12s; animation-delay: -8s; font-size: 1.4rem;}
-  
+ 
     .code-line:nth-child(6) { top: 45%; left: 100%; animation-duration: 14s; animation-delay: -7s; }
     .code-line:nth-child(7) { top: 55%; left: 100%; animation-duration: 19s; animation-delay: -1s; }
     .code-line:nth-child(8) { top: 65%; left: 100%; animation-duration: 25s; animation-delay: -15s; font-size: 0.9rem;}
-  
+ 
     /* New Lines */
     .code-line:nth-child(9) { top: 75%; left: 100%; animation-duration: 22s; animation-delay: -3s; }
     .code-line:nth-child(10) { top: 85%; left: 100%; animation-duration: 16s; animation-delay: -10s; }
     .code-line:nth-child(11) { top: 92%; left: 100%; animation-duration: 20s; animation-delay: -6s; }
     .code-line:nth-child(12) { top: 10%; left: 100%; animation-duration: 28s; animation-delay: -12s; font-size: 0.8rem; }
     .code-line:nth-child(13) { top: 80%; left: 100%; animation-duration: 13s; animation-delay: -2s; }
-    
+   
     @keyframes codeScroll {
         0% { left: 100%; }
         100% { left: -100%; }
     }
-
     /* --- Disclaimer Text --- */
     .disclaimer {
         font-size: 1.1rem;
@@ -170,47 +163,72 @@
         text-shadow: var(--glow-primary);
         letter-spacing: 0.5px;
     }
+    /* --- Unmute Button Styling --- */
+    .unmute-button {
+        font-family: 'VT323', monospace;
+        background: rgba(0, 255, 255, 0.1);
+        color: var(--color-primary);
+        border: 1px solid var(--color-primary);
+        padding: 10px 20px;
+        margin-top: 10px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: var(--glow-primary);
+        transition: background 0.3s, box-shadow 0.3s;
+    }
+    .unmute-button:hover {
+        background: rgba(0, 255, 255, 0.2);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.9);
+    }
 </style>
+<script>
+    // Optional JS to handle play if needed, but button is for unmute
+    document.addEventListener('DOMContentLoaded', function() {
+        const video = document.querySelector('.background-video');
+        video.play().catch(error => {
+            console.log('Autoplay blocked:', error);
+        });
+    });
+</script>
 </head>
 <body>
-
 <div class="container">
     <div class="companion-disclaimer">
         &gt;_ This is a companion website for the book series 'Before Us: By Patrick McDonald'
     </div>
-  
+ 
     <div class="source-code-overlay">
-        <video class="background-video" autoplay loop playsinline>
+        <video class="background-video" autoplay loop playsinline muted>
             <source src="https://raw.githubusercontent.com/robustpvp-lang/before-us-universe/main/introvideo.mp4" type="video/mp4">
         </video>
-
         <div class="code-line">C:\> INIT_ENTITY_RENDER.EXE</div>
         <div class="code-line">Scanning Biometrics... [UNKNOWN]</div>
         <div class="code-line">WARNING: Containment Field 30% Unstable</div>
         <div class="code-line glitch-anim">CRITICAL ERROR: SEGMENTATION FAULT AT 0x004F</div>
-          
+         
         <div class="code-line">01001001 00100000 01010201 01000101 00100000 01011001</div>
-          
+         
         <div class="code-line">Connecting to Neural Net... SUCCESS</div>
         <div class="code-line">Downloading consciousness stream...</div>
-          
+         
         <div class="code-line">C://Ortega.thereisnospoon</div>
-          
+         
         <div class="code-line">Override_Security_Protocol: FORCE_ENTRY</div>
-          
+         
         <div class="code-line">System_Root_Access: GRANTED... GOODBYE_USER</div>
-          
+         
         <div class="code-line">ERROR: REALITY BUFFER OVERFLOW at 0x00FF34</div>
         <div class="code-line">&gt;&gt; USER DECISION REQUIRED &lt;&lt;</div>
     </div>
-
     <div class="disclaimer">
         <strong style="font-size: 1.3rem;">:// ORTEGA — Acknowledgment Required //</strong><br>
         Your presence is noted, **User**. The system requests acknowledgment before revealing what lies beneath its surface.<br>
         <br>
         <strong style="font-size: 1.2rem; letter-spacing: 2px;">&gt; Proceed with awareness. &lt;</strong>
+        <br>
+        <button class="unmute-button" onclick="document.querySelector('.background-video').muted = false;">Enable Sound</button>
     </div>
 </div>
-
 </body>
 </html>
