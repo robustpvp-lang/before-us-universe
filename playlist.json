@@ -1,4 +1,126 @@
-[
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Media Player</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background: #f0f0f0;
+            font-family: 'Roboto Mono', monospace;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: auto;
+        }
+        #player-container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .aplayer {
+            background: transparent !important;
+            border: none !important;
+            width: 100%;
+            font-family: 'Roboto Mono', monospace !important;
+            font-size: 14px !important;
+            color: #333 !important;
+        }
+        .aplayer .aplayer-body {
+            background: #fff !important;
+            border: 1px solid #ddd !important;
+            border-radius: 4px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .aplayer .aplayer-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+            padding: 0 10px;
+        }
+        .aplayer-title, .aplayer-author {
+            color: #333 !important;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+            display: block;
+            line-height: 1.4;
+        }
+        .aplayer-bar-wrap {
+            height: 4px !important;
+            margin: 0 10px;
+            flex-grow: 1;
+        }
+        .aplayer-bar, .aplayer-played {
+            background-color: #007bff !important;
+            height: 4px !important;
+        }
+        .aplayer-play .aplayer-icon,
+        .aplayer-pause .aplayer-icon,
+        .aplayer-icon {
+            fill: #333 !important;
+            stroke: #ddd !important;
+            width: 20px;
+            height: 20px;
+        }
+        .aplayer .aplayer-time {
+            font-size: 12px;
+            display: block;
+            text-align: right;
+            margin-left: auto;
+        }
+        .aplayer .aplayer-lrc { display: none; }
+        .aplayer .aplayer-list {
+            display: block !important;
+            background: #fff !important;
+            border: 1px solid #ddd !important;
+            border-top: none !important;
+            border-radius: 0 0 4px 4px;
+            margin-top: 10px;
+        }
+        .aplayer .aplayer-list ol {
+            max-height: 60vh !important;
+            overflow-y: auto !important;
+            font-size: 14px !important;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .aplayer .aplayer-list li {
+            padding: 15px 10px !important;
+            border-top: 1px solid #ddd !important;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .aplayer .aplayer-list li:hover,
+        .aplayer .aplayer-list li.aplayer-list-light {
+            background: #f0f0f0 !important;
+        }
+    </style>
+</head>
+<body>
+<div id="player-container">
+    <div id="aplayer"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script>
+<script>
+function initPlayer() {
+    const playlist = [
   {
     "name": "Flesh Cathedral",
     "artist": "Public Domain",
@@ -193,5 +315,52 @@
     "name": "Ancient Rites",
     "artist": "Public Domain",
     "url": "https://cdn.pixabay.com/download/audio/2021/10/28/audio_d9e0f0f5e6.mp3?filename=ritual-chants-114163.mp3"
+  },
+  {
+    "name": "90s Kid s StarCraft Cosmic War Training",
+    "artist": "Public Domain",
+    "url": "https://drive.google.com/uc?export=download&id=1rXV071LLvfhGBlRL-WOZSYwpUtr90ncB"
+  },
+  {
+    "name": "Cosmic War in a Nine-Year-Old s Head",
+    "artist": "Public Domain",
+    "url": "https://drive.google.com/uc?export=download&id=1AK2SJBphpV7RkmjxiNjEsFaj9FF937pv"
+  },
+  {
+    "name": "Erebus IV  Nero vs",
+    "artist": "Public Domain",
+    "url": "https://drive.google.com/uc?export=download&id=1QS8plXbPocr4k5h6jSgAfEHSzzo8B8XM"
+  },
+  {
+    "name": "Lux Commanders Destructive Strategy Psychological War Culture",
+    "artist": "Public Domain",
+    "url": "https://drive.google.com/uc?export=download&id=1CDQG6vzI084PZOClRM5lT3dQdKxBhfKV"
+  },
+  {
+    "name": "Micromegas Cosmic Titan Repairman With Humility",
+    "artist": "Public Domain",
+    "url": "https://drive.google.com/uc?export=download&id=1Zoeni1s1wpAOOzq9qDTtbRNTzRmHMD54"
+  },
+  {
+    "name": "Nora Warrior Scientist Defies Lux Command",
+    "artist": "Public Domain",
+    "url": "https://drive.google.com/uc?export=download&id=17skFbi1aQWU2J27dmLHiAoLDD83bcMeM"
   }
-]
+];
+    const shuffle = (array) => array.sort(() => Math.random() - 0.5);
+    shuffle(playlist);
+    const player = new APlayer({
+        container: document.getElementById('aplayer'),
+        audio: playlist,
+        autoplay: false,
+        theme: '#007bff',
+        loop: 'all',
+        order: 'random',
+        mini: false,
+        fixed: false
+    });
+}
+initPlayer();
+</script>
+</body>
+</html>
