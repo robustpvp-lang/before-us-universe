@@ -102,6 +102,133 @@ padding:8px;
 border:3px solid var(--border);
 background:var(--panel-bg);
 }
+.media-player {
+background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark panel */
+border: 2px solid #ffcc00; /* Yellow accent border */
+padding: 5px;
+border-radius: 4px; /* Slight rounding for retro feel */
+box-shadow: 0 0 10px #00ffff; /* Cyan glow */
+position: relative;
+z-index: 2;
+width: 90%;
+max-width: 800px; /* Long and thin, like the server selection panel */
+height: 40px; /* Thin height */
+display: flex;
+align-items: center;
+justify-content: space-between;
+font-size: 12px;
+}
+
+#display {
+background-color: #000;
+border: 1px solid #ffcc00;
+padding: 2px 5px;
+flex-grow: 1;
+height: 20px;
+display: flex;
+align-items: center;
+overflow: hidden;
+color: #ffcc00;
+font-family: 'Press Start 2P', cursive;
+font-size: 10px;
+white-space: nowrap;
+margin-right: 10px;
+}
+
+#display marquee {
+width: 100%;
+}
+
+.time-display {
+font-size: 10px;
+color: #00ffff;
+white-space: nowrap;
+margin-right: 10px;
+}
+
+.controls {
+display: flex;
+align-items: center;
+}
+
+.controls button {
+background-color: #00ffff; /* Cyan buttons */
+color: #000;
+border: 2px solid #ffcc00; /* Yellow border */
+font-family: 'Roboto Mono', monospace;
+padding: 2px 5px;
+margin: 0 2px;
+cursor: pointer;
+transition: all 0.3s;
+font-size: 10px;
+min-width: 30px;
+}
+
+.controls button:hover {
+background-color: #ffcc00;
+color: #00ffff;
+box-shadow: 0 0 5px #00ffff;
+}
+
+.controls button:active {
+transform: translateY(1px);
+}
+
+/* Glitch animation */
+@keyframes glitch {
+0% { transform: translate(0); }
+20% { transform: translate(-1px, 1px); }
+40% { transform: translate(1px, -1px); }
+60% { transform: translate(-1px, 1px); }
+80% { transform: translate(1px, -1px); }
+100% { transform: translate(0); }
+}
+
+.controls button:hover {
+animation: glitch 0.5s infinite;
+}
+
+.progress-container {
+background-color: #333;
+border: 1px solid #ffcc00;
+height: 4px;
+width: 100px; /* Compact progress bar */
+position: relative;
+margin-right: 10px;
+}
+
+#progress {
+background-color: #00ffff;
+width: 0%;
+height: 100%;
+transition: width 0.3s;
+}
+
+/* Responsive for mobile */
+@media (max-width: 600px) {
+.media-player {
+height: 50px;
+flex-wrap: wrap;
+justify-content: center;
+}
+
+#display {
+flex-basis: 100%;
+margin-right: 0;
+margin-bottom: 5px;
+}
+
+.time-display, .progress-container {
+margin-right: 5px;
+}
+
+.controls button {
+padding: 2px 4px;
+font-size: 8px;
+margin: 0 1px;
+min-width: 25px;
+}
+}
 #ortegaPanel button{width:100%;background:var(--accent);color:#000;padding:12px;border:3px solid #000;border-radius:6px;font-weight:900;cursor:pointer;font-size:14px; margin-bottom: 12px; /* Added spacing to separate from Mind Game */ }
 #serverTrackingPanel .server-branch{margin-bottom:12px}
 #serverTrackingPanel .server-title{font-weight:700;color:var(--accent);font-size:13px;cursor:pointer}
@@ -234,6 +361,25 @@ background-color: #e6e6fa; /* Match chat background */
 <button id="buyBookBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Buy book 1 now!</button>
 <button id="stumbleBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Stumble</button>
 <button id="emailBtn" style="background:var(--accent);color:#000;padding:10px;border:3px solid #000;cursor:pointer;font-weight:900;border-radius:6px;font-size:14px;display:inline-block;width:200px;margin:0 6px;">Join Email List</button>
+</div>
+<div id="mediaplayerPanel">
+<div class="media-player">
+<div id="display">
+<marquee behavior="scroll" direction="left" scrollamount="3">No track playing</marquee>
+</div>
+<div class="progress-container">
+<div id="progress"></div>
+</div>
+<span class="time-display" id="current-time">0:00 / <span id="duration">0:00</span></span>
+<div class="controls">
+<button id="prev">&lt;&lt;</button>
+<button id="play">&gt;</button>
+<button id="pause">||</button>
+<button id="stop">[]</button>
+<button id="next">&gt;&gt;</button>
+</div>
+<audio id="audio-player"></audio>
+</div>
 </div>
 <div class="panel" id="serverSelectPanel">
 <div class="small">SELECT SERVER</div>
@@ -374,6 +520,9 @@ background-color: #e6e6fa; /* Match chat background */
 </div>
 <div class="toggle-btn bottom-toggle" aria-label="Toggle">▲</div>
 </div>
+<a href="https://www.google.com" target="_blank" rel="noopener noreferrer">
+<div class="ad-banner">Time Travel Cruise: See Dinosaurs!</div>
+</a>
 <div class="panel collapsible collapsed">
 <div class="panel-title"><div class="title">//DISCORD</div><div class="toggle-btn" aria-label="Toggle">▼</div></div>
 <div class="panel-body" id="discordBody">
@@ -1161,6 +1310,86 @@ document.exitFullscreen();
 };
 document.addEventListener('fullscreenchange', updateButton);
 updateButton();
+});
+const audio = document.getElementById('audio-player');
+const playBtn = document.getElementById('play');
+const pauseBtn = document.getElementById('pause');
+const stopBtn = document.getElementById('stop');
+const nextBtn = document.getElementById('next');
+const prevBtn = document.getElementById('prev');
+const display = document.querySelector('#display marquee');
+const progress = document.getElementById('progress');
+const currentTimeEl = document.getElementById('current-time');
+const durationEl = document.getElementById('duration');
+
+const playlist = [
+{ title: '90s Kid s StarCraft Cosmic War Training - Public Domain', src: 'https://drive.google.com/uc?export=download&id=1rXV071LLvfhGBlRL-WOZSYwpUtr90ncB' },
+{ title: 'Cosmic War in a Nine-Year-Old s Head - Public Domain', src: 'https://drive.google.com/uc?export=download&id=1AK2SJBphpV7RkmjxiNjEsFaj9FF937pv' },
+{ title: 'Erebus IV Nero vs - Public Domain', src: 'https://drive.google.com/uc?export=download&id=1QS8plXbPocr4k5h6jSgAfEHSzzo8B8XM' },
+{ title: 'Lux Commanders Destructive Strategy Psychological War Culture - Public Domain', src: 'https://drive.google.com/uc?export=download&id=1CDQG6vzI084PZOClRM5lT3dQdKxBhfKV' },
+{ title: 'Micromegas Cosmic Titan Repairman With Humility - Public Domain', src: 'https://drive.google.com/uc?export=download&id=1Zoeni1s1wpAOOzq9qDTtbRNTzRmHMD54' },
+{ title: 'Nora Warrior Scientist Defies Lux Command - Public Domain', src: 'https://drive.google.com/uc?export=download&id=17skFbi1aQWU2J27dmLHiAoLDD83bcMeM' }
+];
+
+let currentIndex = 0;
+let isPlaying = false;
+
+function formatTime(seconds) {
+const mins = Math.floor(seconds / 60);
+const secs = Math.floor(seconds % 60);
+return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+function loadTrack(index) {
+audio.src = playlist[index].src;
+display.textContent = playlist[index].title;
+audio.load();
+audio.addEventListener('loadedmetadata', () => {
+durationEl.textContent = formatTime(audio.duration);
+currentTimeEl.textContent = `0:00 / ${durationEl.textContent}`;
+}, { once: true });
+}
+
+loadTrack(currentIndex);
+
+playBtn.addEventListener('click', () => {
+audio.play();
+isPlaying = true;
+});
+
+pauseBtn.addEventListener('click', () => {
+audio.pause();
+isPlaying = false;
+});
+
+stopBtn.addEventListener('click', () => {
+audio.pause();
+audio.currentTime = 0;
+isPlaying = false;
+progress.style.width = '0%';
+currentTimeEl.textContent = `0:00 / ${durationEl.textContent}`;
+});
+
+nextBtn.addEventListener('click', () => {
+currentIndex = (currentIndex + 1) % playlist.length;
+loadTrack(currentIndex);
+if (isPlaying) audio.play();
+});
+
+prevBtn.addEventListener('click', () => {
+currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+loadTrack(currentIndex);
+if (isPlaying) audio.play();
+});
+
+audio.addEventListener('timeupdate', () => {
+const percent = (audio.currentTime / audio.duration) * 100;
+progress.style.width = `${percent}%`;
+currentTimeEl.textContent = `${formatTime(audio.currentTime)} / ${durationEl.textContent}`;
+});
+
+audio.addEventListener('ended', () => {
+nextBtn.click();
 });
 </script>
 </body>
