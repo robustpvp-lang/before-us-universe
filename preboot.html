@@ -104,7 +104,6 @@
         text-shadow: 0 0 2px var(--color-primary);
         z-index: 3;
     }
-    
     /* NEW RED ALERT STYLE */
     .red-alert {
         color: #FF0000 !important;
@@ -112,13 +111,10 @@
         font-weight: bold;
         animation: blinkRed 0.4s step-end infinite;
     }
-
     @keyframes blinkRed {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.4; }
     }
-    /* END NEW STYLE */
-
     .glitch-anim {
         animation: codeScroll 15s linear infinite, textTwitch 0.3s infinite !important;
         color: #fff !important;
@@ -132,7 +128,7 @@
         80% { transform: translateX(2px) skewX(5deg); }
         100% { transform: translateX(0) skewX(0deg); }
     }
-    /* Random timing for code lines */
+    /* Code Line Positioning */
     .code-line:nth-child(2) { top: 5%; left: 100%; animation-duration: 12s; }
     .code-line:nth-child(3) { top: 15%; left: 100%; animation-duration: 18s; animation-delay: -5s; font-size: 1rem;}
     .code-line:nth-child(4) { top: 25%; left: 100%; animation-duration: 15s; animation-delay: -2s; }
@@ -211,15 +207,12 @@
 </div>
 
 <script>
+    // --- UPDATED SCRIPT: USES POSTMESSAGE FOR RELIABILITY ---
     function triggerBoot() {
-        try {
-            if (window.parent && window.parent.document) {
-                window.parent.document.body.click();
-            }
-        } catch (e) {
-            console.log("Cross-origin restriction or parent not found.");
-        }
+        // Send a specific message to the parent window (index.html)
+        window.parent.postMessage('triggerBoot', '*');
     }
+
     document.addEventListener('click', triggerBoot);
     document.addEventListener('keydown', triggerBoot);
     document.addEventListener('touchstart', triggerBoot);
