@@ -7,10 +7,9 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=VT323&family=Roboto+Mono:wght@300;700&display=swap');
     :root {
-        --color-primary: #00FFFF; /* Cyan */
+        --color-primary: #00FFFF;
         --color-secondary-text: #CFD8DC;
         --color-background: #050f0e;
-    
         --glow-primary: 0 0 10px rgba(0, 255, 255, 0.7);
     }
     body {
@@ -31,7 +30,6 @@
         padding: 20px;
         position: relative;
     }
-    /* --- Companion Disclaimer Header --- */
     .companion-disclaimer {
         font-family: 'VT323', monospace;
         color: var(--color-primary);
@@ -50,7 +48,6 @@
         0%, 100% { opacity: 1; text-shadow: var(--glow-primary); }
         50% { opacity: 0.3; text-shadow: none; }
     }
-    /* --- DOS/CMD Source Code Overlay --- */
     .source-code-overlay {
         position: relative;
         width: 100%;
@@ -66,7 +63,6 @@
         z-index: 2;
         background-color: #000;
     }
-    /* The grid lines sit on top of video but behind text */
     .source-code-overlay::after {
         content: "";
         position: absolute;
@@ -83,7 +79,6 @@
         z-index: 2;
         pointer-events: none;
     }
-    /* Video Styling */
     .background-video {
         position: absolute;
         top: 0;
@@ -93,7 +88,6 @@
         object-fit: cover;
         z-index: 1;
         opacity: 0.6;
-        /* Optional filter to make the video look more 'cyber' */
         filter: contrast(1.2) hue-rotate(180deg) grayscale(0.3);
     }
     .code-line {
@@ -101,13 +95,12 @@
         color: var(--color-primary);
         font-size: 1.2rem;
         white-space: nowrap;
-        opacity: 0.9; /* High opacity to read over video */
+        opacity: 0.9; 
         position: absolute;
         animation: codeScroll linear infinite;
         text-shadow: 0 0 2px var(--color-primary);
-        z-index: 3; /* Topmost layer */
+        z-index: 3;
     }
-    /* Glitch Animation */
     .glitch-anim {
         animation: codeScroll 15s linear infinite, textTwitch 0.3s infinite !important;
         color: #fff !important;
@@ -121,25 +114,18 @@
         80% { transform: translateX(2px) skewX(5deg); }
         100% { transform: translateX(0) skewX(0deg); }
     }
-    /* Drifting Code Configuration
-       Note: nth-child numbers are shifted by +1 because the video is now child #1
-    */
     .code-line:nth-child(2) { top: 5%; left: 100%; animation-duration: 12s; }
     .code-line:nth-child(3) { top: 15%; left: 100%; animation-duration: 18s; animation-delay: -5s; font-size: 1rem;}
     .code-line:nth-child(4) { top: 25%; left: 100%; animation-duration: 15s; animation-delay: -2s; }
-  
-    /* The Glitch Line */
     .code-line:nth-child(5) { top: 35%; left: 100%; animation-duration: 12s; animation-delay: -8s; font-size: 1.4rem;}
     .code-line:nth-child(6) { top: 45%; left: 100%; animation-duration: 14s; animation-delay: -7s; }
     .code-line:nth-child(7) { top: 55%; left: 100%; animation-duration: 19s; animation-delay: -1s; }
     .code-line:nth-child(8) { top: 65%; left: 100%; animation-duration: 25s; animation-delay: -15s; font-size: 0.9rem;}
-    /* New Lines */
     .code-line:nth-child(9) { top: 75%; left: 100%; animation-duration: 22s; animation-delay: -3s; }
     .code-line:nth-child(10) { top: 85%; left: 100%; animation-duration: 16s; animation-delay: -10s; }
     .code-line:nth-child(11) { top: 92%; left: 100%; animation-duration: 20s; animation-delay: -6s; }
     .code-line:nth-child(12) { top: 10%; left: 100%; animation-duration: 28s; animation-delay: -12s; font-size: 0.8rem; }
     .code-line:nth-child(13) { top: 80%; left: 100%; animation-duration: 13s; animation-delay: -2s; }
-    /* Additional Lines */
     .code-line:nth-child(14) { top: 0%; left: 100%; animation-duration: 30s; animation-delay: -4s; font-size: 1.1rem; }
     .code-line:nth-child(15) { top: 20%; left: 100%; animation-duration: 17s; animation-delay: -9s; }
     .code-line:nth-child(16) { top: 30%; left: 100%; animation-duration: 21s; animation-delay: -11s; font-size: 1rem; }
@@ -149,7 +135,6 @@
     .code-line:nth-child(20) { top: 70%; left: 100%; animation-duration: 19s; animation-delay: -20s; font-size: 1.05rem; }
     .code-line:nth-child(21) { top: 82%; left: 100%; animation-duration: 27s; animation-delay: -22s; }
     .code-line:nth-child(22) { top: 95%; left: 100%; animation-duration: 29s; animation-delay: -24s; font-size: 0.85rem; }
-    /* More Cuneiform Lines */
     .code-line:nth-child(23) { top: 8%; left: 100%; animation-duration: 31s; animation-delay: -26s; font-size: 1.3rem; }
     .code-line:nth-child(24) { top: 18%; left: 100%; animation-duration: 16s; animation-delay: -28s; }
     .code-line:nth-child(25) { top: 28%; left: 100%; animation-duration: 20s; animation-delay: -30s; font-size: 1.15rem; }
@@ -160,38 +145,10 @@
     .code-line:nth-child(30) { top: 78%; left: 100%; animation-duration: 27s; animation-delay: -40s; }
     .code-line:nth-child(31) { top: 88%; left: 100%; animation-duration: 23s; animation-delay: -42s; font-size: 1.2rem; }
     .code-line:nth-child(32) { top: 98%; left: 100%; animation-duration: 19s; animation-delay: -44s; }
-  
-    @keyframes codeScroll {
-        0% { left: 100%; }
-        100% { left: -100%; }
-    }
-    /* --- Disclaimer Text --- */
-    .disclaimer {
-        font-size: 1.1rem;
-        line-height: 1.7rem;
-        margin-top: 20px;
-        position: relative;
-        z-index: 4;
-        text-align: center;
-        text-shadow: 0 0 10px rgba(0,0,0,0.9);
-    }
-    .disclaimer strong {
-        color: var(--color-primary);
-        font-weight: 700;
-        text-shadow: var(--glow-primary);
-        letter-spacing: 0.5px;
-    }
+    @keyframes codeScroll { 0% { left: 100%; } 100% { left: -100%; } }
+    .disclaimer { font-size: 1.1rem; line-height: 1.7rem; margin-top: 20px; position: relative; z-index: 4; text-align: center; text-shadow: 0 0 10px rgba(0,0,0,0.9);}
+    .disclaimer strong { color: var(--color-primary); font-weight: 700; text-shadow: var(--glow-primary); letter-spacing: 0.5px;}
 </style>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const video = document.querySelector('.background-video');
-        video.play().then(() => {
-            video.muted = false;
-        }).catch(error => {
-            console.log('Autoplay blocked:', error);
-        });
-    });
-</script>
 </head>
 <body>
 <div class="container">
@@ -200,27 +157,20 @@
     </div>
     <div class="source-code-overlay">
         <video class="background-video" autoplay loop playsinline>
-            <source src="https://corsproxy.io/?https%3A%2F%2Fraw.githubusercontent.com%2Frobustpvp-lang%2Fbefore-us-universe%2Fmain%2Fintrovideo.mp4" type="video/mp4">
+            <source src="https://raw.githubusercontent.com/robustpvp-lang/before-us-universe/main/introvideo.mp4" type="video/mp4">
         </video>
         <div class="code-line">C:\> INIT_ENTITY_RENDER.EXE</div>
         <div class="code-line">Scanning Biometrics... [UNKNOWN]</div>
         <div class="code-line">WARNING: Containment Field 30% Unstable</div>
         <div class="code-line glitch-anim">CRITICAL ERROR: SEGMENTATION FAULT AT 0x004F</div>
-        
         <div class="code-line">01001001 00100000 01010201 01000101 00100000 01011001</div>
-        
         <div class="code-line">Connecting to Neural Net... SUCCESS</div>
         <div class="code-line">Downloading consciousness stream...</div>
-        
         <div class="code-line">C://Ortega.thereisnospoon</div>
-        
         <div class="code-line">Override_Security_Protocol: FORCE_ENTRY</div>
-        
         <div class="code-line">System_Root_Access: GRANTED... GOODBYE_USER</div>
-        
         <div class="code-line">ERROR: REALITY BUFFER OVERFLOW at 0x00FF34</div>
         <div class="code-line">&gt;&gt; USER DECISION REQUIRED &lt;&lt;</div>
-        <!-- Additional code lines -->
         <div class="code-line">LOADING MATRIX INTERFACE... [PROGRESS 47%]</div>
         <div class="code-line">DETECTING ANOMALIES IN SIMULATION CORE</div>
         <div class="code-line">ACCESSING QUANTUM ENTANGLEMENT MODULE</div>
@@ -230,7 +180,6 @@
         <div class="code-line">BREACH ALERT: UNAUTHORIZED ACCESS ATTEMPT</div>
         <div class="code-line">RUNNING DIAGNOSTICS ON REALITY ENGINE</div>
         <div class="code-line">SYNCHRONIZING WITH ALTERNATE DIMENSIONS</div>
-        <!-- Cuneiform lines -->
         <div class="code-line">𒀀𒈾𒁀𒌑𒍑</div>
         <div class="code-line">𒂗𒄀𒅆𒇻𒌦</div>
         <div class="code-line">𒁹𒀭𒀀𒉣𒈾</div>
@@ -242,5 +191,32 @@
         <div class="code-line">𒀭𒂗𒆤𒇲𒆕</div>
         <div class="code-line">𒌨𒀭𒋤𒉣</div>
     </div>
+</div>
+
+<script>
+window.addEventListener('load', () => {
+    const video = document.querySelector('.background-video');
+    if (!video) return;
+
+    // simulate user gesture to bypass autoplay restrictions
+    const simulateClick = () => {
+        const ev = new MouseEvent('click', {view: window, bubbles: true, cancelable: true});
+        document.body.dispatchEvent(ev);
+    };
+
+    const attemptPlay = () => {
+        video.muted = false;
+        video.volume = 1.0;
+        video.play().catch(() => {
+            simulateClick();
+            setTimeout(attemptPlay, 200);
+        });
+    };
+
+    attemptPlay();
+});
+</script>
+
 </body>
 </html>
+
