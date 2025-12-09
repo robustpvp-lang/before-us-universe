@@ -18,17 +18,20 @@
         background: var(--color-background);
         color: var(--color-secondary-text);
         font-family: 'Roboto Mono', monospace;
-        overflow-x: hidden;
-        min-height: 100vh;
+        overflow: hidden;
+        height: 100vh;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        cursor: pointer;
     }
     .container {
         max-width: 900px;
+        width: 100%;
         margin: 0 auto;
         padding: 20px;
         position: relative;
+        box-sizing: border-box;
     }
     .companion-disclaimer {
         font-family: 'VT323', monospace;
@@ -101,6 +104,21 @@
         text-shadow: 0 0 2px var(--color-primary);
         z-index: 3;
     }
+    
+    /* NEW RED ALERT STYLE */
+    .red-alert {
+        color: #FF0000 !important;
+        text-shadow: 0 0 8px #FF0000;
+        font-weight: bold;
+        animation: blinkRed 0.4s step-end infinite;
+    }
+
+    @keyframes blinkRed {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+    /* END NEW STYLE */
+
     .glitch-anim {
         animation: codeScroll 15s linear infinite, textTwitch 0.3s infinite !important;
         color: #fff !important;
@@ -114,6 +132,7 @@
         80% { transform: translateX(2px) skewX(5deg); }
         100% { transform: translateX(0) skewX(0deg); }
     }
+    /* Random timing for code lines */
     .code-line:nth-child(2) { top: 5%; left: 100%; animation-duration: 12s; }
     .code-line:nth-child(3) { top: 15%; left: 100%; animation-duration: 18s; animation-delay: -5s; font-size: 1rem;}
     .code-line:nth-child(4) { top: 25%; left: 100%; animation-duration: 15s; animation-delay: -2s; }
@@ -146,8 +165,6 @@
     .code-line:nth-child(31) { top: 88%; left: 100%; animation-duration: 23s; animation-delay: -42s; font-size: 1.2rem; }
     .code-line:nth-child(32) { top: 98%; left: 100%; animation-duration: 19s; animation-delay: -44s; }
     @keyframes codeScroll { 0% { left: 100%; } 100% { left: -100%; } }
-    .disclaimer { font-size: 1.1rem; line-height: 1.7rem; margin-top: 20px; position: relative; z-index: 4; text-align: center; text-shadow: 0 0 10px rgba(0,0,0,0.9);}
-    .disclaimer strong { color: var(--color-primary); font-weight: 700; text-shadow: var(--glow-primary); letter-spacing: 0.5px;}
 </style>
 </head>
 <body>
@@ -156,12 +173,12 @@
         &gt;_ This is a companion website for the book series 'Before Us: By Patrick McDonald'
     </div>
     <div class="source-code-overlay">
-        <video class="background-video" autoplay loop playsinline>
+        <video class="background-video" autoplay loop muted playsinline>
             <source src="https://raw.githubusercontent.com/robustpvp-lang/before-us-universe/main/introvideo.mp4" type="video/mp4">
         </video>
         <div class="code-line">C:\> INIT_ENTITY_RENDER.EXE</div>
         <div class="code-line">Scanning Biometrics... [UNKNOWN]</div>
-        <div class="code-line">WARNING: Containment Field 30% Unstable</div>
+        <div class="code-line"><span class="red-alert">WARNING: Containment Field 30% Unstable</span></div>
         <div class="code-line glitch-anim">CRITICAL ERROR: SEGMENTATION FAULT AT 0x004F</div>
         <div class="code-line">01001001 00100000 01010201 01000101 00100000 01011001</div>
         <div class="code-line">Connecting to Neural Net... SUCCESS</div>
@@ -169,15 +186,15 @@
         <div class="code-line">C://Ortega.thereisnospoon</div>
         <div class="code-line">Override_Security_Protocol: FORCE_ENTRY</div>
         <div class="code-line">System_Root_Access: GRANTED... GOODBYE_USER</div>
-        <div class="code-line">ERROR: REALITY BUFFER OVERFLOW at 0x00FF34</div>
+        <div class="code-line"><span class="red-alert">ERROR: REALITY BUFFER OVERFLOW at 0x00FF34</span></div>
         <div class="code-line">&gt;&gt; USER DECISION REQUIRED &lt;&lt;</div>
         <div class="code-line">LOADING MATRIX INTERFACE... [PROGRESS 47%]</div>
         <div class="code-line">DETECTING ANOMALIES IN SIMULATION CORE</div>
         <div class="code-line">ACCESSING QUANTUM ENTANGLEMENT MODULE</div>
-        <div class="code-line">WARNING: TEMPORAL LOOP DETECTED AT 0xAABBCC</div>
+        <div class="code-line"><span class="red-alert">WARNING: TEMPORAL LOOP DETECTED AT 0xAABBCC</span></div>
         <div class="code-line">INITIALIZING AI SENTIENCE PROTOCOL</div>
         <div class="code-line">COMPILING NEURAL PATHWAYS... [SUCCESS]</div>
-        <div class="code-line">BREACH ALERT: UNAUTHORIZED ACCESS ATTEMPT</div>
+        <div class="code-line"><span class="red-alert">BREACH ALERT: UNAUTHORIZED ACCESS ATTEMPT</span></div>
         <div class="code-line">RUNNING DIAGNOSTICS ON REALITY ENGINE</div>
         <div class="code-line">SYNCHRONIZING WITH ALTERNATE DIMENSIONS</div>
         <div class="code-line">𒀀𒈾𒁀𒌑𒍑</div>
@@ -194,29 +211,26 @@
 </div>
 
 <script>
-window.addEventListener('load', () => {
-    const video = document.querySelector('.background-video');
-    if (!video) return;
+    function triggerBoot() {
+        try {
+            if (window.parent && window.parent.document) {
+                window.parent.document.body.click();
+            }
+        } catch (e) {
+            console.log("Cross-origin restriction or parent not found.");
+        }
+    }
+    document.addEventListener('click', triggerBoot);
+    document.addEventListener('keydown', triggerBoot);
+    document.addEventListener('touchstart', triggerBoot);
 
-    // simulate user gesture to bypass autoplay restrictions
-    const simulateClick = () => {
-        const ev = new MouseEvent('click', {view: window, bubbles: true, cancelable: true});
-        document.body.dispatchEvent(ev);
-    };
-
-    const attemptPlay = () => {
-        video.muted = false;
-        video.volume = 1.0;
-        video.play().catch(() => {
-            simulateClick();
-            setTimeout(attemptPlay, 200);
-        });
-    };
-
-    attemptPlay();
-});
+    window.addEventListener('load', () => {
+        const video = document.querySelector('.background-video');
+        if (video) {
+            video.muted = true;
+            video.play().catch(e => console.log("Autoplay blocked", e));
+        }
+    });
 </script>
-
 </body>
 </html>
-
