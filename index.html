@@ -896,6 +896,18 @@ progressDiv.style.width = `${progress}%`;
 currentTimeSpan.textContent = formatTime(audio.currentTime);
 });
 audio.addEventListener('ended', nextTrack);
+    // Add this to index.html to catch the boot signal
+window.addEventListener('message', function(e) {
+    if (e.data === 'triggerBoot') {
+        const prebootOverlay = document.getElementById('prebootOverlay');
+        const bootOverlay = document.getElementById('bootOverlay');
+        
+        if (prebootOverlay && prebootOverlay.style.display !== 'none') {
+            prebootOverlay.style.display = 'none';
+            bootOverlay.style.display = 'flex';
+        }
+    }
+});
 </script>
 </body>
 </html>
