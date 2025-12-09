@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blockade Runner</title>
     <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
         body {
+            height: 100%;
+            width: 100%;
             margin: 0;
             padding: 0;
             background: black;
@@ -14,8 +20,8 @@
             font-size: 16px;
         }
         #app {
+            height: 100%;
             width: 100%;
-            min-height: 100vh;
             padding: 1rem;
             box-sizing: border-box;
         }
@@ -301,7 +307,6 @@
         let enemyType = 'lux';
         let debt = 0;
         let daysPassed = 0;
-
         const planetNames = {
             'eden-i': 'Eden I',
             'erebus-iv': 'Erebus IV',
@@ -310,7 +315,6 @@
             'scipio-xii': 'Scipio XII',
             'glorzo': 'Glorzo'
         };
-
         const planets = {
             'eden-i': { food: 50, medicine: 100, weapons: 200, electronics: 150, ore: 80, artifacts: 300, exotic_animals: 300 },
             'erebus-iv': { food: 70, medicine: 120, weapons: 180, electronics: 130, ore: 60, artifacts: 280, exotic_animals: 300 },
@@ -319,7 +323,6 @@
             'scipio-xii': { food: 120, medicine: 150, weapons: 160, electronics: 180, ore: 70, artifacts: 290, exotic_animals: 300 },
             'glorzo': { food: 80, medicine: 110, weapons: 220, electronics: 140, ore: 90, artifacts: 200, exotic_animals: 300 }
         };
-
         const loadouts = [
             {
                 name: 'Trader',
@@ -355,12 +358,10 @@
                 inventory: { food: 15, medicine: 10, weapons: 5, electronics: 10, ore: 5, artifacts: 1, exotic_animals: 0 }
             }
         ];
-
         function startGame() {
             gameState = 'loadout';
             render();
         }
-
         function selectLoadout(idx) {
             const loadout = loadouts[idx];
             ship = {
@@ -376,22 +377,19 @@
             gameState = 'trading';
             render();
         }
-
         function getUsedCargo() {
             return Object.values(inventory).reduce((sum, qty) => sum + qty, 0);
         }
-
         function buyItem(item, quantity = 1) {
             const price = planets[currentPlanet][item] * quantity;
             const availableCargo = ship.maxCargo - getUsedCargo();
-            
+           
             if (ship.credits >= price && availableCargo >= quantity) {
                 ship.credits -= price;
                 inventory[item] += quantity;
                 render();
             }
         }
-
         function sellItem(item, quantity = 1) {
             if (inventory[item] >= quantity) {
                 const price = Math.floor(planets[currentPlanet][item] * 0.8) * quantity;
@@ -400,7 +398,6 @@
                 render();
             }
         }
-
         function depositItem(item, quantity = 1) {
             if (inventory[item] >= quantity) {
                 inventory[item] -= quantity;
@@ -408,7 +405,6 @@
                 render();
             }
         }
-
         function withdrawItem(item, quantity = 1) {
             if (bankInventory[item] >= quantity && getUsedCargo() + quantity <= ship.maxCargo) {
                 bankInventory[item] -= quantity;
@@ -416,14 +412,13 @@
                 render();
             }
         }
-
         function travelTo(planet) {
             destination = planet;
             daysPassed += 1;
-            
+           
             const hasContraband = inventory.weapons > 0 || inventory.artifacts > 0;
             const encounterChance = hasContraband ? 0.3 : 0.2;
-            
+           
             if (Math.random() < encounterChance) {
                 const scale = Math.floor(ship.credits / 2000);
                 let baseHull = 60 + Math.floor(Math.random() * 40) + (scale * 10);
@@ -451,12 +446,12 @@
                 }
                 currentPlanet = arrivalPlanet;
                 destination = null;
-                
+               
                 if (Math.random() < 0.1) {
                     inventory.exotic_animals += 1;
                     messageLog.push('Found an exotic animal!');
                 }
-                
+               
                 if (arrivalPlanet === 'glorzo') {
                     const damage = Math.floor(Math.random() * 20) + 10;
                     ship.hull -= damage;
@@ -466,7 +461,7 @@
                         setTimeout(resetGame, 3000);
                     }
                 }
-                
+               
                 if (debt > 0 && daysPassed % 10 === 0) {
                     const interest = Math.floor(debt * 0.1);
                     debt += interest;
@@ -476,19 +471,18 @@
             }
             render();
         }
-
         function attack() {
             if (!enemyShip) return;
-            
+           
             const playerDamage = ship.weapons + Math.floor(Math.random() * 15);
             const enemyDamage = enemyShip.weapons + Math.floor(Math.random() * 12);
-            
+           
             const newEnemyHull = enemyShip.hull - playerDamage;
             const newPlayerHull = ship.hull - enemyDamage;
-            
+           
             let log = [...messageLog];
             log.push(`You deal ${playerDamage} damage!`);
-            
+           
             if (newEnemyHull <= 0) {
                 log.push('Enemy destroyed! +500 credits');
                 ship.hull = newPlayerHull;
@@ -501,7 +495,7 @@
             } else {
                 log.push(`Enemy deals ${enemyDamage} damage!`);
                 enemyShip.hull = newEnemyHull;
-                
+               
                 if (newPlayerHull <= 0) {
                     log.push('Your ship is destroyed! Game Over');
                     ship.hull = 0;
@@ -513,11 +507,10 @@
                     ship.hull = newPlayerHull;
                 }
             }
-            
+           
             messageLog = log.slice(-6);
             render();
         }
-
         function evade() {
             if (Math.random() < 0.5) {
                 messageLog.push('Successfully evaded!');
@@ -529,9 +522,9 @@
             } else {
                 const enemyDamage = enemyShip.weapons + Math.floor(Math.random() * 12);
                 const newPlayerHull = ship.hull - enemyDamage;
-                
+               
                 messageLog = [...messageLog, `Evade failed! Took ${enemyDamage} damage`].slice(-6);
-                
+               
                 if (newPlayerHull <= 0) {
                     ship.hull = 0;
                     setTimeout(() => {
@@ -544,10 +537,9 @@
             }
             render();
         }
-
         function bribe() {
             const bribeAmount = Math.max(100, Math.floor(ship.credits * 0.1));
-            
+           
             if (ship.credits >= bribeAmount) {
                 if (Math.random() < 0.7) {
                     messageLog.push(`Bribe accepted! Paid $${bribeAmount}`);
@@ -563,14 +555,13 @@
             }
             render();
         }
-
         function upgradeShip(type) {
             const costs = {
                 cargo: 500,
                 weapons: 800,
                 hull: 600
             };
-            
+           
             if (ship.credits >= costs[type]) {
                 if (type === 'cargo') {
                     ship.credits -= costs[type];
@@ -586,7 +577,6 @@
                 render();
             }
         }
-
         function repairShip() {
             const repairCost = (ship.maxHull - ship.hull) * 2;
             if (ship.credits >= repairCost && ship.hull < ship.maxHull) {
@@ -595,13 +585,11 @@
                 render();
             }
         }
-
         function borrowMoney(amount) {
             ship.credits += amount;
             debt += amount;
             render();
         }
-
         function repayDebt(amount) {
             if (ship.credits >= amount && debt >= amount) {
                 ship.credits -= amount;
@@ -609,7 +597,6 @@
                 render();
             }
         }
-
         function resetGame() {
             ship = {
                 hull: 100,
@@ -643,7 +630,6 @@
             messageLog = [];
             render();
         }
-
         function renderLuxPatrolSprite() {
             return `
                 <div class="flex justify-center items-center py-4">
@@ -660,7 +646,6 @@
                 </div>
             `;
         }
-
         function renderTiamatSprite() {
             return `
                 <div class="flex justify-center items-center py-4">
@@ -678,7 +663,6 @@
                 </div>
             `;
         }
-
         function render() {
             let html = '';
             if (gameState === 'title') {
@@ -692,7 +676,7 @@
                                 <div>Fight Lux Patrols</div>
                                 <div>Build your fortune</div>
                             </div>
-                            <button 
+                            <button
                                 onclick="startGame()"
                                 class="mt-12 px-6 py-3 text-xl border-2 border-cyan-400 hover-bg-cyan-400 transition-all"
                             >
@@ -756,20 +740,20 @@
                         </div>
                         ${ship.hull > 0 && enemyShip ? `
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <button 
+                                <button
                                     onclick="attack()"
                                     class="py-4 text-xl border-2 border-cyan-400 hover-bg-cyan-400 transition-all"
                                 >
                                     [ ATTACK ]
                                 </button>
-                                <button 
+                                <button
                                     onclick="bribe()"
                                     class="py-4 text-xl border-2 border-cyan-400 bg-white text-black hover-bg-cyan-400 transition-all"
                                     ${ship.credits < 100 ? 'disabled' : ''}
                                 >
                                     [ BRIBE ]
                                 </button>
-                                <button 
+                                <button
                                     onclick="evade()"
                                     class="py-4 text-xl border-2 border-green-400 text-green-400 hover-bg-green-400 transition-all"
                                 >
@@ -812,21 +796,21 @@
                             <div class="border-2 border-cyan-400 p-4 mb-4">
                                 <div class="text-2xl mb-4">SHIP MARKET</div>
                                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                    <button 
+                                    <button
                                         onclick="upgradeShip('cargo')"
                                         class="py-2 px-4 border border-cyan-400 hover-bg-cyan-400 text-base"
                                         ${ship.credits < 500 ? 'disabled' : ''}
                                     >
                                         Cargo +20 ($500)
                                     </button>
-                                    <button 
+                                    <button
                                         onclick="upgradeShip('hull')"
                                         class="py-2 px-4 border border-cyan-400 hover-bg-cyan-400 text-base"
                                         ${ship.credits < 600 ? 'disabled' : ''}
                                     >
                                         Hull +20 ($600)
                                     </button>
-                                    <button 
+                                    <button
                                         onclick="repairShip()"
                                         class="py-2 px-4 border border-cyan-400 bg-white text-black hover-bg-cyan-400 text-base"
                                         ${ship.hull >= ship.maxHull || ship.credits < (ship.maxHull - ship.hull) * 2 ? 'disabled' : ''}
@@ -854,14 +838,14 @@
                                                     <span class="text-base font-bold">${item}</span>
                                                 </div>
                                                 <div class="grid grid-cols-2 gap-2">
-                                                    <button 
+                                                    <button
                                                         onclick="depositItem('${item}', 1)"
                                                         class="px-2 py-1 text-xs border border-cyan-400 hover-bg-cyan-400"
                                                         ${inventory[item] < 1 ? 'disabled' : ''}
                                                     >
                                                         Deposit 1
                                                     </button>
-                                                    <button 
+                                                    <button
                                                         onclick="withdrawItem('${item}', 1)"
                                                         class="px-2 py-1 text-xs border border-cyan-400 bg-white text-black hover-bg-cyan-400"
                                                         ${bankInventory[item] < 1 || getUsedCargo() + 1 > ship.maxCargo ? 'disabled' : ''}
@@ -878,7 +862,7 @@
                         ${currentPlanet === 'rigel-ix' ? `
                             <div class="border-2 border-cyan-400 p-4 mb-4">
                                 <div class="text-2xl mb-4">WEAPON MARKET</div>
-                                <button 
+                                <button
                                     onclick="upgradeShip('weapons')"
                                     class="py-2 px-4 border border-cyan-400 hover-bg-cyan-400 text-base"
                                     ${ship.credits < 800 ? 'disabled' : ''}
@@ -892,26 +876,26 @@
                                 <div class="text-2xl mb-4 text-red-400">LOAN SHARK</div>
                                 <div class="text-sm mb-4">Borrow money at 10% interest every 10 days</div>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                                    <button 
+                                    <button
                                         onclick="borrowMoney(1000)"
                                         class="py-2 px-4 border border-red-400 text-red-400 hover-bg-red-400 text-sm"
                                     >
                                         Borrow $1000
                                     </button>
-                                    <button 
+                                    <button
                                         onclick="borrowMoney(5000)"
                                         class="py-2 px-4 border border-red-400 text-red-400 hover-bg-red-400 text-sm"
                                     >
                                         Borrow $5000
                                     </button>
-                                    <button 
+                                    <button
                                         onclick="repayDebt(1000)"
                                         class="py-2 px-4 border border-green-400 text-green-400 hover-bg-green-400 text-sm"
                                         ${debt < 1000 || ship.credits < 1000 ? 'disabled' : ''}
                                     >
                                         Repay $1000
                                     </button>
-                                    <button 
+                                    <button
                                         onclick="repayDebt(${debt})"
                                         class="py-2 px-4 border border-green-400 text-green-400 hover-bg-green-400 text-sm"
                                         ${debt === 0 || ship.credits < debt ? 'disabled' : ''}
@@ -932,28 +916,28 @@
                                                 <span class="text-xs text-gray-400">Stock: ${inventory[item]}</span>
                                             </div>
                                             <div class="grid grid-cols-4 gap-2 mb-1">
-                                                <button 
+                                                <button
                                                     onclick="buyItem('${item}', 1)"
                                                     class="px-2 py-1 text-xs border border-cyan-400 hover-bg-cyan-400"
                                                     ${ship.credits < price * 1 || getUsedCargo() + 1 > ship.maxCargo ? 'disabled' : ''}
                                                 >
                                                     BUY 1
                                                 </button>
-                                                <button 
+                                                <button
                                                     onclick="buyItem('${item}', 5)"
                                                     class="px-2 py-1 text-xs border border-cyan-400 hover-bg-cyan-400"
                                                     ${ship.credits < price * 5 || getUsedCargo() + 5 > ship.maxCargo ? 'disabled' : ''}
                                                 >
                                                     BUY 5
                                                 </button>
-                                                <button 
+                                                <button
                                                     onclick="buyItem('${item}', 10)"
                                                     class="px-2 py-1 text-xs border border-cyan-400 hover-bg-cyan-400"
                                                     ${ship.credits < price * 10 || getUsedCargo() + 10 > ship.maxCargo ? 'disabled' : ''}
                                                 >
                                                     BUY 10
                                                 </button>
-                                                <button 
+                                                <button
                                                     onclick="buyItem('${item}', 50)"
                                                     class="px-2 py-1 text-xs border border-cyan-400 hover-bg-cyan-400"
                                                     ${ship.credits < price * 50 || getUsedCargo() + 50 > ship.maxCargo ? 'disabled' : ''}
@@ -962,28 +946,28 @@
                                                 </button>
                                             </div>
                                             <div class="grid grid-cols-4 gap-2">
-                                                <button 
+                                                <button
                                                     onclick="sellItem('${item}', 1)"
                                                     class="px-2 py-1 text-xs border border-cyan-400 bg-white text-black hover-bg-cyan-400"
                                                     ${inventory[item] < 1 ? 'disabled' : ''}
                                                 >
                                                     SELL 1
                                                 </button>
-                                                <button 
+                                                <button
                                                     onclick="sellItem('${item}', 5)"
                                                     class="px-2 py-1 text-xs border border-cyan-400 bg-white text-black hover-bg-cyan-400"
                                                     ${inventory[item] < 5 ? 'disabled' : ''}
                                                 >
                                                     SELL 5
                                                 </button>
-                                                <button 
+                                                <button
                                                     onclick="sellItem('${item}', 10)"
                                                     class="px-2 py-1 text-xs border border-cyan-400 bg-white text-black hover-bg-cyan-400"
                                                     ${inventory[item] < 10 ? 'disabled' : ''}
                                                 >
                                                     SELL 10
                                                 </button>
-                                                <button 
+                                                <button
                                                     onclick="sellItem('${item}', 50)"
                                                     class="px-2 py-1 text-xs border border-cyan-400 bg-white text-black hover-bg-cyan-400"
                                                     ${inventory[item] < 50 ? 'disabled' : ''}
@@ -998,7 +982,7 @@
                             <div class="border-2 border-cyan-400 p-4">
                                 <div class="text-2xl mb-4">TRAVEL</div>
                                 ${Object.keys(planets).map(planet => planet !== currentPlanet ? `
-                                    <button 
+                                    <button
                                         onclick="travelTo('${planet}')"
                                         class="w-full mb-2 py-2 text-base border border-cyan-400 hover-bg-cyan-400 text-left pl-4"
                                     >
@@ -1012,7 +996,6 @@
             }
             document.getElementById('app').innerHTML = html;
         }
-
         render();
     </script>
 </body>
