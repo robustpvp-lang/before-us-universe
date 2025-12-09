@@ -296,7 +296,7 @@
         let bankInventory = {
             food: 0,
             medicine: 0,
-            weapons: 0,
+            arms: 0,
             electronics: 0,
             ore: 0,
             artifacts: 0,
@@ -316,12 +316,12 @@
             'glorzo': 'Glorzo'
         };
         const planets = {
-            'eden-i': { food: 50, medicine: 100, weapons: 200, electronics: 150, ore: 80, artifacts: 300, exotic_animals: 300 },
-            'erebus-iv': { food: 70, medicine: 120, weapons: 180, electronics: 130, ore: 60, artifacts: 280, exotic_animals: 300 },
-            'rigel-ix': { food: 90, medicine: 80, weapons: 150, electronics: 200, ore: 40, artifacts: 350, exotic_animals: 300 },
-            'vestus-vi': { food: 60, medicine: 90, weapons: 250, electronics: 170, ore: 100, artifacts: 320, exotic_animals: 500 },
-            'scipio-xii': { food: 120, medicine: 150, weapons: 160, electronics: 180, ore: 70, artifacts: 290, exotic_animals: 300 },
-            'glorzo': { food: 80, medicine: 110, weapons: 220, electronics: 140, ore: 90, artifacts: 200, exotic_animals: 300 }
+            'eden-i': { food: 50, medicine: 100, arms: 200, electronics: 150, ore: 80, artifacts: 300, exotic_animals: 300 },
+            'erebus-iv': { food: 70, medicine: 120, arms: 180, electronics: 130, ore: 60, artifacts: 280, exotic_animals: 300 },
+            'rigel-ix': { food: 90, medicine: 80, arms: 150, electronics: 200, ore: 40, artifacts: 350, exotic_animals: 300 },
+            'vestus-vi': { food: 60, medicine: 90, arms: 250, electronics: 170, ore: 100, artifacts: 320, exotic_animals: 500 },
+            'scipio-xii': { food: 120, medicine: 150, arms: 160, electronics: 180, ore: 70, artifacts: 290, exotic_animals: 300 },
+            'glorzo': { food: 80, medicine: 110, arms: 220, electronics: 140, ore: 90, artifacts: 200, exotic_animals: 300 }
         };
         const loadouts = [
             {
@@ -330,7 +330,7 @@
                 cargo: 80,
                 weapons: 5,
                 hull: 80,
-                inventory: { food: 20, medicine: 10, weapons: 0, electronics: 15, ore: 10, artifacts: 0, exotic_animals: 0 }
+                inventory: { food: 20, medicine: 10, arms: 0, electronics: 15, ore: 10, artifacts: 0, exotic_animals: 0 }
             },
             {
                 name: 'Smuggler',
@@ -338,7 +338,7 @@
                 cargo: 50,
                 weapons: 15,
                 hull: 100,
-                inventory: { food: 5, medicine: 5, weapons: 10, electronics: 5, ore: 0, artifacts: 3, exotic_animals: 0 }
+                inventory: { food: 5, medicine: 5, arms: 10, electronics: 5, ore: 0, artifacts: 3, exotic_animals: 0 }
             },
             {
                 name: 'Mercenary',
@@ -346,7 +346,7 @@
                 cargo: 40,
                 weapons: 25,
                 hull: 120,
-                inventory: { food: 10, medicine: 5, weapons: 15, electronics: 5, ore: 0, artifacts: 0, exotic_animals: 0 }
+                inventory: { food: 10, medicine: 5, arms: 15, electronics: 5, ore: 0, artifacts: 0, exotic_animals: 0 }
             },
             {
                 name: 'Debtor',
@@ -355,7 +355,7 @@
                 weapons: 10,
                 hull: 90,
                 debt: 8000,
-                inventory: { food: 15, medicine: 10, weapons: 5, electronics: 10, ore: 5, artifacts: 1, exotic_animals: 0 }
+                inventory: { food: 15, medicine: 10, arms: 5, electronics: 10, ore: 5, artifacts: 1, exotic_animals: 0 }
             }
         ];
         function startGame() {
@@ -609,7 +609,7 @@
             inventory = {
                 food: 0,
                 medicine: 0,
-                weapons: 0,
+                arms: 0,
                 electronics: 0,
                 ore: 0,
                 artifacts: 0,
@@ -618,7 +618,7 @@
             bankInventory = {
                 food: 0,
                 medicine: 0,
-                weapons: 0,
+                arms: 0,
                 electronics: 0,
                 ore: 0,
                 artifacts: 0,
