@@ -2038,38 +2038,14 @@
             if (gameState === 'playing_topdown') {
                 updateTopDown(timestamp);
                 drawTopDown();
-                let drawW = canvas.width;
-                let drawH = canvas.height;
-                let offsetX = 0;
-                let offsetY = 0;
-                const aspect = 800 / 600;
-                if (canvas.width / canvas.height > aspect) {
-                    drawW = canvas.height * aspect;
-                    offsetX = (canvas.width - drawW) / 2;
-                } else {
-                    drawH = canvas.width / aspect;
-                    offsetY = (canvas.height - drawH) / 2;
-                }
-                ctx.drawImage(offscreen, offsetX, offsetY, drawW, drawH);
+                ctx.drawImage(offscreen, 0, 0, canvas.width, canvas.height);
             } else if (gameState === 'playing_fp') {
                 updateFP();
                 renderFP();
             } else if (gameState === 'transition') {
                 if (nextGameState === 'playing_fp') {
                     drawTopDown();
-                    let drawW = canvas.width;
-                    let drawH = canvas.height;
-                    let offsetX = 0;
-                    let offsetY = 0;
-                    const aspect = 800 / 600;
-                    if (canvas.width / canvas.height > aspect) {
-                        drawW = canvas.height * aspect;
-                        offsetX = (canvas.width - drawW) / 2;
-                    } else {
-                        drawH = canvas.width / aspect;
-                        offsetY = (canvas.height - drawH) / 2;
-                    }
-                    ctx.drawImage(offscreen, offsetX, offsetY, drawW, drawH);
+                    ctx.drawImage(offscreen, 0, 0, canvas.width, canvas.height);
                 } else {
                     updateFP();
                     renderFP();
