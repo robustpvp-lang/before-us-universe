@@ -36,10 +36,10 @@
     .companion-disclaimer {
         font-family: 'VT323', monospace;
         color: var(--color-primary);
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         text-align: center;
-        margin-bottom: 20px;
-        padding: 15px;
+        margin-bottom: 10px;
+        padding: 10px;
         border: 1px solid var(--color-primary);
         box-shadow: var(--glow-primary);
         background: rgba(0, 255, 255, 0.05);
@@ -98,7 +98,7 @@
         color: var(--color-primary);
         font-size: 1.2rem;
         white-space: nowrap;
-        opacity: 0.9; 
+        opacity: 0.9;
         position: absolute;
         animation: codeScroll linear infinite;
         text-shadow: 0 0 2px var(--color-primary);
@@ -205,18 +205,17 @@
         <div class="code-line">𒌨𒀭𒋤𒉣</div>
     </div>
 </div>
-
 <script>
     // --- UPDATED SCRIPT: USES POSTMESSAGE FOR RELIABILITY ---
     function triggerBoot() {
         // Send a specific message to the parent window (index.html)
         window.parent.postMessage('triggerBoot', '*');
     }
-
+    // Automatic trigger after 5 seconds for seamless flow
+    setTimeout(triggerBoot, 5000);
     document.addEventListener('click', triggerBoot);
     document.addEventListener('keydown', triggerBoot);
     document.addEventListener('touchstart', triggerBoot);
-
     window.addEventListener('load', () => {
         const video = document.querySelector('.background-video');
         if (video) {
