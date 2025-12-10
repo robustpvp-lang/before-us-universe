@@ -209,7 +209,7 @@
     // --- UPDATED SCRIPT: USES POSTMESSAGE FOR RELIABILITY ---
     function triggerBoot() {
         // Send a specific message to the parent window (index.html)
-        window.parent.postMessage('triggerBoot', '*');
+        window.parent.location.href = 'bootpage.html';
     }
     // Automatic trigger after 5 seconds for seamless flow
     setTimeout(triggerBoot, 5000);
