@@ -1,21 +1,27 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Boot Page — BUU</title>
+<title>BUU Boot Sequence</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+/* --- THEME & SHARED STYLES --- */
 :root{
 --bg:#001a1a; --fg:#00ffff; --accent:#ffcc00; --border:#00cccc; --panel-bg:#002b2b;
 --text-gray:#e6f7f7; --muted:#00aaaa; --online:#00ff9d; --yahoo-blue:#1e73be; --yahoo-dark:#0961a6;
 }
 html,body{margin:0;height:100%;font-family:'Roboto Mono',monospace;background:var(--bg);color:var(--fg);overflow:auto}
 body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover no-repeat}
+#crt::before{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06) 2px,transparent 2px,transparent 4px);pointer-events:none;z-index:999}
 @keyframes glitch{2%,64%{transform:translate(2px,0) skew(5deg);}4%,60%{transform:translate(-2px,0) skew(-5deg);}62%{transform:translate(0,0) skew(3deg);}}
-.glitch{animation:glitch 1s linear infinite;}
-.glitch-update{animation:glitch 0.5s linear;}
-#bootOverlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.9),rgba(0,0,0,0.95));color:var(--fg);z-index:99998;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:'Roboto Mono',monospace}
+.small{font-size:11px;color:var(--muted)}
+
+/* --- BOOT SEQUENCE STYLES (ISOLATED) --- */
+/* NEW PRE-BOOT OVERLAY STYLES */
+#prebootOverlay{position:fixed; inset:0; background:linear-gradient(180deg,rgba(0,0,0,0.9),rgba(0,0,0,0.95)); color:var(--fg); z-index:99999; display:flex; align-items:center; justify-content:center; flex-direction:column;}
+#prebootIframe{width:90%; max-width:800px; height:80vh; border:4px solid var(--border); background:var(--panel-bg);}
+
+#bootOverlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.9),rgba(0,0,0,0.95));color:var(--fg);z-index:99998;display:none;align-items:center;justify-content:center;flex-direction:column;font-family:'Roboto Mono',monospace}
 #bootPanel{width:92%;max-width:820px;background:var(--panel-bg);border:4px solid var(--border);padding:18px;box-shadow:0 0 30px rgba(0,255,255,0.06)}
 #bootLog{line-height:1.6;white-space:pre-wrap;margin-bottom:12px;font-size:13px;color:var(--text-gray)}
 #bootPrompt{color:var(--accent);margin-bottom:6px;animation:blink 1s step-end infinite;}
@@ -26,125 +32,122 @@ body{background:url('https://wallpapercave.com/wp/wp4468245.jpg') center/cover n
 #bootBtn{background:var(--accent);border:2px solid #000;color:#000;padding:8px 14px;cursor:pointer;font-weight:700}
 #bootBanner{margin-top:10px;background:rgba(0,0,0,0.35);padding:8px;border-radius:4px;color:var(--fg);font-size:12px}
 #bootBroadcast{animation:glitch 3s infinite alternate;}
-#bootStatus{margin-top:8px;color:var(--accent)}
-.small{font-size:11px;color:var(--muted)}
 </style>
 </head>
 <body>
+
+<div id="prebootOverlay">
+    <iframe id="prebootIframe" src="preboot.html"></iframe>
+    <div style="margin-top:10px; font-size:12px; color:var(--accent);">
+        [PRESS ANY KEY OR CLICK TO PROCEED TO BUU BOOT SEQUENCE]
+    </div>
+</div>
+
 <div id="bootOverlay">
-<div id="bootPanel">
-<div id="bootLog" class="small"></div>
-<div id="bootPrompt">> ENTER HANDLE & SELECT SERVER</div>
-<div id="bootInputs">
-<input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (required)" autocomplete="off">
-<select id="bootChannel">
-<option value="sam">//Sam</option>
-<option value="exuro">//Exuro</option>
-<option value="nero">//Nero</option>
-<option value="nora">//Nora</option>
-<option value="loktal">//Loktal</option>
-</select>
-<button id="bootBtn">ENTER NETWORK</button>
+    <div id="bootPanel">
+        <div id="bootLog" class="small"></div>
+        <div id="bootPrompt">> ENTER HANDLE & SELECT SERVER</div>
+        <div id="bootInputs">
+            <input id="bootInput" type="text" maxlength="30" placeholder="//YourHandle (required)" aria-label="Enter your handle">
+            <select id="bootChannel" aria-label="Select server">
+                <option value="sam">//Sam</option>
+                <option value="exuro">//Exuro</option>
+                <option value="nero">//Nero</option>
+                <option value="nora">//Nora</option>
+                <option value="loktal">//Loktal</option>
+            </select>
+            <button id="bootBtn" aria-label="Enter Network">ENTER NETWORK</button>
+        </div>
+        <div id="bootStatus" class="small" style="margin-top:8px;color:var(--accent)"></div>
+        <div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Timeline stability.. 84%</span></div>
+    </div>
 </div>
-<div id="bootStatus" class="small"></div>
-<div id="bootBanner" class="small">System Broadcast: <span id="bootBroadcast">Timeline stability.. 84%</span></div>
-</div>
-</div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prebootOverlay = document.getElementById('prebootOverlay');
+    const bootOverlay = document.getElementById('bootOverlay');
+    const bootLog = document.getElementById('bootLog');
+    const bootBtn = document.getElementById('bootBtn');
+    const bootInput = document.getElementById('bootInput');
+    const bootStatus = document.getElementById('bootStatus');
+    const bootPrompt = document.getElementById('bootPrompt');
+    const bootInputs = document.getElementById('bootInputs');
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBGdiOrMFolYWNMvckE4fbp_VhWA80BaII",
-  authDomain: "before-us-universe.firebaseapp.com",
-  databaseURL: "https://before-us-universe-default-rtdb.firebaseio.com",
-  projectId: "before-us-universe",
-  storageBucket: "before-us-universe.firebasestorage.app",
-  messagingSenderId: "477103463228",
-  appId: "1:477103463228:web:01b53b6b29cb9d54315c39"
-};
+    // Boot sequence messages inferred from original JS logic
+    const bootLines = [
+        "C:\\> INITIALIZING buu.guru.exe...",
+        "C:\\> Loading kernel.............[ONLINE]",
+        "C:\\> Checking Ra'Norric link....[GRANTED]",
+        "W:\\> Requesting Timelines.......[GRANTED]",
+        "C:\\> Satellite Link.............[ONLINE]",
+        "Q:\\> Establishing Ansible.......[CONNECTED]",
+        "C:\\> Basic Systems are now......[ENABLED]"
+    ];
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+    let lineIdx = 0;
 
-const bootLog = document.getElementById('bootLog');
-const bootInput = document.getElementById('bootInput');
-const bootChannel = document.getElementById('bootChannel');
-const bootBtn = document.getElementById('bootBtn');
-const bootStatus = document.getElementById('bootStatus');
-const bootBroadcast = document.getElementById('bootBroadcast');
+    function typeBootLine() {
+        if (lineIdx < bootLines.length) {
+            bootLog.textContent += bootLines[lineIdx] + "\n";
+            lineIdx++;
+            // Simulate typing delay
+            setTimeout(typeBootLine, 240 + Math.random() * 360);
+        } else {
+            // All lines typed, allow user input
+            bootPrompt.style.display = 'block';
+            bootInputs.style.display = 'flex';
+            bootStatus.textContent = "Status: Ready to connect.";
+        }
+    }
 
-const bootLines = [
-"C:\\> INITIALIZING BEFORE US UNIVERSE...",
-"C:\\> Loading kernel.............[ONLINE]",
-"C:\\> Checking Ra'Norric link....[ONLINE]",
-"C:\\> Accessing Pre-Universe Archives... [GRANTED]",
-"C:\\> Loading Melphia's Game Protocols... [ACTIVE]",
-"C:\\> Detecting Temporal Anomalies... [STABLE]",
-"C:\\> MEMORY CHECK PASSED",
-"C:\\> DISK VERIFIED",
-"C:\\> NETWORK ACTIVE",
-"C:\\> System is .....[ONLINE]",
-"C:\\> Ready for authentication..."
-];
+    function startBootSequence() {
+        // Hide preboot and show the main boot screen
+        prebootOverlay.style.display = 'none';
+        bootOverlay.style.display = 'flex'; 
+        
+        // Hide initial elements for the typing effect
+        bootPrompt.style.display = 'none';
+        bootInputs.style.display = 'none';
+        bootStatus.textContent = "Status: Booting...";
 
-bootLines.forEach((line, i) => {
-  setTimeout(() => {
-    bootLog.textContent += line + "\n";
-    bootLog.scrollTop = bootLog.scrollHeight;
-  }, 200 + i * 220);
+        // Start the typing animation
+        lineIdx = 0;
+        bootLog.textContent = '';
+        typeBootLine();
+    }
+
+    // 1. Handle Preboot Click/Keypress to start the sequence
+    const transitionHandler = () => {
+        if (prebootOverlay.style.display !== 'none') {
+            startBootSequence();
+            document.removeEventListener('click', transitionHandler);
+            document.removeEventListener('keypress', transitionHandler);
+        }
+    };
+
+    document.addEventListener('click', transitionHandler);
+    document.addEventListener('keypress', transitionHandler);
+
+    // 2. Handle 'ENTER NETWORK' button click (Simulates a successful login)
+    bootBtn.onclick = () => {
+        const handle = bootInput.value.trim();
+        if (handle) {
+            bootStatus.textContent = `// ${handle} attempting connection to selected server...`;
+            bootBtn.disabled = true;
+            // Simulated connection delay
+            setTimeout(() => {
+                bootStatus.textContent = `// ${handle} [CONNECTION ESTABLISHED].`;
+                // In a real application, you would redirect or load the main app here.
+                alert(`Simulated successful login for handle: ${handle}`);
+                bootBtn.disabled = false;
+            }, 1500);
+        } else {
+            bootStatus.textContent = "ERROR: HANDLE IS REQUIRED.";
+        }
+    };
 });
-
-setInterval(() => {
-  const p = 80 + Math.floor(Math.random() * 11);
-  bootBroadcast.textContent = `Timeline stability.. ${p}%`;
-  bootBroadcast.classList.add('glitch-update');
-  setTimeout(() => bootBroadcast.classList.remove('glitch-update'), 500);
-}, 5000);
-
-bootBtn.onclick = async () => {
-  let handle = bootInput.value.trim();
-  
-  if (!handle) {
-    bootStatus.textContent = "Handle required, wanderer.";
-    return;
-  }
-  
-  if (handle.length > 30) handle = handle.substring(0, 30);
-  handle = handle.replace(/[.#$/[\]]/g, "_");
-
-  bootStatus.textContent = "Authenticating through the Ra'Norric link...";
-
-  try {
-    const userCredential = await signInAnonymously(auth);
-    const uid = userCredential.user.uid;
-    const channel = bootChannel.value || "exuro";
-
-    bootStatus.textContent = `Welcome, ${handle}. Entering //${channel.toUpperCase()}...`;
-
-   setTimeout(() => {
-  if (window !== window.parent) {
-    // Only send the message if loaded inside an iframe
-    window.parent.postMessage({
-      type: 'bootComplete',
-      handle: handle,
-      channel: channel,
-      uid: uid
-    }, '*');
-  } else {
-    // If not inside an iframe, load chatservers.html directly
-    window.location.href = "chatservers.html?handle=" + encodeURIComponent(handle) +
-                           "&channel=" + encodeURIComponent(channel) +
-                           "&uid=" + encodeURIComponent(uid);
-  }
-}, 1200);
-
-  } catch (err) {
-    bootStatus.textContent = "ACCESS DENIED: " + err.message;
-    console.error(err);
-  }
-};
 </script>
+
 </body>
 </html>
